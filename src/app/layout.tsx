@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
-import DesktopRailNav from "@/components/layout/DesktopRailNav";
-import MobileNav from "@/components/layout/MobileNav";
-import Footer from "@/components/layout/Footer";
-import CookieConsent from "@/components/common/CookieConsent";
-import CustomCursor from "@/components/common/CustomCursor";
+import SiteShell from "@/components/layout/SiteShell";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://technoarchitecture.com"),
@@ -106,33 +102,7 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased min-h-screen bg-white text-neutral-900 selection:bg-black selection:text-white">
-        {/* Accessible Skip Link */}
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 z-[9999] bg-black text-white px-4 py-2 text-xs uppercase tracking-widest outline-none"
-        >
-          Skip to main content
-        </a>
-
-        {/* Custom Subtle Architectural Cursor */}
-        <CustomCursor />
-
-        {/* Desktop Fixed Right-Rail Navigation */}
-        <DesktopRailNav />
-
-        {/* Mobile Top Header Navigation */}
-        <MobileNav />
-
-        {/* Main Content Area — Offset for Desktop Right Rail (w-20 / w-24) */}
-        <div className="flex flex-col min-h-screen lg:mr-20 xl:mr-24 pt-[57px] lg:pt-0">
-          <main id="main-content" className="flex-grow focus:outline-none">
-            {children}
-          </main>
-          <Footer />
-        </div>
-
-        {/* Cookie Consent Banner */}
-        <CookieConsent />
+        <SiteShell>{children}</SiteShell>
       </body>
     </html>
   );
