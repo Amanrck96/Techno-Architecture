@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { primaryNavigation } from "@/data/navigation";
 import { ArrowUp, Instagram, Linkedin, Facebook, Settings } from "lucide-react";
@@ -29,18 +30,21 @@ export default function DesktopRailNav() {
       className="hidden lg:flex fixed top-0 right-0 h-screen w-20 xl:w-24 z-50 flex-col justify-between items-center py-8 bg-white border-l border-neutral-200 transition-colors duration-300"
     >
       {/* Brand Monogram / Logo */}
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center px-2">
         <Link
           href="/"
-          className="group flex flex-col items-center tracking-widest text-center"
+          className="group flex flex-col items-center text-center transition-transform hover:scale-105"
           aria-label="Techno Architecture Home"
         >
-          <span className="font-display font-semibold text-xs xl:text-sm tracking-[0.35em] text-neutral-900 group-hover:text-black transition-colors">
-            TECHNO
-          </span>
-          <span className="text-[8px] tracking-[0.25em] text-neutral-400 mt-1 uppercase">
-            STUDIO
-          </span>
+          <div className="relative w-16 xl:w-20 h-8 xl:h-10">
+            <Image
+              src="/techno-logo-transparent.png"
+              alt="Techno Architecture"
+              fill
+              sizes="80px"
+              className="object-contain"
+            />
+          </div>
         </Link>
       </div>
 

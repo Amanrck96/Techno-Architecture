@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { primaryNavigation } from "@/data/navigation";
 import { Menu, X, Instagram, Linkedin, Facebook, Settings } from "lucide-react";
@@ -41,19 +42,23 @@ export default function MobileNav() {
 
   return (
     <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-neutral-200">
-      <div className="flex items-center justify-between px-6 py-4">
+      <div className="flex items-center justify-between px-6 py-3.5">
         {/* Mobile Brand Logo */}
         <Link
           href="/"
-          className="flex flex-col"
+          className="flex items-center"
           aria-label="Techno Architecture Home"
         >
-          <span className="font-display font-semibold text-xs tracking-[0.3em] text-neutral-900">
-            TECHNO
-          </span>
-          <span className="text-[7px] tracking-[0.2em] text-neutral-400 uppercase">
-            STUDIO
-          </span>
+          <div className="relative w-36 sm:w-44 h-8 sm:h-9">
+            <Image
+              src="/techno-logo-transparent.png"
+              alt="Techno Architecture"
+              fill
+              sizes="180px"
+              priority
+              className="object-contain object-left"
+            />
+          </div>
         </Link>
 
         {/* Hamburger Toggle */}

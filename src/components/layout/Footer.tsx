@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 
 export default function Footer() {
@@ -12,9 +13,15 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           {/* Col 1: Brand & Statement */}
           <div className="space-y-4">
-            <span className="font-display font-semibold text-base tracking-[0.35em] block text-black">
-              TECHNO
-            </span>
+            <div className="relative w-44 h-11">
+              <Image
+                src="/techno-logo-transparent.png"
+                alt="Techno Architecture"
+                fill
+                sizes="180px"
+                className="object-contain object-left"
+              />
+            </div>
             <p className="text-xs leading-relaxed text-neutral-500 max-w-sm tracking-wide">
               An architectural and interior design practice dedicated to formal restraint, material permanence, and deep contextual sensitivity.
             </p>

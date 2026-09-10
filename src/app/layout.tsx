@@ -1,25 +1,10 @@
 import type { Metadata } from "next";
-import { Source_Sans_3, Archivo } from "next/font/google";
 import "@/styles/globals.css";
 import DesktopRailNav from "@/components/layout/DesktopRailNav";
 import MobileNav from "@/components/layout/MobileNav";
 import Footer from "@/components/layout/Footer";
 import CookieConsent from "@/components/common/CookieConsent";
 import CustomCursor from "@/components/common/CustomCursor";
-
-const sourceSans = Source_Sans_3({
-  subsets: ["latin"],
-  variable: "--font-source-sans",
-  display: "swap",
-  weight: ["300", "400", "500", "600", "700"],
-});
-
-const archivo = Archivo({
-  subsets: ["latin"],
-  variable: "--font-archivo",
-  display: "swap",
-  weight: ["400", "500", "600", "700"],
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://technoarchitecture.com"),
@@ -113,7 +98,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className={`${sourceSans.variable} ${archivo.variable}`}>
+    <html lang="en">
       <head>
         <script
           type="application/ld+json"
