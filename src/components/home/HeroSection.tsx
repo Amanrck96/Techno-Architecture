@@ -74,13 +74,13 @@ export default function HeroSection() {
           className="focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded"
           aria-label="Techno Architecture Home"
         >
-          <div className="relative w-32 sm:w-40 h-8 sm:h-10 opacity-85 hover:opacity-100 transition-opacity">
+          <div className="relative w-40 sm:w-52 md:w-60 h-10 sm:h-13 md:h-15 opacity-90 hover:opacity-100 transition-opacity">
             <Image
               src="/techno-logo-white.png"
               alt="Techno Architecture"
               fill
               priority
-              sizes="160px"
+              sizes="(max-width: 768px) 200px, 240px"
               className="object-contain object-left"
             />
           </div>
@@ -96,25 +96,6 @@ export default function HeroSection() {
             {String(showcaseProjects.length).padStart(2, "0")}
           </span>
         </div>
-      </div>
-
-      {/* 3. Centerpiece: Company Name 'Techno Architecture' in exact reference font style */}
-      <div className="relative z-20 my-auto px-6 md:px-12 flex flex-col items-center justify-center text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20, scale: 0.96 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-[340px] sm:max-w-[480px] md:max-w-[620px] lg:max-w-[760px] aspect-[764/212]"
-        >
-          <Image
-            src="/techno-logo-white.png"
-            alt="TECHNO ARCHITECTURE"
-            fill
-            priority
-            sizes="(max-width: 768px) 480px, (max-width: 1200px) 620px, 760px"
-            className="object-contain drop-shadow-[0_8px_30px_rgba(0,0,0,0.85)] filter"
-          />
-        </motion.div>
       </div>
 
       {/* 4. Bottom Bar: Active Project Metadata & Slide Controls */}
