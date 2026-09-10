@@ -1,0 +1,138 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { primaryNavigation } from "@/data/navigation";
+import { ArrowUp, Instagram, Linkedin, Facebook, Settings } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+export default function DesktopRailNav() {
+  const pathname = usePathname();
+  const [showTopBtn, setShowTopBtn] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowTopBtn(window.scrollY > 350);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  return (
+    <aside
+      aria-label="Sidebar Navigation"
+      className="hidden lg:flex fixed top-0 right-0 h-screen w-20 xl:w-24 z-50 flex-col justify-between items-center py-8 bg-white border-l border-neutral-200 transition-colors duration-300"
+    >
+      {/* Brand Monogram / Logo */}
+      <div className="flex flex-col items-center">
+        <Link
+          href="/"
+          className="group flex flex-col items-center tracking-widest text-center"
+          aria-label="Techno Architecture Home"
+        >
+          <span className="font-display font-semibold text-xs xl:text-sm tracking-[0.35em] text-neutral-900 group-hover:text-black transition-colors">
+            TECHNO
+          </span>
+          <span className="text-[8px] tracking-[0.25em] text-neutral-400 mt-1 uppercase">
+            STUDIO
+          </span>
+        </Link>
+      </div>
+
+      {/* Vertical Navigation Links */}
+      <nav className="my-auto py-4" aria-label="Primary Desktop Menu">
+        <ul className="flex flex-col space-y-4 xl:space-y-5 text-center">
+          {primaryNavigation.map((item) => {
+            const isActive =
+              pathname === item.href ||
+              (item.href !== "/" && pathname.startsWith(item.href));
+
+            return (
+              <li key={item.href} className="relative group">
+                <Link
+                  href={item.href}
+                  className={cn(
+                    "block text-[10px] xl:text-[11px] font-medium tracking-[0.18em] transition-all duration-300 uppercase py-1 px-2",
+                    isActive
+                      ? "text-black font-semibold tracking-[0.22em]"
+                      : "text-neutral-500 hover:text-black hover:tracking-[0.22em]"
+                  )}
+                >
+                  {item.label}
+                  {isActive && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute -right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-neutral-900 rounded-full"
+                    />
+                  )}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+
+      {/* Social Icons & Utilities */}
+      <div className="flex flex-col items-center space-y-4">
+        {/* Admin CMS link */}
+        <Link
+          href="/admin"
+          title="Open CMS Content Studio"
+          aria-label="Open CMS Content Studio"
+          className="text-neutral-400 hover:text-black transition-transform hover:rotate-90 duration-500 p-1"
+        >
+          <Settings size={14} />
+        </Link>
+
+        {/* Social Icons */}
+        <div className="flex flex-col items-center space-y-3 text-neutral-400">
+          <a
+            href="https://instagram.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Techno on Instagram"
+            className="hover:text-black hover:scale-110 transition-transform duration-300"
+          >
+            <Instagram size={13} />
+          </a>
+          <a
+            href="https://linkedin.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Techno on LinkedIn"
+            className="hover:text-black hover:scale-110 transition-transform duration-300"
+          >
+            <Linkedin size={13} />
+          </a>
+          <a
+            href="https://facebook.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Techno on Facebook"
+            className="hover:text-black hover:scale-110 transition-transform duration-300"
+          >
+            <Facebook size={13} />
+          </a>
+        </div>
+
+        {/* Back to top button */}
+        <button
+          onClick={scrollToTop}
+          type="button"
+          aria-label="Scroll back to top"
+          className={cn(
+            "p-2 text-neutral-500 hover:text-black transition-all duration-300 rounded-full border border-neutral-200 hover:border-neutral-900 hover:bg-neutral-50",
+            showTopBtn ? "opacity-100 scale-100" : "opacity-0 scale-75 pointer-events-none"
+          )}
+        >
+          <ArrowUp size={13} />
+        </button>
+      </div>
+    </aside>
+  );
+}

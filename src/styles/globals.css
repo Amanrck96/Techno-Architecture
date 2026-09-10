@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-background: #ffffff;
+  --color-surface: #f7f7f7;
+  --color-surface-hover: #efefef;
+  --color-surface-muted: #fafafa;
+  --color-text: #141414;
+  --color-muted: #6b6b6b;
+  --color-border: #e8e8e8;
+  --color-accent: #111111;
+  --color-accent-dark: #000000;
+  --color-overlay: rgba(28, 28, 28, 0.88);
+  --color-rail-bg: #ffffff;
+}
+
+[data-theme="dark"] {
+  --color-background: #0d0d0d;
+  --color-surface: #171717;
+  --color-surface-hover: #222222;
+  --color-surface-muted: #121212;
+  --color-text: #f3f3f3;
+  --color-muted: #9a9a9a;
+  --color-border: #262626;
+  --color-accent: #ffffff;
+  --color-accent-dark: #e5e5e5;
+  --color-overlay: rgba(10, 10, 10, 0.92);
+  --color-rail-bg: #0d0d0d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-source-sans), 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  letter-spacing: 0.01em;
+}
+
+::selection {
+  background: #111111;
+  color: #ffffff;
+}
+
+/* Reference Architectural Scrollbar (Custom 4px Minimalist) */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.22);
+  border-radius: 0px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* Architectural Utilities */
+.tracking-title {
+  letter-spacing: 5px;
+}
+
+.tracking-sub {
+  letter-spacing: 1.5px;
+}
+
+.tracking-nav {
+  letter-spacing: 1.2px;
+}
+
+/* Image overlay hover behavior inspired by studiobomb.in */
+.project-card-overlay {
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  background-color: var(--color-overlay);
+}
+
+.group:hover .project-card-overlay {
+  opacity: 0.92;
+}
+
+/* Subtle architectural grid lines */
+.grid-line-x {
+  height: 1px;
+  background-color: var(--color-border);
+  width: 100%;
+}
+
+.grid-line-y {
+  width: 1px;
+  background-color: var(--color-border);
+  height: 100%;
+}
