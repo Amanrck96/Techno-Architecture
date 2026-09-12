@@ -101,6 +101,7 @@ export const initialProjects: Project[] = [
       { url: "/projects/belaku/belaku-open-kitchen-island-dining.jpg", caption: "Gourmet open kitchen featuring a monolithic island, integrated cooktop, and cantilevered solid timber dining counter", aspect: "landscape" },
       { url: "/projects/belaku/belaku-dining-counter-courtyard-vista.jpg", caption: "Cantilevered solid timber dining bar looking out to the central internal court and spiral staircase", aspect: "landscape" },
       { url: "/projects/belaku/belaku-courtyard-pool-kitchen-perspective.jpg", caption: "Panoramic ground-level view connecting the cascading waterfall basin to the culinary pavilion and indoor tree", aspect: "landscape" },
+      { url: "/projects/belaku/belaku-central-courtyard-entrance-vista.jpg", caption: "Central courtyard reflecting pool looking toward the grand solid teak entrance door, central tree, and open kitchen", aspect: "landscape" },
       { url: "/projects/belaku/belaku-waterfall-guitar-niche-atrium.jpg", caption: "Double-height atrium featuring a built-in acoustic guitar display niche and Kadappa stone waterfall cascade", aspect: "portrait" },
       { url: "/projects/belaku/belaku-central-water-court-staircase.jpg", caption: "Central water garden with fountain grasses, rising living tree, and floating spiral stair in the background", aspect: "portrait" },
       { url: "/projects/belaku/belaku-elevation-dusk-frontal.jpg", caption: "Full frontal elevation at dusk with warm interior illumination glowing against the purple twilight sky", aspect: "full" },
