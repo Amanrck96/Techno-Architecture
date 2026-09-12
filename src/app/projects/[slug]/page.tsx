@@ -21,7 +21,8 @@ export default function ProjectDetailPage() {
       (slug === "atelier-basavanagudi" && p.slug === "brindavan") ||
       (slug === "shadow-house" && p.slug === "far-site-buildofy") ||
       (slug === "urban-veranda" && p.slug === "house-in-the-air") ||
-      (slug === "kavya-residence" && p.slug === "kanasu")
+      (slug === "kavya-residence" && p.slug === "kanasu") ||
+      (slug === "timber-terrace" && p.slug === "kripa")
   );
   if (currentIndex === -1) {
     // If not found in current store, return 404
@@ -123,6 +124,19 @@ export default function ProjectDetailPage() {
         mainImage: "/projects/kanasu/kanasu-rooftop-pool-timber-canopy.jpg",
       };
     }
+    if (
+      p.id === "proj-8" ||
+      p.slug === "kripa" ||
+      p.slug === "timber-terrace" ||
+      p.title === "TIMBER TERRACE"
+    ) {
+      return {
+        ...p,
+        title: "KRIPA",
+        slug: "kripa",
+        mainImage: "/projects/kripa/kripa-frontal-facade-cascading-greenery.jpg",
+      };
+    }
     return p;
   };
 
@@ -181,6 +195,12 @@ export default function ProjectDetailPage() {
       ) {
         return false;
       }
+      if (
+        (project.slug === "kripa" || project.id === "proj-8" || project.slug === "timber-terrace") &&
+        (p.slug === "kripa" || p.slug === "timber-terrace" || p.id === "proj-8")
+      ) {
+        return false;
+      }
 
       return (
         project.relatedSlugs?.includes(p.slug) ||
@@ -197,7 +217,9 @@ export default function ProjectDetailPage() {
         (project.relatedSlugs?.includes("urban-veranda") && (p.slug === "house-in-the-air" || p.id === "proj-6")) ||
         (project.relatedSlugs?.includes("house-in-the-air") && (p.slug === "urban-veranda" || p.id === "proj-6")) ||
         (project.relatedSlugs?.includes("kavya-residence") && (p.slug === "kanasu" || p.id === "proj-7")) ||
-        (project.relatedSlugs?.includes("kanasu") && (p.slug === "kavya-residence" || p.id === "proj-7"))
+        (project.relatedSlugs?.includes("kanasu") && (p.slug === "kavya-residence" || p.id === "proj-7")) ||
+        (project.relatedSlugs?.includes("timber-terrace") && (p.slug === "kripa" || p.id === "proj-8")) ||
+        (project.relatedSlugs?.includes("kripa") && (p.slug === "timber-terrace" || p.id === "proj-8"))
       );
     })
     .map(sanitizeProject);

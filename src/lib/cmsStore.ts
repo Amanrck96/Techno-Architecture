@@ -55,6 +55,7 @@ export function useCMSStore() {
         const farSiteFresh = initialProjects.find((p) => p.id === "proj-5" || p.slug === "far-site-buildofy");
         const houseInTheAirFresh = initialProjects.find((p) => p.id === "proj-6" || p.slug === "house-in-the-air");
         const kanasuFresh = initialProjects.find((p) => p.id === "proj-7" || p.slug === "kanasu");
+        const kripaFresh = initialProjects.find((p) => p.id === "proj-8" || p.slug === "kripa");
         const sanitized = parsed.map((p: Project) => {
           if (
             p.id === "proj-1" ||
@@ -112,8 +113,16 @@ export function useCMSStore() {
           ) {
             return kanasuFresh || p;
           }
+          if (
+            p.id === "proj-8" ||
+            p.slug === "timber-terrace" ||
+            p.slug === "kripa" ||
+            p.title === "TIMBER TERRACE"
+          ) {
+            return kripaFresh || p;
+          }
           let modified = p;
-          if (p.relatedSlugs && (p.relatedSlugs.includes("monolith-house") || p.relatedSlugs.includes("corten-pavilion") || p.relatedSlugs.includes("dune-sanctuary") || p.relatedSlugs.includes("atelier-basavanagudi") || p.relatedSlugs.includes("shadow-house") || p.relatedSlugs.includes("urban-veranda") || p.relatedSlugs.includes("kavya-residence"))) {
+          if (p.relatedSlugs && (p.relatedSlugs.includes("monolith-house") || p.relatedSlugs.includes("corten-pavilion") || p.relatedSlugs.includes("dune-sanctuary") || p.relatedSlugs.includes("atelier-basavanagudi") || p.relatedSlugs.includes("shadow-house") || p.relatedSlugs.includes("urban-veranda") || p.relatedSlugs.includes("kavya-residence") || p.relatedSlugs.includes("timber-terrace"))) {
             modified = {
               ...p,
               relatedSlugs: p.relatedSlugs.map((s) => {
@@ -124,6 +133,7 @@ export function useCMSStore() {
                 if (s === "shadow-house") return "far-site-buildofy";
                 if (s === "urban-veranda") return "house-in-the-air";
                 if (s === "kavya-residence") return "kanasu";
+                if (s === "timber-terrace") return "kripa";
                 return s;
               }),
             };
@@ -157,6 +167,8 @@ export function useCMSStore() {
               ? "house-in-the-air"
               : slug === "kavya-residence"
               ? "kanasu"
+              : slug === "timber-terrace"
+              ? "kripa"
               : slug
           ),
         }));
@@ -184,6 +196,7 @@ export function useCMSStore() {
         const gal9Fresh = initialGalleryItems.find((g) => g.id === "gal-9");
         const gal11Fresh = initialGalleryItems.find((g) => g.id === "gal-11");
         const gal14Fresh = initialGalleryItems.find((g) => g.id === "gal-14");
+        const gal8Fresh = initialGalleryItems.find((g) => g.id === "gal-8");
         let sanitizedGallery = parsed.map((g: GalleryItem) => {
           if (g.id === "gal-3" || g.projectSlug === "corten-pavilion" || g.projectTitle === "CORTEN PAVILION") {
             return gal3Fresh || g;
@@ -199,6 +212,9 @@ export function useCMSStore() {
           }
           if (g.id === "gal-7" || g.projectSlug === "atelier-basavanagudi" || g.projectTitle === "ATELIER BASAVANAGUDI") {
             return gal7Fresh || g;
+          }
+          if (g.id === "gal-8" || g.projectSlug === "timber-terrace" || g.projectTitle === "TIMBER TERRACE") {
+            return gal8Fresh || g;
           }
           if (g.id === "gal-9" || (g.projectSlug === "dune-sanctuary" && g.id === "gal-9")) {
             return gal9Fresh || g;
@@ -242,6 +258,13 @@ export function useCMSStore() {
               ...g,
               projectSlug: "kanasu",
               projectTitle: "KANASU",
+            };
+          }
+          if (g.projectSlug === "timber-terrace") {
+            return {
+              ...g,
+              projectSlug: "kripa",
+              projectTitle: "KRIPA",
             };
           }
           return g;
@@ -554,6 +577,22 @@ export function useCMSStore() {
           const gal93 = initialGalleryItems.find((g) => g.id === "gal-93");
           if (gal93) sanitizedGallery.push(gal93);
         }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-94")) {
+          const gal94 = initialGalleryItems.find((g) => g.id === "gal-94");
+          if (gal94) sanitizedGallery.push(gal94);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-95")) {
+          const gal95 = initialGalleryItems.find((g) => g.id === "gal-95");
+          if (gal95) sanitizedGallery.push(gal95);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-96")) {
+          const gal96 = initialGalleryItems.find((g) => g.id === "gal-96");
+          if (gal96) sanitizedGallery.push(gal96);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-97")) {
+          const gal97 = initialGalleryItems.find((g) => g.id === "gal-97");
+          if (gal97) sanitizedGallery.push(gal97);
+        }
         setGallery(sanitizedGallery);
         localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(sanitizedGallery));
       }
@@ -562,11 +601,15 @@ export function useCMSStore() {
       if (storedRecognitions) {
         const parsed = JSON.parse(storedRecognitions);
         const rec3Fresh = initialRecognitions.find((r) => r.id === "rec-3");
+        const rec4Fresh = initialRecognitions.find((r) => r.id === "rec-4");
         const rec6Fresh = initialRecognitions.find((r) => r.id === "rec-6");
         const rec8Fresh = initialRecognitions.find((r) => r.id === "rec-8");
         const sanitizedRecognitions = parsed.map((r: Recognition) => {
           if (r.id === "rec-3" || r.projectSlug === "dune-sanctuary" || r.projectAssociated === "DUNE SANCTUARY") {
             return rec3Fresh || r;
+          }
+          if (r.id === "rec-4" || r.projectSlug === "timber-terrace" || r.projectAssociated === "TIMBER TERRACE") {
+            return rec4Fresh || r;
           }
           if (r.id === "rec-6" || r.projectSlug === "corten-pavilion" || r.projectAssociated === "CORTEN PAVILION") {
             return rec6Fresh || r;

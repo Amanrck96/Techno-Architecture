@@ -77,7 +77,7 @@ export const initialServices: Service[] = [
       "Regenerative Stormwater & Wetland Master Plans",
       "Architectural Design Guidelines & Urban Codes",
     ],
-    relatedProjectSlugs: ["solaris-masterplan", "timber-terrace"],
+    relatedProjectSlugs: ["solaris-masterplan", "kripa"],
   },
   {
     id: "serv-4",
@@ -97,7 +97,7 @@ export const initialServices: Service[] = [
       "LEED / GRIHA / WELL Platinum Certification Support",
       "Passive Shading & Natural Ventilation Engineering Guides",
     ],
-    relatedProjectSlugs: ["timber-terrace", "between-two-trees", "solaris-masterplan"],
+    relatedProjectSlugs: ["kripa", "between-two-trees", "solaris-masterplan"],
   },
   {
     id: "serv-5",
@@ -137,6 +137,6 @@ export const initialServices: Service[] = [
       "Parametric Bill of Quantities (BOQ)",
       "Site Execution Protocol Guides & As-Built Verification",
     ],
-    relatedProjectSlugs: ["kanasu", "timber-terrace", "belaku"],
+    relatedProjectSlugs: ["kanasu", "kripa", "belaku"],
   },
 ];
