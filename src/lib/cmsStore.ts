@@ -245,6 +245,18 @@ export function useCMSStore() {
           const gal33 = initialGalleryItems.find((g) => g.id === "gal-33");
           if (gal33) sanitizedGallery.push(gal33);
         }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-34")) {
+          const gal34 = initialGalleryItems.find((g) => g.id === "gal-34");
+          if (gal34) sanitizedGallery.push(gal34);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-35")) {
+          const gal35 = initialGalleryItems.find((g) => g.id === "gal-35");
+          if (gal35) sanitizedGallery.push(gal35);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-36")) {
+          const gal36 = initialGalleryItems.find((g) => g.id === "gal-36");
+          if (gal36) sanitizedGallery.push(gal36);
+        }
         setGallery(sanitizedGallery);
         localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(sanitizedGallery));
       }
