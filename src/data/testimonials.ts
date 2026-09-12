@@ -41,8 +41,8 @@ export const initialTestimonials: Testimonial[] = [
     clientName: "Dr. Arvind Natarajan",
     designation: "Founder",
     company: "Natarajan Medical Group",
-    projectAssociated: "SHADOW HOUSE",
-    quote: "The play of shadows cast by the terracotta jali is hypnotic. Techno did not merely build us a house; they gave our family an heirloom that breathes with the morning mist and evening breeze.",
+    projectAssociated: "FAR SITE BUILDOFY",
+    quote: "The play of shadows cast by the terracotta jali and the lush cantilevered terraces make this home feel like a personal sanctuary in the city. Techno Architecture's vision featured on Buildofy is truly exemplary.",
     year: 2023,
   },
 ];

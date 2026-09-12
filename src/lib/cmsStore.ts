@@ -52,6 +52,7 @@ export function useCMSStore() {
         const belakuFresh = initialProjects.find((p) => p.id === "proj-2" || p.slug === "belaku");
         const bttFresh = initialProjects.find((p) => p.id === "proj-3" || p.slug === "between-two-trees");
         const brindavanFresh = initialProjects.find((p) => p.id === "proj-4" || p.slug === "brindavan");
+        const farSiteFresh = initialProjects.find((p) => p.id === "proj-5" || p.slug === "far-site-buildofy");
         const sanitized = parsed.map((p: Project) => {
           if (
             p.id === "proj-1" ||
@@ -85,8 +86,16 @@ export function useCMSStore() {
           ) {
             return brindavanFresh || p;
           }
+          if (
+            p.id === "proj-5" ||
+            p.slug === "shadow-house" ||
+            p.slug === "far-site-buildofy" ||
+            p.title === "SHADOW HOUSE"
+          ) {
+            return farSiteFresh || p;
+          }
           let modified = p;
-          if (p.relatedSlugs && (p.relatedSlugs.includes("monolith-house") || p.relatedSlugs.includes("corten-pavilion") || p.relatedSlugs.includes("dune-sanctuary") || p.relatedSlugs.includes("atelier-basavanagudi"))) {
+          if (p.relatedSlugs && (p.relatedSlugs.includes("monolith-house") || p.relatedSlugs.includes("corten-pavilion") || p.relatedSlugs.includes("dune-sanctuary") || p.relatedSlugs.includes("atelier-basavanagudi") || p.relatedSlugs.includes("shadow-house"))) {
             modified = {
               ...p,
               relatedSlugs: p.relatedSlugs.map((s) => {
@@ -94,6 +103,7 @@ export function useCMSStore() {
                 if (s === "corten-pavilion") return "belaku";
                 if (s === "dune-sanctuary") return "between-two-trees";
                 if (s === "atelier-basavanagudi") return "brindavan";
+                if (s === "shadow-house") return "far-site-buildofy";
                 return s;
               }),
             };
@@ -121,6 +131,8 @@ export function useCMSStore() {
               ? "between-two-trees"
               : slug === "atelier-basavanagudi"
               ? "brindavan"
+              : slug === "shadow-house"
+              ? "far-site-buildofy"
               : slug
           ),
         }));
@@ -143,8 +155,10 @@ export function useCMSStore() {
         const gal3Fresh = initialGalleryItems.find((g) => g.id === "gal-3");
         const gal4Fresh = initialGalleryItems.find((g) => g.id === "gal-4");
         const gal5Fresh = initialGalleryItems.find((g) => g.id === "gal-5");
+        const gal6Fresh = initialGalleryItems.find((g) => g.id === "gal-6");
         const gal7Fresh = initialGalleryItems.find((g) => g.id === "gal-7");
         const gal9Fresh = initialGalleryItems.find((g) => g.id === "gal-9");
+        const gal11Fresh = initialGalleryItems.find((g) => g.id === "gal-11");
         let sanitizedGallery = parsed.map((g: GalleryItem) => {
           if (g.id === "gal-3" || g.projectSlug === "corten-pavilion" || g.projectTitle === "CORTEN PAVILION") {
             return gal3Fresh || g;
@@ -155,11 +169,17 @@ export function useCMSStore() {
           if (g.id === "gal-5" || (g.projectSlug === "dune-sanctuary" && g.id === "gal-5")) {
             return gal5Fresh || g;
           }
+          if (g.id === "gal-6" || (g.projectSlug === "shadow-house" && g.id === "gal-6")) {
+            return gal6Fresh || g;
+          }
           if (g.id === "gal-7" || g.projectSlug === "atelier-basavanagudi" || g.projectTitle === "ATELIER BASAVANAGUDI") {
             return gal7Fresh || g;
           }
           if (g.id === "gal-9" || (g.projectSlug === "dune-sanctuary" && g.id === "gal-9")) {
             return gal9Fresh || g;
+          }
+          if (g.id === "gal-11" || (g.projectSlug === "shadow-house" && g.id === "gal-11")) {
+            return gal11Fresh || g;
           }
           if (g.projectSlug === "dune-sanctuary") {
             return {
@@ -173,6 +193,13 @@ export function useCMSStore() {
               ...g,
               projectSlug: "brindavan",
               projectTitle: "BRINDAVAN",
+            };
+          }
+          if (g.projectSlug === "shadow-house") {
+            return {
+              ...g,
+              projectSlug: "far-site-buildofy",
+              projectTitle: "FAR SITE BUILDOFY",
             };
           }
           return g;
@@ -277,6 +304,14 @@ export function useCMSStore() {
           const gal41 = initialGalleryItems.find((g) => g.id === "gal-41");
           if (gal41) sanitizedGallery.push(gal41);
         }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-42")) {
+          const gal42 = initialGalleryItems.find((g) => g.id === "gal-42");
+          if (gal42) sanitizedGallery.push(gal42);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-43")) {
+          const gal43 = initialGalleryItems.find((g) => g.id === "gal-43");
+          if (gal43) sanitizedGallery.push(gal43);
+        }
         setGallery(sanitizedGallery);
         localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(sanitizedGallery));
       }
@@ -311,12 +346,16 @@ export function useCMSStore() {
         const parsed = JSON.parse(storedTestimonials);
         const test2Fresh = initialTestimonials.find((t) => t.id === "test-2");
         const test3Fresh = initialTestimonials.find((t) => t.id === "test-3");
+        const test4Fresh = initialTestimonials.find((t) => t.id === "test-4");
         const sanitizedTestimonials = parsed.map((t: Testimonial) => {
           if (t.id === "test-2" || t.projectAssociated === "CORTEN PAVILION") {
             return test2Fresh || t;
           }
           if (t.id === "test-3" || t.projectAssociated === "DUNE SANCTUARY") {
             return test3Fresh || t;
+          }
+          if (t.id === "test-4" || t.projectAssociated === "SHADOW HOUSE") {
+            return test4Fresh || t;
           }
           return t;
         });

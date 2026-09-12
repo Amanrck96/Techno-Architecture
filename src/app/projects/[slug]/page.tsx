@@ -18,7 +18,8 @@ export default function ProjectDetailPage() {
       (slug === "monolith-house" && p.slug === "aikya") ||
       (slug === "corten-pavilion" && p.slug === "belaku") ||
       (slug === "dune-sanctuary" && p.slug === "between-two-trees") ||
-      (slug === "atelier-basavanagudi" && p.slug === "brindavan")
+      (slug === "atelier-basavanagudi" && p.slug === "brindavan") ||
+      (slug === "shadow-house" && p.slug === "far-site-buildofy")
   );
   if (currentIndex === -1) {
     // If not found in current store, return 404
@@ -81,6 +82,19 @@ export default function ProjectDetailPage() {
         mainImage: "/projects/brindavan/brindavan-facade-elevation.jpg",
       };
     }
+    if (
+      p.id === "proj-5" ||
+      p.slug === "far-site-buildofy" ||
+      p.slug === "shadow-house" ||
+      p.title === "SHADOW HOUSE"
+    ) {
+      return {
+        ...p,
+        title: "FAR SITE BUILDOFY",
+        slug: "far-site-buildofy",
+        mainImage: "/projects/far-site-buildofy/far-site-buildofy-street-facade-elevation.jpg",
+      };
+    }
     return p;
   };
 
@@ -92,7 +106,7 @@ export default function ProjectDetailPage() {
     projects[(currentIndex + 1) % projects.length]
   );
 
-  // Related projects with guaranteed fresh Aikya, Belaku, Between Two Trees & Brindavan metadata and image
+  // Related projects with guaranteed fresh Aikya, Belaku, Between Two Trees, Brindavan & Far Site Buildofy metadata and image
   const related = projects
     .filter((p) => {
       // Don't show self in related
@@ -121,6 +135,12 @@ export default function ProjectDetailPage() {
       ) {
         return false;
       }
+      if (
+        (project.slug === "far-site-buildofy" || project.id === "proj-5" || project.slug === "shadow-house") &&
+        (p.slug === "far-site-buildofy" || p.slug === "shadow-house" || p.id === "proj-5")
+      ) {
+        return false;
+      }
 
       return (
         project.relatedSlugs?.includes(p.slug) ||
@@ -131,7 +151,9 @@ export default function ProjectDetailPage() {
         (project.relatedSlugs?.includes("dune-sanctuary") && (p.slug === "between-two-trees" || p.id === "proj-3")) ||
         (project.relatedSlugs?.includes("between-two-trees") && (p.slug === "dune-sanctuary" || p.id === "proj-3")) ||
         (project.relatedSlugs?.includes("atelier-basavanagudi") && (p.slug === "brindavan" || p.id === "proj-4")) ||
-        (project.relatedSlugs?.includes("brindavan") && (p.slug === "atelier-basavanagudi" || p.id === "proj-4"))
+        (project.relatedSlugs?.includes("brindavan") && (p.slug === "atelier-basavanagudi" || p.id === "proj-4")) ||
+        (project.relatedSlugs?.includes("shadow-house") && (p.slug === "far-site-buildofy" || p.id === "proj-5")) ||
+        (project.relatedSlugs?.includes("far-site-buildofy") && (p.slug === "shadow-house" || p.id === "proj-5"))
       );
     })
     .map(sanitizeProject);
