@@ -25,15 +25,15 @@ export default function AboutPage() {
       {/* Main Full-Bleed Editorial Visual */}
       <div className="relative w-full aspect-[21/9] sm:aspect-[16/7] bg-neutral-100 overflow-hidden mb-16">
         <Image
-          src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=2000&q=85"
-          alt="Techno Architecture Basavanagudi Design Lab and Atelier"
+          src="/projects/salut/salut-terrace-bar-screening-ambience.jpg"
+          alt="SALUT Hospitality Architecture and Biophilic Design by Techno"
           fill
           priority
           sizes="100vw"
           className="object-cover"
         />
         <div className="absolute bottom-4 right-4 bg-black/70 text-white text-[9px] uppercase tracking-[0.2em] px-3 py-1 backdrop-blur-sm">
-          Atelier Basavanagudi, Bengaluru
+          SALUT Gastro-Lounge, Bengaluru
         </div>
       </div>
 
