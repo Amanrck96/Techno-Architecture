@@ -57,7 +57,7 @@ export default function ProjectDetailPage() {
         ...p,
         title: "BELAKU",
         slug: "belaku",
-        mainImage: "/projects/belaku/belaku-elevation-front.jpg",
+        mainImage: "/projects/belaku/belaku-central-courtyard-entrance-vista.jpg",
       };
     }
     if (
@@ -70,7 +70,7 @@ export default function ProjectDetailPage() {
         ...p,
         title: "BETWEEN TWO TREES",
         slug: "between-two-trees",
-        mainImage: "/projects/between-two-trees/between-two-trees-facade-street.jpg",
+        mainImage: "/projects/between-two-trees/between-two-trees-mandapa-court-nandi-pool.jpg",
       };
     }
     if (
@@ -83,7 +83,7 @@ export default function ProjectDetailPage() {
         ...p,
         title: "BRINDAVAN",
         slug: "brindavan",
-        mainImage: "/projects/brindavan/brindavan-facade-elevation.jpg",
+        mainImage: "/projects/brindavan/brindavan-suspended-granite-staircase-motion.jpg",
       };
     }
     if (
@@ -96,7 +96,7 @@ export default function ProjectDetailPage() {
         ...p,
         title: "FAR SITE BUILDOFY",
         slug: "far-site-buildofy",
-        mainImage: "/projects/far-site-buildofy/far-site-buildofy-street-facade-elevation.jpg",
+        mainImage: "/projects/far-site-buildofy/far-site-buildofy-twilight-facade-sky-garden.jpg",
       };
     }
     if (
@@ -109,7 +109,7 @@ export default function ProjectDetailPage() {
         ...p,
         title: "HOUSE IN THE AIR",
         slug: "house-in-the-air",
-        mainImage: "/projects/house-in-the-air/house-in-the-air-cantilever-facade-elevation.jpg",
+        mainImage: "/projects/house-in-the-air/house-in-the-air-glass-prayer-sanctuary-foyer.jpg",
       };
     }
     if (
@@ -135,7 +135,7 @@ export default function ProjectDetailPage() {
         ...p,
         title: "KRIPA",
         slug: "kripa",
-        mainImage: "/projects/kripa/kripa-frontal-facade-cascading-greenery.jpg",
+        mainImage: "/projects/kripa/kripa-dining-room-indoor-outdoor-veranda.jpg",
       };
     }
     if (

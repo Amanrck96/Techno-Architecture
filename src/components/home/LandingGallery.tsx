@@ -10,7 +10,9 @@ import { useCMSStore } from "@/lib/cmsStore";
 export default function LandingGallery() {
   const router = useRouter();
   const { projects } = useCMSStore();
-  const showcaseProjects = projects.filter((p) => p.featured || p.status === "completed");
+  const showcaseProjects = projects.filter(
+    (p) => (p.featured || p.status === "completed") && !p.mainImage.startsWith("http")
+  );
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -29,6 +31,10 @@ export default function LandingGallery() {
   if (showcaseProjects.length === 0) return null;
 
   const currentProject = showcaseProjects[currentIndex];
+  // Select premier high-res landscape photograph from project or fallback to mainImage
+  const heroImage =
+    currentProject.gallery?.find((g) => g.aspect === "full" || g.aspect === "landscape")?.url ||
+    currentProject.mainImage;
 
   const handlePageClick = () => {
     router.push("/home");
@@ -40,27 +46,29 @@ export default function LandingGallery() {
       className="relative w-screen h-screen overflow-hidden bg-neutral-950 text-white cursor-pointer select-none"
       aria-label="Click to enter Techno Architecture"
     >
-      {/* 1. Full-Screen Architectural Gallery Animation (Studio Bomb Reference) */}
+      {/* 1. Full-Screen Architectural Gallery Animation in Original Quality */}
       <AnimatePresence mode="wait">
         <motion.div
           key={currentProject.id}
-          initial={{ opacity: 0, scale: 1.05 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
           className="absolute inset-0 z-0"
         >
           <Image
-            src={currentProject.mainImage}
+            src={heroImage}
             alt={`Techno Architecture — ${currentProject.title}`}
             fill
             priority
+            unoptimized
+            quality={100}
             sizes="100vw"
-            className="object-cover"
+            className="object-cover object-center select-none"
+            style={{ imageRendering: "auto" }}
           />
-          {/* Subtle Contrast Filter */}
-          <div className="absolute inset-0 bg-black/35" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/50" />
+          {/* Subtle Legibility Vignettes — Preserves 100% Original Photo Contrast & Vibrant Colors */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/25 pointer-events-none" />
         </motion.div>
       </AnimatePresence>
 

@@ -81,7 +81,7 @@ export const initialProjects: Project[] = [
     area: "6,200 sq.ft",
     description: "A striking multi-tier private residence defined by bold cantilevered volumes, weathered corten steel cladding, rhythmic timber screening, and cascading tropical planters.",
     processNarrative: "Named 'Belaku'—the Kannada word for light—the residence is sculpted around the choreography of daylight and natural ventilation. An expressive spiral staircase anchors the arrival portal beneath parametric vertical louvers, while weathered corten panels and rich timber slats create a dialogue between industrial permanence and biophilic warmth.",
-    mainImage: "/projects/belaku/belaku-elevation-front.jpg",
+    mainImage: "/projects/belaku/belaku-central-courtyard-entrance-vista.jpg",
     gallery: [
       { url: "/projects/belaku/belaku-elevation-front.jpg", caption: "Direct frontal facade highlighting stacked cubic geometries, louvers, and cascading greenery", aspect: "full" },
       { url: "/projects/belaku/belaku-elevation-perspective.jpg", caption: "Cantilevered upper pavilion and arrival gateway with the inscribed Belaku identity", aspect: "portrait" },
@@ -132,7 +132,7 @@ export const initialProjects: Project[] = [
     area: "7,500 sq.ft",
     description: "Conceived in intimate communion with two majestic centenary trees, the residence weaves contemporary brick jali facades and cantilevered timber volumes with a traditional four-pillared inner mandapa courtyard.",
     processNarrative: "Preserving the site's two towering trees served as the guiding axis of the architectural layout. The house bends and cantilevers around their lush trunks, creating an earthen brick screen facade that dapples southern sunlight. Inside, a soaring double-height atrium shelters an authentic granite water court framed by hand-carved Chettinad timber pillars, connecting seamless ochre stone living zones to a contemporary gourmet kitchen.",
-    mainImage: "/projects/between-two-trees/between-two-trees-facade-street.jpg",
+    mainImage: "/projects/between-two-trees/between-two-trees-mandapa-court-nandi-pool.jpg",
     gallery: [
       { url: "/projects/between-two-trees/between-two-trees-facade-street.jpg", caption: "Multi-tiered brick screen and timber facade organically nestled between two majestic heritage trees", aspect: "full" },
       { url: "/projects/between-two-trees/between-two-trees-living-mandapa-court.jpg", caption: "Formal living salon with fluted timber ceiling overlooking the traditional four-pillared mandapa water courtyard", aspect: "landscape" },
@@ -188,7 +188,7 @@ export const initialProjects: Project[] = [
     area: "4,500 sq.ft",
     description: "An expressive vertical urban residence in Bengaluru defined by textural buff brick cladding, sage green cantilevered balconies with cascading biophilic planters, and a sculptural spiral staircase leading to the entrance portal.",
     processNarrative: "Conceived as 'Brindavan'—a verdant garden sanctuary within the dense urban fabric—the residence layers vertical buff-brick tilework with tactile sage green stucco terraces. Cantilevered balconies burst with indigenous flora, creating a living microclimate that shields interior living quarters from street bustle while dappling tropical sunlight into double-height timber volumes. A floating external spiral stair ascends directly from street level to the arrival balcony, announcing the home with sculpted Kannada brass typography.",
-    mainImage: "/projects/brindavan/brindavan-facade-elevation.jpg",
+    mainImage: "/projects/brindavan/brindavan-suspended-granite-staircase-motion.jpg",
     gallery: [
       { url: "/projects/brindavan/brindavan-facade-elevation.jpg", caption: "Multi-storey street elevation framed by tree canopy with stacked sage green planter balconies and buff brick cladding", aspect: "portrait" },
       { url: "/projects/brindavan/brindavan-balcony-spiral-stair-entry.jpg", caption: "Street perspective showing resident ascending the external steel spiral staircase to the sage green entrance balcony with Kannada 'Brindavan 1714' signage", aspect: "portrait" },
@@ -237,7 +237,7 @@ export const initialProjects: Project[] = [
     area: "4,800 sq.ft",
     description: "A striking multi-tier biophilic residence articulated with rich wire-cut terracotta brick cladding, intricate geometric jali screens, cantilevered exposed-aggregate balconies, and an expansive sky garden.",
     processNarrative: "Featured on Buildofy, Far Site represents an inventive urban response to tight site constraints and climatic performance. Deep cantilevered balconies finished in textural grey aggregate contrast vividly against warm wire-cut terracotta brick tilework. Perforated terracotta jali screens provide thermal comfort and privacy while casting kinetic shadow geometric patterns throughout interior living spaces. The internal circulation culminates in a cast concrete open-riser stair and a lushly landscaped rooftop terrace under a dramatic floating canopy slab.",
-    mainImage: "/projects/far-site-buildofy/far-site-buildofy-street-facade-elevation.jpg",
+    mainImage: "/projects/far-site-buildofy/far-site-buildofy-twilight-facade-sky-garden.jpg",
     gallery: [
       { url: "/projects/far-site-buildofy/far-site-buildofy-street-facade-elevation.jpg", caption: "Three-quarter street elevation showcasing cantilevered timber louvers, wire-cut brick cladding, and lush rooftop terrace", aspect: "portrait" },
       { url: "/projects/far-site-buildofy/far-site-buildofy-wide-street-context.jpg", caption: "Full contextual street elevation nestled in the neighborhood, featuring ground-floor garage, timber bay screen, and rooftop garden", aspect: "landscape" },
@@ -292,7 +292,7 @@ export const initialProjects: Project[] = [
     area: "5,200 sq.ft",
     description: "A gravity-defying urban residence distinguished by dramatic cantilevered timber canopies, continuous glass planter balconies, a freestanding glass prayer pavilion, and a sculptural helical staircase.",
     processNarrative: "Conceived as 'House in the Air', the home elevates private living quarters above a secure stilt arrival zone with bold cantilevered volumes finished in warm teak cladding and crisp white stucco frames. Deep planter balconies provide a lush green buffer against the street while filtering tropical daylight into double-height interior spaces. Inside, an architectural journey unfolds around a central illuminated glass prayer sanctum, a sunlit living salon under a clerestory lantern, and an ethereal white steel spiral stair connecting upper galleries.",
-    mainImage: "/projects/house-in-the-air/house-in-the-air-cantilever-facade-elevation.jpg",
+    mainImage: "/projects/house-in-the-air/house-in-the-air-glass-prayer-sanctuary-foyer.jpg",
     gallery: [
       { url: "/projects/house-in-the-air/house-in-the-air-cantilever-facade-elevation.jpg", caption: "Multi-tier street elevation featuring cantilevered teak canopy volumes, glass planter balconies with tropical palms, and stilt arrival", aspect: "portrait" },
       { url: "/projects/house-in-the-air/house-in-the-air-glass-prayer-sanctuary-foyer.jpg", caption: "Central glass prayer pavilion with teak framing and illuminated deity sanctum, set below warm timber ceiling with linear light channels", aspect: "landscape" },
@@ -385,7 +385,7 @@ export const initialProjects: Project[] = [
     area: "5,800 sq.ft",
     description: "A biophilic residential sanctuary harmonizing geometric concrete breeze-block jaali screens, textured charcoal stone cladding, cascading hanging gardens, and a sculpted steel-and-teak folded plate staircase.",
     processNarrative: "Conceived as a breathing urban home, Kripa filters southern sunlight and street activity through an intricate porous concrete breeze block screen. Deep recessed balconies drape with lush curtain creepers, creating an introspective, tropical microclimate centered around a minimalist black folded steel staircase flight.",
-    mainImage: "/projects/kripa/kripa-frontal-facade-cascading-greenery.jpg",
+    mainImage: "/projects/kripa/kripa-dining-room-indoor-outdoor-veranda.jpg",
     gallery: [
       { url: "/projects/kripa/kripa-frontal-facade-cascading-greenery.jpg", caption: "Frontal street elevation featuring porous concrete breeze block jaali, entrance portal, and cascading balcony greenery", aspect: "portrait" },
       { url: "/projects/kripa/kripa-dusk-illuminated-jaali-facade.jpg", caption: "Twilight facade perspective featuring warm interior illumination glowing through the breeze-block jaali screen and floor-to-ceiling timber windows", aspect: "portrait" },
@@ -509,7 +509,7 @@ export const initialProjects: Project[] = [
       projectLead: "Naveen Prasad",
       structuralEngineer: "Sterling Engineering Consortium",
     },
-    featured: true,
+    featured: false,
     relatedSlugs: ["aikya", "between-two-trees", "far-site-buildofy"],
   },
 ];
