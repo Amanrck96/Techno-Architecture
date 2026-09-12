@@ -65,6 +65,7 @@ export function useCMSStore() {
         const houseInTheAirFresh = initialProjects.find((p) => p.id === "proj-6" || p.slug === "house-in-the-air");
         const kanasuFresh = initialProjects.find((p) => p.id === "proj-7" || p.slug === "kanasu");
         const kripaFresh = initialProjects.find((p) => p.id === "proj-8" || p.slug === "kripa");
+        const salutFresh = initialProjects.find((p) => p.id === "proj-10" || p.slug === "salut");
         const sanitized = filtered.map((p: Project) => {
           if (
             p.id === "proj-1" ||
@@ -130,6 +131,14 @@ export function useCMSStore() {
           ) {
             return kripaFresh || p;
           }
+          if (
+            p.id === "proj-10" ||
+            p.slug === "serene-penthouse" ||
+            p.slug === "salut" ||
+            p.title === "SERENE PENTHOUSE"
+          ) {
+            return salutFresh || p;
+          }
           let modified = p;
           if (p.relatedSlugs) {
             modified = {
@@ -145,6 +154,7 @@ export function useCMSStore() {
                   if (s === "urban-veranda") return "house-in-the-air";
                   if (s === "kavya-residence") return "kanasu";
                   if (s === "timber-terrace") return "kripa";
+                  if (s === "serene-penthouse") return "salut";
                   return s;
                 }),
             };
@@ -182,6 +192,8 @@ export function useCMSStore() {
                 ? "kanasu"
                 : slug === "timber-terrace"
                 ? "kripa"
+                : slug === "serene-penthouse"
+                ? "salut"
                 : slug
             ),
         }));
@@ -218,6 +230,7 @@ export function useCMSStore() {
         const gal11Fresh = initialGalleryItems.find((g) => g.id === "gal-11");
         const gal14Fresh = initialGalleryItems.find((g) => g.id === "gal-14");
         const gal8Fresh = initialGalleryItems.find((g) => g.id === "gal-8");
+        const gal12Fresh = initialGalleryItems.find((g) => g.id === "gal-12");
         let sanitizedGallery = filteredGallery.map((g: GalleryItem) => {
           if (g.id === "gal-3" || g.projectSlug === "corten-pavilion" || g.projectTitle === "CORTEN PAVILION") {
             return gal3Fresh || g;
@@ -242,6 +255,9 @@ export function useCMSStore() {
           }
           if (g.id === "gal-11" || (g.projectSlug === "shadow-house" && g.id === "gal-11")) {
             return gal11Fresh || g;
+          }
+          if (g.id === "gal-12" || g.projectSlug === "serene-penthouse" || g.projectTitle === "SERENE PENTHOUSE") {
+            return gal12Fresh || g;
           }
           if (g.id === "gal-14" || g.projectSlug === "urban-veranda" || g.projectTitle === "URBAN VERANDA") {
             return gal14Fresh || g;
@@ -286,6 +302,13 @@ export function useCMSStore() {
               ...g,
               projectSlug: "kripa",
               projectTitle: "KRIPA",
+            };
+          }
+          if (g.projectSlug === "serene-penthouse") {
+            return {
+              ...g,
+              projectSlug: "salut",
+              projectTitle: "SALUT",
             };
           }
           return g;
@@ -701,6 +724,22 @@ export function useCMSStore() {
         if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-119")) {
           const gal119 = initialGalleryItems.find((g) => g.id === "gal-119");
           if (gal119) sanitizedGallery.push(gal119);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-120")) {
+          const gal120 = initialGalleryItems.find((g) => g.id === "gal-120");
+          if (gal120) sanitizedGallery.push(gal120);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-121")) {
+          const gal121 = initialGalleryItems.find((g) => g.id === "gal-121");
+          if (gal121) sanitizedGallery.push(gal121);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-122")) {
+          const gal122 = initialGalleryItems.find((g) => g.id === "gal-122");
+          if (gal122) sanitizedGallery.push(gal122);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-123")) {
+          const gal123 = initialGalleryItems.find((g) => g.id === "gal-123");
+          if (gal123) sanitizedGallery.push(gal123);
         }
         setGallery(sanitizedGallery);
         localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(sanitizedGallery));

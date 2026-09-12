@@ -57,7 +57,7 @@ export const initialServices: Service[] = [
       "Material, Fixture, and Sanitaryware Specifications",
       "Art & Object Curation Catalogues",
     ],
-    relatedProjectSlugs: ["brindavan", "serene-penthouse", "far-site-buildofy"],
+    relatedProjectSlugs: ["brindavan", "salut", "far-site-buildofy"],
   },
   {
     id: "serv-3",

@@ -22,7 +22,8 @@ export default function ProjectDetailPage() {
       (slug === "shadow-house" && p.slug === "far-site-buildofy") ||
       (slug === "urban-veranda" && p.slug === "house-in-the-air") ||
       (slug === "kavya-residence" && p.slug === "kanasu") ||
-      (slug === "timber-terrace" && p.slug === "kripa")
+      (slug === "timber-terrace" && p.slug === "kripa") ||
+      (slug === "serene-penthouse" && p.slug === "salut")
   );
   if (currentIndex === -1) {
     // If not found in current store, return 404
@@ -135,6 +136,19 @@ export default function ProjectDetailPage() {
         title: "KRIPA",
         slug: "kripa",
         mainImage: "/projects/kripa/kripa-frontal-facade-cascading-greenery.jpg",
+      };
+    }
+    if (
+      p.id === "proj-10" ||
+      p.slug === "salut" ||
+      p.slug === "serene-penthouse" ||
+      p.title === "SERENE PENTHOUSE"
+    ) {
+      return {
+        ...p,
+        title: "SALUT",
+        slug: "salut",
+        mainImage: "/projects/salut/salut-terracotta-jali-bar-atrium.jpg",
       };
     }
     return p;
