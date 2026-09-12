@@ -403,6 +403,18 @@ export function useCMSStore() {
           const gal60 = initialGalleryItems.find((g) => g.id === "gal-60");
           if (gal60) sanitizedGallery.push(gal60);
         }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-61")) {
+          const gal61 = initialGalleryItems.find((g) => g.id === "gal-61");
+          if (gal61) sanitizedGallery.push(gal61);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-62")) {
+          const gal62 = initialGalleryItems.find((g) => g.id === "gal-62");
+          if (gal62) sanitizedGallery.push(gal62);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-63")) {
+          const gal63 = initialGalleryItems.find((g) => g.id === "gal-63");
+          if (gal63) sanitizedGallery.push(gal63);
+        }
         setGallery(sanitizedGallery);
         localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(sanitizedGallery));
       }
