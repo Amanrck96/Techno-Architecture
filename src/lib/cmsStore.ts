@@ -494,6 +494,26 @@ export function useCMSStore() {
           const gal78 = initialGalleryItems.find((g) => g.id === "gal-78");
           if (gal78) sanitizedGallery.push(gal78);
         }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-79")) {
+          const gal79 = initialGalleryItems.find((g) => g.id === "gal-79");
+          if (gal79) sanitizedGallery.push(gal79);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-80")) {
+          const gal80 = initialGalleryItems.find((g) => g.id === "gal-80");
+          if (gal80) sanitizedGallery.push(gal80);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-81")) {
+          const gal81 = initialGalleryItems.find((g) => g.id === "gal-81");
+          if (gal81) sanitizedGallery.push(gal81);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-82")) {
+          const gal82 = initialGalleryItems.find((g) => g.id === "gal-82");
+          if (gal82) sanitizedGallery.push(gal82);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-83")) {
+          const gal83 = initialGalleryItems.find((g) => g.id === "gal-83");
+          if (gal83) sanitizedGallery.push(gal83);
+        }
         setGallery(sanitizedGallery);
         localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(sanitizedGallery));
       }
