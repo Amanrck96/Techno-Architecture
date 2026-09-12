@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { primaryNavigation } from "@/data/navigation";
-import { Menu, X, Instagram, Linkedin, Facebook, Settings } from "lucide-react";
+import { Menu, X, Instagram, Linkedin, Facebook, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function MobileNav() {
@@ -66,10 +66,10 @@ export default function MobileNav() {
           <Link
             href="/admin"
             className="text-neutral-500 hover:text-black p-1"
-            title="Admin CMS"
-            aria-label="Admin CMS"
+            title="Owner & Host Portal"
+            aria-label="Owner & Host Portal"
           >
-            <Settings size={15} />
+            <Lock size={15} />
           </Link>
           <button
             onClick={() => setIsOpen(!isOpen)}

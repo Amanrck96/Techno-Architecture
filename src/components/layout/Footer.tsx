@@ -114,7 +114,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/admin" className="hover:text-black transition-colors font-medium">
-                  CMS Studio
+                  Owner Portal
                 </Link>
               </li>
             </ul>
@@ -164,7 +164,7 @@ export default function Footer() {
               Legal Notice
             </Link>
             <Link href="/admin" className="text-neutral-600 hover:text-black font-semibold transition-colors">
-              Live CMS Editor
+              Owner Portal
             </Link>
           </div>
         </div>

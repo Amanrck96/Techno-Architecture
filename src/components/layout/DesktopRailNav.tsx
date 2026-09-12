@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { primaryNavigation } from "@/data/navigation";
-import { ArrowUp, Instagram, Linkedin, Facebook, Settings } from "lucide-react";
+import { ArrowUp, Instagram, Linkedin, Facebook, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function DesktopRailNav() {
@@ -83,14 +83,14 @@ export default function DesktopRailNav() {
 
       {/* Social Icons & Utilities */}
       <div className="flex flex-col items-center space-y-4">
-        {/* Admin CMS link */}
+        {/* Owner Portal link */}
         <Link
           href="/admin"
-          title="Open CMS Content Studio"
-          aria-label="Open CMS Content Studio"
-          className="text-neutral-400 hover:text-black transition-transform hover:rotate-90 duration-500 p-1"
+          title="Owner & Host Portal"
+          aria-label="Owner & Host Portal"
+          className="text-neutral-400 hover:text-black transition-all hover:scale-110 duration-300 p-1"
         >
-          <Settings size={14} />
+          <Lock size={13} />
         </Link>
 
         {/* Social Icons */}
