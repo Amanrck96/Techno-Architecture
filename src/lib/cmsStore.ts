@@ -190,6 +190,14 @@ export function useCMSStore() {
           const gal25 = initialGalleryItems.find((g) => g.id === "gal-25");
           if (gal25) sanitizedGallery.push(gal25);
         }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-26")) {
+          const gal26 = initialGalleryItems.find((g) => g.id === "gal-26");
+          if (gal26) sanitizedGallery.push(gal26);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-27")) {
+          const gal27 = initialGalleryItems.find((g) => g.id === "gal-27");
+          if (gal27) sanitizedGallery.push(gal27);
+        }
         setGallery(sanitizedGallery);
         localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(sanitizedGallery));
       }
