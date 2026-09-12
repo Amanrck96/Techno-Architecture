@@ -91,9 +91,9 @@ export const initialRecognitions: Recognition[] = [
     title: "Council of Architecture — Best Conservation & Heritage Practice",
     category: "Award",
     organization: "Council of Architecture (COA)",
-    projectAssociated: "ATELIER BASAVANAGUDI",
-    projectSlug: "atelier-basavanagudi",
-    description: "Commended for authentic preservation of mid-century brickwork alongside sharp, unapologetic contemporary architectural insertions.",
+    projectAssociated: "BRINDAVAN",
+    projectSlug: "brindavan",
+    description: "Commended for innovative urban biophilic architecture, tactile brick craftsmanship, and vertical greenery integration.",
     badge: "Citation Award",
   },
 ];

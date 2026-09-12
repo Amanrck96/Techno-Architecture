@@ -57,7 +57,7 @@ export const initialServices: Service[] = [
       "Material, Fixture, and Sanitaryware Specifications",
       "Art & Object Curation Catalogues",
     ],
-    relatedProjectSlugs: ["atelier-basavanagudi", "serene-penthouse", "shadow-house"],
+    relatedProjectSlugs: ["brindavan", "serene-penthouse", "shadow-house"],
   },
   {
     id: "serv-3",
@@ -117,7 +117,7 @@ export const initialServices: Service[] = [
       "Adaptive Reuse Feasibility & Permitting Sets",
       "Craftsman Specifications & Lime Masonry Protocols",
     ],
-    relatedProjectSlugs: ["atelier-basavanagudi", "urban-veranda"],
+    relatedProjectSlugs: ["brindavan", "urban-veranda"],
   },
   {
     id: "serv-6",

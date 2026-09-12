@@ -51,6 +51,7 @@ export function useCMSStore() {
         const aikyaFresh = initialProjects.find((p) => p.id === "proj-1" || p.slug === "aikya");
         const belakuFresh = initialProjects.find((p) => p.id === "proj-2" || p.slug === "belaku");
         const bttFresh = initialProjects.find((p) => p.id === "proj-3" || p.slug === "between-two-trees");
+        const brindavanFresh = initialProjects.find((p) => p.id === "proj-4" || p.slug === "brindavan");
         const sanitized = parsed.map((p: Project) => {
           if (
             p.id === "proj-1" ||
@@ -76,14 +77,23 @@ export function useCMSStore() {
           ) {
             return bttFresh || p;
           }
+          if (
+            p.id === "proj-4" ||
+            p.slug === "atelier-basavanagudi" ||
+            p.slug === "brindavan" ||
+            p.title === "ATELIER BASAVANAGUDI"
+          ) {
+            return brindavanFresh || p;
+          }
           let modified = p;
-          if (p.relatedSlugs && (p.relatedSlugs.includes("monolith-house") || p.relatedSlugs.includes("corten-pavilion") || p.relatedSlugs.includes("dune-sanctuary"))) {
+          if (p.relatedSlugs && (p.relatedSlugs.includes("monolith-house") || p.relatedSlugs.includes("corten-pavilion") || p.relatedSlugs.includes("dune-sanctuary") || p.relatedSlugs.includes("atelier-basavanagudi"))) {
             modified = {
               ...p,
               relatedSlugs: p.relatedSlugs.map((s) => {
                 if (s === "monolith-house") return "aikya";
                 if (s === "corten-pavilion") return "belaku";
                 if (s === "dune-sanctuary") return "between-two-trees";
+                if (s === "atelier-basavanagudi") return "brindavan";
                 return s;
               }),
             };
@@ -109,6 +119,8 @@ export function useCMSStore() {
               ? "aikya"
               : slug === "dune-sanctuary"
               ? "between-two-trees"
+              : slug === "atelier-basavanagudi"
+              ? "brindavan"
               : slug
           ),
         }));
@@ -131,6 +143,7 @@ export function useCMSStore() {
         const gal3Fresh = initialGalleryItems.find((g) => g.id === "gal-3");
         const gal4Fresh = initialGalleryItems.find((g) => g.id === "gal-4");
         const gal5Fresh = initialGalleryItems.find((g) => g.id === "gal-5");
+        const gal7Fresh = initialGalleryItems.find((g) => g.id === "gal-7");
         const gal9Fresh = initialGalleryItems.find((g) => g.id === "gal-9");
         let sanitizedGallery = parsed.map((g: GalleryItem) => {
           if (g.id === "gal-3" || g.projectSlug === "corten-pavilion" || g.projectTitle === "CORTEN PAVILION") {
@@ -142,6 +155,9 @@ export function useCMSStore() {
           if (g.id === "gal-5" || (g.projectSlug === "dune-sanctuary" && g.id === "gal-5")) {
             return gal5Fresh || g;
           }
+          if (g.id === "gal-7" || g.projectSlug === "atelier-basavanagudi" || g.projectTitle === "ATELIER BASAVANAGUDI") {
+            return gal7Fresh || g;
+          }
           if (g.id === "gal-9" || (g.projectSlug === "dune-sanctuary" && g.id === "gal-9")) {
             return gal9Fresh || g;
           }
@@ -150,6 +166,13 @@ export function useCMSStore() {
               ...g,
               projectSlug: "between-two-trees",
               projectTitle: "BETWEEN TWO TREES",
+            };
+          }
+          if (g.projectSlug === "atelier-basavanagudi") {
+            return {
+              ...g,
+              projectSlug: "brindavan",
+              projectTitle: "BRINDAVAN",
             };
           }
           return g;
@@ -206,6 +229,14 @@ export function useCMSStore() {
           const gal29 = initialGalleryItems.find((g) => g.id === "gal-29");
           if (gal29) sanitizedGallery.push(gal29);
         }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-30")) {
+          const gal30 = initialGalleryItems.find((g) => g.id === "gal-30");
+          if (gal30) sanitizedGallery.push(gal30);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-31")) {
+          const gal31 = initialGalleryItems.find((g) => g.id === "gal-31");
+          if (gal31) sanitizedGallery.push(gal31);
+        }
         setGallery(sanitizedGallery);
         localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(sanitizedGallery));
       }
@@ -215,12 +246,16 @@ export function useCMSStore() {
         const parsed = JSON.parse(storedRecognitions);
         const rec3Fresh = initialRecognitions.find((r) => r.id === "rec-3");
         const rec6Fresh = initialRecognitions.find((r) => r.id === "rec-6");
+        const rec8Fresh = initialRecognitions.find((r) => r.id === "rec-8");
         const sanitizedRecognitions = parsed.map((r: Recognition) => {
           if (r.id === "rec-3" || r.projectSlug === "dune-sanctuary" || r.projectAssociated === "DUNE SANCTUARY") {
             return rec3Fresh || r;
           }
           if (r.id === "rec-6" || r.projectSlug === "corten-pavilion" || r.projectAssociated === "CORTEN PAVILION") {
             return rec6Fresh || r;
+          }
+          if (r.id === "rec-8" || r.projectSlug === "atelier-basavanagudi" || r.projectAssociated === "ATELIER BASAVANAGUDI") {
+            return rec8Fresh || r;
           }
           return r;
         });
