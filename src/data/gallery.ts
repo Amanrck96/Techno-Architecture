@@ -228,4 +228,16 @@ export const initialGalleryItems: GalleryItem[] = [
     aspect: "landscape",
     caption: "Minimalist master suite with floating walnut platform bed, warm timber ceiling, and balcony garden terrace.",
   },
+  {
+    id: "gal-19",
+    title: "Belaku Cantilevered Facade at Dusk",
+    projectTitle: "BELAKU",
+    projectSlug: "belaku",
+    category: "Facades",
+    imageUrl: "/projects/belaku/belaku-elevation-dusk-frontal.jpg",
+    year: 2023,
+    location: "Bengaluru",
+    aspect: "portrait",
+    caption: "Dramatic twilight elevation showcasing stacked cantilevered volumes and warm architectural illumination.",
+  },
 ];
