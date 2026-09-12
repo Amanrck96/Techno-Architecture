@@ -153,6 +153,7 @@ export const initialProjects: Project[] = [
       { url: "/projects/between-two-trees/between-two-trees-cane-armchair-daybed.jpg", caption: "Intimate reading salon featuring curved cane armchair, artisanal daybed, and colorful kilim runner over ochre floors", aspect: "portrait" },
       { url: "/projects/between-two-trees/between-two-trees-cantilever-balcony-tree-canopy.jpg", caption: "Cantilevered upper balcony with glass balustrade and illuminated timber soffit framed within the canopy of the heritage tree", aspect: "landscape" },
       { url: "/projects/between-two-trees/between-two-trees-reading-corner-woven-plates.jpg", caption: "Artisanal reading nook with cane tub chair, vintage telephone side table, teak magazine stand, and woven grass wall discs", aspect: "portrait" },
+      { url: "/projects/between-two-trees/between-two-trees-master-bedroom-four-poster.jpg", caption: "Master bedroom suite featuring bespoke dark teak four-poster bed, sculpted botanical floor lamp, and cane armchair under ambient cove lighting", aspect: "portrait" },
     ],
     servicesInvolved: ["Heritage Residential Architecture", "Biophilic Tree Preservation", "Interior & Landscape Design"],
     teamMembers: ["Ar. Rajeshwari Menon", "Vikramaditya Shenoy", "Karthik Sundaram"],

@@ -186,6 +186,10 @@ export function useCMSStore() {
           const gal24 = initialGalleryItems.find((g) => g.id === "gal-24");
           if (gal24) sanitizedGallery.push(gal24);
         }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-25")) {
+          const gal25 = initialGalleryItems.find((g) => g.id === "gal-25");
+          if (gal25) sanitizedGallery.push(gal25);
+        }
         setGallery(sanitizedGallery);
         localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(sanitizedGallery));
       }

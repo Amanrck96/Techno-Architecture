@@ -300,4 +300,16 @@ export const initialGalleryItems: GalleryItem[] = [
     aspect: "landscape",
     caption: "Upper level glass atrium bridge illuminated by central timber skylight and modern cluster pendant fixtures.",
   },
+  {
+    id: "gal-25",
+    title: "Master Bedroom Suite with Four-Poster Bed",
+    projectTitle: "BETWEEN TWO TREES",
+    projectSlug: "between-two-trees",
+    category: "Interiors",
+    imageUrl: "/projects/between-two-trees/between-two-trees-master-bedroom-four-poster.jpg",
+    year: 2024,
+    location: "Bengaluru",
+    aspect: "portrait",
+    caption: "Teak four-poster bed, sculpted botanical floor lamp, and cane lounge chair framed by ambient cove lighting.",
+  },
 ];
