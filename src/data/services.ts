@@ -117,7 +117,7 @@ export const initialServices: Service[] = [
       "Adaptive Reuse Feasibility & Permitting Sets",
       "Craftsman Specifications & Lime Masonry Protocols",
     ],
-    relatedProjectSlugs: ["brindavan", "urban-veranda"],
+    relatedProjectSlugs: ["brindavan", "house-in-the-air"],
   },
   {
     id: "serv-6",

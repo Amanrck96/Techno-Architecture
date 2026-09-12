@@ -53,6 +53,7 @@ export function useCMSStore() {
         const bttFresh = initialProjects.find((p) => p.id === "proj-3" || p.slug === "between-two-trees");
         const brindavanFresh = initialProjects.find((p) => p.id === "proj-4" || p.slug === "brindavan");
         const farSiteFresh = initialProjects.find((p) => p.id === "proj-5" || p.slug === "far-site-buildofy");
+        const houseInTheAirFresh = initialProjects.find((p) => p.id === "proj-6" || p.slug === "house-in-the-air");
         const sanitized = parsed.map((p: Project) => {
           if (
             p.id === "proj-1" ||
@@ -94,8 +95,16 @@ export function useCMSStore() {
           ) {
             return farSiteFresh || p;
           }
+          if (
+            p.id === "proj-6" ||
+            p.slug === "urban-veranda" ||
+            p.slug === "house-in-the-air" ||
+            p.title === "URBAN VERANDA"
+          ) {
+            return houseInTheAirFresh || p;
+          }
           let modified = p;
-          if (p.relatedSlugs && (p.relatedSlugs.includes("monolith-house") || p.relatedSlugs.includes("corten-pavilion") || p.relatedSlugs.includes("dune-sanctuary") || p.relatedSlugs.includes("atelier-basavanagudi") || p.relatedSlugs.includes("shadow-house"))) {
+          if (p.relatedSlugs && (p.relatedSlugs.includes("monolith-house") || p.relatedSlugs.includes("corten-pavilion") || p.relatedSlugs.includes("dune-sanctuary") || p.relatedSlugs.includes("atelier-basavanagudi") || p.relatedSlugs.includes("shadow-house") || p.relatedSlugs.includes("urban-veranda"))) {
             modified = {
               ...p,
               relatedSlugs: p.relatedSlugs.map((s) => {
@@ -104,6 +113,7 @@ export function useCMSStore() {
                 if (s === "dune-sanctuary") return "between-two-trees";
                 if (s === "atelier-basavanagudi") return "brindavan";
                 if (s === "shadow-house") return "far-site-buildofy";
+                if (s === "urban-veranda") return "house-in-the-air";
                 return s;
               }),
             };
@@ -133,6 +143,8 @@ export function useCMSStore() {
               ? "brindavan"
               : slug === "shadow-house"
               ? "far-site-buildofy"
+              : slug === "urban-veranda"
+              ? "house-in-the-air"
               : slug
           ),
         }));
@@ -159,6 +171,7 @@ export function useCMSStore() {
         const gal7Fresh = initialGalleryItems.find((g) => g.id === "gal-7");
         const gal9Fresh = initialGalleryItems.find((g) => g.id === "gal-9");
         const gal11Fresh = initialGalleryItems.find((g) => g.id === "gal-11");
+        const gal14Fresh = initialGalleryItems.find((g) => g.id === "gal-14");
         let sanitizedGallery = parsed.map((g: GalleryItem) => {
           if (g.id === "gal-3" || g.projectSlug === "corten-pavilion" || g.projectTitle === "CORTEN PAVILION") {
             return gal3Fresh || g;
@@ -181,6 +194,9 @@ export function useCMSStore() {
           if (g.id === "gal-11" || (g.projectSlug === "shadow-house" && g.id === "gal-11")) {
             return gal11Fresh || g;
           }
+          if (g.id === "gal-14" || g.projectSlug === "urban-veranda" || g.projectTitle === "URBAN VERANDA") {
+            return gal14Fresh || g;
+          }
           if (g.projectSlug === "dune-sanctuary") {
             return {
               ...g,
@@ -200,6 +216,13 @@ export function useCMSStore() {
               ...g,
               projectSlug: "far-site-buildofy",
               projectTitle: "FAR SITE BUILDOFY",
+            };
+          }
+          if (g.projectSlug === "urban-veranda") {
+            return {
+              ...g,
+              projectSlug: "house-in-the-air",
+              projectTitle: "HOUSE IN THE AIR",
             };
           }
           return g;
@@ -367,6 +390,18 @@ export function useCMSStore() {
         if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-57")) {
           const gal57 = initialGalleryItems.find((g) => g.id === "gal-57");
           if (gal57) sanitizedGallery.push(gal57);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-58")) {
+          const gal58 = initialGalleryItems.find((g) => g.id === "gal-58");
+          if (gal58) sanitizedGallery.push(gal58);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-59")) {
+          const gal59 = initialGalleryItems.find((g) => g.id === "gal-59");
+          if (gal59) sanitizedGallery.push(gal59);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-60")) {
+          const gal60 = initialGalleryItems.find((g) => g.id === "gal-60");
+          if (gal60) sanitizedGallery.push(gal60);
         }
         setGallery(sanitizedGallery);
         localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(sanitizedGallery));

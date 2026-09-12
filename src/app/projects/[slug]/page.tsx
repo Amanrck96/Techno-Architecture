@@ -19,7 +19,8 @@ export default function ProjectDetailPage() {
       (slug === "corten-pavilion" && p.slug === "belaku") ||
       (slug === "dune-sanctuary" && p.slug === "between-two-trees") ||
       (slug === "atelier-basavanagudi" && p.slug === "brindavan") ||
-      (slug === "shadow-house" && p.slug === "far-site-buildofy")
+      (slug === "shadow-house" && p.slug === "far-site-buildofy") ||
+      (slug === "urban-veranda" && p.slug === "house-in-the-air")
   );
   if (currentIndex === -1) {
     // If not found in current store, return 404
@@ -93,6 +94,19 @@ export default function ProjectDetailPage() {
         title: "FAR SITE BUILDOFY",
         slug: "far-site-buildofy",
         mainImage: "/projects/far-site-buildofy/far-site-buildofy-street-facade-elevation.jpg",
+      };
+    }
+    if (
+      p.id === "proj-6" ||
+      p.slug === "house-in-the-air" ||
+      p.slug === "urban-veranda" ||
+      p.title === "URBAN VERANDA"
+    ) {
+      return {
+        ...p,
+        title: "HOUSE IN THE AIR",
+        slug: "house-in-the-air",
+        mainImage: "/projects/house-in-the-air/house-in-the-air-cantilever-facade-elevation.jpg",
       };
     }
     return p;
