@@ -38,8 +38,40 @@ export function useCMSStore() {
   useEffect(() => {
     setIsClient(true);
     try {
+      // Purge legacy storage keys
+      ["techno_cms_projects_v1", "techno_cms_projects_v2", "techno_cms_projects"].forEach((key) => {
+        try {
+          localStorage.removeItem(key);
+        } catch (_) {}
+      });
+
       const storedProjects = localStorage.getItem(STORAGE_KEYS.PROJECTS);
-      if (storedProjects) setProjects(JSON.parse(storedProjects));
+      if (storedProjects) {
+        const parsed = JSON.parse(storedProjects);
+        const aikyaFresh = initialProjects.find((p) => p.id === "proj-1" || p.slug === "aikya");
+        const sanitized = parsed.map((p: Project) => {
+          if (
+            p.id === "proj-1" ||
+            p.slug === "monolith-house" ||
+            p.slug === "aikya" ||
+            p.title === "MONOLITH HOUSE"
+          ) {
+            return aikyaFresh || p;
+          }
+          if (p.relatedSlugs && p.relatedSlugs.includes("monolith-house")) {
+            return {
+              ...p,
+              relatedSlugs: p.relatedSlugs.map((s) => (s === "monolith-house" ? "aikya" : s)),
+            };
+          }
+          return p;
+        });
+        setProjects(sanitized);
+        localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(sanitized));
+      } else {
+        setProjects(initialProjects);
+        localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(initialProjects));
+      }
 
       const storedServices = localStorage.getItem(STORAGE_KEYS.SERVICES);
       if (storedServices) setServices(JSON.parse(storedServices));

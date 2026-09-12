@@ -21,7 +21,7 @@ export const initialServices: Service[] = [
     title: "ARCHITECTURAL DESIGN",
     shortDescription: "Bespoke residential, commercial, and civic architecture characterized by tectonic clarity, geometric purity, and context sensitivity.",
     detailedDescription: "Our primary discipline centers on the creation of enduring architectural forms. We believe that true luxury lies in restraint, generous volume, the intentional choreography of natural light, and the honest expression of materials such as fair-faced concrete, regional stone, and mass timber.",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85",
+    image: "/projects/aikya/elevation-east.jpg",
     process: [
       { step: "01", title: "Context & Site Ecology", description: "In-depth solar path, microclimate, topographical, and zoning analysis to anchor the form." },
       { step: "02", title: "Conceptual Massing & Tectonics", description: "Exploration through physical wood models, spatial sketches, and computational solar testing." },

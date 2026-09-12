@@ -67,7 +67,7 @@ export const initialProjects: Project[] = [
       generalContractor: "Apex Buildtech Projects",
     },
     featured: true,
-    relatedSlugs: ["corten-pavilion", "dune-sanctuary", "atelier-basavanagudi"],
+    relatedSlugs: ["shadow-house", "kavya-residence", "dune-sanctuary"],
   },
   {
     id: "proj-2",
@@ -230,7 +230,7 @@ export const initialProjects: Project[] = [
     mainImage: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1600&q=85",
     gallery: [
       { url: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1600&q=85", caption: "Architectural 3D render: cantilevered upper suites over landscape", aspect: "full" },
-      { url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85", caption: "Structural concrete pouring inspection log (Phase 02)", aspect: "portrait" },
+      { url: "https://images.unsplash.com/photo-1541888946425-d0fbb186c5f8?auto=format&fit=crop&w=1200&q=85", caption: "Structural concrete pouring inspection log (Phase 02)", aspect: "portrait" },
       { url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85", caption: "Selected travertine cladding slabs undergoing dry-lay inspection", aspect: "portrait" },
     ],
     servicesInvolved: ["Turnkey Architecture", "Structural BIM Coordination", "Interior Design"],

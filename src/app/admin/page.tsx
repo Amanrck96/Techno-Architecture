@@ -261,7 +261,7 @@ export default function AdminCMSPage() {
                   area: "5,000 sq.ft",
                   description: "A newly commissioned contemporary architectural study.",
                   processNarrative: "Initial schematic site exploration.",
-                  mainImage: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85",
+                  mainImage: "/projects/aikya/elevation-east.jpg",
                   gallery: [],
                   servicesInvolved: ["Architectural Design"],
                   teamMembers: ["Ar. Rajeshwari Menon"],
@@ -546,7 +546,7 @@ export default function AdminCMSPage() {
                   },
                   publishedAt: new Date().toISOString().split("T")[0],
                   readingTime: "6 min read",
-                  heroImage: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85",
+                  heroImage: "/projects/aikya/elevation-evening.jpg",
                   featured: false,
                   content: {
                     introduction: "Introduction to this architectural thesis.",

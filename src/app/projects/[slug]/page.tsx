@@ -22,12 +22,51 @@ export default function ProjectDetailPage() {
 
   const project = projects[currentIndex];
 
-  // Calculate Previous and Next project
-  const prevProject = projects[(currentIndex - 1 + projects.length) % projects.length];
-  const nextProject = projects[(currentIndex + 1) % projects.length];
+  const sanitizeProject = (p: (typeof projects)[0]) => {
+    if (!p) return p;
+    if (
+      p.id === "proj-1" ||
+      p.slug === "aikya" ||
+      p.slug === "monolith-house" ||
+      p.title === "MONOLITH HOUSE"
+    ) {
+      return {
+        ...p,
+        title: "AIKYA",
+        slug: "aikya",
+        mainImage: "/projects/aikya/elevation-east.jpg",
+      };
+    }
+    return p;
+  };
 
-  // Related projects
-  const related = projects.filter((p) => project.relatedSlugs?.includes(p.slug));
+  // Calculate Previous and Next project
+  const prevProject = sanitizeProject(
+    projects[(currentIndex - 1 + projects.length) % projects.length]
+  );
+  const nextProject = sanitizeProject(
+    projects[(currentIndex + 1) % projects.length]
+  );
+
+  // Related projects with guaranteed fresh Aikya metadata and image
+  const related = projects
+    .filter((p) => {
+      // Don't show self in related
+      if (p.slug === project.slug || p.id === project.id) return false;
+      if (
+        (project.slug === "aikya" || project.id === "proj-1" || project.slug === "monolith-house") &&
+        (p.slug === "aikya" || p.slug === "monolith-house" || p.id === "proj-1")
+      ) {
+        return false;
+      }
+
+      return (
+        project.relatedSlugs?.includes(p.slug) ||
+        (project.relatedSlugs?.includes("monolith-house") && (p.slug === "aikya" || p.id === "proj-1")) ||
+        (project.relatedSlugs?.includes("aikya") && (p.slug === "monolith-house" || p.id === "proj-1"))
+      );
+    })
+    .map(sanitizeProject);
 
   return (
     <article className="w-full py-6 md:py-10 px-4 md:px-12 lg:px-16 max-w-7xl mx-auto space-y-12 md:space-y-16">
