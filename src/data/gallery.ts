@@ -240,4 +240,16 @@ export const initialGalleryItems: GalleryItem[] = [
     aspect: "portrait",
     caption: "Dramatic twilight elevation showcasing stacked cantilevered volumes and warm architectural illumination.",
   },
+  {
+    id: "gal-20",
+    title: "Mandapa Court & Black Granite Nandi Basin",
+    projectTitle: "BETWEEN TWO TREES",
+    projectSlug: "between-two-trees",
+    category: "Detail Views",
+    imageUrl: "/projects/between-two-trees/between-two-trees-mandapa-court-nandi-pool.jpg",
+    year: 2024,
+    location: "Bengaluru",
+    aspect: "landscape",
+    caption: "Chettinad carved timber columns framing the central stone reflection pool and green garden court.",
+  },
 ];
