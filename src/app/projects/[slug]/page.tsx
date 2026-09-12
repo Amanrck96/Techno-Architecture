@@ -20,7 +20,8 @@ export default function ProjectDetailPage() {
       (slug === "dune-sanctuary" && p.slug === "between-two-trees") ||
       (slug === "atelier-basavanagudi" && p.slug === "brindavan") ||
       (slug === "shadow-house" && p.slug === "far-site-buildofy") ||
-      (slug === "urban-veranda" && p.slug === "house-in-the-air")
+      (slug === "urban-veranda" && p.slug === "house-in-the-air") ||
+      (slug === "kavya-residence" && p.slug === "kanasu")
   );
   if (currentIndex === -1) {
     // If not found in current store, return 404
@@ -109,6 +110,19 @@ export default function ProjectDetailPage() {
         mainImage: "/projects/house-in-the-air/house-in-the-air-cantilever-facade-elevation.jpg",
       };
     }
+    if (
+      p.id === "proj-7" ||
+      p.slug === "kanasu" ||
+      p.slug === "kavya-residence" ||
+      p.title === "KAVYA RESIDENCE"
+    ) {
+      return {
+        ...p,
+        title: "KANASU",
+        slug: "kanasu",
+        mainImage: "/projects/kanasu/kanasu-rooftop-pool-timber-canopy.jpg",
+      };
+    }
     return p;
   };
 
@@ -155,6 +169,18 @@ export default function ProjectDetailPage() {
       ) {
         return false;
       }
+      if (
+        (project.slug === "house-in-the-air" || project.id === "proj-6" || project.slug === "urban-veranda") &&
+        (p.slug === "house-in-the-air" || p.slug === "urban-veranda" || p.id === "proj-6")
+      ) {
+        return false;
+      }
+      if (
+        (project.slug === "kanasu" || project.id === "proj-7" || project.slug === "kavya-residence") &&
+        (p.slug === "kanasu" || p.slug === "kavya-residence" || p.id === "proj-7")
+      ) {
+        return false;
+      }
 
       return (
         project.relatedSlugs?.includes(p.slug) ||
@@ -167,7 +193,11 @@ export default function ProjectDetailPage() {
         (project.relatedSlugs?.includes("atelier-basavanagudi") && (p.slug === "brindavan" || p.id === "proj-4")) ||
         (project.relatedSlugs?.includes("brindavan") && (p.slug === "atelier-basavanagudi" || p.id === "proj-4")) ||
         (project.relatedSlugs?.includes("shadow-house") && (p.slug === "far-site-buildofy" || p.id === "proj-5")) ||
-        (project.relatedSlugs?.includes("far-site-buildofy") && (p.slug === "shadow-house" || p.id === "proj-5"))
+        (project.relatedSlugs?.includes("far-site-buildofy") && (p.slug === "shadow-house" || p.id === "proj-5")) ||
+        (project.relatedSlugs?.includes("urban-veranda") && (p.slug === "house-in-the-air" || p.id === "proj-6")) ||
+        (project.relatedSlugs?.includes("house-in-the-air") && (p.slug === "urban-veranda" || p.id === "proj-6")) ||
+        (project.relatedSlugs?.includes("kavya-residence") && (p.slug === "kanasu" || p.id === "proj-7")) ||
+        (project.relatedSlugs?.includes("kanasu") && (p.slug === "kavya-residence" || p.id === "proj-7"))
       );
     })
     .map(sanitizeProject);

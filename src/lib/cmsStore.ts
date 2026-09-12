@@ -54,6 +54,7 @@ export function useCMSStore() {
         const brindavanFresh = initialProjects.find((p) => p.id === "proj-4" || p.slug === "brindavan");
         const farSiteFresh = initialProjects.find((p) => p.id === "proj-5" || p.slug === "far-site-buildofy");
         const houseInTheAirFresh = initialProjects.find((p) => p.id === "proj-6" || p.slug === "house-in-the-air");
+        const kanasuFresh = initialProjects.find((p) => p.id === "proj-7" || p.slug === "kanasu");
         const sanitized = parsed.map((p: Project) => {
           if (
             p.id === "proj-1" ||
@@ -103,8 +104,16 @@ export function useCMSStore() {
           ) {
             return houseInTheAirFresh || p;
           }
+          if (
+            p.id === "proj-7" ||
+            p.slug === "kavya-residence" ||
+            p.slug === "kanasu" ||
+            p.title === "KAVYA RESIDENCE"
+          ) {
+            return kanasuFresh || p;
+          }
           let modified = p;
-          if (p.relatedSlugs && (p.relatedSlugs.includes("monolith-house") || p.relatedSlugs.includes("corten-pavilion") || p.relatedSlugs.includes("dune-sanctuary") || p.relatedSlugs.includes("atelier-basavanagudi") || p.relatedSlugs.includes("shadow-house") || p.relatedSlugs.includes("urban-veranda"))) {
+          if (p.relatedSlugs && (p.relatedSlugs.includes("monolith-house") || p.relatedSlugs.includes("corten-pavilion") || p.relatedSlugs.includes("dune-sanctuary") || p.relatedSlugs.includes("atelier-basavanagudi") || p.relatedSlugs.includes("shadow-house") || p.relatedSlugs.includes("urban-veranda") || p.relatedSlugs.includes("kavya-residence"))) {
             modified = {
               ...p,
               relatedSlugs: p.relatedSlugs.map((s) => {
@@ -114,6 +123,7 @@ export function useCMSStore() {
                 if (s === "atelier-basavanagudi") return "brindavan";
                 if (s === "shadow-house") return "far-site-buildofy";
                 if (s === "urban-veranda") return "house-in-the-air";
+                if (s === "kavya-residence") return "kanasu";
                 return s;
               }),
             };
@@ -145,6 +155,8 @@ export function useCMSStore() {
               ? "far-site-buildofy"
               : slug === "urban-veranda"
               ? "house-in-the-air"
+              : slug === "kavya-residence"
+              ? "kanasu"
               : slug
           ),
         }));
@@ -223,6 +235,13 @@ export function useCMSStore() {
               ...g,
               projectSlug: "house-in-the-air",
               projectTitle: "HOUSE IN THE AIR",
+            };
+          }
+          if (g.projectSlug === "kavya-residence") {
+            return {
+              ...g,
+              projectSlug: "kanasu",
+              projectTitle: "KANASU",
             };
           }
           return g;
@@ -434,6 +453,26 @@ export function useCMSStore() {
         if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-68")) {
           const gal68 = initialGalleryItems.find((g) => g.id === "gal-68");
           if (gal68) sanitizedGallery.push(gal68);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-69")) {
+          const gal69 = initialGalleryItems.find((g) => g.id === "gal-69");
+          if (gal69) sanitizedGallery.push(gal69);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-70")) {
+          const gal70 = initialGalleryItems.find((g) => g.id === "gal-70");
+          if (gal70) sanitizedGallery.push(gal70);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-71")) {
+          const gal71 = initialGalleryItems.find((g) => g.id === "gal-71");
+          if (gal71) sanitizedGallery.push(gal71);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-72")) {
+          const gal72 = initialGalleryItems.find((g) => g.id === "gal-72");
+          if (gal72) sanitizedGallery.push(gal72);
+        }
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-73")) {
+          const gal73 = initialGalleryItems.find((g) => g.id === "gal-73");
+          if (gal73) sanitizedGallery.push(gal73);
         }
         setGallery(sanitizedGallery);
         localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(sanitizedGallery));

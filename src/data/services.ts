@@ -35,7 +35,7 @@ export const initialServices: Service[] = [
       "Comprehensive Architectural Working Drawings & Detailing",
       "Periodic On-Site Architectural Supervision & Quality Audits",
     ],
-    relatedProjectSlugs: ["aikya", "between-two-trees", "kavya-residence", "zenith-residence"],
+    relatedProjectSlugs: ["aikya", "between-two-trees", "kanasu", "zenith-residence"],
   },
   {
     id: "serv-2",
@@ -137,6 +137,6 @@ export const initialServices: Service[] = [
       "Parametric Bill of Quantities (BOQ)",
       "Site Execution Protocol Guides & As-Built Verification",
     ],
-    relatedProjectSlugs: ["kavya-residence", "timber-terrace", "belaku"],
+    relatedProjectSlugs: ["kanasu", "timber-terrace", "belaku"],
   },
 ];
