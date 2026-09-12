@@ -49,19 +49,19 @@ export default function HomeCategoryBar() {
   return (
     <div className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-neutral-200/90 shadow-sm transition-all duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
-        <div className="flex items-center justify-between py-2.5 sm:py-3 gap-2 sm:gap-4 overflow-x-auto no-scrollbar">
+        <div className="flex items-center justify-between py-3.5 sm:py-4 gap-4 sm:gap-8 overflow-x-auto no-scrollbar">
           {/* Home Category Tag */}
-          <div className="flex items-center gap-2 flex-shrink-0 pr-3 sm:pr-4 border-r border-neutral-200">
+          <div className="flex items-center gap-2.5 flex-shrink-0 pr-4 sm:pr-6 border-r border-neutral-200">
             <span className="inline-block w-1.5 h-1.5 bg-neutral-900 rounded-full" />
-            <span className="text-[9px] sm:text-[10px] uppercase font-mono tracking-[0.25em] font-semibold text-neutral-900">
+            <span className="text-[9.5px] sm:text-[10px] uppercase font-mono tracking-[0.25em] font-semibold text-neutral-900">
               CATEGORY: HOME
             </span>
           </div>
 
-          {/* Horizontal Order of Listed Details: a. Introduction, b. Projects, c. Why Techno?, d. Testimonials with Reduced Font Size */}
+          {/* Horizontal Order of Listed Details: a. Introduction, b. Projects, c. Why Techno?, d. Testimonials with Generous Spacing and Reduced Font Size */}
           <nav
             aria-label="Home category section navigation"
-            className="flex items-center gap-1 sm:gap-2 flex-nowrap"
+            className="flex items-center gap-2 sm:gap-4 md:gap-6 flex-nowrap"
           >
             {sections.map((sec, idx) => {
               const isActive = activeSection === sec.id;
@@ -70,7 +70,7 @@ export default function HomeCategoryBar() {
                   {idx > 0 && (
                     <span
                       aria-hidden="true"
-                      className="text-neutral-300 text-[10px] select-none px-0.5 sm:px-1"
+                      className="text-neutral-300 text-[10px] select-none px-1 sm:px-1.5"
                     >
                       /
                     </span>
@@ -79,11 +79,11 @@ export default function HomeCategoryBar() {
                     type="button"
                     onClick={() => scrollTo(sec.id)}
                     className={cn(
-                      "inline-flex items-center gap-1 py-1 px-2 sm:px-2.5 rounded transition-all duration-200 whitespace-nowrap",
-                      "text-[9px] sm:text-[10px] uppercase tracking-[0.18em] font-mono",
+                      "inline-flex items-center gap-1.5 py-1.5 px-2.5 sm:px-3.5 rounded transition-all duration-200 whitespace-nowrap",
+                      "text-[9.5px] sm:text-[10px] uppercase tracking-[0.18em] font-mono",
                       isActive
                         ? "bg-neutral-900 text-white font-medium shadow-xs"
-                        : "text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100"
+                        : "text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100/80"
                     )}
                   >
                     <span
@@ -102,7 +102,7 @@ export default function HomeCategoryBar() {
           </nav>
 
           {/* Location / Studio tag */}
-          <div className="hidden md:flex items-center text-[8.5px] sm:text-[9px] font-mono tracking-[0.22em] text-neutral-400 uppercase flex-shrink-0 pl-3 border-l border-neutral-200">
+          <div className="hidden md:flex items-center text-[9px] font-mono tracking-[0.25em] text-neutral-400 uppercase flex-shrink-0 pl-5 sm:pl-6 border-l border-neutral-200">
             BLR · HYD · DXB
           </div>
         </div>

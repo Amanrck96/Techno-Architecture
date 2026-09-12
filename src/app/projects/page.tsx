@@ -42,16 +42,16 @@ export default function ProjectsDirectoryPage() {
         </div>
 
         {/* Filter Navigation Tabs */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2.5 md:gap-3.5">
           {filterTabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveFilter(tab.id)}
               type="button"
               className={cn(
-                "text-[10px] tracking-[0.2em] uppercase py-1 px-3 transition-all duration-300",
+                "text-[10px] tracking-[0.2em] uppercase py-1.5 px-3.5 transition-all duration-300 rounded-xs",
                 activeFilter === tab.id
-                  ? "bg-black text-white font-medium shadow-sm"
+                  ? "bg-black text-white font-medium shadow-xs"
                   : "text-neutral-500 hover:text-black hover:bg-neutral-100"
               )}
             >

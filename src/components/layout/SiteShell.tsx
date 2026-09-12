@@ -46,7 +46,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
       <MobileNav />
 
       {/* Main Content Area with Desktop Right-Rail Offset */}
-      <div className="flex flex-col min-h-screen lg:mr-20 xl:mr-24 pt-[57px] lg:pt-0">
+      <div className="flex flex-col min-h-screen lg:mr-28 xl:mr-32 2xl:mr-36 pt-[57px] lg:pt-0">
         <main id="main-content" className="flex-grow focus:outline-none">
           {children}
         </main>

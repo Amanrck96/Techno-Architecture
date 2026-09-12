@@ -27,7 +27,7 @@ export default function DesktopRailNav() {
   return (
     <aside
       aria-label="Sidebar Navigation"
-      className="hidden lg:flex fixed top-0 right-0 h-screen w-20 xl:w-24 z-50 flex-col justify-between items-center py-8 bg-white border-l border-neutral-200 transition-colors duration-300"
+      className="hidden lg:flex fixed top-0 right-0 h-screen w-28 xl:w-32 2xl:w-36 z-50 flex-col justify-between items-center py-8 xl:py-10 px-2 xl:px-3 bg-white border-l border-neutral-200 transition-colors duration-300"
     >
       {/* Brand Monogram / Logo */}
       <div className="flex flex-col items-center px-2">
@@ -50,28 +50,28 @@ export default function DesktopRailNav() {
 
       {/* Vertical Navigation Links */}
       <nav className="my-auto py-4" aria-label="Primary Desktop Menu">
-        <ul className="flex flex-col space-y-4 xl:space-y-5 text-center">
+        <ul className="flex flex-col space-y-3.5 xl:space-y-4 2xl:space-y-5 text-center w-full">
           {primaryNavigation.map((item) => {
             const isActive =
               pathname === item.href ||
               (item.href !== "/" && pathname.startsWith(item.href));
 
             return (
-              <li key={item.href} className="relative group">
+              <li key={item.href} className="relative group w-full">
                 <Link
                   href={item.href}
                   className={cn(
-                    "block text-[10px] xl:text-[11px] font-medium tracking-[0.18em] transition-all duration-300 uppercase py-1 px-2",
+                    "block text-[10px] xl:text-[11px] font-medium tracking-[0.18em] xl:tracking-[0.2em] transition-all duration-300 uppercase py-1.5 px-3 rounded-sm mx-1.5",
                     isActive
-                      ? "text-black font-semibold tracking-[0.22em]"
-                      : "text-neutral-500 hover:text-black hover:tracking-[0.22em]"
+                      ? "text-black font-semibold tracking-[0.22em] bg-neutral-100/80"
+                      : "text-neutral-500 hover:text-black hover:tracking-[0.22em] hover:bg-neutral-50"
                   )}
                 >
                   {item.label}
                   {isActive && (
                     <span
                       aria-hidden="true"
-                      className="absolute -right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-neutral-900 rounded-full"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-neutral-900 rounded-full"
                     />
                   )}
                 </Link>

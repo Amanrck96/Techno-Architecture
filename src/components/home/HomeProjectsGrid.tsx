@@ -41,16 +41,16 @@ export default function HomeProjectsGrid() {
         </div>
 
         {/* Filter Pills */}
-        <div className="flex flex-wrap items-center gap-2 md:gap-4">
+        <div className="flex flex-wrap items-center gap-2.5 md:gap-3.5">
           {categories.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setFilter(cat.id)}
               type="button"
               className={cn(
-                "text-[10px] tracking-[0.2em] uppercase py-1 px-2.5 transition-all duration-300",
+                "text-[10px] tracking-[0.2em] uppercase py-1.5 px-3 transition-all duration-300 rounded-xs",
                 filter === cat.id
-                  ? "bg-black text-white font-medium"
+                  ? "bg-black text-white font-medium shadow-xs"
                   : "text-neutral-500 hover:text-black hover:bg-neutral-100"
               )}
             >
