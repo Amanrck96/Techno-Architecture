@@ -22,7 +22,7 @@ export default function TestimonialsSection() {
   const current = testimonials[currentIndex];
 
   return (
-    <section className="w-full py-16 md:py-24 px-6 md:px-12 bg-white border-b border-neutral-200">
+    <section id="testimonials" className="w-full py-16 md:py-24 px-6 md:px-12 bg-white border-b border-neutral-200 scroll-mt-20">
       <div className="max-w-5xl mx-auto">
         {/* Section Header */}
         <div className="flex items-center justify-between mb-12 pb-4 border-b border-neutral-200">

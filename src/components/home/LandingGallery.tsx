@@ -31,7 +31,7 @@ export default function LandingGallery() {
   const currentProject = showcaseProjects[currentIndex];
 
   const handlePageClick = () => {
-    router.push("/projects");
+    router.push("/home");
   };
 
   return (
@@ -68,12 +68,12 @@ export default function LandingGallery() {
       <div className="relative z-20 w-full h-full p-8 md:p-14 lg:p-16 flex flex-col justify-between pointer-events-none">
         <div className="flex items-start justify-between">
           <Link
-            href="/projects"
+            href="/home"
             onClick={(e) => {
               e.stopPropagation();
             }}
             className="pointer-events-auto inline-block group focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded transition-transform duration-300 hover:scale-[1.03]"
-            aria-label="Techno Architecture Logo — Click to enter"
+            aria-label="Techno Architecture Logo — Click to enter second page"
           >
             {/* Logo in exact font style from reference */}
             <div className="relative w-52 sm:w-64 md:w-80 lg:w-96 h-14 sm:h-18 md:h-22 drop-shadow-2xl">
@@ -112,11 +112,11 @@ export default function LandingGallery() {
           </div>
 
           <Link
-            href="/projects"
+            href="/home"
             onClick={(e) => e.stopPropagation()}
-            className="pointer-events-auto text-[10px] md:text-[11px] tracking-[0.25em] uppercase font-medium text-neutral-300 hover:text-white transition-colors py-1 px-3 rounded bg-black/30 backdrop-blur-sm border border-white/10"
+            className="pointer-events-auto text-[10px] md:text-[11px] tracking-[0.25em] uppercase font-medium text-neutral-300 hover:text-white transition-colors py-1.5 px-3.5 rounded bg-black/40 backdrop-blur-sm border border-white/15"
           >
-            Explore Archive →
+            Enter Studio →
           </Link>
         </div>
       </div>
