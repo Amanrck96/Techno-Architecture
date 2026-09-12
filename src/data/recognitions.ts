@@ -75,17 +75,6 @@ export const initialRecognitions: Recognition[] = [
     badge: "WA Winner",
   },
   {
-    id: "rec-7",
-    year: 2021,
-    title: "ArchDaily Building of the Year Nominee",
-    category: "Publication",
-    organization: "ArchDaily International",
-    projectAssociated: "HILLSIDE MEDITATION RETREAT",
-    projectSlug: "hillside-monastery",
-    description: "Nominated in the Religious & Contemplative Architecture category for respectful non-invasive integration within sensitive coffee plantation ecologies.",
-    badge: "Nominee",
-  },
-  {
     id: "rec-8",
     year: 2020,
     title: "Council of Architecture — Best Conservation & Heritage Practice",

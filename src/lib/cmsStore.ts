@@ -48,6 +48,15 @@ export function useCMSStore() {
       const storedProjects = localStorage.getItem(STORAGE_KEYS.PROJECTS);
       if (storedProjects) {
         const parsed = JSON.parse(storedProjects);
+        const filtered = parsed.filter(
+          (p: Project) =>
+            p.id !== "proj-9" &&
+            p.slug !== "hillside-monastery" &&
+            p.title !== "HILLSIDE MEDITATION RETREAT" &&
+            p.id !== "proj-11" &&
+            p.slug !== "solaris-masterplan" &&
+            p.title !== "SOLARIS BIODIVERSE CAMPUS"
+        );
         const aikyaFresh = initialProjects.find((p) => p.id === "proj-1" || p.slug === "aikya");
         const belakuFresh = initialProjects.find((p) => p.id === "proj-2" || p.slug === "belaku");
         const bttFresh = initialProjects.find((p) => p.id === "proj-3" || p.slug === "between-two-trees");
@@ -56,7 +65,7 @@ export function useCMSStore() {
         const houseInTheAirFresh = initialProjects.find((p) => p.id === "proj-6" || p.slug === "house-in-the-air");
         const kanasuFresh = initialProjects.find((p) => p.id === "proj-7" || p.slug === "kanasu");
         const kripaFresh = initialProjects.find((p) => p.id === "proj-8" || p.slug === "kripa");
-        const sanitized = parsed.map((p: Project) => {
+        const sanitized = filtered.map((p: Project) => {
           if (
             p.id === "proj-1" ||
             p.slug === "monolith-house" ||
@@ -122,20 +131,22 @@ export function useCMSStore() {
             return kripaFresh || p;
           }
           let modified = p;
-          if (p.relatedSlugs && (p.relatedSlugs.includes("monolith-house") || p.relatedSlugs.includes("corten-pavilion") || p.relatedSlugs.includes("dune-sanctuary") || p.relatedSlugs.includes("atelier-basavanagudi") || p.relatedSlugs.includes("shadow-house") || p.relatedSlugs.includes("urban-veranda") || p.relatedSlugs.includes("kavya-residence") || p.relatedSlugs.includes("timber-terrace"))) {
+          if (p.relatedSlugs) {
             modified = {
               ...p,
-              relatedSlugs: p.relatedSlugs.map((s) => {
-                if (s === "monolith-house") return "aikya";
-                if (s === "corten-pavilion") return "belaku";
-                if (s === "dune-sanctuary") return "between-two-trees";
-                if (s === "atelier-basavanagudi") return "brindavan";
-                if (s === "shadow-house") return "far-site-buildofy";
-                if (s === "urban-veranda") return "house-in-the-air";
-                if (s === "kavya-residence") return "kanasu";
-                if (s === "timber-terrace") return "kripa";
-                return s;
-              }),
+              relatedSlugs: p.relatedSlugs
+                .filter((s) => s !== "hillside-monastery" && s !== "solaris-masterplan")
+                .map((s) => {
+                  if (s === "monolith-house") return "aikya";
+                  if (s === "corten-pavilion") return "belaku";
+                  if (s === "dune-sanctuary") return "between-two-trees";
+                  if (s === "atelier-basavanagudi") return "brindavan";
+                  if (s === "shadow-house") return "far-site-buildofy";
+                  if (s === "urban-veranda") return "house-in-the-air";
+                  if (s === "kavya-residence") return "kanasu";
+                  if (s === "timber-terrace") return "kripa";
+                  return s;
+                }),
             };
           }
           return modified;
@@ -152,25 +163,27 @@ export function useCMSStore() {
         const parsed = JSON.parse(storedServices);
         const sanitizedServices = parsed.map((s: Service) => ({
           ...s,
-          relatedProjectSlugs: s.relatedProjectSlugs?.map((slug) =>
-            slug === "corten-pavilion"
-              ? "belaku"
-              : slug === "monolith-house"
-              ? "aikya"
-              : slug === "dune-sanctuary"
-              ? "between-two-trees"
-              : slug === "atelier-basavanagudi"
-              ? "brindavan"
-              : slug === "shadow-house"
-              ? "far-site-buildofy"
-              : slug === "urban-veranda"
-              ? "house-in-the-air"
-              : slug === "kavya-residence"
-              ? "kanasu"
-              : slug === "timber-terrace"
-              ? "kripa"
-              : slug
-          ),
+          relatedProjectSlugs: s.relatedProjectSlugs
+            ?.filter((slug) => slug !== "solaris-masterplan" && slug !== "hillside-monastery")
+            .map((slug) =>
+              slug === "corten-pavilion"
+                ? "belaku"
+                : slug === "monolith-house"
+                ? "aikya"
+                : slug === "dune-sanctuary"
+                ? "between-two-trees"
+                : slug === "atelier-basavanagudi"
+                ? "brindavan"
+                : slug === "shadow-house"
+                ? "far-site-buildofy"
+                : slug === "urban-veranda"
+                ? "house-in-the-air"
+                : slug === "kavya-residence"
+                ? "kanasu"
+                : slug === "timber-terrace"
+                ? "kripa"
+                : slug
+            ),
         }));
         setServices(sanitizedServices);
         localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(sanitizedServices));
@@ -188,6 +201,14 @@ export function useCMSStore() {
       const storedGallery = localStorage.getItem(STORAGE_KEYS.GALLERY);
       if (storedGallery) {
         const parsed = JSON.parse(storedGallery);
+        const filteredGallery = parsed.filter(
+          (g: GalleryItem) =>
+            g.id !== "gal-10" &&
+            g.projectSlug !== "hillside-monastery" &&
+            g.projectSlug !== "solaris-masterplan" &&
+            g.projectTitle !== "HILLSIDE MEDITATION RETREAT" &&
+            g.projectTitle !== "SOLARIS BIODIVERSE CAMPUS"
+        );
         const gal3Fresh = initialGalleryItems.find((g) => g.id === "gal-3");
         const gal4Fresh = initialGalleryItems.find((g) => g.id === "gal-4");
         const gal5Fresh = initialGalleryItems.find((g) => g.id === "gal-5");
@@ -197,7 +218,7 @@ export function useCMSStore() {
         const gal11Fresh = initialGalleryItems.find((g) => g.id === "gal-11");
         const gal14Fresh = initialGalleryItems.find((g) => g.id === "gal-14");
         const gal8Fresh = initialGalleryItems.find((g) => g.id === "gal-8");
-        let sanitizedGallery = parsed.map((g: GalleryItem) => {
+        let sanitizedGallery = filteredGallery.map((g: GalleryItem) => {
           if (g.id === "gal-3" || g.projectSlug === "corten-pavilion" || g.projectTitle === "CORTEN PAVILION") {
             return gal3Fresh || g;
           }
@@ -688,11 +709,19 @@ export function useCMSStore() {
       const storedRecognitions = localStorage.getItem(STORAGE_KEYS.RECOGNITIONS);
       if (storedRecognitions) {
         const parsed = JSON.parse(storedRecognitions);
+        const filteredRecognitions = parsed.filter(
+          (r: Recognition) =>
+            r.id !== "rec-7" &&
+            r.projectSlug !== "hillside-monastery" &&
+            r.projectSlug !== "solaris-masterplan" &&
+            r.projectAssociated !== "HILLSIDE MEDITATION RETREAT" &&
+            r.projectAssociated !== "SOLARIS BIODIVERSE CAMPUS"
+        );
         const rec3Fresh = initialRecognitions.find((r) => r.id === "rec-3");
         const rec4Fresh = initialRecognitions.find((r) => r.id === "rec-4");
         const rec6Fresh = initialRecognitions.find((r) => r.id === "rec-6");
         const rec8Fresh = initialRecognitions.find((r) => r.id === "rec-8");
-        const sanitizedRecognitions = parsed.map((r: Recognition) => {
+        const sanitizedRecognitions = filteredRecognitions.map((r: Recognition) => {
           if (r.id === "rec-3" || r.projectSlug === "dune-sanctuary" || r.projectAssociated === "DUNE SANCTUARY") {
             return rec3Fresh || r;
           }

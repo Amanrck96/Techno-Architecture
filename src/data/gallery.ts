@@ -121,18 +121,6 @@ export const initialGalleryItems: GalleryItem[] = [
     caption: "Solid teak dining table with cane sideboard framing views of the traditional mandapa stone pool.",
   },
   {
-    id: "gal-10",
-    title: "Stepped Hillside Meditation Pavilions",
-    projectTitle: "HILLSIDE MEDITATION RETREAT",
-    projectSlug: "hillside-monastery",
-    category: "Landscape & Courts",
-    imageUrl: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=1800&q=90",
-    year: 2021,
-    location: "Chikmagalur",
-    aspect: "landscape",
-    caption: "Dry-stacked granite retaining walls preserving the natural hydrology of the coffee plantation.",
-  },
-  {
     id: "gal-11",
     title: "Concrete Open-Riser Staircase & Terracotta Jali",
     projectTitle: "FAR SITE BUILDOFY",

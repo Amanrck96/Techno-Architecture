@@ -77,7 +77,7 @@ export const initialServices: Service[] = [
       "Regenerative Stormwater & Wetland Master Plans",
       "Architectural Design Guidelines & Urban Codes",
     ],
-    relatedProjectSlugs: ["solaris-masterplan", "kripa"],
+    relatedProjectSlugs: ["aikya", "kripa"],
   },
   {
     id: "serv-4",
@@ -97,7 +97,7 @@ export const initialServices: Service[] = [
       "LEED / GRIHA / WELL Platinum Certification Support",
       "Passive Shading & Natural Ventilation Engineering Guides",
     ],
-    relatedProjectSlugs: ["kripa", "between-two-trees", "solaris-masterplan"],
+    relatedProjectSlugs: ["kripa", "between-two-trees", "belaku"],
   },
   {
     id: "serv-5",
