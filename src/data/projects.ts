@@ -412,6 +412,8 @@ export const initialProjects: Project[] = [
       { url: "/projects/kripa/kripa-modular-kitchen-circular-dining-table.jpg", caption: "Minimalist open-concept modular kitchen and dining zone featuring circular walnut table, leather chairs, and seamless teak joinery", aspect: "landscape" },
       { url: "/projects/kripa/kripa-mezzanine-lounge-blue-armchairs-jaali.jpg", caption: "Upper mezzanine seating lounge with blue velvet armchairs, geometric circular rug, and floor-to-ceiling concrete breeze-block jaali screen", aspect: "portrait" },
       { url: "/projects/kripa/kripa-double-height-corner-glass-living-salon.jpg", caption: "Double-height living salon with wrap-around corner timber glazing framing centenary tree canopies, cane daybeds, and dandelion chandelier", aspect: "portrait" },
+      { url: "/projects/kripa/kripa-upper-jaali-screen-cantilever-canopy.jpg", caption: "Upper facade detail showcasing the concrete breeze-block jaali lattice, deep cantilevered white canopy soffit, and lush framing tree canopy", aspect: "portrait" },
+      { url: "/projects/kripa/kripa-timber-louvers-foliage-staircase-vista.jpg", caption: "Lush tropical planter greenery and timber-louvered shutters with staircase flight visible through large glazed window panels", aspect: "portrait" },
     ],
     servicesInvolved: ["Urban Residential Architecture", "Biophilic Facade Engineering", "Bespoke Interior Design"],
     teamMembers: ["Vikramaditya Shenoy", "Divya Raghavan", "Naveen Prasad"],
