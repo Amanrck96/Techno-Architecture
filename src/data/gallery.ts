@@ -204,4 +204,16 @@ export const initialGalleryItems: GalleryItem[] = [
     aspect: "portrait",
     caption: "Expansive glazed walls connecting formal living space to internal landscaped koi water body.",
   },
+  {
+    id: "gal-17",
+    title: "Internal Water Court & Reflecting Basin",
+    projectTitle: "BELAKU",
+    projectSlug: "belaku",
+    category: "Landscape & Courts",
+    imageUrl: "/projects/belaku/belaku-internal-water-courtyard.jpg",
+    year: 2023,
+    location: "Bengaluru",
+    aspect: "landscape",
+    caption: "Sunlit internal water basin with gentle cascade and indigenous tree connecting living spaces.",
+  },
 ];

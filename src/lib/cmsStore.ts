@@ -113,12 +113,16 @@ export function useCMSStore() {
       if (storedGallery) {
         const parsed = JSON.parse(storedGallery);
         const gal3Fresh = initialGalleryItems.find((g) => g.id === "gal-3");
-        const sanitizedGallery = parsed.map((g: GalleryItem) => {
+        let sanitizedGallery = parsed.map((g: GalleryItem) => {
           if (g.id === "gal-3" || g.projectSlug === "corten-pavilion" || g.projectTitle === "CORTEN PAVILION") {
             return gal3Fresh || g;
           }
           return g;
         });
+        if (!sanitizedGallery.some((g: GalleryItem) => g.id === "gal-17")) {
+          const gal17 = initialGalleryItems.find((g) => g.id === "gal-17");
+          if (gal17) sanitizedGallery.push(gal17);
+        }
         setGallery(sanitizedGallery);
         localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(sanitizedGallery));
       }
