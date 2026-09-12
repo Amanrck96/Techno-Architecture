@@ -16,7 +16,8 @@ export default function ProjectDetailPage() {
     (p) =>
       p.slug === slug ||
       (slug === "monolith-house" && p.slug === "aikya") ||
-      (slug === "corten-pavilion" && p.slug === "belaku")
+      (slug === "corten-pavilion" && p.slug === "belaku") ||
+      (slug === "dune-sanctuary" && p.slug === "between-two-trees")
   );
   if (currentIndex === -1) {
     // If not found in current store, return 404
@@ -53,6 +54,19 @@ export default function ProjectDetailPage() {
         mainImage: "/projects/belaku/belaku-elevation-front.jpg",
       };
     }
+    if (
+      p.id === "proj-3" ||
+      p.slug === "between-two-trees" ||
+      p.slug === "dune-sanctuary" ||
+      p.title === "DUNE SANCTUARY"
+    ) {
+      return {
+        ...p,
+        title: "BETWEEN TWO TREES",
+        slug: "between-two-trees",
+        mainImage: "/projects/between-two-trees/between-two-trees-facade-street.jpg",
+      };
+    }
     return p;
   };
 
@@ -64,7 +78,7 @@ export default function ProjectDetailPage() {
     projects[(currentIndex + 1) % projects.length]
   );
 
-  // Related projects with guaranteed fresh Aikya & Belaku metadata and image
+  // Related projects with guaranteed fresh Aikya, Belaku & Between Two Trees metadata and image
   const related = projects
     .filter((p) => {
       // Don't show self in related
@@ -81,13 +95,21 @@ export default function ProjectDetailPage() {
       ) {
         return false;
       }
+      if (
+        (project.slug === "between-two-trees" || project.id === "proj-3" || project.slug === "dune-sanctuary") &&
+        (p.slug === "between-two-trees" || p.slug === "dune-sanctuary" || p.id === "proj-3")
+      ) {
+        return false;
+      }
 
       return (
         project.relatedSlugs?.includes(p.slug) ||
         (project.relatedSlugs?.includes("monolith-house") && (p.slug === "aikya" || p.id === "proj-1")) ||
         (project.relatedSlugs?.includes("aikya") && (p.slug === "monolith-house" || p.id === "proj-1")) ||
         (project.relatedSlugs?.includes("corten-pavilion") && (p.slug === "belaku" || p.id === "proj-2")) ||
-        (project.relatedSlugs?.includes("belaku") && (p.slug === "corten-pavilion" || p.id === "proj-2"))
+        (project.relatedSlugs?.includes("belaku") && (p.slug === "corten-pavilion" || p.id === "proj-2")) ||
+        (project.relatedSlugs?.includes("dune-sanctuary") && (p.slug === "between-two-trees" || p.id === "proj-3")) ||
+        (project.relatedSlugs?.includes("between-two-trees") && (p.slug === "dune-sanctuary" || p.id === "proj-3"))
       );
     })
     .map(sanitizeProject);

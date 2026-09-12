@@ -29,11 +29,11 @@ export const initialTestimonials: Testimonial[] = [
   },
   {
     id: "test-3",
-    clientName: "Kareem Al-Qasimi",
-    designation: "Managing Partner",
-    company: "Gulf Family Holdings",
-    projectAssociated: "DUNE SANCTUARY",
-    quote: "Working with Techno across borders between the UAE and Bengaluru was effortless. Their 3D BIM coordination and climatic insight into desert thermal mass created a coastal sanctuary of breathtaking tranquility.",
+    clientName: "Dr. Sandeep & Deepa Rao",
+    designation: "Homeowners",
+    company: "Between Two Trees Residence",
+    projectAssociated: "BETWEEN TWO TREES",
+    quote: "Techno designed a home that feels like a sacred sanctuary cradled by our centenary trees. The four-pillared inner mandapa courtyard and brick jali light create a living experience of timeless elegance.",
     year: 2024,
   },
   {

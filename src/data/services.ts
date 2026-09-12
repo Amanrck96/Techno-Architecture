@@ -35,7 +35,7 @@ export const initialServices: Service[] = [
       "Comprehensive Architectural Working Drawings & Detailing",
       "Periodic On-Site Architectural Supervision & Quality Audits",
     ],
-    relatedProjectSlugs: ["aikya", "dune-sanctuary", "kavya-residence", "zenith-residence"],
+    relatedProjectSlugs: ["aikya", "between-two-trees", "kavya-residence", "zenith-residence"],
   },
   {
     id: "serv-2",
@@ -97,7 +97,7 @@ export const initialServices: Service[] = [
       "LEED / GRIHA / WELL Platinum Certification Support",
       "Passive Shading & Natural Ventilation Engineering Guides",
     ],
-    relatedProjectSlugs: ["timber-terrace", "dune-sanctuary", "solaris-masterplan"],
+    relatedProjectSlugs: ["timber-terrace", "between-two-trees", "solaris-masterplan"],
   },
   {
     id: "serv-5",

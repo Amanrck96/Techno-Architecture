@@ -34,13 +34,13 @@ export const initialRecognitions: Recognition[] = [
   },
   {
     id: "rec-3",
-    year: 2023,
-    title: "Dezeen Awards Longlist — Sustainable Building of the Year",
+    year: 2024,
+    title: "Dezeen Awards Longlist — Sustainable Residential Architecture",
     category: "Award",
     organization: "Dezeen International Awards (London)",
-    projectAssociated: "DUNE SANCTUARY",
-    projectSlug: "dune-sanctuary",
-    description: "Recognized for innovative use of stabilized desert rammed earth and microclimatic passive cooling in arid coastal conditions.",
+    projectAssociated: "BETWEEN TWO TREES",
+    projectSlug: "between-two-trees",
+    description: "Recognized for non-invasive preservation of centenary heritage trees and biophilic integration of traditional mandapa water courtyards.",
     badge: "International Longlist",
   },
   {
