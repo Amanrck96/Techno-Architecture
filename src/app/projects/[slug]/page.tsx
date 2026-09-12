@@ -13,7 +13,10 @@ export default function ProjectDetailPage() {
   const { projects } = useCMSStore();
 
   const currentIndex = projects.findIndex(
-    (p) => p.slug === slug || (slug === "monolith-house" && p.slug === "aikya")
+    (p) =>
+      p.slug === slug ||
+      (slug === "monolith-house" && p.slug === "aikya") ||
+      (slug === "corten-pavilion" && p.slug === "belaku")
   );
   if (currentIndex === -1) {
     // If not found in current store, return 404
@@ -37,6 +40,19 @@ export default function ProjectDetailPage() {
         mainImage: "/projects/aikya/elevation-east.jpg",
       };
     }
+    if (
+      p.id === "proj-2" ||
+      p.slug === "belaku" ||
+      p.slug === "corten-pavilion" ||
+      p.title === "CORTEN PAVILION"
+    ) {
+      return {
+        ...p,
+        title: "BELAKU",
+        slug: "belaku",
+        mainImage: "/projects/belaku/belaku-elevation-front.jpg",
+      };
+    }
     return p;
   };
 
@@ -48,7 +64,7 @@ export default function ProjectDetailPage() {
     projects[(currentIndex + 1) % projects.length]
   );
 
-  // Related projects with guaranteed fresh Aikya metadata and image
+  // Related projects with guaranteed fresh Aikya & Belaku metadata and image
   const related = projects
     .filter((p) => {
       // Don't show self in related
@@ -59,11 +75,19 @@ export default function ProjectDetailPage() {
       ) {
         return false;
       }
+      if (
+        (project.slug === "belaku" || project.id === "proj-2" || project.slug === "corten-pavilion") &&
+        (p.slug === "belaku" || p.slug === "corten-pavilion" || p.id === "proj-2")
+      ) {
+        return false;
+      }
 
       return (
         project.relatedSlugs?.includes(p.slug) ||
         (project.relatedSlugs?.includes("monolith-house") && (p.slug === "aikya" || p.id === "proj-1")) ||
-        (project.relatedSlugs?.includes("aikya") && (p.slug === "monolith-house" || p.id === "proj-1"))
+        (project.relatedSlugs?.includes("aikya") && (p.slug === "monolith-house" || p.id === "proj-1")) ||
+        (project.relatedSlugs?.includes("corten-pavilion") && (p.slug === "belaku" || p.id === "proj-2")) ||
+        (project.relatedSlugs?.includes("belaku") && (p.slug === "corten-pavilion" || p.id === "proj-2"))
       );
     })
     .map(sanitizeProject);

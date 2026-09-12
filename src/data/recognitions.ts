@@ -65,13 +65,13 @@ export const initialRecognitions: Recognition[] = [
   },
   {
     id: "rec-6",
-    year: 2022,
+    year: 2023,
     title: "WAC World Architecture Community Award Winner",
     category: "Award",
     organization: "World Architecture Community (WA Awards 41st Cycle)",
-    projectAssociated: "CORTEN PAVILION",
-    projectSlug: "corten-pavilion",
-    description: "Selected by both the honorary jury and member ratings for bold parametric steel skin design and adaptive reuse of rocky terrain.",
+    projectAssociated: "BELAKU",
+    projectSlug: "belaku",
+    description: "Selected by both the honorary jury and member ratings for cantilevered spatial composition, climatic timber louvers, and warm corten steel articulation.",
     badge: "WA Winner",
   },
   {

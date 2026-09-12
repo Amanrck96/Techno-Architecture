@@ -20,12 +20,12 @@ export const initialTestimonials: Testimonial[] = [
   },
   {
     id: "test-2",
-    clientName: "Rohan Varma",
-    designation: "Managing Director",
-    company: "Zenith Design Collective",
-    projectAssociated: "CORTEN PAVILION",
-    quote: "Techno designed a commercial building that actually elevates the creative output of everyone working within it. The perforated Corten facade and soaring exposed trusses make our studio an iconic landmark in Hyderabad.",
-    year: 2022,
+    clientName: "Suresh & Anitha Gowda",
+    designation: "Homeowners",
+    company: "Belaku Residence",
+    projectAssociated: "BELAKU",
+    quote: "Techno created a private urban sanctuary that dances with natural light throughout the day. The interplay of cantilevered concrete, corten steel, and sculptural timber screens makes Belaku an architectural masterwork we are proud to call home.",
+    year: 2023,
   },
   {
     id: "test-3",

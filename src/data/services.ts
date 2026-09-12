@@ -137,6 +137,6 @@ export const initialServices: Service[] = [
       "Parametric Bill of Quantities (BOQ)",
       "Site Execution Protocol Guides & As-Built Verification",
     ],
-    relatedProjectSlugs: ["kavya-residence", "timber-terrace", "corten-pavilion"],
+    relatedProjectSlugs: ["kavya-residence", "timber-terrace", "belaku"],
   },
 ];

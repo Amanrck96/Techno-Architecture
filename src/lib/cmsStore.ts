@@ -49,6 +49,7 @@ export function useCMSStore() {
       if (storedProjects) {
         const parsed = JSON.parse(storedProjects);
         const aikyaFresh = initialProjects.find((p) => p.id === "proj-1" || p.slug === "aikya");
+        const belakuFresh = initialProjects.find((p) => p.id === "proj-2" || p.slug === "belaku");
         const sanitized = parsed.map((p: Project) => {
           if (
             p.id === "proj-1" ||
@@ -58,13 +59,26 @@ export function useCMSStore() {
           ) {
             return aikyaFresh || p;
           }
-          if (p.relatedSlugs && p.relatedSlugs.includes("monolith-house")) {
-            return {
+          if (
+            p.id === "proj-2" ||
+            p.slug === "corten-pavilion" ||
+            p.slug === "belaku" ||
+            p.title === "CORTEN PAVILION"
+          ) {
+            return belakuFresh || p;
+          }
+          let modified = p;
+          if (p.relatedSlugs && (p.relatedSlugs.includes("monolith-house") || p.relatedSlugs.includes("corten-pavilion"))) {
+            modified = {
               ...p,
-              relatedSlugs: p.relatedSlugs.map((s) => (s === "monolith-house" ? "aikya" : s)),
+              relatedSlugs: p.relatedSlugs.map((s) => {
+                if (s === "monolith-house") return "aikya";
+                if (s === "corten-pavilion") return "belaku";
+                return s;
+              }),
             };
           }
-          return p;
+          return modified;
         });
         setProjects(sanitized);
         localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(sanitized));
@@ -74,7 +88,17 @@ export function useCMSStore() {
       }
 
       const storedServices = localStorage.getItem(STORAGE_KEYS.SERVICES);
-      if (storedServices) setServices(JSON.parse(storedServices));
+      if (storedServices) {
+        const parsed = JSON.parse(storedServices);
+        const sanitizedServices = parsed.map((s: Service) => ({
+          ...s,
+          relatedProjectSlugs: s.relatedProjectSlugs?.map((slug) =>
+            slug === "corten-pavilion" ? "belaku" : slug === "monolith-house" ? "aikya" : slug
+          ),
+        }));
+        setServices(sanitizedServices);
+        localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(sanitizedServices));
+      }
 
       const storedTeam = localStorage.getItem(STORAGE_KEYS.TEAM);
       if (storedTeam) setTeam(JSON.parse(storedTeam));
@@ -86,16 +110,49 @@ export function useCMSStore() {
       if (storedFaq) setFaq(JSON.parse(storedFaq));
 
       const storedGallery = localStorage.getItem(STORAGE_KEYS.GALLERY);
-      if (storedGallery) setGallery(JSON.parse(storedGallery));
+      if (storedGallery) {
+        const parsed = JSON.parse(storedGallery);
+        const gal3Fresh = initialGalleryItems.find((g) => g.id === "gal-3");
+        const sanitizedGallery = parsed.map((g: GalleryItem) => {
+          if (g.id === "gal-3" || g.projectSlug === "corten-pavilion" || g.projectTitle === "CORTEN PAVILION") {
+            return gal3Fresh || g;
+          }
+          return g;
+        });
+        setGallery(sanitizedGallery);
+        localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(sanitizedGallery));
+      }
 
       const storedRecognitions = localStorage.getItem(STORAGE_KEYS.RECOGNITIONS);
-      if (storedRecognitions) setRecognitions(JSON.parse(storedRecognitions));
+      if (storedRecognitions) {
+        const parsed = JSON.parse(storedRecognitions);
+        const rec6Fresh = initialRecognitions.find((r) => r.id === "rec-6");
+        const sanitizedRecognitions = parsed.map((r: Recognition) => {
+          if (r.id === "rec-6" || r.projectSlug === "corten-pavilion" || r.projectAssociated === "CORTEN PAVILION") {
+            return rec6Fresh || r;
+          }
+          return r;
+        });
+        setRecognitions(sanitizedRecognitions);
+        localStorage.setItem(STORAGE_KEYS.RECOGNITIONS, JSON.stringify(sanitizedRecognitions));
+      }
 
       const storedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
       if (storedSettings) setSiteSettings(JSON.parse(storedSettings));
 
       const storedTestimonials = localStorage.getItem(STORAGE_KEYS.TESTIMONIALS);
-      if (storedTestimonials) setTestimonials(JSON.parse(storedTestimonials));
+      if (storedTestimonials) {
+        const parsed = JSON.parse(storedTestimonials);
+        const test2Fresh = initialTestimonials.find((t) => t.id === "test-2");
+        const sanitizedTestimonials = parsed.map((t: Testimonial) => {
+          if (t.id === "test-2" || t.projectAssociated === "CORTEN PAVILION") {
+            return test2Fresh || t;
+          }
+          return t;
+        });
+        setTestimonials(sanitizedTestimonials);
+        localStorage.setItem(STORAGE_KEYS.TESTIMONIALS, JSON.stringify(sanitizedTestimonials));
+      }
     } catch (e) {
       console.warn("CMS Store hydration fallback to initial seeds:", e);
     }
