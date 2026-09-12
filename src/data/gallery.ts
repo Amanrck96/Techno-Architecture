@@ -216,4 +216,16 @@ export const initialGalleryItems: GalleryItem[] = [
     aspect: "landscape",
     caption: "Sunlit internal water basin with gentle cascade and indigenous tree connecting living spaces.",
   },
+  {
+    id: "gal-18",
+    title: "Master Suite with Cantilevered Walnut Bed",
+    projectTitle: "BELAKU",
+    projectSlug: "belaku",
+    category: "Interiors",
+    imageUrl: "/projects/belaku/belaku-master-bedroom-suite.jpg",
+    year: 2023,
+    location: "Bengaluru",
+    aspect: "landscape",
+    caption: "Minimalist master suite with floating walnut platform bed, warm timber ceiling, and balcony garden terrace.",
+  },
 ];
