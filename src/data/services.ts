@@ -35,7 +35,7 @@ export const initialServices: Service[] = [
       "Comprehensive Architectural Working Drawings & Detailing",
       "Periodic On-Site Architectural Supervision & Quality Audits",
     ],
-    relatedProjectSlugs: ["monolith-house", "dune-sanctuary", "kavya-residence", "zenith-residence"],
+    relatedProjectSlugs: ["aikya", "dune-sanctuary", "kavya-residence", "zenith-residence"],
   },
   {
     id: "serv-2",

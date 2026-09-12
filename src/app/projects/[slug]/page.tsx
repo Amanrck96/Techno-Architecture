@@ -12,7 +12,9 @@ export default function ProjectDetailPage() {
   const slug = params?.slug as string;
   const { projects } = useCMSStore();
 
-  const currentIndex = projects.findIndex((p) => p.slug === slug);
+  const currentIndex = projects.findIndex(
+    (p) => p.slug === slug || (slug === "monolith-house" && p.slug === "aikya")
+  );
   if (currentIndex === -1) {
     // If not found in current store, return 404
     return notFound();

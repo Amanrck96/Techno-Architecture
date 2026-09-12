@@ -18,9 +18,9 @@ export const initialRecognitions: Recognition[] = [
     title: "National Architectural Excellence Award — Residential",
     category: "Award",
     organization: "Indian Institute of Architects (IIA)",
-    projectAssociated: "MONOLITH HOUSE",
-    projectSlug: "monolith-house",
-    description: "Conferred for outstanding mastery over passive climatic engineering, board-formed concrete craftsmanship, and timeless residential spatial planning.",
+    projectAssociated: "AIKYA",
+    projectSlug: "aikya",
+    description: "Conferred for outstanding mastery over passive climatic engineering, contemporary tropical craftsmanship, and timeless residential spatial planning.",
     badge: "Gold Medalist",
   },
   {

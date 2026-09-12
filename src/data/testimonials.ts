@@ -14,8 +14,8 @@ export const initialTestimonials: Testimonial[] = [
     clientName: "Siddharth & Ananya Rao",
     designation: "Homeowners",
     company: "Private Residence",
-    projectAssociated: "MONOLITH HOUSE",
-    quote: "Living in Monolith House has transformed our daily relationship with light and nature. Even during the peak of summer, the concrete courtyards create an astonishingly cool, serene atmosphere. Techno's obsession with every millimeter of formwork is evident everywhere you look.",
+    projectAssociated: "AIKYA",
+    quote: "Living in Aikya has transformed our daily relationship with light and nature. Even during the peak of summer, the serene water courts and double-height living areas create an astonishingly cool, harmonious atmosphere. Techno's obsession with every millimeter of craft is evident everywhere you look.",
     year: 2023,
   },
   {

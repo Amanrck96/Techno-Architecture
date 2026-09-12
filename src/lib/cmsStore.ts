@@ -12,15 +12,15 @@ import { SiteSettings, initialSiteSettings } from "@/data/siteSettings";
 import { Testimonial, initialTestimonials } from "@/data/testimonials";
 
 const STORAGE_KEYS = {
-  PROJECTS: "techno_cms_projects_v2",
-  SERVICES: "techno_cms_services_v2",
-  TEAM: "techno_cms_team_v2",
-  BLOG: "techno_cms_blog_v2",
-  FAQ: "techno_cms_faq_v2",
-  GALLERY: "techno_cms_gallery_v2",
-  RECOGNITIONS: "techno_cms_recognitions_v2",
-  SETTINGS: "techno_cms_settings_v2",
-  TESTIMONIALS: "techno_cms_testimonials_v2",
+  PROJECTS: "techno_cms_projects_v3",
+  SERVICES: "techno_cms_services_v3",
+  TEAM: "techno_cms_team_v3",
+  BLOG: "techno_cms_blog_v3",
+  FAQ: "techno_cms_faq_v3",
+  GALLERY: "techno_cms_gallery_v3",
+  RECOGNITIONS: "techno_cms_recognitions_v3",
+  SETTINGS: "techno_cms_settings_v3",
+  TESTIMONIALS: "techno_cms_testimonials_v3",
 };
 
 export function useCMSStore() {

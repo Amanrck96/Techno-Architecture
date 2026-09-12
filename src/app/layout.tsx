@@ -37,10 +37,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+        url: "/projects/aikya/elevation-east.jpg",
         width: 1200,
         height: 630,
-        alt: "Techno Architecture Monolith House",
+        alt: "Techno Architecture AIKYA",
       },
     ],
   },
