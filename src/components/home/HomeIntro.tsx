@@ -39,7 +39,8 @@ export default function HomeIntro() {
                 alt="Techno Architecture"
                 fill
                 priority
-                sizes="288px"
+                unoptimized
+                sizes="576px"
                 className="object-contain object-left"
               />
             </div>

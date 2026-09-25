@@ -54,7 +54,8 @@ export default function MobileNav() {
               src="/techno-logo-transparent.png"
               alt="Techno Architecture"
               fill
-              sizes="180px"
+              unoptimized
+              sizes="360px"
               priority
               className="object-contain object-left"
             />

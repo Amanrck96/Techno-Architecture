@@ -18,7 +18,8 @@ export default function Footer() {
                 src="/techno-logo-transparent.png"
                 alt="Techno Architecture"
                 fill
-                sizes="180px"
+                unoptimized
+                sizes="360px"
                 className="object-contain object-left"
               />
             </div>

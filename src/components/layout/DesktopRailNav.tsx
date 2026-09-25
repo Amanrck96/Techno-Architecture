@@ -41,7 +41,8 @@ export default function DesktopRailNav() {
               src="/techno-logo-transparent.png"
               alt="Techno Architecture"
               fill
-              sizes="80px"
+              unoptimized
+              sizes="160px"
               className="object-contain"
             />
           </div>

@@ -83,15 +83,16 @@ export default function LandingGallery() {
             className="pointer-events-auto inline-block group focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded transition-transform duration-300 hover:scale-[1.03]"
             aria-label="Techno Architecture Logo — Click to enter second page"
           >
-            {/* Logo in exact font style from reference */}
+            {/* Logo in exact font style from reference in 4K resolution */}
             <div className="relative w-52 sm:w-64 md:w-80 lg:w-96 h-14 sm:h-18 md:h-22 drop-shadow-2xl">
               <Image
                 src="/techno-logo-white.png"
                 alt="Techno Architecture"
                 fill
                 priority
-                sizes="(max-width: 768px) 260px, 384px"
-                className="object-contain object-left filter"
+                unoptimized
+                sizes="(max-width: 768px) 384px, 768px"
+                className="object-contain object-left filter drop-shadow-md"
               />
             </div>
           </Link>
