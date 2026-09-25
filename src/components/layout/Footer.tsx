@@ -102,6 +102,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/contact" className="hover:text-black transition-colors">
+                  Contact
+                </Link>
+              </li>
+              <li>
                 <Link href="/faq" className="hover:text-black transition-colors">
                   FAQ
                 </Link>
@@ -114,11 +119,6 @@ export default function Footer() {
               <li>
                 <Link href="/recognitions" className="hover:text-black transition-colors">
                   Recognitions
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="hover:text-black transition-colors">
-                  Contact
                 </Link>
               </li>
             </ul>

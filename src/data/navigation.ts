@@ -11,8 +11,8 @@ export const primaryNavigation: NavItem[] = [
   { label: "PROJECTS", href: "/projects" },
   { label: "TEAM", href: "/team" },
   { label: "CAREERS", href: "/careers" },
+  { label: "CONTACT", href: "/contact" },
   { label: "FAQ", href: "/faq" },
   { label: "GALLERY", href: "/gallery" },
   { label: "RECOGNITIONS", href: "/recognitions" },
-  { label: "CONTACT", href: "/contact" },
 ];
