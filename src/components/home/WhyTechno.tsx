@@ -9,45 +9,67 @@ export default function WhyTechno() {
         {/* Section Label */}
         <div className="mb-12">
           <span className="text-[10px] uppercase tracking-[0.35em] text-neutral-400 block font-medium">
-            Philosophy & Differentiation
+            PRACTICE ETHOS
           </span>
           <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-light tracking-tight text-white mt-3 max-w-3xl leading-snug">
-            Why Techno? An architectural discipline forged at the nexus of restraint, science, and sensory resonance.
+            Why Techno Architecture
           </h2>
         </div>
 
-        {/* Narrative Essay Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14 pt-6 border-t border-neutral-800/80 text-neutral-300">
+        {/* Narrative 5-Pillar Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 pt-6 border-t border-neutral-800/80 text-neutral-300">
           {/* Pillar 01 */}
-          <div className="space-y-4">
-            <span className="text-xs font-mono text-neutral-500 block">01 / TECTONIC CLARITY</span>
-            <h3 className="text-sm uppercase tracking-[0.2em] font-medium text-white">
-              The Architecture of Truth
+          <div className="space-y-3 p-5 bg-neutral-900/40 border border-neutral-800/60">
+            <span className="text-xs font-mono text-neutral-500 block">01 / CONTEXT LED DESIGN</span>
+            <h3 className="text-sm uppercase tracking-[0.15em] font-medium text-white">
+              Site, Climate & Brief
             </h3>
             <p className="text-xs leading-relaxed text-neutral-400 font-normal">
-              We reject cosmetic facades and transient stylistic fads. Every column, cantilever, and shadow line in a Techno building serves an unequivocal thermodynamic and structural purpose. We celebrate raw board-formed concrete, native granite, and mass timber in their unadorned authenticity.
+              Every project begins with the site, climate, surroundings and client brief.
             </p>
           </div>
 
           {/* Pillar 02 */}
-          <div className="space-y-4">
-            <span className="text-xs font-mono text-neutral-500 block">02 / PASSIVE PHYSICS</span>
-            <h3 className="text-sm uppercase tracking-[0.2em] font-medium text-white">
-              Climate-Responsive Engineering
+          <div className="space-y-3 p-5 bg-neutral-900/40 border border-neutral-800/60">
+            <span className="text-xs font-mono text-neutral-500 block">02 / BEAUTY & USE</span>
+            <h3 className="text-sm uppercase tracking-[0.15em] font-medium text-white">
+              A Balance of Beauty and Use
             </h3>
             <p className="text-xs leading-relaxed text-neutral-400 font-normal">
-              Architecture must respond to its equatorial context. By leveraging heavy thermal mass, calibrated jali solar filters, and internal courtyard microclimates, our structures achieve up to a 6°C thermal differential naturally, radically cutting energy dependence before active systems are deployed.
+              We design expressive spaces that remain comfortable, efficient and practical.
             </p>
           </div>
 
           {/* Pillar 03 */}
-          <div className="space-y-4">
-            <span className="text-xs font-mono text-neutral-500 block">03 / LEVEL-2 BIM PRECISION</span>
-            <h3 className="text-sm uppercase tracking-[0.2em] font-medium text-white">
-              Digital Rigor & Execution Control
+          <div className="space-y-3 p-5 bg-neutral-900/40 border border-neutral-800/60">
+            <span className="text-xs font-mono text-neutral-500 block">03 / END TO END DELIVERY</span>
+            <h3 className="text-sm uppercase tracking-[0.15em] font-medium text-white">
+              Coordinated Solution
             </h3>
             <p className="text-xs leading-relaxed text-neutral-400 font-normal">
-              Our concepts are never compromised by poor construction. Through complete Level-2 BIM coordination and virtual clash resolution, we guarantee millimeter accuracy from early design models through to on-site concrete pours, ensuring budget predictability and zero execution surprises.
+              Architecture, interiors, structural design and execution support are coordinated as one complete solution.
+            </p>
+          </div>
+
+          {/* Pillar 04 */}
+          <div className="space-y-3 p-5 bg-neutral-900/40 border border-neutral-800/60">
+            <span className="text-xs font-mono text-neutral-500 block">04 / RESPONSIBLE CHOICES</span>
+            <h3 className="text-sm uppercase tracking-[0.15em] font-medium text-white">
+              Passive & Resource-Conscious
+            </h3>
+            <p className="text-xs leading-relaxed text-neutral-400 font-normal">
+              Passive design, durable materials and resource-conscious planning guide our decisions.
+            </p>
+          </div>
+
+          {/* Pillar 05 */}
+          <div className="space-y-3 p-5 bg-neutral-900/40 border border-neutral-800/60 md:col-span-2 lg:col-span-2">
+            <span className="text-xs font-mono text-neutral-500 block">05 / SITE INVOLVEMENT</span>
+            <h3 className="text-sm uppercase tracking-[0.15em] font-medium text-white">
+              Attention Through Execution
+            </h3>
+            <p className="text-xs leading-relaxed text-neutral-400 font-normal">
+              We maintain design clarity through drawings, coordination and site involvement.
             </p>
           </div>
         </div>

@@ -28,10 +28,10 @@ export default function TestimonialsSection() {
         <div className="flex items-center justify-between mb-12 pb-4 border-b border-neutral-200">
           <div>
             <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-900 block">
-              VOICES FROM THE ARCHITECTURE
+              TESTIMONIALS
             </span>
-            <span className="text-xs text-neutral-400 mt-0.5 block tracking-wide">
-              Client perspectives on living and working in Techno spaces
+            <span className="text-xs text-neutral-500 mt-1 block tracking-wide font-light">
+              Our strongest projects grow from trust, open communication and a shared commitment to quality.
             </span>
           </div>
 

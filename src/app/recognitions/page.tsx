@@ -28,14 +28,14 @@ export default function RecognitionsPage() {
       {/* Page Header */}
       <div className="border-b border-neutral-200 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block">
+          <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block font-mono">
             HONORS & COMMENDATIONS
           </span>
           <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-neutral-900 tracking-tight mt-2">
-            Awards, Biennales & Publications
+            Awards and Recognitions
           </h1>
           <p className="text-xs sm:text-sm text-neutral-500 max-w-xl mt-2 tracking-wide font-light">
-            Peer recognition for our research into tropical passive thermodynamics, monolithic concrete craftsmanship, and mass timber innovations.
+            Selected recognition of Techno Architecture&apos;s work across awards, publications, exhibitions and professional platforms.
           </p>
         </div>
 

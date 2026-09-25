@@ -33,10 +33,10 @@ export default function HomeProjectsGrid() {
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-4 border-b border-neutral-200 gap-4">
         <div>
           <h2 className="text-[11px] uppercase tracking-[0.3em] font-semibold text-neutral-900">
-            SELECTED ARCHITECTURAL ARCHIVE
+            FEATURED PROJECTS
           </h2>
           <p className="text-xs text-neutral-500 mt-1 tracking-wide">
-            Curated spatial commissions across India and the United Arab Emirates
+            A selection of completed and ongoing work across residential, commercial, hospitality and institutional design.
           </p>
         </div>
 

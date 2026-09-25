@@ -6,13 +6,13 @@ export interface NavItem {
 
 export const primaryNavigation: NavItem[] = [
   { label: "HOME", href: "/home" },
-  { label: "PROJECTS", href: "/projects" },
   { label: "ABOUT", href: "/about" },
   { label: "SERVICES", href: "/services" },
-  { label: "OUR TEAM", href: "/team" },
-  { label: "GALLERY", href: "/gallery" },
-  { label: "BLOG", href: "/blog" },
+  { label: "PROJECTS", href: "/projects" },
+  { label: "TEAM", href: "/team" },
+  { label: "CAREERS", href: "/careers" },
   { label: "FAQ", href: "/faq" },
+  { label: "GALLERY", href: "/gallery" },
   { label: "RECOGNITIONS", href: "/recognitions" },
   { label: "CONTACT", href: "/contact" },
 ];

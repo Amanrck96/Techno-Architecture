@@ -23,8 +23,11 @@ export default function CompletedProjectsPage() {
             <span className="text-black">COMPLETED</span>
           </div>
           <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-light text-neutral-900 tracking-tight mt-2">
-            Completed Architecture & Realized Commissions ({completed.length})
+            Completed Projects ({completed.length})
           </h1>
+          <p className="text-xs text-neutral-500 max-w-2xl mt-1.5 font-light leading-relaxed">
+            Completed work demonstrates how the original design intent has been carried through material selection, detailing and construction. Each project page should explain the client&apos;s brief, site response, key design ideas and completed spatial experience.
+          </p>
         </div>
 
         <Link

@@ -15,17 +15,23 @@ export default function GalleryPage() {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const categories = [
-    "All",
-    "Facades",
-    "Interiors",
-    "Materiality",
-    "Landscape & Courts",
-    "Detail Views",
+    { id: "All", label: "ALL" },
+    { id: "Architecture", label: "ARCHITECTURE" },
+    { id: "Interiors", label: "INTERIORS" },
+    { id: "Details", label: "DETAILS" },
+    { id: "Models and Drawings", label: "MODELS AND DRAWINGS" },
+    { id: "On Site", label: "ON SITE" },
   ];
 
-  const filteredItems = gallery.filter((item) =>
-    activeCategory === "All" ? true : item.category === activeCategory
-  );
+  const filteredItems = gallery.filter((item) => {
+    if (activeCategory === "All") return true;
+    if (activeCategory === "Architecture") return item.category === "Facades" || (item.category as string) === "Architecture";
+    if (activeCategory === "Interiors") return item.category === "Interiors";
+    if (activeCategory === "Details") return item.category === "Detail Views" || item.category === "Materiality" || (item.category as string) === "Details";
+    if (activeCategory === "Models and Drawings") return (item.category as string) === "Models and Drawings" || item.category === "Landscape & Courts";
+    if (activeCategory === "On Site") return (item.category as string) === "On Site";
+    return item.category === activeCategory;
+  });
 
   const openLightbox = (item: GalleryItem) => {
     const idx = filteredItems.findIndex((i) => i.id === item.id);
@@ -38,29 +44,32 @@ export default function GalleryPage() {
       {/* Gallery Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-neutral-200 pb-6 gap-4">
         <div>
-          <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block">
-            VISUAL REPERTORY
+          <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block font-mono">
+            BROWSE THE GALLERY
           </span>
           <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-light text-neutral-900 tracking-tight mt-1">
-            Architectural Photography & Spatial Details ({filteredItems.length})
+            Gallery
           </h1>
+          <p className="text-xs text-neutral-500 max-w-xl mt-1.5 font-light leading-relaxed">
+            A visual collection of spaces, materials, details, models and work in progress from across the studio&apos;s projects.
+          </p>
         </div>
 
         {/* Category Pills */}
         <div className="flex flex-wrap gap-2">
           {categories.map((cat) => (
             <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.id)}
               type="button"
               className={cn(
                 "text-[10px] tracking-[0.2em] uppercase py-1 px-3 transition-all duration-300",
-                activeCategory === cat
+                activeCategory === cat.id
                   ? "bg-black text-white font-medium shadow-sm"
                   : "text-neutral-500 hover:text-black hover:bg-neutral-100"
               )}
             >
-              {cat}
+              {cat.label}
             </button>
           ))}
         </div>

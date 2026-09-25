@@ -15,13 +15,13 @@ export default function ServicesPage() {
       {/* Page Header */}
       <div className="border-b border-neutral-200 pb-6">
         <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block">
-          PRACTICE DISCIPLINES
+          PRACTICE SERVICES
         </span>
         <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-neutral-900 tracking-tight mt-2">
-          Architecture, Interior Environments, and Resilient Masterplans.
+          Services
         </h1>
         <p className="text-xs sm:text-sm text-neutral-500 max-w-2xl mt-3 leading-relaxed tracking-wide">
-          Our practice operates across six integrated disciplines, guiding each commission through research, computational physics, tectonic detailing, and site administration.
+          We provide integrated design services for new buildings and interior environments. Each appointment is structured around the project&apos;s scale, stage and specific requirements.
         </p>
       </div>
 

@@ -33,10 +33,10 @@ export default function TeamPage() {
             STUDIO PRACTITIONERS
           </span>
           <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-neutral-900 tracking-tight mt-2">
-            The Minds & Hands Behind Techno
+            Our Team
           </h1>
           <p className="text-xs sm:text-sm text-neutral-500 max-w-xl mt-2 tracking-wide font-light">
-            A tight collective of architects, computational engineers, urbanists, and craftsmen operating across Bengaluru, Hyderabad, and Dubai.
+            Our studio brings together architects, designers and collaborators who share a careful, inquisitive approach to design. We work across disciplines, test ideas openly and remain closely involved as projects move from concept to construction.
           </p>
         </div>
 
@@ -114,24 +114,24 @@ export default function TeamPage() {
         ))}
       </div>
 
-      {/* Careers Inquiries Banner */}
+      {/* Studio Team & Careers Banner */}
       <div className="p-8 md:p-12 border border-neutral-200 bg-neutral-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <span className="text-[10px] uppercase tracking-[0.25em] text-neutral-400 block font-semibold">
-            JOIN THE STUDIO
+            STUDIO TEAM & CULTURE
           </span>
           <h3 className="font-display text-xl font-light text-neutral-900 mt-1">
-            We are always in search of thoughtful spatial thinkers.
+            Join Our Studio
           </h3>
-          <p className="text-xs text-neutral-500 mt-1 max-w-xl">
-            Passionate about board-formed concrete, mass timber, and computational microclimates? Send your portfolio (PDF &lt; 15MB) to careers@technoarchitecture.com.
+          <p className="text-xs text-neutral-600 mt-2 max-w-2xl leading-relaxed font-light">
+            Every project is developed through teamwork. Architects and designers contribute across research, planning, visualisation, documentation, material development and site coordination, allowing ideas to be tested at every stage.
           </p>
         </div>
         <a
-          href="mailto:careers@technoarchitecture.com"
-          className="text-xs uppercase tracking-[0.2em] font-medium bg-black text-white px-6 py-3 hover:bg-neutral-800 transition-colors"
+          href="/careers"
+          className="text-xs uppercase tracking-[0.2em] font-medium bg-black text-white px-6 py-3 hover:bg-neutral-800 transition-colors whitespace-nowrap"
         >
-          Submit Portfolio
+          View Careers and Apply
         </a>
       </div>
     </div>

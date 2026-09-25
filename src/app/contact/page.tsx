@@ -69,14 +69,14 @@ export default function ContactPage() {
     <div className="w-full py-10 md:py-16 px-6 md:px-12 lg:px-16 max-w-7xl mx-auto space-y-16">
       {/* Page Header */}
       <div className="border-b border-neutral-200 pb-6">
-        <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block">
-          COMMISSION & CONSULTATION INQUIRY
+        <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block font-mono">
+          CONTACT US
         </span>
         <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-neutral-900 tracking-tight mt-2">
-          Initiate a Dialogue with Techno
+          Let us discuss your project
         </h1>
         <p className="text-xs sm:text-sm text-neutral-500 max-w-2xl mt-2 tracking-wide font-light">
-          We welcome residential, commercial, and civic commissions. Please share details regarding your site, program, and anticipated timelines.
+          Whether you are planning a new building, an interior or an early-stage feasibility study, share a few details with us. Our team will review your enquiry and respond with the most relevant next step.
         </p>
       </div>
 
@@ -278,59 +278,62 @@ export default function ContactPage() {
 
         {/* Right Info Cards (lg:col-span-5) */}
         <div className="lg:col-span-5 space-y-8">
-          {/* Studio Locations */}
-          <div className="space-y-6">
+          {/* Contact Details Card */}
+          <div className="p-6 bg-neutral-50 border border-neutral-200 space-y-6 text-xs">
             <span className="text-[10px] uppercase tracking-[0.25em] font-semibold text-neutral-900 block pb-2 border-b border-neutral-200">
-              PHYSICAL STUDIOS
+              CONTACT DETAILS
             </span>
 
-            {siteSettings.studios.map((st, idx) => (
-              <div key={idx} className="p-5 bg-neutral-50 border border-neutral-200 space-y-1 text-xs">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-neutral-900 uppercase tracking-wider">
-                    {st.city}
-                  </h3>
-                  {st.isHeadquarters && (
-                    <span className="text-[8px] uppercase tracking-widest bg-black text-white px-2 py-0.5">
-                      HQ
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-start gap-2 text-neutral-600 pt-1">
-                  <MapPin size={13} className="text-neutral-400 flex-shrink-0 mt-0.5" />
-                  <p>{st.address}, {st.postalCode}</p>
-                </div>
-                <div className="flex items-center gap-2 text-neutral-600 pt-1 font-mono text-[11px]">
-                  <Phone size={11} className="text-neutral-400" />
-                  <a href={`tel:${st.phone}`} className="hover:underline">
-                    {st.phone}
-                  </a>
-                </div>
+            <div className="space-y-1">
+              <span className="text-[9px] uppercase font-mono tracking-wider text-neutral-400 block">Studio Address</span>
+              <p className="text-neutral-800 leading-relaxed font-normal">
+                No. 9, Uttaradi Mutt Road, Shankarpuram, Basavanagudi, Bengaluru, Karnataka 560004
+              </p>
+              <div className="pt-1">
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=TechnoArchitecture%2C+9+Uttaradi+Mutt+Road%2C+Basavanagudi%2C+Bengaluru+560004"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-[11px] text-black font-medium underline hover:text-neutral-600"
+                >
+                  <MapPin size={12} />
+                  <span>Open in Google Maps</span>
+                </a>
               </div>
-            ))}
-          </div>
-
-          {/* Operating Hours & Direct Dispatch */}
-          <div className="p-6 bg-neutral-900 text-white space-y-4 text-xs">
-            <div className="flex items-center gap-2 text-neutral-400">
-              <Clock size={14} />
-              <span className="text-[10px] uppercase tracking-widest font-mono">
-                {siteSettings.operatingHours}
-              </span>
             </div>
-            <div className="space-y-2 pt-2 border-t border-neutral-800 text-neutral-300">
-              <p>
-                <strong className="text-white block text-[10px] uppercase tracking-wider">Press & Media</strong>
-                <a href={`mailto:${siteSettings.contact.pressEmail}`} className="hover:underline">
-                  {siteSettings.contact.pressEmail}
-                </a>
+
+            <div className="space-y-1 pt-3 border-t border-neutral-200">
+              <span className="text-[9px] uppercase font-mono tracking-wider text-neutral-400 block">Office Phone</span>
+              <a href="tel:08042103764" className="text-neutral-900 font-mono text-sm hover:underline block">
+                080 4210 3764
+              </a>
+            </div>
+
+            <div className="space-y-1 pt-3 border-t border-neutral-200">
+              <span className="text-[9px] uppercase font-mono tracking-wider text-neutral-400 block">Email</span>
+              <a href="mailto:technoarchitecture@gmail.com" className="text-neutral-900 font-mono text-xs hover:underline block">
+                technoarchitecture@gmail.com
+              </a>
+            </div>
+
+            <div className="space-y-1 pt-3 border-t border-neutral-200">
+              <span className="text-[9px] uppercase font-mono tracking-wider text-neutral-400 block">Business Hours</span>
+              <p className="text-neutral-700 leading-relaxed">
+                Monday to Friday, 10:00 AM to 6:30 PM<br />
+                <span className="text-neutral-500">Saturday closed</span>
               </p>
-              <p className="pt-1">
-                <strong className="text-white block text-[10px] uppercase tracking-wider">Talent & Careers</strong>
-                <a href={`mailto:${siteSettings.contact.careersEmail}`} className="hover:underline">
-                  {siteSettings.contact.careersEmail}
-                </a>
-              </p>
+            </div>
+
+            <div className="space-y-1 pt-3 border-t border-neutral-200">
+              <span className="text-[9px] uppercase font-mono tracking-wider text-neutral-400 block">Official Instagram</span>
+              <a
+                href="https://www.instagram.com/technoarchitecture_rajesh/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-black font-medium hover:underline inline-flex items-center gap-1.5"
+              >
+                <span>@technoarchitecture_rajesh</span>
+              </a>
             </div>
           </div>
         </div>

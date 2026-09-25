@@ -21,15 +21,15 @@ export default function HomeIntro() {
         <div className="flex flex-wrap items-center justify-between pb-4 mb-8 border-b border-neutral-200 gap-2">
           <div className="flex items-center space-x-2">
             <span className="text-[9.5px] uppercase tracking-[0.25em] font-semibold text-neutral-900 font-mono">
-              SECTION A — PRACTICE INTRODUCTION
+              TECHNO ARCHITECTURE · PRACTICE INTRODUCTION
             </span>
           </div>
           <span className="text-[9px] uppercase tracking-[0.22em] text-neutral-400 font-mono">
-            BENGALURU · HYDERABAD · DUBAI
+            EST. 2006 · BASAVANAGUDI, BENGALURU
           </span>
         </div>
 
-        {/* Main Grid: Left Column Brand & Mission; Right Column Core Pillars */}
+        {/* Main Grid: Left Column Brand & Mission; Right Column Core Narrative */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
           {/* Left Column: Brand & Logo Presentation */}
           <div className="lg:col-span-5 space-y-6">
@@ -44,16 +44,37 @@ export default function HomeIntro() {
               />
             </div>
 
-            <p className="text-sm md:text-base text-neutral-600 leading-relaxed font-light tracking-wide">
-              An architectural practice devoted to the synthesis of structural clarity, thermal mass, and crafted materiality. We design residential sanctuaries, mass timber commercial spaces, and civic enclaves engineered to endure.
-            </p>
+            <div className="space-y-3">
+              <h2 className="font-display text-xl sm:text-2xl text-neutral-900 font-light leading-snug">
+                Architecture shaped around people, place and purpose
+              </h2>
+              <p className="text-sm md:text-base text-neutral-600 leading-relaxed font-light tracking-wide">
+                Techno Architecture creates thoughtful spaces that balance creativity, comfort, luxury and practical living. From the first idea to the final detail, we approach every project with clarity, care and a strong understanding of how people use space.
+              </p>
+            </div>
 
-            {/* In-page jump anchors in a clean horizontal order with reduced font size */}
-            <div className="pt-2 flex flex-wrap items-center gap-2 text-[9px] sm:text-[9.5px] tracking-[0.18em] uppercase font-mono font-medium">
+            <div className="pt-2 flex flex-wrap items-center gap-3">
+              <Link
+                href="/projects"
+                className="inline-flex items-center gap-1.5 py-2 px-4 bg-neutral-900 text-white hover:bg-neutral-800 transition-colors text-[10px] tracking-[0.2em] uppercase font-medium"
+              >
+                <span>Explore Our Projects</span>
+                <ArrowUpRight size={12} />
+              </Link>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-1.5 py-2 px-4 border border-neutral-300 hover:border-black text-neutral-900 transition-colors text-[10px] tracking-[0.2em] uppercase font-medium"
+              >
+                <span>Start a Conversation</span>
+              </Link>
+            </div>
+
+            {/* In-page jump anchors */}
+            <div className="pt-4 flex flex-wrap items-center gap-2 text-[9px] sm:text-[9.5px] tracking-[0.18em] uppercase font-mono font-medium border-t border-neutral-100">
               <button
                 onClick={() => scrollTo("projects")}
                 type="button"
-                className="inline-flex items-center gap-1 py-1.5 px-2.5 bg-neutral-100 hover:bg-neutral-900 hover:text-white transition-colors rounded-sm text-neutral-700"
+                className="inline-flex items-center gap-1 py-1 px-2.5 bg-neutral-100 hover:bg-neutral-900 hover:text-white transition-colors rounded-sm text-neutral-700"
               >
                 <span>b. Projects</span>
                 <ArrowDown size={10} />
@@ -61,7 +82,7 @@ export default function HomeIntro() {
               <button
                 onClick={() => scrollTo("why-techno")}
                 type="button"
-                className="inline-flex items-center gap-1 py-1.5 px-2.5 bg-neutral-100 hover:bg-neutral-900 hover:text-white transition-colors rounded-sm text-neutral-700"
+                className="inline-flex items-center gap-1 py-1 px-2.5 bg-neutral-100 hover:bg-neutral-900 hover:text-white transition-colors rounded-sm text-neutral-700"
               >
                 <span>c. Why Techno?</span>
                 <ArrowDown size={10} />
@@ -69,7 +90,7 @@ export default function HomeIntro() {
               <button
                 onClick={() => scrollTo("testimonials")}
                 type="button"
-                className="inline-flex items-center gap-1 py-1.5 px-2.5 bg-neutral-100 hover:bg-neutral-900 hover:text-white transition-colors rounded-sm text-neutral-700"
+                className="inline-flex items-center gap-1 py-1 px-2.5 bg-neutral-100 hover:bg-neutral-900 hover:text-white transition-colors rounded-sm text-neutral-700"
               >
                 <span>d. Testimonials</span>
                 <ArrowDown size={10} />
@@ -77,54 +98,35 @@ export default function HomeIntro() {
             </div>
           </div>
 
-          {/* Right Column: 4 Architectural Pillars */}
-          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 pt-1">
-            <div className="space-y-2 border-l border-neutral-200 pl-4 sm:pl-5">
-              <span className="text-[9.5px] tracking-[0.22em] font-mono text-neutral-400 block uppercase">
-                01 / Form & Light
+          {/* Right Column: Introduction Section from PDF */}
+          <div className="lg:col-span-7 space-y-6 pt-1">
+            <div className="space-y-4 border-l-2 border-neutral-900 pl-6 sm:pl-8">
+              <span className="text-[10px] uppercase tracking-[0.25em] font-mono text-neutral-400 block font-semibold">
+                INTRODUCTION
               </span>
-              <h3 className="font-display text-xs sm:text-sm uppercase tracking-[0.15em] font-medium text-neutral-900">
-                Spatial Choreography
-              </h3>
-              <p className="text-xs text-neutral-500 leading-relaxed font-light">
-                Form emerges from climate, material restraint, and the timeless choreography of equatorial light through calculated apertures and brise-soleil screens.
+              <p className="text-base sm:text-lg text-neutral-900 leading-relaxed font-light">
+                Led by architect <strong className="font-medium text-black">Rajesh Shivaram</strong>, Techno Architecture is a design practice committed to architecture that is distinctive, environmentally responsible and grounded in everyday life. Our work brings together planning, material expression, natural light and careful detailing to create spaces with lasting value.
+              </p>
+              <p className="text-sm md:text-base text-neutral-600 leading-relaxed font-light">
+                We work closely with clients from the earliest discussions through design development and execution. This collaborative process helps each project respond to its site, purpose, budget and the people who will inhabit it.
               </p>
             </div>
 
-            <div className="space-y-2 border-l border-neutral-200 pl-4 sm:pl-5">
-              <span className="text-[9.5px] tracking-[0.22em] font-mono text-neutral-400 block uppercase">
-                02 / Thermodynamics
-              </span>
-              <h3 className="font-display text-xs sm:text-sm uppercase tracking-[0.15em] font-medium text-neutral-900">
-                Passive Physics
-              </h3>
-              <p className="text-xs text-neutral-500 leading-relaxed font-light">
-                Heavy board-formed concrete envelopes, sunken basalt courtyards, and deep overhangs act as natural thermal buffers, drastically reducing active cooling needs.
-              </p>
-            </div>
-
-            <div className="space-y-2 border-l border-neutral-200 pl-4 sm:pl-5">
-              <span className="text-[9.5px] tracking-[0.22em] font-mono text-neutral-400 block uppercase">
-                03 / Craft & Execution
-              </span>
-              <h3 className="font-display text-xs sm:text-sm uppercase tracking-[0.15em] font-medium text-neutral-900">
-                Material Authenticity
-              </h3>
-              <p className="text-xs text-neutral-500 leading-relaxed font-light">
-                Every material is celebrated in its natural tactile state — polished kota stone, solid teak joinery, architectural steel, and raw rammed earth.
-              </p>
-            </div>
-
-            <div className="space-y-2 border-l border-neutral-200 pl-4 sm:pl-5">
-              <span className="text-[9.5px] tracking-[0.22em] font-mono text-neutral-400 block uppercase">
-                04 / Tri-City Hubs
-              </span>
-              <h3 className="font-display text-xs sm:text-sm uppercase tracking-[0.15em] font-medium text-neutral-900">
-                Studio Reach
-              </h3>
-              <p className="text-xs text-neutral-500 leading-relaxed font-light">
-                With studios in Bengaluru, Hyderabad, and collaborative projects in Dubai, our practice delivers bespoke residential and commercial commissions across the globe.
-              </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
+              <div className="p-4 bg-neutral-50 border border-neutral-100 space-y-1">
+                <span className="text-[9px] font-mono text-neutral-400 uppercase tracking-widest block">01 / PRACTICE LEADERSHIP</span>
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-900">Ar. Rajesh Shivaram</h4>
+                <p className="text-xs text-neutral-500 font-light leading-relaxed">
+                  Graduate of Bangalore Institute of Technology bringing 20 years of professional architectural experience.
+                </p>
+              </div>
+              <div className="p-4 bg-neutral-50 border border-neutral-100 space-y-1">
+                <span className="text-[9px] font-mono text-neutral-400 uppercase tracking-widest block">02 / STUDIO LOCATION</span>
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-900">Basavanagudi, Bengaluru</h4>
+                <p className="text-xs text-neutral-500 font-light leading-relaxed">
+                  Established in 2006, delivering contextual residential, commercial, hospitality and institutional works.
+                </p>
+              </div>
             </div>
           </div>
         </div>

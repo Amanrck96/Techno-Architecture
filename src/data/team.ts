@@ -15,15 +15,14 @@ export interface TeamMember {
 export const initialTeam: TeamMember[] = [
   {
     id: "team-1",
-    name: "Ar. Rajeshwari Menon",
-    role: "Founder & Principal Architect",
+    name: "Rajesh Shivaram",
+    role: "Principal Architect",
     discipline: "Leadership",
-    credentials: "M.Arch (AA London), B.Arch (SPA Delhi), IIA, COA",
-    bio: "With over 18 years shaping contemporary South Asian architecture, Rajeshwari directs the studio's architectural vision. Her research focuses on thermal mass, tropical spatial sequencing, and the poetic intersection of raw concrete and regional stone.",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=85",
+    credentials: "B.Arch (Bangalore Institute of Technology)",
+    bio: "A graduate of Bangalore Institute of Technology, Rajesh Shivaram is the Principal Architect of Techno Architecture and brings 20 years of professional experience to the practice. He leads the studio with a focus on design excellence, innovation and careful execution, combining creativity with comfort, practicality and environmental responsibility.",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=85",
     socials: [
-      { platform: "LinkedIn", url: "https://linkedin.com" },
-      { platform: "Instagram", url: "https://instagram.com" },
+      { platform: "Instagram", url: "https://www.instagram.com/technoarchitecture_rajesh/" },
     ],
   },
   {

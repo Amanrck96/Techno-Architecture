@@ -119,7 +119,7 @@ export default function MobileNav() {
         <div className="pt-8 border-t border-neutral-100 flex flex-col space-y-4">
           <div className="flex items-center space-x-6 text-neutral-500">
             <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/technoarchitecture_rajesh/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"

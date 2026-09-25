@@ -96,7 +96,7 @@ export default function DesktopRailNav() {
         {/* Social Icons */}
         <div className="flex flex-col items-center space-y-3 text-neutral-400">
           <a
-            href="https://instagram.com"
+            href="https://www.instagram.com/technoarchitecture_rajesh/"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Techno on Instagram"

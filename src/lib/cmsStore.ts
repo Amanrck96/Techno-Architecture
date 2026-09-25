@@ -12,15 +12,15 @@ import { SiteSettings, initialSiteSettings } from "@/data/siteSettings";
 import { Testimonial, initialTestimonials } from "@/data/testimonials";
 
 const STORAGE_KEYS = {
-  PROJECTS: "techno_cms_projects_v3",
-  SERVICES: "techno_cms_services_v3",
-  TEAM: "techno_cms_team_v3",
-  BLOG: "techno_cms_blog_v3",
-  FAQ: "techno_cms_faq_v3",
-  GALLERY: "techno_cms_gallery_v3",
-  RECOGNITIONS: "techno_cms_recognitions_v3",
-  SETTINGS: "techno_cms_settings_v3",
-  TESTIMONIALS: "techno_cms_testimonials_v3",
+  PROJECTS: "techno_cms_projects_v4",
+  SERVICES: "techno_cms_services_v4",
+  TEAM: "techno_cms_team_v4",
+  BLOG: "techno_cms_blog_v4",
+  FAQ: "techno_cms_faq_v4",
+  GALLERY: "techno_cms_gallery_v4",
+  RECOGNITIONS: "techno_cms_recognitions_v4",
+  SETTINGS: "techno_cms_settings_v4",
+  TESTIMONIALS: "techno_cms_testimonials_v4",
 };
 
 export function useCMSStore() {
@@ -39,7 +39,11 @@ export function useCMSStore() {
     setIsClient(true);
     try {
       // Purge legacy storage keys
-      ["techno_cms_projects_v1", "techno_cms_projects_v2", "techno_cms_projects"].forEach((key) => {
+      [
+        "techno_cms_projects_v1", "techno_cms_projects_v2", "techno_cms_projects",
+        "techno_cms_projects_v3", "techno_cms_services_v3", "techno_cms_team_v3",
+        "techno_cms_faq_v3", "techno_cms_settings_v3"
+      ].forEach((key) => {
         try {
           localStorage.removeItem(key);
         } catch (_) {}

@@ -11,7 +11,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto">
         {/* Main Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-          {/* Col 1: Brand & Statement */}
+          {/* Col 1: Brand & Statement from PDF Page 14 */}
           <div className="space-y-4">
             <div className="relative w-44 h-11">
               <Image
@@ -22,54 +22,58 @@ export default function Footer() {
                 className="object-contain object-left"
               />
             </div>
-            <p className="text-xs leading-relaxed text-neutral-500 max-w-sm tracking-wide">
-              An architectural and interior design practice dedicated to formal restraint, material permanence, and deep contextual sensitivity.
+            <p className="text-xs leading-relaxed text-neutral-600 max-w-sm tracking-wide font-light">
+              Techno Architecture is an architecture and design practice creating thoughtful, practical and environmentally responsive spaces.
             </p>
             <div className="pt-2">
               <span className="text-[10px] tracking-[0.2em] uppercase text-neutral-400 block mb-1">
                 General Inquiries
               </span>
               <a
-                href="mailto:studio@technoarchitecture.com"
+                href="mailto:technoarchitecture@gmail.com"
                 className="text-xs text-black hover:underline flex items-center gap-1 group font-medium"
               >
-                studio@technoarchitecture.com
+                technoarchitecture@gmail.com
                 <ArrowUpRight size={12} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </a>
             </div>
           </div>
 
-          {/* Col 2: Studios */}
+          {/* Col 2: Studio Information */}
           <div className="space-y-3">
             <h3 className="text-[11px] font-semibold tracking-[0.25em] text-neutral-900 uppercase mb-4">
-              Studios
+              Studio
             </h3>
-            <div className="text-xs text-neutral-500 space-y-1">
-              <strong className="text-neutral-800 block font-medium">Bengaluru HQ</strong>
-              <p>No. 44, 4th Main Road, Basavanagudi</p>
-              <p>Karnataka 560004, India</p>
-              <p className="pt-1 text-[11px] text-neutral-400">+91 80 2661 4820</p>
+            <div className="text-xs text-neutral-600 space-y-1 font-light">
+              <strong className="text-neutral-900 block font-medium">Techno Architecture</strong>
+              <p>No. 9, Uttaradi Mutt Road,</p>
+              <p>Shankarpuram, Basavanagudi,</p>
+              <p>Bengaluru, Karnataka 560004</p>
+              <p className="pt-2 text-[11px] font-mono text-neutral-800">080 4210 3764</p>
+              <p className="text-[11px] text-neutral-500">Mon - Fri: 10:00 AM - 6:30 PM</p>
             </div>
-            <div className="text-xs text-neutral-500 space-y-1 pt-3">
-              <strong className="text-neutral-800 block font-medium">Hyderabad</strong>
-              <p>Road No. 36, Jubilee Hills</p>
-              <p>Telangana 500033, India</p>
-            </div>
-            <div className="text-xs text-neutral-500 space-y-1 pt-3">
-              <strong className="text-neutral-800 block font-medium">Dubai Collaborations</strong>
-              <p>Building 04, Dubai Design District (d3)</p>
+            <div className="pt-2">
+              <a
+                href="https://www.instagram.com/technoarchitecture_rajesh/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] text-black font-medium hover:underline inline-flex items-center gap-1"
+              >
+                <span>@technoarchitecture_rajesh</span>
+                <ArrowUpRight size={11} />
+              </a>
             </div>
           </div>
 
-          {/* Col 3: Navigation Index */}
+          {/* Col 3: Navigation Index (All 10 links from PDF Page 14) */}
           <div>
             <h3 className="text-[11px] font-semibold tracking-[0.25em] text-neutral-900 uppercase mb-4">
               Index
             </h3>
             <ul className="grid grid-cols-2 gap-2 text-xs text-neutral-600">
               <li>
-                <Link href="/projects" className="hover:text-black transition-colors">
-                  Projects
+                <Link href="/" className="hover:text-black transition-colors">
+                  Home
                 </Link>
               </li>
               <li>
@@ -83,23 +87,28 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/projects" className="hover:text-black transition-colors">
+                  Projects
+                </Link>
+              </li>
+              <li>
                 <Link href="/team" className="hover:text-black transition-colors">
-                  Our Team
+                  Team
                 </Link>
               </li>
               <li>
-                <Link href="/gallery" className="hover:text-black transition-colors">
-                  Gallery
-                </Link>
-              </li>
-              <li>
-                <Link href="/blog" className="hover:text-black transition-colors">
-                  Monographs
+                <Link href="/careers" className="hover:text-black transition-colors">
+                  Careers
                 </Link>
               </li>
               <li>
                 <Link href="/faq" className="hover:text-black transition-colors">
                   FAQ
+                </Link>
+              </li>
+              <li>
+                <Link href="/gallery" className="hover:text-black transition-colors">
+                  Gallery
                 </Link>
               </li>
               <li>
@@ -110,11 +119,6 @@ export default function Footer() {
               <li>
                 <Link href="/contact" className="hover:text-black transition-colors">
                   Contact
-                </Link>
-              </li>
-              <li>
-                <Link href="/admin" className="hover:text-black transition-colors font-medium">
-                  Owner Portal
                 </Link>
               </li>
             </ul>

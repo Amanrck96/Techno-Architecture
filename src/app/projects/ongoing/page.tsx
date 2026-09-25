@@ -23,8 +23,11 @@ export default function OngoingProjectsPage() {
             <span className="text-black">ONGOING</span>
           </div>
           <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-light text-neutral-900 tracking-tight mt-2">
-            Works in Progress & Under Construction ({ongoing.length})
+            Ongoing Projects ({ongoing.length})
           </h1>
+          <p className="text-xs text-neutral-500 max-w-2xl mt-1.5 font-light leading-relaxed">
+            Our ongoing portfolio offers a view into the design process. These projects may be presented through drawings, models, renders and site progress, with their current stage stated clearly.
+          </p>
         </div>
 
         <Link
