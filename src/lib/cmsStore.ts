@@ -66,6 +66,7 @@ export function useCMSStore() {
         const kanasuFresh = initialProjects.find((p) => p.id === "proj-7" || p.slug === "kanasu");
         const kripaFresh = initialProjects.find((p) => p.id === "proj-8" || p.slug === "kripa");
         const salutFresh = initialProjects.find((p) => p.id === "proj-10" || p.slug === "salut");
+        const mantleFresh = initialProjects.find((p) => p.id === "proj-12" || p.slug === "mantle-buildofy" || p.slug === "zenith-residence");
         const sanitized = filtered.map((p: Project) => {
           if (
             p.id === "proj-1" ||
@@ -139,6 +140,15 @@ export function useCMSStore() {
           ) {
             return salutFresh || p;
           }
+          if (
+            p.id === "proj-12" ||
+            p.slug === "zenith-residence" ||
+            p.slug === "mantle-buildofy" ||
+            p.title === "ZENITH RESIDENCE" ||
+            p.title === "MANTLE BUILDOFY"
+          ) {
+            return mantleFresh || p;
+          }
           let modified = p;
           if (p.relatedSlugs) {
             modified = {
@@ -155,6 +165,7 @@ export function useCMSStore() {
                   if (s === "kavya-residence") return "kanasu";
                   if (s === "timber-terrace") return "kripa";
                   if (s === "serene-penthouse") return "salut";
+                  if (s === "zenith-residence") return "mantle-buildofy";
                   return s;
                 }),
             };
@@ -194,6 +205,8 @@ export function useCMSStore() {
                 ? "kripa"
                 : slug === "serene-penthouse"
                 ? "salut"
+                : slug === "zenith-residence"
+                ? "mantle-buildofy"
                 : slug
             ),
         }));
@@ -231,7 +244,17 @@ export function useCMSStore() {
         const gal14Fresh = initialGalleryItems.find((g) => g.id === "gal-14");
         const gal8Fresh = initialGalleryItems.find((g) => g.id === "gal-8");
         const gal12Fresh = initialGalleryItems.find((g) => g.id === "gal-12");
+        const gal16Fresh = initialGalleryItems.find((g) => g.id === "gal-16");
         let sanitizedGallery = filteredGallery.map((g: GalleryItem) => {
+          if (
+            g.id === "gal-16" ||
+            g.projectSlug === "zenith-residence" ||
+            g.projectSlug === "mantle-buildofy" ||
+            g.projectTitle === "ZENITH RESIDENCE" ||
+            g.projectTitle === "MANTLE BUILDOFY"
+          ) {
+            return gal16Fresh || g;
+          }
           if (g.id === "gal-3" || g.projectSlug === "corten-pavilion" || g.projectTitle === "CORTEN PAVILION") {
             return gal3Fresh || g;
           }

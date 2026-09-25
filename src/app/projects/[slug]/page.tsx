@@ -23,7 +23,9 @@ export default function ProjectDetailPage() {
       (slug === "urban-veranda" && p.slug === "house-in-the-air") ||
       (slug === "kavya-residence" && p.slug === "kanasu") ||
       (slug === "timber-terrace" && p.slug === "kripa") ||
-      (slug === "serene-penthouse" && p.slug === "salut")
+      (slug === "serene-penthouse" && p.slug === "salut") ||
+      (slug === "zenith-residence" && p.slug === "mantle-buildofy") ||
+      (slug === "mantle-buildofy" && p.slug === "zenith-residence")
   );
   if (currentIndex === -1) {
     // If not found in current store, return 404
@@ -151,6 +153,20 @@ export default function ProjectDetailPage() {
         mainImage: "/projects/salut/salut-terracotta-jali-bar-atrium.jpg",
       };
     }
+    if (
+      p.id === "proj-12" ||
+      p.slug === "mantle-buildofy" ||
+      p.slug === "zenith-residence" ||
+      p.title === "ZENITH RESIDENCE" ||
+      p.title === "MANTLE BUILDOFY"
+    ) {
+      return {
+        ...p,
+        title: "MANTLE BUILDOFY",
+        slug: "mantle-buildofy",
+        mainImage: "/projects/mantle-buildofy/mantle-buildofy-double-height-living-atrium.jpg",
+      };
+    }
     return p;
   };
 
@@ -215,6 +231,12 @@ export default function ProjectDetailPage() {
       ) {
         return false;
       }
+      if (
+        (project.slug === "mantle-buildofy" || project.id === "proj-12" || project.slug === "zenith-residence") &&
+        (p.slug === "mantle-buildofy" || p.slug === "zenith-residence" || p.id === "proj-12")
+      ) {
+        return false;
+      }
 
       return (
         project.relatedSlugs?.includes(p.slug) ||
@@ -233,7 +255,9 @@ export default function ProjectDetailPage() {
         (project.relatedSlugs?.includes("kavya-residence") && (p.slug === "kanasu" || p.id === "proj-7")) ||
         (project.relatedSlugs?.includes("kanasu") && (p.slug === "kavya-residence" || p.id === "proj-7")) ||
         (project.relatedSlugs?.includes("timber-terrace") && (p.slug === "kripa" || p.id === "proj-8")) ||
-        (project.relatedSlugs?.includes("kripa") && (p.slug === "timber-terrace" || p.id === "proj-8"))
+        (project.relatedSlugs?.includes("kripa") && (p.slug === "timber-terrace" || p.id === "proj-8")) ||
+        (project.relatedSlugs?.includes("zenith-residence") && (p.slug === "mantle-buildofy" || p.id === "proj-12")) ||
+        (project.relatedSlugs?.includes("mantle-buildofy") && (p.slug === "zenith-residence" || p.id === "proj-12"))
       );
     })
     .map(sanitizeProject);
