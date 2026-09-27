@@ -57,10 +57,10 @@ export const initialProjects: Project[] = [
       { url: "/projects/aikya/outdoor-landscape-view-evening.jpg", caption: "Evening garden view capturing the harmonious integration of built form and nature", aspect: "full" },
     ],
     servicesInvolved: ["Architectural Design", "Interior Architecture", "Landscape Integration"],
-    teamMembers: ["Ar. Rajeshwari Menon", "Karthik Sundaram", "Divya Raghavan"],
+    teamMembers: ["Ar. Rajesh Shivaram", "Karthik Sundaram", "Divya Raghavan"],
     credits: {
-      principalArchitect: "Techno Design Studio",
-      projectLead: "Ar. Rajeshwari Menon",
+      principalArchitect: "Techno Architecture",
+      projectLead: "Ar. Rajesh Shivaram",
       structuralEngineer: "Matrix Structural Consultants",
       landscapeArchitect: "Verdant Studio",
       lightingConsultant: "Lumen Praxis",
@@ -110,7 +110,7 @@ export const initialProjects: Project[] = [
       { url: "/projects/belaku/belaku-waterfall-guitar-niche-detail.jpg", caption: "Close-up architectural detail of the Kadappa stone waterfall cascade with ambient spotlighting and display niche", aspect: "portrait" },
     ],
     servicesInvolved: ["Luxury Residential Architecture", "Parametric Facade Engineering", "Interior & Landscape Design"],
-    teamMembers: ["Vikramaditya Shenoy", "Naveen Prasad", "Ar. Rajeshwari Menon"],
+    teamMembers: ["Ar. Rajesh Shivaram", "Vikramaditya Shenoy", "Naveen Prasad"],
     credits: {
       principalArchitect: "Techno Architecture",
       projectLead: "Vikramaditya Shenoy",
@@ -166,10 +166,10 @@ export const initialProjects: Project[] = [
       { url: "/projects/between-two-trees/between-two-trees-bedroom-media-lounge.jpg", caption: "Cozy bedroom entertainment nook with wall-mounted media display, woven rattan poufs, and fluted terracotta acoustic wall", aspect: "portrait" },
     ],
     servicesInvolved: ["Heritage Residential Architecture", "Biophilic Tree Preservation", "Interior & Landscape Design"],
-    teamMembers: ["Ar. Rajeshwari Menon", "Vikramaditya Shenoy", "Karthik Sundaram"],
+    teamMembers: ["Ar. Rajesh Shivaram", "Vikramaditya Shenoy", "Karthik Sundaram"],
     credits: {
       principalArchitect: "Techno Architecture",
-      projectLead: "Ar. Rajeshwari Menon",
+      projectLead: "Ar. Rajesh Shivaram",
       structuralEngineer: "Sterling Engineering Consortium",
       landscapeArchitect: "Verdant Studio",
     },
@@ -216,7 +216,7 @@ export const initialProjects: Project[] = [
       { url: "/projects/brindavan/brindavan-upper-gallery-reading-nook-shadows.jpg", caption: "Upper gallery reading nook featuring teak balustrade, curated open bookshelf, and dynamic pergola shadow patterns on buff brick", aspect: "portrait" },
     ],
     servicesInvolved: ["Urban Residential Architecture", "Biophilic Facade Engineering", "Bespoke Interior Design"],
-    teamMembers: ["Ar. Rajeshwari Menon", "Vikramaditya Shenoy", "Naveen Prasad"],
+    teamMembers: ["Ar. Rajesh Shivaram", "Vikramaditya Shenoy", "Naveen Prasad"],
     credits: {
       principalArchitect: "Techno Architecture",
       projectLead: "Vikramaditya Shenoy",
@@ -271,7 +271,7 @@ export const initialProjects: Project[] = [
       { url: "/projects/far-site-buildofy/far-site-buildofy-biophilic-street-elevation-daylight.jpg", caption: "Daylight street perspective framed by surrounding tree foliage, showcasing cantilevered concrete canopies and wire-cut brickwork", aspect: "portrait" },
     ],
     servicesInvolved: ["Urban Residential Architecture", "Biophilic Facade Engineering", "Terracotta Jali Screen Craft"],
-    teamMembers: ["Vikramaditya Shenoy", "Ar. Rajeshwari Menon", "Karthik Sundaram"],
+    teamMembers: ["Ar. Rajesh Shivaram", "Vikramaditya Shenoy", "Karthik Sundaram"],
     credits: {
       principalArchitect: "Techno Architecture",
       projectLead: "Vikramaditya Shenoy",

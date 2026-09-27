@@ -103,7 +103,7 @@ export default function HomeCategoryBar() {
 
           {/* Location / Studio tag */}
           <div className="hidden md:flex items-center text-[9px] font-mono tracking-[0.25em] text-neutral-400 uppercase flex-shrink-0 pl-5 sm:pl-6 border-l border-neutral-200">
-            BLR · HYD · DXB
+            BASAVANAGUDI · BENGALURU
           </div>
         </div>
       </div>

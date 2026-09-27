@@ -77,9 +77,9 @@ export default function WhyTechno() {
         {/* Key Metrics / Footprint */}
         <div className="mt-16 pt-10 border-t border-neutral-800 grid grid-cols-2 md:grid-cols-4 gap-8 text-center sm:text-left">
           <div>
-            <div className="font-display text-3xl md:text-4xl text-white font-light">18+</div>
+            <div className="font-display text-3xl md:text-4xl text-white font-light">20+</div>
             <div className="text-[9px] uppercase tracking-[0.25em] text-neutral-500 mt-1">
-              Years Combined Practice
+              Years Practice Experience
             </div>
           </div>
           <div>
@@ -89,15 +89,15 @@ export default function WhyTechno() {
             </div>
           </div>
           <div>
-            <div className="font-display text-3xl md:text-4xl text-white font-light">68%</div>
+            <div className="font-display text-3xl md:text-4xl text-white font-light">Est. 2006</div>
             <div className="text-[9px] uppercase tracking-[0.25em] text-neutral-500 mt-1">
-              Average Embodied Carbon Reduction
+              Bengaluru Studio
             </div>
           </div>
           <div>
-            <div className="font-display text-3xl md:text-4xl text-white font-light">3</div>
+            <div className="font-display text-3xl md:text-4xl text-white font-light">100%</div>
             <div className="text-[9px] uppercase tracking-[0.25em] text-neutral-500 mt-1">
-              Global Studio Hubs
+              Context-Led Delivery
             </div>
           </div>
         </div>

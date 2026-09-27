@@ -1,9 +1,9 @@
 import LandingGallery from "@/components/home/LandingGallery";
 
 export const metadata = {
-  title: "TECHNO ARCHITECTURE — Architecture · Space · Form",
+  title: "TECHNO ARCHITECTURE — Architecture shaped around people, place and purpose",
   description:
-    "An award-winning architecture and spatial design practice crafting contemporary, context-driven residential, commercial, and civic environments.",
+    "Techno Architecture creates thoughtful spaces that balance creativity, comfort, luxury and practical living. Led by architect Rajesh Shivaram, Basavanagudi, Bengaluru.",
 };
 
 export default function HomePage() {

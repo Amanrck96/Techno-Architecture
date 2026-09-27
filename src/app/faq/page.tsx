@@ -45,10 +45,10 @@ export default function FAQPage() {
             ENGAGEMENT CLARITY
           </span>
           <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-neutral-900 tracking-tight mt-2">
-            Frequently Addressed Questions
+            Frequently Asked Questions
           </h1>
           <p className="text-xs sm:text-sm text-neutral-500 max-w-xl mt-2 tracking-wide font-light">
-            Inquiries regarding our architectural philosophy, fee structures, Level-2 BIM coordination, and commission timelines.
+            Answers regarding our architectural services, project appointment, scope of work, fees and design process.
           </p>
         </div>
 

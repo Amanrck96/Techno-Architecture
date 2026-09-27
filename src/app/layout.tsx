@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     template: "%s | TECHNO ARCHITECTURE",
   },
   description:
-    "Techno is an award-winning contemporary architecture and spatial design practice crafting context-driven residential, commercial, and civic environments.",
+    "Techno Architecture is an architecture and design practice creating thoughtful, practical and environmentally responsive spaces.",
   keywords: [
     "Techno Architecture",
     "contemporary architects Bangalore",
@@ -76,20 +76,19 @@ export default function RootLayout({
     url: "https://technoarchitecture.com",
     logo: "https://technoarchitecture.com/logo.png",
     description:
-      "Contemporary architecture and spatial design practice crafting context-driven residential, commercial, and civic environments.",
-    telephone: "+91 80 2661 4820",
-    email: "studio@technoarchitecture.com",
+      "Techno Architecture is an architecture and design practice creating thoughtful, practical and environmentally responsive spaces.",
+    telephone: "080 4210 3764",
+    email: "technoarchitecture@gmail.com",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "No. 44, 4th Main Road, Basavanagudi",
+      streetAddress: "No. 9, Uttaradi Mutt Road, Shankarpuram, Basavanagudi",
       addressLocality: "Bengaluru",
       addressRegion: "Karnataka",
       postalCode: "560004",
       addressCountry: "IN",
     },
     sameAs: [
-      "https://instagram.com/techno.architecture",
-      "https://linkedin.com/company/techno-architecture",
+      "https://www.instagram.com/technoarchitecture_rajesh/",
     ],
   };
 

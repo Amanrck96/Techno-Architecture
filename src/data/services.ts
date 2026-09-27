@@ -89,7 +89,7 @@ export const initialServices: Service[] = [
     slug: "specialist-consultant-introductions",
     title: "Specialist Consultant Introductions",
     shortDescription: "Introducing clients to appropriate specialist consultants and coordinating design information within our architectural scope.",
-    detailedDescription: "Depending on the project's scale and technical requirements, we introduce clients to appropriate specialist consultants. These may include structural, services, sustainability, lighting, acoustic or other professionals required for the project. Each specialist is appointed separately by the client, while our team coordinates relevant design information within our architectural scope.",
+    detailedDescription: "Depending on the project's scale and technical requirements, we introduce clients to appropriate specialist consultants. These may include structural, services, sustainability, lighting, acoustic or other professionals required for the project. Each specialist is appointed separately by the client, while our team coordinates relevant design information within our architectural scope. Specialist consultants are appointed directly by the client. Their scope, fees and deliverables are defined separately according to the project's requirements.",
     image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=85",
     process: [
       { step: "01", title: "Discipline Identification", description: "Identify specialist disciplines required according to project scale and complexity." },
