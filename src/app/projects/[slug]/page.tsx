@@ -32,7 +32,7 @@ export default function ProjectDetailPage() {
     return notFound();
   }
 
-  const project = projects[currentIndex];
+  const rawProject = projects[currentIndex];
 
   const sanitizeProject = (p: (typeof projects)[0]) => {
     if (!p) return p;
@@ -47,6 +47,12 @@ export default function ProjectDetailPage() {
         title: "AIKYA",
         slug: "aikya",
         mainImage: "/projects/aikya/elevation-east.jpg",
+        videoTour: p.videoTour || {
+          title: "4,800 sq.ft Aikya House in Bengaluru by Technoarchitecture (Home Tour)",
+          url: "https://www.youtube.com/results?search_query=Aikya+House+Technoarchitecture+Home+Tour",
+          platform: "YouTube",
+          actionText: "Watch House Tour",
+        },
       };
     }
     if (
@@ -60,6 +66,12 @@ export default function ProjectDetailPage() {
         title: "BELAKU",
         slug: "belaku",
         mainImage: "/projects/belaku/belaku-central-courtyard-entrance-vista.jpg",
+        videoTour: p.videoTour || {
+          title: "2400 sq.ft Compact Home in Bengaluru | Belaku Residence by Techno Architecture (Home Tour)",
+          url: "https://www.youtube.com/results?search_query=Belaku+Residence+Techno+Architecture+Home+Tour",
+          platform: "YouTube",
+          actionText: "Watch House Tour",
+        },
       };
     }
     if (
@@ -73,6 +85,12 @@ export default function ProjectDetailPage() {
         title: "BETWEEN TWO TREES",
         slug: "between-two-trees",
         mainImage: "/projects/between-two-trees/between-two-trees-mandapa-court-nandi-pool.jpg",
+        videoTour: p.videoTour || {
+          title: "House With a Traditional Chettinad Courtyard Between 2 Trees | Bengaluru | Technoarchitecture",
+          url: "https://www.youtube.com/results?search_query=Between+Two+Trees+House+With+a+Traditional+Chettinad+Courtyard+Technoarchitecture",
+          platform: "YouTube",
+          actionText: "Watch Video Tour",
+        },
       };
     }
     if (
@@ -99,6 +117,12 @@ export default function ProjectDetailPage() {
         title: "FAR SITE BUILDOFY",
         slug: "far-site-buildofy",
         mainImage: "/projects/far-site-buildofy/far-site-buildofy-twilight-facade-sky-garden.jpg",
+        videoTour: p.videoTour || {
+          title: "2,400 sq.ft Compact House in Malleshwaram Bengaluru Karnataka Explores a Courtyard in a Unique Way",
+          url: "https://www.youtube.com/results?search_query=2400+sqft+Compact+House+in+Malleshwaram+Bengaluru+The+Far+Site+Technoarchitecture",
+          platform: "Buildofy",
+          actionText: "Watch Buildofy Film",
+        },
       };
     }
     if (
@@ -125,6 +149,12 @@ export default function ProjectDetailPage() {
         title: "KANASU",
         slug: "kanasu",
         mainImage: "/projects/kanasu/kanasu-rooftop-pool-timber-canopy.jpg",
+        videoTour: p.videoTour || {
+          title: "Luxury Vastu House Kanasu in Bengaluru, Karnataka | Technoarchitecture (Home Tour)",
+          url: "https://www.youtube.com/results?search_query=Luxury+Vastu+House+Kanasu+in+Bengaluru+Technoarchitecture+Home+Tour",
+          platform: "YouTube",
+          actionText: "Watch House Tour",
+        },
       };
     }
     if (
@@ -138,6 +168,12 @@ export default function ProjectDetailPage() {
         title: "KRIPA",
         slug: "kripa",
         mainImage: "/projects/kripa/kripa-dining-room-indoor-outdoor-veranda.jpg",
+        videoTour: p.videoTour || {
+          title: "1,500 sq.ft. Compact Home in Bangalore (House Tour)",
+          url: "https://www.youtube.com/results?search_query=Kripa+1500+sq+ft+Techno+Architecture+House+Tour",
+          platform: "YouTube",
+          actionText: "Watch House Tour",
+        },
       };
     }
     if (
@@ -165,10 +201,18 @@ export default function ProjectDetailPage() {
         title: "MANTLE BUILDOFY",
         slug: "mantle-buildofy",
         mainImage: "/projects/mantle-buildofy/mantle-buildofy-double-height-living-atrium.jpg",
+        videoTour: p.videoTour || {
+          title: "The Mantle | Main Video Review 2",
+          url: "https://www.youtube.com/results?search_query=The+Mantle+Techno+Architecture+Review",
+          platform: "Buildofy",
+          actionText: "Watch Video Review",
+        },
       };
     }
     return p;
   };
+
+  const project = sanitizeProject(rawProject);
 
   // Calculate Previous and Next project
   const prevProject = sanitizeProject(
@@ -366,6 +410,24 @@ export default function ProjectDetailPage() {
               <span className="text-[9px] uppercase tracking-wider text-neutral-400 block">TYPOLOGY</span>
               <span className="font-medium text-black text-xs">{project.category}</span>
             </div>
+
+            {project.videoTour && (
+              <div className="col-span-2 pt-2 border-t border-neutral-200">
+                <span className="text-[9px] uppercase tracking-wider text-neutral-400 block mb-1">
+                  OFFICIAL FILM / TOUR
+                </span>
+                <a
+                  href={project.videoTour.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 font-medium text-black hover:underline uppercase text-[10px] tracking-[0.18em]"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse" />
+                  <span>{project.videoTour.actionText || "Watch Video Tour"}</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+            )}
           </div>
 
           <div className="pt-4 border-t border-neutral-200 space-y-2">
@@ -381,6 +443,41 @@ export default function ProjectDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Cinematic Film & Walkthrough Showcase Banner (if available) */}
+      {project.videoTour && (
+        <section className="bg-neutral-950 text-white p-6 sm:p-8 md:p-10 border border-neutral-800 flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden group">
+          <div className="space-y-2 max-w-2xl relative z-10">
+            <div className="flex items-center gap-2">
+              <span className="inline-block w-2 h-2 rounded-full bg-red-500 animate-ping" />
+              <span className="text-[10px] uppercase tracking-[0.3em] font-mono text-neutral-400">
+                CINEMATIC DOCUMENTATION · {project.videoTour.platform?.toUpperCase() || "FILM"}
+              </span>
+            </div>
+            <h2 className="font-display text-lg sm:text-xl md:text-2xl font-light text-white tracking-wide leading-snug">
+              {project.videoTour.title}
+            </h2>
+            <p className="text-xs text-neutral-400 font-light leading-relaxed">
+              Experience the spatial volumes, daylight choreography, and materiality of {project.title} through this curated architectural film walkthrough.
+            </p>
+          </div>
+
+          <div className="relative z-10 shrink-0">
+            <a
+              href={project.videoTour.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2.5 bg-white text-black hover:bg-neutral-200 px-6 py-3.5 text-[10px] uppercase tracking-[0.25em] font-medium transition-all duration-300 shadow-md hover:scale-105"
+            >
+              <span>{project.videoTour.actionText || "Watch Video Tour"}</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+
+          {/* Subtle background ambient graphic */}
+          <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-neutral-800/30 rounded-full blur-2xl pointer-events-none" />
+        </section>
+      )}
 
       {/* 4. Curated Image Sequence & Gallery Flow (Alternating Full-Bleed and Split Portraits) */}
       <section className="space-y-6">

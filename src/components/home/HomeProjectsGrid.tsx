@@ -63,40 +63,60 @@ export default function HomeProjectsGrid() {
       {/* 3-Column Reference-Style Architectural Grid (0.5% margin rhythm) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-2.5">
         {filteredProjects.map((project: Project) => (
-          <Link
+          <div
             key={project.id}
-            href={`/projects/${project.slug}`}
-            className="group relative block aspect-[4/3] w-full overflow-hidden bg-neutral-100"
+            className="group relative aspect-[4/3] w-full overflow-hidden bg-neutral-100"
           >
-            {/* Project Image */}
-            <Image
-              src={project.mainImage}
-              alt={`Techno Architecture — ${project.title}`}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover transition-transform duration-700 ease-editorial group-hover:scale-105"
-            />
+            <Link
+              href={`/projects/${project.slug}`}
+              className="block w-full h-full"
+            >
+              {/* Project Image */}
+              <Image
+                src={project.mainImage}
+                alt={`Techno Architecture — ${project.title}`}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover transition-transform duration-700 ease-editorial group-hover:scale-105"
+              />
 
-            {/* Reference Hover Overlay with Center 5px Letterspaced Title & Bottom Category */}
-            <div className="absolute inset-0 bg-neutral-900/80 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-between p-6 text-center text-white pointer-events-none">
-              <div className="text-[9px] tracking-[0.25em] text-neutral-400 uppercase">
-                {project.location} · {project.year}
-              </div>
+              {/* Reference Hover Overlay with Center 5px Letterspaced Title & Bottom Category */}
+              <div className="absolute inset-0 bg-neutral-900/80 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-between p-6 text-center text-white pointer-events-none">
+                <div className="text-[9px] tracking-[0.25em] text-neutral-400 uppercase">
+                  {project.location} · {project.year}
+                </div>
 
-              <div className="my-auto px-4">
-                <h3 className="font-display text-xs md:text-sm tracking-[0.35em] uppercase text-white font-medium">
-                  {project.title}
-                </h3>
-                <span className="block text-[8px] tracking-[0.25em] text-neutral-400 mt-2 uppercase">
-                  {project.area}
-                </span>
-              </div>
+                <div className="my-auto px-4">
+                  <h3 className="font-display text-xs md:text-sm tracking-[0.35em] uppercase text-white font-medium">
+                    {project.title}
+                  </h3>
+                  <span className="block text-[8px] tracking-[0.25em] text-neutral-400 mt-2 uppercase">
+                    {project.area}
+                  </span>
+                </div>
 
-              <div className="text-[9px] tracking-[0.2em] text-neutral-300 uppercase font-light">
-                {project.category} · {project.status.toUpperCase()}
+                <div className="flex items-center justify-between text-[9px] tracking-[0.2em] text-neutral-300 uppercase font-light">
+                  <span>{project.category} · {project.status.toUpperCase()}</span>
+                  <span className="text-white/80 underline underline-offset-4">VIEW DOSSIER →</span>
+                </div>
               </div>
-            </div>
-          </Link>
+            </Link>
+
+            {/* Video Tour Badge if available */}
+            {project.videoTour && (
+              <a
+                href={project.videoTour.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={`${project.title} — ${project.videoTour.title}`}
+                className="absolute top-3 right-3 z-10 inline-flex items-center gap-1.5 px-2.5 py-1 bg-black/80 hover:bg-black text-white text-[9px] uppercase tracking-[0.2em] backdrop-blur-md border border-white/20 transition-all duration-300 hover:scale-105 shadow-sm group/btn"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                <span>Watch Film</span>
+                <span className="text-[8px] opacity-70 group-hover/btn:opacity-100">↗</span>
+              </a>
+            )}
+          </div>
         ))}
       </div>
 

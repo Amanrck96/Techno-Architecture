@@ -12,7 +12,7 @@ import { SiteSettings, initialSiteSettings } from "@/data/siteSettings";
 import { Testimonial, initialTestimonials } from "@/data/testimonials";
 
 const STORAGE_KEYS = {
-  PROJECTS: "techno_cms_projects_v5",
+  PROJECTS: "techno_cms_projects_v6",
   SERVICES: "techno_cms_services_v5",
   TEAM: "techno_cms_team_v5",
   BLOG: "techno_cms_blog_v5",

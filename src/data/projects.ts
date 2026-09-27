@@ -4,6 +4,13 @@ export interface ProjectImage {
   aspect?: "landscape" | "portrait" | "full";
 }
 
+export interface VideoTour {
+  title: string;
+  url: string;
+  platform?: "YouTube" | "Buildofy" | "Instagram" | "Vimeo";
+  actionText?: string;
+}
+
 export interface Project {
   id: string;
   slug: string;
@@ -30,6 +37,7 @@ export interface Project {
   };
   featured: boolean;
   relatedSlugs: string[];
+  videoTour?: VideoTour;
 }
 
 export const initialProjects: Project[] = [
@@ -68,6 +76,12 @@ export const initialProjects: Project[] = [
     },
     featured: true,
     relatedSlugs: ["far-site-buildofy", "kanasu", "between-two-trees"],
+    videoTour: {
+      title: "4,800 sq.ft Aikya House in Bengaluru by Technoarchitecture (Home Tour)",
+      url: "https://www.youtube.com/results?search_query=Aikya+House+Technoarchitecture+Home+Tour",
+      platform: "YouTube",
+      actionText: "Watch House Tour",
+    },
   },
   {
     id: "proj-2",
@@ -119,6 +133,12 @@ export const initialProjects: Project[] = [
     },
     featured: true,
     relatedSlugs: ["aikya", "far-site-buildofy", "kanasu"],
+    videoTour: {
+      title: "2400 sq.ft Compact Home in Bengaluru | Belaku Residence by Techno Architecture (Home Tour)",
+      url: "https://www.youtube.com/results?search_query=Belaku+Residence+Techno+Architecture+Home+Tour",
+      platform: "YouTube",
+      actionText: "Watch House Tour",
+    },
   },
   {
     id: "proj-3",
@@ -175,6 +195,12 @@ export const initialProjects: Project[] = [
     },
     featured: true,
     relatedSlugs: ["aikya", "belaku", "far-site-buildofy"],
+    videoTour: {
+      title: "House With a Traditional Chettinad Courtyard Between 2 Trees | Bengaluru | Technoarchitecture",
+      url: "https://www.youtube.com/results?search_query=Between+Two+Trees+House+With+a+Traditional+Chettinad+Courtyard+Technoarchitecture",
+      platform: "YouTube",
+      actionText: "Watch Video Tour",
+    },
   },
   {
     id: "proj-4",
@@ -279,6 +305,12 @@ export const initialProjects: Project[] = [
     },
     featured: true,
     relatedSlugs: ["aikya", "belaku", "brindavan"],
+    videoTour: {
+      title: "2,400 sq.ft Compact House in Malleshwaram Bengaluru Karnataka Explores a Courtyard in a Unique Way",
+      url: "https://www.youtube.com/results?search_query=2400+sqft+Compact+House+in+Malleshwaram+Bengaluru+The+Far+Site+Technoarchitecture",
+      platform: "Buildofy",
+      actionText: "Watch Buildofy Film",
+    },
   },
   {
     id: "proj-6",
@@ -372,6 +404,12 @@ export const initialProjects: Project[] = [
     },
     featured: true,
     relatedSlugs: ["house-in-the-air", "far-site-buildofy", "between-two-trees"],
+    videoTour: {
+      title: "Luxury Vastu House Kanasu in Bengaluru, Karnataka | Technoarchitecture (Home Tour)",
+      url: "https://www.youtube.com/results?search_query=Luxury+Vastu+House+Kanasu+in+Bengaluru+Technoarchitecture+Home+Tour",
+      platform: "YouTube",
+      actionText: "Watch House Tour",
+    },
   },
   {
     id: "proj-8",
@@ -424,6 +462,12 @@ export const initialProjects: Project[] = [
     },
     featured: true,
     relatedSlugs: ["kanasu", "house-in-the-air", "brindavan"],
+    videoTour: {
+      title: "1,500 sq.ft. Compact Home in Bangalore (House Tour)",
+      url: "https://www.youtube.com/results?search_query=Kripa+1500+sq+ft+Techno+Architecture+House+Tour",
+      platform: "YouTube",
+      actionText: "Watch House Tour",
+    },
   },
   {
     id: "proj-10",
@@ -539,5 +583,11 @@ export const initialProjects: Project[] = [
     },
     featured: false,
     relatedSlugs: ["aikya", "between-two-trees", "far-site-buildofy"],
+    videoTour: {
+      title: "The Mantle | Main Video Review 2",
+      url: "https://www.youtube.com/results?search_query=The+Mantle+Techno+Architecture+Review",
+      platform: "Buildofy",
+      actionText: "Watch Video Review",
+    },
   },
 ];
