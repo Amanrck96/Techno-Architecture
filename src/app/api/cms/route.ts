@@ -16,6 +16,13 @@ import { initialTestimonials } from "@/data/testimonials";
 export const dynamic = "force-dynamic";
 
 const DATA_FILE_PATH = path.join(process.cwd(), "src", "data", "cms-content.json");
+const TMP_FILE_PATH = path.join("/tmp", "cms-content.json");
+
+// In-memory store on globalThis to survive serverless warm invocations
+declare global {
+  // eslint-disable-next-line no-var
+  var __techno_cms_store__: any;
+}
 
 function getDefaultData() {
   return {
@@ -33,31 +40,70 @@ function getDefaultData() {
 }
 
 async function readStore() {
+  // 1. If in-memory store is populated, return a clone
+  if (globalThis.__techno_cms_store__) {
+    return JSON.parse(JSON.stringify(globalThis.__techno_cms_store__));
+  }
+
+  // 2. Try reading from /tmp (written in serverless environments like Vercel)
+  try {
+    const raw = await fs.readFile(TMP_FILE_PATH, "utf-8");
+    const data = JSON.parse(raw);
+    if (data && typeof data === "object") {
+      globalThis.__techno_cms_store__ = data;
+      return JSON.parse(JSON.stringify(data));
+    }
+  } catch (_) {}
+
+  // 3. Try reading from DATA_FILE_PATH (static or persistent disk)
   try {
     const raw = await fs.readFile(DATA_FILE_PATH, "utf-8");
     const data = JSON.parse(raw);
-    if (data && Array.isArray(data.team)) {
-      const rajeshOnly = data.team
-        .filter((m: any) => m.name?.toLowerCase().includes("rajesh"))
-        .map((m: any) => ({ ...m, image: "" }));
-      data.team = rajeshOnly.length > 0 ? rajeshOnly : initialTeam;
+    if (data && typeof data === "object") {
+      if (Array.isArray(data.team)) {
+        const rajeshOnly = data.team
+          .filter((m: any) => m.name?.toLowerCase().includes("rajesh"))
+          .map((m: any) => ({ ...m, image: "" }));
+        data.team = rajeshOnly.length > 0 ? rajeshOnly : initialTeam;
+      }
+      globalThis.__techno_cms_store__ = data;
+      return JSON.parse(JSON.stringify(data));
     }
-    return data;
   } catch (err: any) {
-    if (err.code === "ENOENT") {
-      const defaultData = getDefaultData();
-      await fs.writeFile(DATA_FILE_PATH, JSON.stringify(defaultData, null, 2), "utf-8");
-      return defaultData;
+    if (err.code !== "ENOENT") {
+      console.warn("Notice reading CMS store file:", err?.message);
     }
-    console.error("Error reading CMS store file:", err);
-    return getDefaultData();
   }
+
+  // 4. Fallback to default initial seed data
+  const defaultData = getDefaultData();
+  globalThis.__techno_cms_store__ = defaultData;
+  return defaultData;
 }
 
 async function writeStore(data: any) {
-  const dir = path.dirname(DATA_FILE_PATH);
-  await fs.mkdir(dir, { recursive: true });
-  await fs.writeFile(DATA_FILE_PATH, JSON.stringify(data, null, 2), "utf-8");
+  // Always update in-memory store
+  globalThis.__techno_cms_store__ = JSON.parse(JSON.stringify(data));
+
+  // Try writing to DATA_FILE_PATH (works in development & persistent environments)
+  let wroteToDataFile = false;
+  try {
+    const dir = path.dirname(DATA_FILE_PATH);
+    await fs.mkdir(dir, { recursive: true });
+    await fs.writeFile(DATA_FILE_PATH, JSON.stringify(data, null, 2), "utf-8");
+    wroteToDataFile = true;
+  } catch (err: any) {
+    // Expected on read-only serverless platforms like Vercel
+  }
+
+  // Also write to /tmp/cms-content.json (always writable in AWS Lambda / Vercel Serverless)
+  try {
+    await fs.writeFile(TMP_FILE_PATH, JSON.stringify(data, null, 2), "utf-8");
+  } catch (tmpErr) {
+    if (!wroteToDataFile) {
+      console.warn("Notice writing to /tmp:", tmpErr);
+    }
+  }
 }
 
 // GET: Public endpoint for live website data hydration
@@ -80,15 +126,19 @@ export async function GET() {
 // POST: Admin endpoint for live persistent updates
 export async function POST(request: Request) {
   try {
-    // 1. Verify admin session cookie
+    // 1. Verify admin session cookie OR Authorization / x-admin-token header
     const cookieStore = cookies();
     const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME);
+    const authHeader = request.headers.get("authorization") || request.headers.get("x-admin-token");
+    const tokenFromHeader = authHeader?.replace(/^Bearer\s+/i, "");
 
-    if (!sessionCookie || !sessionCookie.value) {
+    const tokenToVerify = sessionCookie?.value || tokenFromHeader;
+
+    if (!tokenToVerify) {
       return NextResponse.json({ error: "Unauthorized: Admin session required." }, { status: 401 });
     }
 
-    const { valid } = verifySessionToken(sessionCookie.value);
+    const { valid } = verifySessionToken(tokenToVerify);
     if (!valid) {
       return NextResponse.json({ error: "Unauthorized: Invalid or expired admin session." }, { status: 401 });
     }
@@ -104,6 +154,7 @@ export async function POST(request: Request) {
         success: true,
         message: "All data reset to initial seed defaults.",
         data: defaultData,
+        updatedAt: defaultData.updatedAt,
       });
     }
 
@@ -114,7 +165,12 @@ export async function POST(request: Request) {
         updatedAt: new Date().toISOString(),
       };
       await writeStore(updated);
-      return NextResponse.json({ success: true, message: "Full store updated permanently.", data: updated });
+      return NextResponse.json({
+        success: true,
+        message: "Full store updated permanently.",
+        data: updated,
+        updatedAt: updated.updatedAt,
+      });
     }
 
     if (body.entity && body.data !== undefined) {

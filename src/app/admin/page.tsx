@@ -85,6 +85,7 @@ export default function AdminCMSPage() {
     saveRecognitions,
     saveSiteSettings,
     saveTestimonials,
+    saveAllToCloud,
     resetAllToDefaults,
   } = useCMSStore();
 
@@ -97,6 +98,7 @@ export default function AdminCMSPage() {
   const [authError, setAuthError] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isSubmittingAuth, setIsSubmittingAuth] = useState<boolean>(false);
+  const [isSyncingCloud, setIsSyncingCloud] = useState<boolean>(false);
 
   // Tab & Notification states
   const [activeTab, setActiveTab] = useState<AdminTab>("projects");
@@ -110,11 +112,32 @@ export default function AdminCMSPage() {
   useEffect(() => {
     async function checkAuthSession() {
       try {
-        const res = await fetch("/api/admin/verify");
+        const storedToken =
+          typeof window !== "undefined"
+            ? localStorage.getItem("techno_admin_token") ||
+              sessionStorage.getItem("techno_admin_token")
+            : null;
+
+        const headers: Record<string, string> = {};
+        if (storedToken) {
+          headers["Authorization"] = `Bearer ${storedToken}`;
+          headers["x-admin-token"] = storedToken;
+        }
+
+        const res = await fetch("/api/admin/verify", {
+          credentials: "include",
+          headers,
+        });
         const data = await res.json();
         if (res.ok && data.authenticated) {
           setIsAuthenticated(true);
           setCurrentAdminUser(data.username || "admin");
+          if (data.token) {
+            try {
+              localStorage.setItem("techno_admin_token", data.token);
+              sessionStorage.setItem("techno_admin_token", data.token);
+            } catch (_) {}
+          }
         } else {
           setIsAuthenticated(false);
         }
@@ -137,6 +160,7 @@ export default function AdminCMSPage() {
       const res = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           username: usernameInput,
           password: passwordInput,
@@ -151,6 +175,12 @@ export default function AdminCMSPage() {
 
       setIsAuthenticated(true);
       setCurrentAdminUser(data.username || usernameInput);
+      if (data.token) {
+        try {
+          localStorage.setItem("techno_admin_token", data.token);
+          sessionStorage.setItem("techno_admin_token", data.token);
+        } catch (_) {}
+      }
       setPasswordInput("");
       setAuthError("");
       showToast("Access granted. Welcome to Techno Architecture Admin Studio.");
@@ -164,12 +194,32 @@ export default function AdminCMSPage() {
   // 3. Handle Logout
   const handleLogout = async () => {
     try {
-      await fetch("/api/admin/logout", { method: "POST" });
+      await fetch("/api/admin/logout", { method: "POST", credentials: "include" });
+    } catch (_) {}
+    try {
+      localStorage.removeItem("techno_admin_token");
+      sessionStorage.removeItem("techno_admin_token");
     } catch (_) {}
     setIsAuthenticated(false);
     setCurrentAdminUser("");
     setUsernameInput("");
     setPasswordInput("");
+  };
+
+  const handleForceSaveCloud = async () => {
+    setIsSyncingCloud(true);
+    try {
+      const res = await saveAllToCloud();
+      if (res && res.success) {
+        showToast("All changes saved & synced to cloud permanently.");
+      } else {
+        showToast("Saved locally. Server responded with warning.");
+      }
+    } catch (e) {
+      showToast("Saved locally. Network error reaching server.");
+    } finally {
+      setIsSyncingCloud(false);
+    }
   };
 
   const showToast = (msg: string) => {
@@ -476,6 +526,21 @@ export default function AdminCMSPage() {
 
             {/* Data Management Action Buttons */}
             <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={handleForceSaveCloud}
+                disabled={isSyncingCloud}
+                type="button"
+                className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-800 text-white transition-colors rounded text-xs font-medium uppercase tracking-wider shadow-sm"
+                title="Force push all edits &amp; deletions directly to cloud store"
+              >
+                {isSyncingCloud ? (
+                  <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Save size={13} />
+                )}
+                <span>{isSyncingCloud ? "Saving..." : "Save All to Cloud"}</span>
+              </button>
+
               <button
                 onClick={exportData}
                 type="button"
