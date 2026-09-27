@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCMSStore } from "@/lib/cmsStore";
 
 export default function LandingGallery() {
@@ -21,10 +22,15 @@ export default function LandingGallery() {
     setCurrentIndex((prev) => (prev + 1) % showcaseProjects.length);
   }, [showcaseProjects.length]);
 
-  // Autoplay gallery animation every 5 seconds
+  const prevSlide = useCallback(() => {
+    if (showcaseProjects.length === 0) return;
+    setCurrentIndex((prev) => (prev - 1 + showcaseProjects.length) % showcaseProjects.length);
+  }, [showcaseProjects.length]);
+
+  // Autoplay gallery animation every 5.5 seconds
   useEffect(() => {
     if (showcaseProjects.length === 0) return;
-    const interval = setInterval(nextSlide, 5000);
+    const interval = setInterval(nextSlide, 5500);
     return () => clearInterval(interval);
   }, [nextSlide, showcaseProjects.length]);
 
@@ -36,97 +42,144 @@ export default function LandingGallery() {
     currentProject.gallery?.find((g) => g.aspect === "full" || g.aspect === "landscape")?.url ||
     currentProject.mainImage;
 
-  const handlePageClick = () => {
-    router.push("/home");
+  const handleImageClick = () => {
+    nextSlide();
   };
 
   return (
-    <div
-      onClick={handlePageClick}
-      className="relative w-screen h-screen overflow-hidden bg-neutral-950 text-white cursor-pointer select-none"
-      aria-label="Click to enter Techno Architecture"
-    >
-      {/* 1. Full-Screen Architectural Gallery Animation in Original Quality */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentProject.id}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute inset-0 z-0"
+    <div className="relative w-screen h-screen overflow-hidden bg-neutral-950 flex flex-col select-none">
+      {/* 1. TOP FULL BOX / SEPARATE HEADER BAR — Houses Logo Separately with Architectural Elegance */}
+      <header className="relative z-30 w-full bg-white border-b border-neutral-200 px-4 sm:px-8 lg:px-12 py-3 sm:py-4 md:py-4.5 flex items-center justify-between shrink-0 shadow-xs">
+        {/* Official Brand Logo */}
+        <Link
+          href="/home"
+          onClick={(e) => e.stopPropagation()}
+          className="inline-block group focus:outline-none transition-transform hover:scale-[1.01]"
+          aria-label="Techno Architecture — Enter Studio"
         >
-          <Image
-            src={heroImage}
-            alt={`Techno Architecture — ${currentProject.title}`}
-            fill
-            priority
-            unoptimized
-            quality={100}
-            sizes="100vw"
-            className="object-cover object-center select-none"
-            style={{ imageRendering: "auto" }}
-          />
-          {/* Subtle Legibility Vignettes — Preserves 100% Original Photo Contrast & Vibrant Colors */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/25 pointer-events-none" />
-        </motion.div>
-      </AnimatePresence>
+          <div className="relative w-48 sm:w-64 md:w-80 lg:w-92 h-10 sm:h-12 md:h-14">
+            <Image
+              src="/techno-brand-logo.png"
+              alt="Techno Architecture"
+              fill
+              priority
+              unoptimized
+              sizes="(max-width: 768px) 260px, 380px"
+              className="object-contain object-left"
+            />
+          </div>
+        </Link>
 
-      {/* 2. Top-Left: Techno Architecture Logo (Exact Reference Font Style) */}
-      <div className="relative z-20 w-full h-full p-8 md:p-14 lg:p-16 flex flex-col justify-between pointer-events-none">
-        <div className="flex items-start justify-between">
-          <Link
-            href="/home"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            className="pointer-events-auto inline-block group focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded transition-transform duration-300 hover:scale-[1.03]"
-            aria-label="Techno Architecture Logo — Click to enter second page"
-          >
-            {/* Logo in exact font style from reference in 4K resolution */}
-            <div className="relative w-52 sm:w-64 md:w-80 lg:w-96 h-14 sm:h-18 md:h-22 drop-shadow-2xl">
-              <Image
-                src="/techno-logo-white.png"
-                alt="Techno Architecture"
-                fill
-                priority
-                unoptimized
-                sizes="(max-width: 768px) 384px, 768px"
-                className="object-contain object-left filter drop-shadow-md"
-              />
-            </div>
-          </Link>
+        {/* Right Section: Navigation Links, Slide Counter & Enter Studio */}
+        <div className="flex items-center gap-3 sm:gap-6">
+          <nav className="hidden lg:flex items-center gap-6 text-[10px] tracking-[0.22em] uppercase font-mono text-neutral-600">
+            <Link href="/projects" onClick={(e) => e.stopPropagation()} className="hover:text-black transition-colors font-medium">PROJECTS</Link>
+            <Link href="/about" onClick={(e) => e.stopPropagation()} className="hover:text-black transition-colors font-medium">ABOUT</Link>
+            <Link href="/services" onClick={(e) => e.stopPropagation()} className="hover:text-black transition-colors font-medium">SERVICES</Link>
+            <Link href="/contact" onClick={(e) => e.stopPropagation()} className="hover:text-black transition-colors font-medium">CONTACT</Link>
+          </nav>
 
-          {/* Minimal Slide Index */}
-          <div className="text-[11px] font-mono tracking-[0.25em] text-neutral-300 bg-black/40 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/15">
-            <span className="text-white font-semibold">
+          {/* Slide Index Counter */}
+          <div className="text-[10px] sm:text-[11px] font-mono tracking-[0.2em] text-neutral-600 bg-neutral-100 px-3 py-1.5 rounded-full border border-neutral-200">
+            <span className="text-black font-semibold">
               {String(currentIndex + 1).padStart(2, "0")}
             </span>
-            <span className="text-neutral-500 mx-1">/</span>
-            <span className="text-neutral-400">
+            <span className="text-neutral-400 mx-1">/</span>
+            <span className="text-neutral-500">
               {String(showcaseProjects.length).padStart(2, "0")}
             </span>
           </div>
-        </div>
 
-        {/* 3. Bottom Bar: Project Label & Direct Navigation */}
-        <div className="flex items-end justify-between border-t border-white/15 pt-4 backdrop-blur-[2px]">
-          <div className="space-y-0.5">
-            <span className="block text-[9px] md:text-[10px] tracking-[0.3em] text-neutral-400 uppercase font-mono">
+          {/* Enter Studio CTA Button */}
+          <Link
+            href="/home"
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center gap-1.5 text-[9px] sm:text-[10px] tracking-[0.2em] uppercase font-medium text-white bg-black hover:bg-neutral-800 transition-colors py-2 px-3.5 sm:px-4 rounded-xs shadow-xs"
+          >
+            <span>ENTER STUDIO</span>
+            <span aria-hidden="true">→</span>
+          </Link>
+        </div>
+      </header>
+
+      {/* 2. HERO IMAGE SLIDER AREA — Unobstructed Architectural Photography */}
+      <div
+        onClick={handleImageClick}
+        className="relative flex-1 w-full overflow-hidden bg-neutral-950 text-white cursor-pointer"
+        aria-label="Click to advance to next project"
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentProject.id}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute inset-0 z-0"
+          >
+            <Image
+              src={heroImage}
+              alt={`Techno Architecture — ${currentProject.title}`}
+              fill
+              priority
+              unoptimized
+              quality={100}
+              sizes="100vw"
+              className="object-cover object-center select-none"
+              style={{ imageRendering: "auto" }}
+            />
+            {/* Subtle Legibility Vignette at bottom */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/10 pointer-events-none" />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* 3. BOTTOM CAPTION & INTERACTIVE NAVIGATION */}
+        <div className="absolute bottom-0 left-0 right-0 z-20 p-4 sm:p-6 md:p-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4 pointer-events-none">
+          <div className="space-y-1 bg-black/60 backdrop-blur-md p-3.5 sm:p-4 border border-white/15 max-w-lg pointer-events-auto">
+            <span className="block text-[9px] md:text-[10px] tracking-[0.3em] text-neutral-300 uppercase font-mono">
               {currentProject.category} · {currentProject.location}
             </span>
-            <h2 className="font-display text-base sm:text-lg md:text-xl tracking-[0.18em] uppercase font-light text-white">
+            <h2 className="font-display text-base sm:text-xl md:text-2xl tracking-[0.18em] uppercase font-light text-white">
               {currentProject.title}
             </h2>
           </div>
 
-          <Link
-            href="/home"
-            onClick={(e) => e.stopPropagation()}
-            className="pointer-events-auto text-[10px] md:text-[11px] tracking-[0.25em] uppercase font-medium text-neutral-300 hover:text-white transition-colors py-1.5 px-3.5 rounded bg-black/40 backdrop-blur-sm border border-white/15"
-          >
-            Enter Studio →
-          </Link>
+          <div className="flex items-center gap-2 pointer-events-auto">
+            {/* Previous slide */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                prevSlide();
+              }}
+              aria-label="Previous Project"
+              className="p-2 sm:p-2.5 bg-black/60 hover:bg-black text-white backdrop-blur-md border border-white/20 transition-colors"
+            >
+              <ChevronLeft size={16} />
+            </button>
+
+            {/* Next slide */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                nextSlide();
+              }}
+              aria-label="Next Project"
+              className="p-2 sm:p-2.5 bg-black/60 hover:bg-black text-white backdrop-blur-md border border-white/20 transition-colors"
+            >
+              <ChevronRight size={16} />
+            </button>
+
+            {/* Direct Project Dossier Link */}
+            <Link
+              href={`/projects/${currentProject.slug}`}
+              onClick={(e) => e.stopPropagation()}
+              className="text-[9px] sm:text-[10px] tracking-[0.25em] uppercase font-medium text-neutral-200 hover:text-white transition-colors py-2 px-3.5 bg-black/60 hover:bg-black backdrop-blur-md border border-white/20"
+            >
+              VIEW DOSSIER →
+            </Link>
+          </div>
         </div>
       </div>
     </div>
