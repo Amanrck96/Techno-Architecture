@@ -6,7 +6,6 @@ import DesktopRailNav from "@/components/layout/DesktopRailNav";
 import MobileNav from "@/components/layout/MobileNav";
 import Footer from "@/components/layout/Footer";
 import CookieConsent from "@/components/common/CookieConsent";
-import CustomCursor from "@/components/common/CustomCursor";
 
 export default function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -16,7 +15,6 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
     // Pure landing experience matching Studio Bomb: Only gallery animation + logo
     return (
       <>
-        <CustomCursor />
         <main id="main-content" className="w-full h-screen overflow-hidden">
           {children}
         </main>
@@ -35,9 +33,6 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
       >
         Skip to main content
       </a>
-
-      {/* Custom Subtle Architectural Cursor */}
-      <CustomCursor />
 
       {/* Desktop Fixed Right-Rail Navigation */}
       <DesktopRailNav />
