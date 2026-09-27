@@ -20,8 +20,14 @@ import {
 } from "lucide-react";
 
 export default function ServicesPage() {
-  const { services } = useCMSStore();
+  const { services, siteSettings } = useCMSStore();
   const [activeTab, setActiveTab] = useState<string>("architecture");
+
+  const servicesHeader = siteSettings?.servicesHeader || {
+    title: "Services",
+    subtitle: "PRACTICE DISCIPLINES & SCOPE",
+    description: "We provide integrated design services for new buildings and interior environments. Each appointment is structured around the project's scale, stage and specific requirements.",
+  };
 
   const archService = services.find((s) => s.slug === "architecture") || services[0];
   const interiorService = services.find((s) => s.slug === "interior-design") || services[1];
@@ -43,13 +49,13 @@ export default function ServicesPage() {
       <div className="border-b border-neutral-200 pb-8 space-y-6">
         <div>
           <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-neutral-900 tracking-tight">
-            Services
+            {servicesHeader.title}
           </h1>
           <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block font-mono mt-2">
-            PRACTICE DISCIPLINES & SCOPE
+            {servicesHeader.subtitle}
           </span>
           <p className="text-xs sm:text-sm text-neutral-500 max-w-2xl mt-3 leading-relaxed tracking-wide font-light">
-            We provide integrated design services for new buildings and interior environments. Each appointment is structured around the project&apos;s scale, stage and specific requirements.
+            {servicesHeader.description}
           </p>
         </div>
 

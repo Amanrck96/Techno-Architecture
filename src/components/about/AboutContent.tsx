@@ -16,66 +16,75 @@ export default function AboutContent() {
   const studioCity = siteSettings?.studios?.[0]?.city || "Basavanagudi, Bengaluru";
   const address = siteSettings?.studios?.[0]?.address || "No. 9, Uttaradi Mutt Road, Shankarpuram, Basavanagudi, Bengaluru";
 
-  const stats = [
-    { value: `${foundedYear}`, label: "Established Studio", detail: "Rooted in Basavanagudi" },
-    { value: "20+", label: "Years Experience", detail: "Ar. Rajesh Shivaram" },
-    { value: "100+", label: "Projects Designed", detail: "Contextual & Sustainable" },
-    { value: "15+", label: "Recognitions", detail: "Awards, Publications & Monograph" },
-  ];
+  const stats = (siteSettings?.milestones && siteSettings.milestones.length > 0)
+    ? siteSettings.milestones
+    : [
+        { value: `${foundedYear}`, label: "Established Studio", detail: "Rooted in Basavanagudi" },
+        { value: "20+", label: "Years Experience", detail: "Ar. Rajesh Shivaram" },
+        { value: "100+", label: "Projects Designed", detail: "Contextual & Sustainable" },
+        { value: "15+", label: "Recognitions", detail: "Awards, Publications & Monograph" },
+      ];
 
-  const coreValues = [
-    {
-      num: "01",
-      title: "Design Integrity",
-      desc: "We protect the central idea of a project from concept through completion.",
-      tag: "Commitment",
-    },
-    {
-      num: "02",
-      title: "Client Partnership",
-      desc: "We listen, explain choices clearly and make decisions collaboratively.",
-      tag: "Dialogue",
-    },
-    {
-      num: "03",
-      title: "Context and Climate",
-      desc: "We respond to orientation, light, ventilation, landscape and local conditions.",
-      tag: "Sustainability",
-    },
-    {
-      num: "04",
-      title: "Practical Innovation",
-      desc: "We explore new possibilities while respecting function, budget and construction realities.",
-      tag: "Engineering",
-    },
-    {
-      num: "05",
-      title: "Responsible Practice",
-      desc: "We favour durable solutions, efficient planning and environmentally conscious choices.",
-      tag: "Lifecycle",
-    },
-    {
-      num: "06",
-      title: "Craft and Detail",
-      desc: "We believe material junctions, proportions and execution determine the quality of the finished space.",
-      tag: "Precision",
-    },
-  ];
+  const coreValues = (siteSettings?.coreValues && siteSettings.coreValues.length > 0)
+    ? siteSettings.coreValues
+    : [
+        {
+          num: "01",
+          title: "Design Integrity",
+          desc: "We protect the central idea of a project from concept through completion.",
+          tag: "Commitment",
+        },
+        {
+          num: "02",
+          title: "Client Partnership",
+          desc: "We listen, explain choices clearly and make decisions collaboratively.",
+          tag: "Dialogue",
+        },
+        {
+          num: "03",
+          title: "Context and Climate",
+          desc: "We respond to orientation, light, ventilation, landscape and local conditions.",
+          tag: "Sustainability",
+        },
+        {
+          num: "04",
+          title: "Practical Innovation",
+          desc: "We explore new possibilities while respecting function, budget and construction realities.",
+          tag: "Engineering",
+        },
+        {
+          num: "05",
+          title: "Responsible Practice",
+          desc: "We favour durable solutions, efficient planning and environmentally conscious choices.",
+          tag: "Lifecycle",
+        },
+        {
+          num: "06",
+          title: "Craft and Detail",
+          desc: "We believe material junctions, proportions and execution determine the quality of the finished space.",
+          tag: "Precision",
+        },
+      ];
 
-  const differentiators = [
-    {
-      title: "End-to-End Coordination",
-      desc: "Architecture, interiors, structural design and execution support are coordinated together as one cohesive team. This continuity prevents fragmented compromises and guarantees seamless execution.",
-    },
-    {
-      title: "Bespoke Spatial Character",
-      desc: "Our designs combine creativity with comfort, luxury with restraint, and ambition with practical planning. Every building is individual to the client rather than copied from a formula.",
-    },
-    {
-      title: "Climate & Passive Intelligence",
-      desc: "Deep overhangs, natural stack ventilation, shaded courtyards, and honest materiality keep buildings thermally comfortable and resource-conscious for generations.",
-    },
-  ];
+  const differentiators = (siteSettings?.differentiators && siteSettings.differentiators.length > 0)
+    ? siteSettings.differentiators
+    : [
+        {
+          title: "End-to-End Coordination",
+          desc: "Architecture, interiors, structural design and execution support are coordinated together as one cohesive team. This continuity prevents fragmented compromises and guarantees seamless execution.",
+        },
+        {
+          title: "Bespoke Spatial Character",
+          desc: "Our designs combine creativity with comfort, luxury with restraint, and ambition with practical planning. Every building is individual to the client rather than copied from a formula.",
+        },
+        {
+          title: "Climate & Passive Intelligence",
+          desc: "Deep overhangs, natural stack ventilation, shaded courtyards, and honest materiality keep buildings thermally comfortable and resource-conscious for generations.",
+        },
+      ];
+
+  const visionText = siteSettings?.vision || "To create architecture that improves everyday life, responds responsibly to its environment and remains meaningful over time.";
+  const missionText = siteSettings?.mission || "To guide every project through a clear and collaborative design process, bringing together creativity, technical rigour, environmental awareness and careful execution. We aim to deliver spaces that reflect each client's needs while contributing positively to their setting.";
 
   return (
     <div className="w-full py-10 md:py-16 px-6 md:px-12 lg:px-16 max-w-7xl mx-auto space-y-16 sm:space-y-20">
@@ -226,7 +235,7 @@ export default function AboutContent() {
               Vision
             </h3>
             <p className="text-sm md:text-base text-neutral-700 leading-relaxed font-light">
-              To create architecture that improves everyday life, responds responsibly to its environment and remains meaningful over time.
+              {visionText}
             </p>
             <div className="mt-6 pt-4 border-t border-neutral-200/70 text-[11px] font-mono text-neutral-400">
               PURPOSE-DRIVEN ARCHITECTURE
@@ -254,7 +263,7 @@ export default function AboutContent() {
               Mission
             </h3>
             <p className="text-sm md:text-base text-neutral-700 leading-relaxed font-light">
-              To guide every project through a clear and collaborative design process, bringing together creativity, technical rigour, environmental awareness and careful execution. We aim to deliver spaces that reflect each client&apos;s needs while contributing positively to their setting.
+              {missionText}
             </p>
             <div className="mt-6 pt-4 border-t border-neutral-200/70 text-[11px] font-mono text-neutral-400">
               COLLABORATIVE PROCESS & RIGOUR

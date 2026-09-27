@@ -4,14 +4,14 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useCMSStore } from "@/lib/cmsStore";
-import { Project, ProjectImage } from "@/data/projects";
+import { Project, ProjectImage, VideoTour } from "@/data/projects";
 import { Service } from "@/data/services";
 import { TeamMember } from "@/data/team";
 import { BlogPost } from "@/data/blog";
 import { FAQItem } from "@/data/faq";
 import { GalleryItem } from "@/data/gallery";
 import { Recognition } from "@/data/recognitions";
-import { SiteSettings } from "@/data/siteSettings";
+import { SiteSettings, StudioMilestone, CoreValue, Differentiator, ServicesPageHeader } from "@/data/siteSettings";
 import { Testimonial } from "@/data/testimonials";
 import {
   FolderKanban,
@@ -45,6 +45,12 @@ import {
   ChevronDown,
   ChevronUp,
   X,
+  Film,
+  Video,
+  Sparkles,
+  Compass,
+  ListChecks,
+  Layers,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -1026,6 +1032,164 @@ export default function AdminCMSPage() {
                         </div>
                       </div>
 
+                      {/* Cinematic Film / Video Tour Manager */}
+                      <div className="p-4 bg-neutral-50/90 border border-neutral-200 rounded space-y-3">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <Film size={15} className="text-neutral-800" />
+                            <span className="text-[10px] uppercase font-mono tracking-wider font-semibold text-neutral-800">
+                              Cinematic Film / Video Tour Link
+                            </span>
+                            {p.videoTour ? (
+                              <span className="text-[9px] font-mono uppercase px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full font-medium">
+                                Active ({p.videoTour.platform || "Video"})
+                              </span>
+                            ) : (
+                              <span className="text-[9px] font-mono uppercase px-2 py-0.5 bg-neutral-200 text-neutral-600 rounded-full">
+                                Not Configured
+                              </span>
+                            )}
+                          </div>
+                          {p.videoTour ? (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (confirm(`Remove the video tour link from "${p.title}"?`)) {
+                                  const updated = [...projects];
+                                  delete updated[idx].videoTour;
+                                  saveProjects(updated);
+                                  showToast("Video tour link removed.");
+                                }
+                              }}
+                              className="text-[10px] text-red-600 hover:text-red-800 hover:underline flex items-center gap-1 font-medium"
+                            >
+                              <Trash2 size={11} />
+                              <span>Remove Video Tour</span>
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = [...projects];
+                                updated[idx].videoTour = {
+                                  title: `${p.title} | Architectural House Tour`,
+                                  url: "https://www.youtube.com/results?search_query=" + encodeURIComponent(p.title + " Techno Architecture House Tour"),
+                                  platform: "YouTube",
+                                  actionText: "Watch Video Tour →",
+                                };
+                                saveProjects(updated);
+                                showToast(`Video tour added to "${p.title}".`);
+                              }}
+                              className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider font-semibold text-black hover:underline"
+                            >
+                              <Plus size={11} />
+                              <span>+ Add Video Tour / Film Link</span>
+                            </button>
+                          )}
+                        </div>
+
+                        {p.videoTour && (
+                          <div className="space-y-3 pt-3 border-t border-neutral-200/80 text-xs">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              <div className="sm:col-span-2">
+                                <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                                  Film / Tour Headline Title
+                                </label>
+                                <input
+                                  type="text"
+                                  value={p.videoTour.title || ""}
+                                  onChange={(e) => {
+                                    const updated = [...projects];
+                                    if (updated[idx].videoTour) {
+                                      updated[idx].videoTour = { ...updated[idx].videoTour!, title: e.target.value };
+                                      saveProjects(updated);
+                                    }
+                                  }}
+                                  placeholder="e.g. Echoes of Nirvana | A 4000 Sq. Ft. Modern Courtyard Home"
+                                  className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
+                                />
+                              </div>
+
+                              <div>
+                                <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                                  Video Link URL (YouTube, Buildofy, Instagram, or Vimeo)
+                                </label>
+                                <div className="flex gap-2">
+                                  <input
+                                    type="url"
+                                    value={p.videoTour.url || ""}
+                                    onChange={(e) => {
+                                      const updated = [...projects];
+                                      if (updated[idx].videoTour) {
+                                        updated[idx].videoTour = { ...updated[idx].videoTour!, url: e.target.value };
+                                        saveProjects(updated);
+                                      }
+                                    }}
+                                    placeholder="https://www.youtube.com/watch?v=..."
+                                    className="flex-1 p-2 border border-neutral-300 rounded text-xs font-mono bg-white"
+                                  />
+                                  {p.videoTour.url && (
+                                    <a
+                                      href={p.videoTour.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="px-2.5 py-1.5 bg-neutral-200 hover:bg-neutral-300 text-neutral-800 rounded text-[11px] font-mono flex items-center gap-1 transition-colors flex-shrink-0"
+                                      title="Open link in new tab"
+                                    >
+                                      <ExternalLink size={12} />
+                                      <span>Test</span>
+                                    </a>
+                                  )}
+                                </div>
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-2">
+                                <div>
+                                  <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                                    Host Platform
+                                  </label>
+                                  <select
+                                    value={p.videoTour.platform || "YouTube"}
+                                    onChange={(e) => {
+                                      const updated = [...projects];
+                                      if (updated[idx].videoTour) {
+                                        updated[idx].videoTour = { ...updated[idx].videoTour!, platform: e.target.value as any };
+                                        saveProjects(updated);
+                                      }
+                                    }}
+                                    className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
+                                  >
+                                    <option value="YouTube">YouTube</option>
+                                    <option value="Buildofy">Buildofy</option>
+                                    <option value="Instagram">Instagram</option>
+                                    <option value="Vimeo">Vimeo</option>
+                                  </select>
+                                </div>
+
+                                <div>
+                                  <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                                    Button Action Text
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={p.videoTour.actionText || "Watch Video Tour →"}
+                                    onChange={(e) => {
+                                      const updated = [...projects];
+                                      if (updated[idx].videoTour) {
+                                        updated[idx].videoTour = { ...updated[idx].videoTour!, actionText: e.target.value };
+                                        saveProjects(updated);
+                                      }
+                                    }}
+                                    placeholder="Watch Video Tour →"
+                                    className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
                       {/* Project Gallery Manager */}
                       <div className="space-y-3 pt-3 border-t border-neutral-200">
                         <div className="flex justify-between items-center">
@@ -1120,11 +1284,107 @@ export default function AdminCMSPage() {
       {/* 2. SERVICES TAB (FULL ACCESS)                             */}
       {/* ========================================================= */}
       {activeTab === "services" && (
-        <div className="space-y-6">
+        <div className="space-y-8">
+          {/* Services Page Header & Scope Banner Settings */}
+          <div className="p-6 bg-neutral-50 border border-neutral-200 rounded space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-neutral-200 gap-2">
+              <div className="flex items-center gap-2">
+                <Layers size={16} className="text-neutral-800" />
+                <h3 className="text-xs uppercase tracking-wider font-semibold text-neutral-900">
+                  Services Page Header &amp; Top Banner
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  saveSiteSettings(siteSettings);
+                  showToast("Services page header settings updated.");
+                }}
+                className="inline-flex items-center gap-1 px-3 py-1.5 bg-black text-white text-xs uppercase tracking-wider font-medium hover:bg-neutral-800 transition-colors rounded self-start sm:self-auto"
+              >
+                <Save size={12} />
+                <span>Save Header</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              <div>
+                <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                  Primary Page Topic / Heading
+                </label>
+                <input
+                  type="text"
+                  value={siteSettings.servicesHeader?.title ?? "Services"}
+                  onChange={(e) => {
+                    const currentHeader = siteSettings.servicesHeader || {
+                      title: "Services",
+                      subtitle: "PRACTICE DISCIPLINES & SCOPE",
+                      description: "We provide integrated design services for new buildings and interior environments. Each appointment is structured around the project's scale, stage and specific requirements.",
+                    };
+                    saveSiteSettings({
+                      ...siteSettings,
+                      servicesHeader: { ...currentHeader, title: e.target.value },
+                    });
+                  }}
+                  placeholder="Services"
+                  className="w-full p-2 border border-neutral-300 rounded text-xs bg-white font-medium"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                  Scope Sub-heading / Monospace Tag (Below Topic)
+                </label>
+                <input
+                  type="text"
+                  value={siteSettings.servicesHeader?.subtitle ?? "PRACTICE DISCIPLINES & SCOPE"}
+                  onChange={(e) => {
+                    const currentHeader = siteSettings.servicesHeader || {
+                      title: "Services",
+                      subtitle: "PRACTICE DISCIPLINES & SCOPE",
+                      description: "We provide integrated design services for new buildings and interior environments. Each appointment is structured around the project's scale, stage and specific requirements.",
+                    };
+                    saveSiteSettings({
+                      ...siteSettings,
+                      servicesHeader: { ...currentHeader, subtitle: e.target.value },
+                    });
+                  }}
+                  placeholder="PRACTICE DISCIPLINES & SCOPE"
+                  className="w-full p-2 border border-neutral-300 rounded text-xs bg-white font-mono"
+                />
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                  Services Introduction Narrative
+                </label>
+                <textarea
+                  rows={2}
+                  value={
+                    siteSettings.servicesHeader?.description ??
+                    "We provide integrated design services for new buildings and interior environments. Each appointment is structured around the project's scale, stage and specific requirements."
+                  }
+                  onChange={(e) => {
+                    const currentHeader = siteSettings.servicesHeader || {
+                      title: "Services",
+                      subtitle: "PRACTICE DISCIPLINES & SCOPE",
+                      description: "We provide integrated design services for new buildings and interior environments. Each appointment is structured around the project's scale, stage and specific requirements.",
+                    };
+                    saveSiteSettings({
+                      ...siteSettings,
+                      servicesHeader: { ...currentHeader, description: e.target.value },
+                    });
+                  }}
+                  className="w-full p-2 border border-neutral-300 rounded text-xs bg-white leading-relaxed"
+                />
+              </div>
+            </div>
+          </div>
+
           <div className="flex justify-between items-center">
             <div>
               <h2 className="text-sm font-semibold uppercase tracking-wider text-neutral-900">
-                Studio Disciplines & Services ({services.length})
+                Studio Disciplines &amp; Services ({services.length})
               </h2>
               <p className="text-xs text-neutral-500">
                 Edit scope, deliverables, and stage-gate process for each discipline.
@@ -1305,6 +1565,143 @@ export default function AdminCMSPage() {
                         >
                           <X size={12} />
                         </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Scope of Work — Methodological Phases Manager */}
+                <div className="pt-3 border-t border-neutral-200 space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <ListChecks size={15} className="text-neutral-800" />
+                      <span className="text-[10px] uppercase font-mono tracking-wider font-semibold text-neutral-800">
+                        Scope of Work — Design Phases ({s.process?.length || 0} Stages)
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = [...services];
+                        const nextStepNum = String((updated[idx].process?.length || 0) + 1).padStart(2, "0");
+                        const newStep = {
+                          step: nextStepNum,
+                          title: `New Phase ${nextStepNum}`,
+                          description: "Comprehensive deliverables, technical drawings, and coordination protocols.",
+                        };
+                        updated[idx].process = [...(updated[idx].process || []), newStep];
+                        saveServices(updated);
+                        showToast(`Phase ${nextStepNum} added to "${s.title}".`);
+                      }}
+                      className="text-[10px] uppercase font-semibold text-black hover:underline inline-flex items-center gap-1"
+                    >
+                      <Plus size={11} />
+                      <span>+ Add Scope Phase</span>
+                    </button>
+                  </div>
+
+                  <div className="space-y-2.5">
+                    {s.process?.map((phase, pIdx) => (
+                      <div
+                        key={pIdx}
+                        className="p-3 bg-neutral-50/80 border border-neutral-200 rounded space-y-2 text-xs"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 flex-1">
+                            <span className="text-[10px] uppercase font-mono text-neutral-400 font-semibold">
+                              Phase
+                            </span>
+                            <input
+                              type="text"
+                              value={phase.step}
+                              onChange={(e) => {
+                                const updated = [...services];
+                                updated[idx].process[pIdx].step = e.target.value;
+                                saveServices(updated);
+                              }}
+                              className="w-14 p-1 border border-neutral-300 rounded font-mono text-xs bg-white text-center font-bold"
+                              placeholder="01"
+                            />
+                            <input
+                              type="text"
+                              value={phase.title}
+                              onChange={(e) => {
+                                const updated = [...services];
+                                updated[idx].process[pIdx].title = e.target.value;
+                                saveServices(updated);
+                              }}
+                              className="flex-1 p-1 border border-neutral-300 rounded font-medium text-xs bg-white"
+                              placeholder="Phase Title"
+                            />
+                          </div>
+
+                          <div className="flex items-center gap-1">
+                            {/* Move Up */}
+                            {pIdx > 0 && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updated = [...services];
+                                  const temp = updated[idx].process[pIdx - 1];
+                                  updated[idx].process[pIdx - 1] = updated[idx].process[pIdx];
+                                  updated[idx].process[pIdx] = temp;
+                                  saveServices(updated);
+                                }}
+                                className="p-1 text-neutral-400 hover:text-black"
+                                title="Move Phase Up"
+                              >
+                                <ChevronUp size={14} />
+                              </button>
+                            )}
+
+                            {/* Move Down */}
+                            {pIdx < (s.process?.length || 0) - 1 && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updated = [...services];
+                                  const temp = updated[idx].process[pIdx + 1];
+                                  updated[idx].process[pIdx + 1] = updated[idx].process[pIdx];
+                                  updated[idx].process[pIdx] = temp;
+                                  saveServices(updated);
+                                }}
+                                className="p-1 text-neutral-400 hover:text-black"
+                                title="Move Phase Down"
+                              >
+                                <ChevronDown size={14} />
+                              </button>
+                            )}
+
+                            {/* Delete Phase */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (confirm(`Delete phase "${phase.title}"?`)) {
+                                  const updated = [...services];
+                                  updated[idx].process = updated[idx].process.filter((_, i) => i !== pIdx);
+                                  saveServices(updated);
+                                  showToast("Phase removed.");
+                                }
+                              }}
+                              className="text-neutral-400 hover:text-red-500 p-1"
+                              title="Delete Phase"
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          </div>
+                        </div>
+
+                        <textarea
+                          rows={2}
+                          value={phase.description}
+                          onChange={(e) => {
+                            const updated = [...services];
+                            updated[idx].process[pIdx].description = e.target.value;
+                            saveServices(updated);
+                          }}
+                          placeholder="Phase deliverables, milestones, and scope summary"
+                          className="w-full p-2 border border-neutral-300 rounded text-xs bg-white leading-relaxed"
+                        />
                       </div>
                     ))}
                   </div>
@@ -2343,6 +2740,453 @@ export default function AdminCMSPage() {
                         saveSiteSettings({ ...siteSettings, socials: updated });
                       }}
                       className="w-full p-2 border border-neutral-300 rounded bg-white"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Section D: About Page — Studio Milestones & Statistics */}
+          <div className="p-6 bg-neutral-50 border border-neutral-200 rounded space-y-4">
+            <div className="flex flex-wrap items-center justify-between pb-3 border-b border-neutral-200 gap-2">
+              <div className="flex items-center gap-2">
+                <Sparkles size={16} className="text-neutral-800" />
+                <h3 className="text-xs uppercase tracking-wider font-semibold text-neutral-900">
+                  About Page — Studio Milestones &amp; Statistics Banner
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  const current = siteSettings.milestones || [
+                    { value: "2006", label: "Established Studio", detail: "Rooted in Basavanagudi" },
+                    { value: "20+", label: "Years Experience", detail: "Ar. Rajesh Shivaram" },
+                    { value: "100+", label: "Projects Designed", detail: "Contextual & Sustainable" },
+                    { value: "15+", label: "Recognitions", detail: "Awards, Publications & Monograph" },
+                  ];
+                  const newStat: StudioMilestone = {
+                    value: "50+",
+                    label: "New Milestone",
+                    detail: "Studio Recognition",
+                  };
+                  saveSiteSettings({ ...siteSettings, milestones: [...current, newStat] });
+                  showToast("New milestone statistic added.");
+                }}
+                className="text-[10px] uppercase font-semibold text-black hover:underline inline-flex items-center gap-1"
+              >
+                <Plus size={11} />
+                <span>+ Add Milestone Metric</span>
+              </button>
+            </div>
+
+            <p className="text-xs text-neutral-500">
+              The high-impact dark statistics banner featured on the About page between Core Values and What Sets Us Apart.
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {(siteSettings.milestones || [
+                { value: "2006", label: "Established Studio", detail: "Rooted in Basavanagudi" },
+                { value: "20+", label: "Years Experience", detail: "Ar. Rajesh Shivaram" },
+                { value: "100+", label: "Projects Designed", detail: "Contextual & Sustainable" },
+                { value: "15+", label: "Recognitions", detail: "Awards, Publications & Monograph" },
+              ]).map((m, mIdx) => (
+                <div key={mIdx} className="p-3 bg-white border border-neutral-200 rounded space-y-2 text-xs relative group">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-mono font-semibold text-neutral-400">
+                      METRIC 0{mIdx + 1}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const current = siteSettings.milestones || [
+                          { value: "2006", label: "Established Studio", detail: "Rooted in Basavanagudi" },
+                          { value: "20+", label: "Years Experience", detail: "Ar. Rajesh Shivaram" },
+                          { value: "100+", label: "Projects Designed", detail: "Contextual & Sustainable" },
+                          { value: "15+", label: "Recognitions", detail: "Awards, Publications & Monograph" },
+                        ];
+                        const updated = current.filter((_, i) => i !== mIdx);
+                        saveSiteSettings({ ...siteSettings, milestones: updated });
+                        showToast("Milestone statistic removed.");
+                      }}
+                      className="text-neutral-400 hover:text-red-500 p-0.5"
+                      title="Remove Metric"
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
+
+                  <div>
+                    <label className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">
+                      Stat Display (e.g. 2006, 20+, 100+)
+                    </label>
+                    <input
+                      type="text"
+                      value={m.value}
+                      onChange={(e) => {
+                        const current = [...(siteSettings.milestones || [
+                          { value: "2006", label: "Established Studio", detail: "Rooted in Basavanagudi" },
+                          { value: "20+", label: "Years Experience", detail: "Ar. Rajesh Shivaram" },
+                          { value: "100+", label: "Projects Designed", detail: "Contextual & Sustainable" },
+                          { value: "15+", label: "Recognitions", detail: "Awards, Publications & Monograph" },
+                        ])];
+                        current[mIdx] = { ...current[mIdx], value: e.target.value };
+                        saveSiteSettings({ ...siteSettings, milestones: current });
+                      }}
+                      className="w-full p-1.5 border border-neutral-300 rounded font-display text-sm font-semibold"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">
+                      Label
+                    </label>
+                    <input
+                      type="text"
+                      value={m.label}
+                      onChange={(e) => {
+                        const current = [...(siteSettings.milestones || [
+                          { value: "2006", label: "Established Studio", detail: "Rooted in Basavanagudi" },
+                          { value: "20+", label: "Years Experience", detail: "Ar. Rajesh Shivaram" },
+                          { value: "100+", label: "Projects Designed", detail: "Contextual & Sustainable" },
+                          { value: "15+", label: "Recognitions", detail: "Awards, Publications & Monograph" },
+                        ])];
+                        current[mIdx] = { ...current[mIdx], label: e.target.value };
+                        saveSiteSettings({ ...siteSettings, milestones: current });
+                      }}
+                      className="w-full p-1.5 border border-neutral-300 rounded text-xs"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">
+                      Detail Note
+                    </label>
+                    <input
+                      type="text"
+                      value={m.detail}
+                      onChange={(e) => {
+                        const current = [...(siteSettings.milestones || [
+                          { value: "2006", label: "Established Studio", detail: "Rooted in Basavanagudi" },
+                          { value: "20+", label: "Years Experience", detail: "Ar. Rajesh Shivaram" },
+                          { value: "100+", label: "Projects Designed", detail: "Contextual & Sustainable" },
+                          { value: "15+", label: "Recognitions", detail: "Awards, Publications & Monograph" },
+                        ])];
+                        current[mIdx] = { ...current[mIdx], detail: e.target.value };
+                        saveSiteSettings({ ...siteSettings, milestones: current });
+                      }}
+                      className="w-full p-1.5 border border-neutral-300 rounded text-[11px] font-mono"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Section E: About Page — Vision & Mission */}
+          <div className="p-6 bg-neutral-50 border border-neutral-200 rounded space-y-4">
+            <div className="flex items-center gap-2 pb-3 border-b border-neutral-200">
+              <Compass size={16} className="text-neutral-800" />
+              <h3 className="text-xs uppercase tracking-wider font-semibold text-neutral-900">
+                About Page — Vision &amp; Mission Orientation
+              </h3>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              <div>
+                <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                  Vision Statement
+                </label>
+                <textarea
+                  rows={4}
+                  value={
+                    siteSettings.vision ??
+                    "To create architecture that improves everyday life, responds responsibly to its environment and remains meaningful over time."
+                  }
+                  onChange={(e) => {
+                    saveSiteSettings({ ...siteSettings, vision: e.target.value });
+                  }}
+                  className="w-full p-2 border border-neutral-300 rounded text-xs bg-white leading-relaxed"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                  Mission Statement
+                </label>
+                <textarea
+                  rows={4}
+                  value={
+                    siteSettings.mission ??
+                    "To guide every project through a clear and collaborative design process, bringing together creativity, technical rigour, environmental awareness and careful execution. We aim to deliver spaces that reflect each client's needs while contributing positively to their setting."
+                  }
+                  onChange={(e) => {
+                    saveSiteSettings({ ...siteSettings, mission: e.target.value });
+                  }}
+                  className="w-full p-2 border border-neutral-300 rounded text-xs bg-white leading-relaxed"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Section F: About Page — Core Values (Principles & Ethics) */}
+          <div className="p-6 bg-neutral-50 border border-neutral-200 rounded space-y-4">
+            <div className="flex flex-wrap items-center justify-between pb-3 border-b border-neutral-200 gap-2">
+              <div className="flex items-center gap-2">
+                <ShieldCheck size={16} className="text-neutral-800" />
+                <h3 className="text-xs uppercase tracking-wider font-semibold text-neutral-900">
+                  About Page — Core Values &amp; Principles ({(siteSettings.coreValues || []).length || 6} Values)
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  const current = siteSettings.coreValues || [
+                    { num: "01", title: "Design Integrity", desc: "We protect the central idea of a project from concept through completion.", tag: "Commitment" },
+                    { num: "02", title: "Client Partnership", desc: "We listen, explain choices clearly and make decisions collaboratively.", tag: "Dialogue" },
+                    { num: "03", title: "Context and Climate", desc: "We respond to orientation, light, ventilation, landscape and local conditions.", tag: "Sustainability" },
+                    { num: "04", title: "Practical Innovation", desc: "We explore new possibilities while respecting function, budget and construction realities.", tag: "Engineering" },
+                    { num: "05", title: "Responsible Practice", desc: "We favour durable solutions, efficient planning and environmentally conscious choices.", tag: "Lifecycle" },
+                    { num: "06", title: "Craft and Detail", desc: "We believe material junctions, proportions and execution determine the quality of the finished space.", tag: "Precision" },
+                  ];
+                  const nextNum = String(current.length + 1).padStart(2, "0");
+                  const newVal: CoreValue = {
+                    num: nextNum,
+                    title: `New Principle ${nextNum}`,
+                    tag: "Ethics",
+                    desc: "Commitment to enduring architectural quality, honest materiality, and environmental stewardship.",
+                  };
+                  saveSiteSettings({ ...siteSettings, coreValues: [...current, newVal] });
+                  showToast(`Core value ${nextNum} added.`);
+                }}
+                className="text-[10px] uppercase font-semibold text-black hover:underline inline-flex items-center gap-1"
+              >
+                <Plus size={11} />
+                <span>+ Add Core Value</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {(siteSettings.coreValues || [
+                { num: "01", title: "Design Integrity", desc: "We protect the central idea of a project from concept through completion.", tag: "Commitment" },
+                { num: "02", title: "Client Partnership", desc: "We listen, explain choices clearly and make decisions collaboratively.", tag: "Dialogue" },
+                { num: "03", title: "Context and Climate", desc: "We respond to orientation, light, ventilation, landscape and local conditions.", tag: "Sustainability" },
+                { num: "04", title: "Practical Innovation", desc: "We explore new possibilities while respecting function, budget and construction realities.", tag: "Engineering" },
+                { num: "05", title: "Responsible Practice", desc: "We favour durable solutions, efficient planning and environmentally conscious choices.", tag: "Lifecycle" },
+                { num: "06", title: "Craft and Detail", desc: "We believe material junctions, proportions and execution determine the quality of the finished space.", tag: "Precision" },
+              ]).map((v, vIdx) => (
+                <div key={vIdx} className="p-3.5 bg-white border border-neutral-200 rounded space-y-2 text-xs">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={v.num}
+                        onChange={(e) => {
+                          const current = [...(siteSettings.coreValues || [
+                            { num: "01", title: "Design Integrity", desc: "We protect the central idea of a project from concept through completion.", tag: "Commitment" },
+                            { num: "02", title: "Client Partnership", desc: "We listen, explain choices clearly and make decisions collaboratively.", tag: "Dialogue" },
+                            { num: "03", title: "Context and Climate", desc: "We respond to orientation, light, ventilation, landscape and local conditions.", tag: "Sustainability" },
+                            { num: "04", title: "Practical Innovation", desc: "We explore new possibilities while respecting function, budget and construction realities.", tag: "Engineering" },
+                            { num: "05", title: "Responsible Practice", desc: "We favour durable solutions, efficient planning and environmentally conscious choices.", tag: "Lifecycle" },
+                            { num: "06", title: "Craft and Detail", desc: "We believe material junctions, proportions and execution determine the quality of the finished space.", tag: "Precision" },
+                          ])];
+                          current[vIdx] = { ...current[vIdx], num: e.target.value };
+                          saveSiteSettings({ ...siteSettings, coreValues: current });
+                        }}
+                        className="w-12 p-1 border border-neutral-300 rounded font-mono text-center font-bold text-xs"
+                        placeholder="01"
+                      />
+                      <input
+                        type="text"
+                        value={v.tag}
+                        onChange={(e) => {
+                          const current = [...(siteSettings.coreValues || [
+                            { num: "01", title: "Design Integrity", desc: "We protect the central idea of a project from concept through completion.", tag: "Commitment" },
+                            { num: "02", title: "Client Partnership", desc: "We listen, explain choices clearly and make decisions collaboratively.", tag: "Dialogue" },
+                            { num: "03", title: "Context and Climate", desc: "We respond to orientation, light, ventilation, landscape and local conditions.", tag: "Sustainability" },
+                            { num: "04", title: "Practical Innovation", desc: "We explore new possibilities while respecting function, budget and construction realities.", tag: "Engineering" },
+                            { num: "05", title: "Responsible Practice", desc: "We favour durable solutions, efficient planning and environmentally conscious choices.", tag: "Lifecycle" },
+                            { num: "06", title: "Craft and Detail", desc: "We believe material junctions, proportions and execution determine the quality of the finished space.", tag: "Precision" },
+                          ])];
+                          current[vIdx] = { ...current[vIdx], tag: e.target.value };
+                          saveSiteSettings({ ...siteSettings, coreValues: current });
+                        }}
+                        className="w-24 p-1 border border-neutral-300 rounded font-mono text-[11px]"
+                        placeholder="Tag"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const current = siteSettings.coreValues || [
+                          { num: "01", title: "Design Integrity", desc: "We protect the central idea of a project from concept through completion.", tag: "Commitment" },
+                          { num: "02", title: "Client Partnership", desc: "We listen, explain choices clearly and make decisions collaboratively.", tag: "Dialogue" },
+                          { num: "03", title: "Context and Climate", desc: "We respond to orientation, light, ventilation, landscape and local conditions.", tag: "Sustainability" },
+                          { num: "04", title: "Practical Innovation", desc: "We explore new possibilities while respecting function, budget and construction realities.", tag: "Engineering" },
+                          { num: "05", title: "Responsible Practice", desc: "We favour durable solutions, efficient planning and environmentally conscious choices.", tag: "Lifecycle" },
+                          { num: "06", title: "Craft and Detail", desc: "We believe material junctions, proportions and execution determine the quality of the finished space.", tag: "Precision" },
+                        ];
+                        const updated = current.filter((_, i) => i !== vIdx);
+                        saveSiteSettings({ ...siteSettings, coreValues: updated });
+                        showToast("Core value removed.");
+                      }}
+                      className="text-neutral-400 hover:text-red-500 p-0.5"
+                      title="Remove Value"
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
+
+                  <div>
+                    <label className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">
+                      Principle Title
+                    </label>
+                    <input
+                      type="text"
+                      value={v.title}
+                      onChange={(e) => {
+                        const current = [...(siteSettings.coreValues || [
+                          { num: "01", title: "Design Integrity", desc: "We protect the central idea of a project from concept through completion.", tag: "Commitment" },
+                          { num: "02", title: "Client Partnership", desc: "We listen, explain choices clearly and make decisions collaboratively.", tag: "Dialogue" },
+                          { num: "03", title: "Context and Climate", desc: "We respond to orientation, light, ventilation, landscape and local conditions.", tag: "Sustainability" },
+                          { num: "04", title: "Practical Innovation", desc: "We explore new possibilities while respecting function, budget and construction realities.", tag: "Engineering" },
+                          { num: "05", title: "Responsible Practice", desc: "We favour durable solutions, efficient planning and environmentally conscious choices.", tag: "Lifecycle" },
+                          { num: "06", title: "Craft and Detail", desc: "We believe material junctions, proportions and execution determine the quality of the finished space.", tag: "Precision" },
+                        ])];
+                        current[vIdx] = { ...current[vIdx], title: e.target.value };
+                        saveSiteSettings({ ...siteSettings, coreValues: current });
+                      }}
+                      className="w-full p-1.5 border border-neutral-300 rounded font-medium text-xs"
+                      placeholder="Title"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">
+                      Description Narrative
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={v.desc}
+                      onChange={(e) => {
+                        const current = [...(siteSettings.coreValues || [
+                          { num: "01", title: "Design Integrity", desc: "We protect the central idea of a project from concept through completion.", tag: "Commitment" },
+                          { num: "02", title: "Client Partnership", desc: "We listen, explain choices clearly and make decisions collaboratively.", tag: "Dialogue" },
+                          { num: "03", title: "Context and Climate", desc: "We respond to orientation, light, ventilation, landscape and local conditions.", tag: "Sustainability" },
+                          { num: "04", title: "Practical Innovation", desc: "We explore new possibilities while respecting function, budget and construction realities.", tag: "Engineering" },
+                          { num: "05", title: "Responsible Practice", desc: "We favour durable solutions, efficient planning and environmentally conscious choices.", tag: "Lifecycle" },
+                          { num: "06", title: "Craft and Detail", desc: "We believe material junctions, proportions and execution determine the quality of the finished space.", tag: "Precision" },
+                        ])];
+                        current[vIdx] = { ...current[vIdx], desc: e.target.value };
+                        saveSiteSettings({ ...siteSettings, coreValues: current });
+                      }}
+                      className="w-full p-1.5 border border-neutral-300 rounded text-xs leading-relaxed"
+                      placeholder="Narrative description"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Section G: About Page — What Sets Us Apart */}
+          <div className="p-6 bg-neutral-50 border border-neutral-200 rounded space-y-4">
+            <div className="flex flex-wrap items-center justify-between pb-3 border-b border-neutral-200 gap-2">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 size={16} className="text-neutral-800" />
+                <h3 className="text-xs uppercase tracking-wider font-semibold text-neutral-900">
+                  About Page — What Sets Us Apart ({(siteSettings.differentiators || []).length || 3} Differentiators)
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  const current = siteSettings.differentiators || [
+                    { title: "End-to-End Coordination", desc: "Architecture, interiors, structural design and execution support are coordinated together as one cohesive team. This continuity prevents fragmented compromises and guarantees seamless execution." },
+                    { title: "Bespoke Spatial Character", desc: "Our designs combine creativity with comfort, luxury with restraint, and ambition with practical planning. Every building is individual to the client rather than copied from a formula." },
+                    { title: "Climate & Passive Intelligence", desc: "Deep overhangs, natural stack ventilation, shaded courtyards, and honest materiality keep buildings thermally comfortable and resource-conscious for generations." },
+                  ];
+                  const newDiff: Differentiator = {
+                    title: "Collaborative Delivery",
+                    desc: "Rigorous milestone coordination from site study to final handover ensures pristine execution fidelity.",
+                  };
+                  saveSiteSettings({ ...siteSettings, differentiators: [...current, newDiff] });
+                  showToast("New differentiator added.");
+                }}
+                className="text-[10px] uppercase font-semibold text-black hover:underline inline-flex items-center gap-1"
+              >
+                <Plus size={11} />
+                <span>+ Add Differentiator</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {(siteSettings.differentiators || [
+                { title: "End-to-End Coordination", desc: "Architecture, interiors, structural design and execution support are coordinated together as one cohesive team. This continuity prevents fragmented compromises and guarantees seamless execution." },
+                { title: "Bespoke Spatial Character", desc: "Our designs combine creativity with comfort, luxury with restraint, and ambition with practical planning. Every building is individual to the client rather than copied from a formula." },
+                { title: "Climate & Passive Intelligence", desc: "Deep overhangs, natural stack ventilation, shaded courtyards, and honest materiality keep buildings thermally comfortable and resource-conscious for generations." },
+              ]).map((diff, dIdx) => (
+                <div key={dIdx} className="p-3.5 bg-white border border-neutral-200 rounded space-y-2 text-xs">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-mono text-neutral-400 font-semibold">
+                      ATTRIBUTE 0{dIdx + 1}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const current = siteSettings.differentiators || [
+                          { title: "End-to-End Coordination", desc: "Architecture, interiors, structural design and execution support are coordinated together as one cohesive team. This continuity prevents fragmented compromises and guarantees seamless execution." },
+                          { title: "Bespoke Spatial Character", desc: "Our designs combine creativity with comfort, luxury with restraint, and ambition with practical planning. Every building is individual to the client rather than copied from a formula." },
+                          { title: "Climate & Passive Intelligence", desc: "Deep overhangs, natural stack ventilation, shaded courtyards, and honest materiality keep buildings thermally comfortable and resource-conscious for generations." },
+                        ];
+                        const updated = current.filter((_, i) => i !== dIdx);
+                        saveSiteSettings({ ...siteSettings, differentiators: updated });
+                        showToast("Differentiator removed.");
+                      }}
+                      className="text-neutral-400 hover:text-red-500 p-0.5"
+                      title="Remove"
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
+
+                  <div>
+                    <label className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">
+                      Attribute Title
+                    </label>
+                    <input
+                      type="text"
+                      value={diff.title}
+                      onChange={(e) => {
+                        const current = [...(siteSettings.differentiators || [
+                          { title: "End-to-End Coordination", desc: "Architecture, interiors, structural design and execution support are coordinated together as one cohesive team. This continuity prevents fragmented compromises and guarantees seamless execution." },
+                          { title: "Bespoke Spatial Character", desc: "Our designs combine creativity with comfort, luxury with restraint, and ambition with practical planning. Every building is individual to the client rather than copied from a formula." },
+                          { title: "Climate & Passive Intelligence", desc: "Deep overhangs, natural stack ventilation, shaded courtyards, and honest materiality keep buildings thermally comfortable and resource-conscious for generations." },
+                        ])];
+                        current[dIdx] = { ...current[dIdx], title: e.target.value };
+                        saveSiteSettings({ ...siteSettings, differentiators: current });
+                      }}
+                      className="w-full p-1.5 border border-neutral-300 rounded font-medium text-xs"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">
+                      Narrative Detail
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={diff.desc}
+                      onChange={(e) => {
+                        const current = [...(siteSettings.differentiators || [
+                          { title: "End-to-End Coordination", desc: "Architecture, interiors, structural design and execution support are coordinated together as one cohesive team. This continuity prevents fragmented compromises and guarantees seamless execution." },
+                          { title: "Bespoke Spatial Character", desc: "Our designs combine creativity with comfort, luxury with restraint, and ambition with practical planning. Every building is individual to the client rather than copied from a formula." },
+                          { title: "Climate & Passive Intelligence", desc: "Deep overhangs, natural stack ventilation, shaded courtyards, and honest materiality keep buildings thermally comfortable and resource-conscious for generations." },
+                        ])];
+                        current[dIdx] = { ...current[dIdx], desc: e.target.value };
+                        saveSiteSettings({ ...siteSettings, differentiators: current });
+                      }}
+                      className="w-full p-1.5 border border-neutral-300 rounded text-xs leading-relaxed"
                     />
                   </div>
                 </div>
