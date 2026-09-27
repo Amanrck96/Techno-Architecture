@@ -69,8 +69,12 @@ export function useCMSStore() {
       try { localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(data.services)); } catch (_) {}
     }
     if (Array.isArray(data.team) && data.team.length > 0) {
-      setTeam(data.team);
-      try { localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(data.team)); } catch (_) {}
+      const rajeshOnly = data.team
+        .filter((m: TeamMember) => m.name?.toLowerCase().includes("rajesh"))
+        .map((m: TeamMember) => ({ ...m, image: "" }));
+      const finalTeam = rajeshOnly.length > 0 ? rajeshOnly : initialTeam;
+      setTeam(finalTeam);
+      try { localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(finalTeam)); } catch (_) {}
     }
     if (Array.isArray(data.blog) && data.blog.length > 0) {
       setBlog(data.blog);
@@ -130,7 +134,21 @@ export function useCMSStore() {
       const ss = localStorage.getItem(STORAGE_KEYS.SERVICES);
       if (ss) setServices(JSON.parse(ss));
       const st = localStorage.getItem(STORAGE_KEYS.TEAM);
-      if (st) setTeam(JSON.parse(st));
+      if (st) {
+        try {
+          const parsed = JSON.parse(st);
+          const filtered = Array.isArray(parsed)
+            ? parsed.filter((m: TeamMember) => m.name?.toLowerCase().includes("rajesh"))
+            : [];
+          if (filtered.length > 0) {
+            setTeam(filtered.map((m: TeamMember) => ({ ...m, image: "" })));
+          } else {
+            setTeam(initialTeam);
+          }
+        } catch (_) {
+          setTeam(initialTeam);
+        }
+      }
       const sb = localStorage.getItem(STORAGE_KEYS.BLOG);
       if (sb) setBlog(JSON.parse(sb));
       const sf = localStorage.getItem(STORAGE_KEYS.FAQ);
@@ -158,7 +176,12 @@ export function useCMSStore() {
             const { entity, data } = event.data;
             if (entity === "projects") setProjects(data);
             else if (entity === "services") setServices(data);
-            else if (entity === "team") setTeam(data);
+            else if (entity === "team") {
+              const rajeshOnly = Array.isArray(data)
+                ? data.filter((m: TeamMember) => m.name?.toLowerCase().includes("rajesh")).map((m) => ({ ...m, image: "" }))
+                : initialTeam;
+              setTeam(rajeshOnly.length > 0 ? rajeshOnly : initialTeam);
+            }
             else if (entity === "blog") setBlog(data);
             else if (entity === "faq") setFaq(data);
             else if (entity === "gallery") setGallery(data);
@@ -178,13 +201,19 @@ export function useCMSStore() {
         const { entity, data } = customEvent.detail;
         if (entity === "projects") setProjects(data);
         else if (entity === "services") setServices(data);
-        else if (entity === "team") setTeam(data);
+        else if (entity === "team") {
+          const rajeshOnly = Array.isArray(data)
+            ? data.filter((m: TeamMember) => m.name?.toLowerCase().includes("rajesh")).map((m: any) => ({ ...m, image: "" }))
+            : initialTeam;
+          setTeam(rajeshOnly.length > 0 ? rajeshOnly : initialTeam);
+        }
         else if (entity === "blog") setBlog(data);
         else if (entity === "faq") setFaq(data);
         else if (entity === "gallery") setGallery(data);
         else if (entity === "recognitions") setRecognitions(data);
         else if (entity === "siteSettings") setSiteSettings(data);
         else if (entity === "testimonials") setTestimonials(data);
+        else if (entity === "ALL_DATA") applyDataset(data);
       }
     };
     window.addEventListener(SYNC_EVENT_NAME, handleLocalUpdate);
@@ -240,10 +269,14 @@ export function useCMSStore() {
   }, []);
 
   const saveTeam = useCallback((newTeam: TeamMember[]) => {
-    setTeam(newTeam);
-    try { localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(newTeam)); } catch (_) {}
-    broadcastChange("team", newTeam);
-    syncToServer({ entity: "team", data: newTeam });
+    const sanitized = newTeam
+      .filter((m) => m.name?.toLowerCase().includes("rajesh"))
+      .map((m) => ({ ...m, image: "" }));
+    const finalTeam = sanitized.length > 0 ? sanitized : initialTeam;
+    setTeam(finalTeam);
+    try { localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(finalTeam)); } catch (_) {}
+    broadcastChange("team", finalTeam);
+    syncToServer({ entity: "team", data: finalTeam });
   }, []);
 
   const saveBlog = useCallback((newBlog: BlogPost[]) => {

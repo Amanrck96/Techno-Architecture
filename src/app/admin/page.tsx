@@ -1296,13 +1296,19 @@ export default function AdminCMSPage() {
               <div key={m.id} className="p-4 border border-neutral-200 bg-white space-y-3 rounded shadow-xs text-xs">
                 <div className="flex items-center gap-3">
                   <div className="relative w-12 h-14 bg-neutral-100 rounded overflow-hidden flex-shrink-0">
-                    <Image
-                      src={m.image}
-                      alt={m.name}
-                      fill
-                      unoptimized
-                      className="object-cover"
-                    />
+                    {m.image ? (
+                      <Image
+                        src={m.image}
+                        alt={m.name}
+                        fill
+                        unoptimized
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-neutral-400 font-mono text-[8px] uppercase">
+                        No Photo
+                      </div>
+                    )}
                   </div>
                   <div className="flex-1">
                     <input

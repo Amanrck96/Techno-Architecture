@@ -35,7 +35,14 @@ function getDefaultData() {
 async function readStore() {
   try {
     const raw = await fs.readFile(DATA_FILE_PATH, "utf-8");
-    return JSON.parse(raw);
+    const data = JSON.parse(raw);
+    if (data && Array.isArray(data.team)) {
+      const rajeshOnly = data.team
+        .filter((m: any) => m.name?.toLowerCase().includes("rajesh"))
+        .map((m: any) => ({ ...m, image: "" }));
+      data.team = rajeshOnly.length > 0 ? rajeshOnly : initialTeam;
+    }
+    return data;
   } catch (err: any) {
     if (err.code === "ENOENT") {
       const defaultData = getDefaultData();
