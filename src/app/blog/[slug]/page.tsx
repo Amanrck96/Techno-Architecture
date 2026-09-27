@@ -73,7 +73,12 @@ export default function BlogArticlePage() {
           fill
           priority
           sizes="100vw"
+          unoptimized={post.heroImage.startsWith("data:")}
           className="object-cover"
+          style={{
+            objectPosition: `${post.imagePositionX ?? 50}% ${post.imagePositionY ?? 50}%`,
+            transform: post.imageScale && post.imageScale !== 1 ? `scale(${post.imageScale})` : undefined,
+          }}
         />
       </div>
 
@@ -93,6 +98,28 @@ export default function BlogArticlePage() {
                 {p}
               </p>
             ))}
+            {sec.image && (
+              <figure className="my-6 space-y-2">
+                <div className="relative w-full aspect-[16/10] bg-neutral-100 overflow-hidden rounded">
+                  <Image
+                    src={sec.image}
+                    alt={sec.heading}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 800px"
+                    unoptimized={sec.image.startsWith("data:")}
+                    className="object-cover"
+                    style={{
+                      objectPosition: `${sec.imagePositionX ?? 50}% ${sec.imagePositionY ?? 50}%`,
+                    }}
+                  />
+                </div>
+                {sec.imageCaption && (
+                  <figcaption className="text-[11px] text-neutral-500 font-mono italic text-center">
+                    {sec.imageCaption}
+                  </figcaption>
+                )}
+              </figure>
+            )}
             {sec.quote && (
               <blockquote className="p-6 bg-neutral-50 border-y border-neutral-200 text-base md:text-lg font-display text-neutral-900 font-light italic my-6">
                 &ldquo;{sec.quote}&rdquo;

@@ -53,6 +53,7 @@ import {
   Layers,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ImageMouseAdjuster } from "@/components/admin/ImageMouseAdjuster";
 
 type AdminTab =
   | "projects"
@@ -104,6 +105,7 @@ export default function AdminCMSPage() {
   const [activeTab, setActiveTab] = useState<AdminTab>("projects");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [expandedProjectId, setExpandedProjectId] = useState<string | null>(null);
+  const [expandedBlogId, setExpandedBlogId] = useState<string | null>(null);
 
   // File import ref
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -1964,6 +1966,9 @@ export default function AdminCMSPage() {
                   publishedAt: new Date().toISOString().split("T")[0],
                   readingTime: "6 min read",
                   heroImage: "/projects/aikya/elevation-evening.jpg",
+                  imagePositionX: 50,
+                  imagePositionY: 50,
+                  imageScale: 1.0,
                   featured: false,
                   content: {
                     introduction: "Architecture emerges at the confluence of light, matter, and human experience.",
@@ -1988,14 +1993,19 @@ export default function AdminCMSPage() {
             </button>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-6">
             {blog.map((b, idx) => (
-              <div key={b.id} className="p-5 border border-neutral-200 bg-white rounded space-y-3 text-xs shadow-xs">
+              <div key={b.id} className="p-5 border border-neutral-200 bg-white rounded space-y-4 text-xs shadow-xs">
                 <div className="flex justify-between items-center border-b border-neutral-100 pb-2">
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] font-mono text-neutral-400 uppercase">{b.category}</span>
                     <span>·</span>
                     <span className="text-[10px] font-mono text-neutral-400">{b.publishedAt}</span>
+                    {b.featured && (
+                      <span className="px-1.5 py-0.5 bg-emerald-100 text-emerald-800 text-[9px] font-mono uppercase rounded">
+                        Featured
+                      </span>
+                    )}
                   </div>
                   <div className="flex items-center space-x-2">
                     <Link
@@ -2048,6 +2058,26 @@ export default function AdminCMSPage() {
                   </div>
                 </div>
 
+                {/* Interactive Image Upload & Mouse Adjuster */}
+                <ImageMouseAdjuster
+                  imageUrl={b.heroImage}
+                  positionX={b.imagePositionX ?? 50}
+                  positionY={b.imagePositionY ?? 50}
+                  scale={b.imageScale ?? 1.0}
+                  label="Hero Image, Upload & Mouse Alignment"
+                  onChange={({ imageUrl: newUrl, positionX, positionY, scale }) => {
+                    const updated = [...blog];
+                    if (newUrl !== undefined) {
+                      updated[idx].heroImage = newUrl;
+                    }
+                    updated[idx].imagePositionX = positionX;
+                    updated[idx].imagePositionY = positionY;
+                    updated[idx].imageScale = scale;
+                    saveBlog(updated);
+                  }}
+                  onToast={showToast}
+                />
+
                 <div>
                   <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">Excerpt</label>
                   <textarea
@@ -2060,6 +2090,190 @@ export default function AdminCMSPage() {
                     }}
                     className="w-full p-2 border border-neutral-300 rounded text-xs leading-relaxed"
                   />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 border-t border-neutral-100">
+                  <div>
+                    <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">Category</label>
+                    <select
+                      value={b.category}
+                      onChange={(e) => {
+                        const updated = [...blog];
+                        updated[idx].category = e.target.value as any;
+                        saveBlog(updated);
+                      }}
+                      className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
+                    >
+                      <option value="Spatial Theory">Spatial Theory</option>
+                      <option value="Materiality">Materiality</option>
+                      <option value="Sustainability">Sustainability</option>
+                      <option value="Monographs">Monographs</option>
+                      <option value="Urbanism">Urbanism</option>
+                    </select>
+                  </div>
+
+                  <div className="flex items-center gap-2 sm:pt-5">
+                    <input
+                      type="checkbox"
+                      id={`featured-${b.id}`}
+                      checked={b.featured}
+                      onChange={(e) => {
+                        const updated = [...blog];
+                        updated[idx].featured = e.target.checked;
+                        saveBlog(updated);
+                      }}
+                      className="w-4 h-4 accent-black rounded"
+                    />
+                    <label htmlFor={`featured-${b.id}`} className="text-xs font-medium text-neutral-700 cursor-pointer">
+                      Feature as Lead Monograph
+                    </label>
+                  </div>
+                </div>
+
+                {/* Expand / Collapse Detailed Content & Section Images */}
+                <div className="pt-2 border-t border-neutral-100">
+                  <button
+                    type="button"
+                    onClick={() => setExpandedBlogId(expandedBlogId === b.id ? null : b.id)}
+                    className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-neutral-600 hover:text-black transition-colors"
+                  >
+                    {expandedBlogId === b.id ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                    <span>{expandedBlogId === b.id ? "Hide Article Body & Section Images" : "Edit Article Body & Section Images"}</span>
+                  </button>
+
+                  {expandedBlogId === b.id && (
+                    <div className="mt-4 pt-4 border-t border-neutral-200/80 space-y-4 bg-neutral-50/50 p-4 rounded">
+                      {/* Introduction */}
+                      <div>
+                        <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                          Article Introduction
+                        </label>
+                        <textarea
+                          rows={3}
+                          value={b.content?.introduction || ""}
+                          onChange={(e) => {
+                            const updated = [...blog];
+                            if (!updated[idx].content) {
+                              updated[idx].content = { introduction: "", sections: [], conclusion: "" };
+                            }
+                            updated[idx].content.introduction = e.target.value;
+                            saveBlog(updated);
+                          }}
+                          className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
+                        />
+                      </div>
+
+                      {/* Sections */}
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] uppercase font-mono text-neutral-600 font-semibold">
+                            Article Sections ({b.content?.sections?.length || 0})
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = [...blog];
+                              if (!updated[idx].content) {
+                                updated[idx].content = { introduction: "", sections: [], conclusion: "" };
+                              }
+                              updated[idx].content.sections.push({
+                                heading: "New Section",
+                                body: ["Write section paragraph here..."],
+                              });
+                              saveBlog(updated);
+                              showToast("Added new section to monograph.");
+                            }}
+                            className="inline-flex items-center gap-1 px-2 py-1 bg-black text-white text-[10px] uppercase font-mono rounded"
+                          >
+                            <Plus size={11} />
+                            <span>Add Section</span>
+                          </button>
+                        </div>
+
+                        {b.content?.sections?.map((sec, sIdx) => (
+                          <div key={sIdx} className="p-3 border border-neutral-200 bg-white rounded space-y-3">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-mono text-neutral-400">Section {sIdx + 1}</span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updated = [...blog];
+                                  updated[idx].content.sections = updated[idx].content.sections.filter((_, i) => i !== sIdx);
+                                  saveBlog(updated);
+                                  showToast("Section removed.");
+                                }}
+                                className="text-neutral-400 hover:text-red-500 p-0.5"
+                              >
+                                <Trash2 size={12} />
+                              </button>
+                            </div>
+
+                            <input
+                              type="text"
+                              value={sec.heading}
+                              placeholder="Section Heading"
+                              onChange={(e) => {
+                                const updated = [...blog];
+                                updated[idx].content.sections[sIdx].heading = e.target.value;
+                                saveBlog(updated);
+                              }}
+                              className="w-full p-1.5 border border-neutral-300 rounded text-xs font-medium"
+                            />
+
+                            <textarea
+                              rows={3}
+                              value={sec.body?.join("\n\n") || ""}
+                              placeholder="Paragraph text (separate paragraphs with blank line)"
+                              onChange={(e) => {
+                                const updated = [...blog];
+                                updated[idx].content.sections[sIdx].body = e.target.value.split("\n\n").filter(Boolean);
+                                saveBlog(updated);
+                              }}
+                              className="w-full p-1.5 border border-neutral-300 rounded text-xs leading-relaxed"
+                            />
+
+                            {/* Optional Section Image with Mouse Adjuster */}
+                            <ImageMouseAdjuster
+                              imageUrl={sec.image || ""}
+                              positionX={sec.imagePositionX ?? 50}
+                              positionY={sec.imagePositionY ?? 50}
+                              label={`Section ${sIdx + 1} Image (Optional)`}
+                              onChange={({ imageUrl: newSecImg, positionX, positionY }) => {
+                                const updated = [...blog];
+                                if (newSecImg !== undefined) {
+                                  updated[idx].content.sections[sIdx].image = newSecImg;
+                                }
+                                updated[idx].content.sections[sIdx].imagePositionX = positionX;
+                                updated[idx].content.sections[sIdx].imagePositionY = positionY;
+                                saveBlog(updated);
+                              }}
+                              onToast={showToast}
+                            />
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Conclusion */}
+                      <div>
+                        <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                          Article Conclusion
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={b.content?.conclusion || ""}
+                          onChange={(e) => {
+                            const updated = [...blog];
+                            if (!updated[idx].content) {
+                              updated[idx].content = { introduction: "", sections: [], conclusion: "" };
+                            }
+                            updated[idx].content.conclusion = e.target.value;
+                            saveBlog(updated);
+                          }}
+                          className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

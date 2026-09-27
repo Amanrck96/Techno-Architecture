@@ -12,6 +12,9 @@ export interface BlogPost {
   publishedAt: string;
   readingTime: string;
   heroImage: string;
+  imagePositionX?: number; // 0 - 100 focal X percent
+  imagePositionY?: number; // 0 - 100 focal Y percent
+  imageScale?: number; // 1.0 - 2.5 zoom scale
   featured: boolean;
   content: {
     introduction: string;
@@ -19,6 +22,10 @@ export interface BlogPost {
       heading: string;
       body: string[];
       quote?: string;
+      image?: string;
+      imageCaption?: string;
+      imagePositionX?: number;
+      imagePositionY?: number;
     }[];
     conclusion: string;
   };

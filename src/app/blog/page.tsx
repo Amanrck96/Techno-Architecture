@@ -93,7 +93,12 @@ export default function BlogListingPage() {
               fill
               sizes="(max-width: 1024px) 100vw, 60vw"
               priority
+              unoptimized={featured.heroImage.startsWith("data:")}
               className="object-cover"
+              style={{
+                objectPosition: `${featured.imagePositionX ?? 50}% ${featured.imagePositionY ?? 50}%`,
+                transform: featured.imageScale && featured.imageScale !== 1 ? `scale(${featured.imageScale})` : undefined,
+              }}
             />
           </div>
 
@@ -144,7 +149,12 @@ export default function BlogListingPage() {
                   alt={post.title}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  unoptimized={post.heroImage.startsWith("data:")}
                   className="object-cover group-hover:scale-105 transition-transform duration-700 ease-editorial"
+                  style={{
+                    objectPosition: `${post.imagePositionX ?? 50}% ${post.imagePositionY ?? 50}%`,
+                    transform: post.imageScale && post.imageScale !== 1 ? `scale(${post.imageScale})` : undefined,
+                  }}
                 />
               </div>
 
