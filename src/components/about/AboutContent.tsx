@@ -97,34 +97,7 @@ export default function AboutContent() {
         </h1>
       </motion.div>
 
-      {/* 2. Interactive Studio Milestones Bar */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.1 }}
-        className="grid grid-cols-2 lg:grid-cols-4 gap-4 p-6 sm:p-8 bg-neutral-900 text-white rounded-sm shadow-xl"
-      >
-        {stats.map((stat, sIdx) => (
-          <motion.div
-            key={sIdx}
-            whileHover={{ y: -3 }}
-            className="space-y-1 border-l border-neutral-700/60 pl-4 sm:pl-6 first:border-l-0"
-          >
-            <div className="font-display text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-white">
-              {stat.value}
-            </div>
-            <div className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-medium text-neutral-300">
-              {stat.label}
-            </div>
-            <div className="text-[10px] text-neutral-400 font-light font-mono">
-              {stat.detail}
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
-
-      {/* 3. Main Full-Bleed Editorial Visual with Hover Zoom */}
+      {/* 2. Main Full-Bleed Editorial Visual with Hover Zoom */}
       <motion.div
         initial={{ opacity: 0, scale: 0.98 }}
         whileInView={{ opacity: 1, scale: 1 }}
@@ -356,6 +329,33 @@ export default function AboutContent() {
           ))}
         </div>
       </div>
+
+      {/* Studio Milestones Bar (Positioned Between Core Values & What Sets Us Apart) */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="grid grid-cols-2 lg:grid-cols-4 gap-4 p-6 sm:p-8 bg-neutral-900 text-white rounded-sm shadow-xl my-4"
+      >
+        {stats.map((stat, sIdx) => (
+          <motion.div
+            key={sIdx}
+            whileHover={{ y: -3 }}
+            className="space-y-1 border-l border-neutral-700/60 pl-4 sm:pl-6 first:border-l-0"
+          >
+            <div className="font-display text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-white">
+              {stat.value}
+            </div>
+            <div className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-medium text-neutral-300">
+              {stat.label}
+            </div>
+            <div className="text-[10px] text-neutral-400 font-light font-mono">
+              {stat.detail}
+            </div>
+          </motion.div>
+        ))}
+      </motion.div>
 
       {/* 7. What Sets Us Apart (PDF Page 3) */}
       <motion.div
