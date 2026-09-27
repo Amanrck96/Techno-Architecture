@@ -42,12 +42,12 @@ export default function ServicesPage() {
       {/* 1. Header with Discipline Jump Navigation */}
       <div className="border-b border-neutral-200 pb-8 space-y-6">
         <div>
-          <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block font-mono">
-            PRACTICE DISCIPLINES & SCOPE
-          </span>
-          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-neutral-900 tracking-tight mt-2">
+          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-neutral-900 tracking-tight">
             Services
           </h1>
+          <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block font-mono mt-2">
+            PRACTICE DISCIPLINES & SCOPE
+          </span>
           <p className="text-xs sm:text-sm text-neutral-500 max-w-2xl mt-3 leading-relaxed tracking-wide font-light">
             We provide integrated design services for new buildings and interior environments. Each appointment is structured around the project&apos;s scale, stage and specific requirements.
           </p>
