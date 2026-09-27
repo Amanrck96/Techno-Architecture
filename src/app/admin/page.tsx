@@ -244,11 +244,21 @@ export default function AdminCMSPage() {
       <div className="min-h-[85vh] flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md bg-white border border-neutral-200 shadow-2xl p-8 sm:p-10 space-y-6">
           {/* Header */}
-          <div className="text-center space-y-2">
-            <div className="w-14 h-14 rounded-full bg-neutral-100 flex items-center justify-center mx-auto text-neutral-900 border border-neutral-200">
-              <Lock size={22} />
+          <div className="text-center space-y-3">
+            <Link href="/" className="relative w-48 sm:w-56 h-12 mx-auto block" title="Techno Architecture">
+              <Image
+                src="/techno-logo-transparent.png"
+                alt="Techno Architecture"
+                fill
+                priority
+                unoptimized
+                className="object-contain"
+              />
+            </Link>
+            <div className="w-11 h-11 rounded-full bg-neutral-100 flex items-center justify-center mx-auto text-neutral-900 border border-neutral-200 mt-2">
+              <Lock size={18} />
             </div>
-            <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block pt-2 font-mono">
+            <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block pt-1 font-mono">
               RESTRICTED ADMINISTRATION
             </span>
             <h1 className="font-display text-2xl font-light text-neutral-900 tracking-tight">
@@ -359,7 +369,7 @@ export default function AdminCMSPage() {
   // AUTHENTICATED ADMIN DASHBOARD (FULL ACCESS)
   // -------------------------------------------------------------
   return (
-    <div className="w-full py-8 md:py-12 px-4 md:px-10 max-w-7xl mx-auto space-y-8">
+    <div className="w-full min-h-screen bg-neutral-50/50 pb-16">
       {/* Hidden File Input for JSON Backup Import */}
       <input
         type="file"
@@ -369,87 +379,137 @@ export default function AdminCMSPage() {
         className="hidden"
       />
 
-      {/* Top Security Banner */}
-      <div className="bg-neutral-900 text-white px-4 py-2.5 rounded flex items-center justify-between text-xs">
-        <div className="flex items-center gap-3">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-[10px] uppercase tracking-[0.25em] text-neutral-300 font-mono">
-            Signed in as Admin: <strong className="text-white">{currentAdminUser}</strong>
-          </span>
+      {/* Top Header Background with Architectural Ambience & Logo */}
+      <header className="w-full relative overflow-hidden bg-neutral-950 text-white border-b border-neutral-800 shadow-md">
+        {/* Ambient Architectural Image Background */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <Image
+            src="/projects/salut/salut-terrace-bar-screening-ambience.jpg"
+            alt="Techno Architecture Dashboard Background"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center opacity-20 grayscale"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/95 to-neutral-900/90" />
+          <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:16px_16px] opacity-40" />
         </div>
-        <div className="flex items-center space-x-3">
-          <Link
-            href="/"
-            target="_blank"
-            className="hidden sm:inline-flex items-center gap-1 text-[10px] uppercase tracking-wider text-neutral-400 hover:text-white transition-colors"
-          >
-            <span>View Public Site</span>
-            <ExternalLink size={11} />
-          </Link>
-          <button
-            onClick={handleLogout}
-            type="button"
-            className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-neutral-200 hover:text-white transition-colors bg-white/10 hover:bg-white/20 px-3 py-1 rounded"
-          >
-            <LogOut size={12} />
-            <span>Sign Out</span>
-          </button>
-        </div>
-      </div>
 
-      {/* CMS Header Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-neutral-200 gap-4">
-        <div>
-          <div className="flex items-center space-x-2 text-[10px] font-mono uppercase tracking-widest text-neutral-400">
-            <span>TECHNO ARCHITECTURE STUDIO</span>
-            <span>·</span>
-            <span className="text-emerald-600 font-semibold">FULL ADMIN ACCESS</span>
+        {/* Header Content Container */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-6 sm:py-8 space-y-6">
+          {/* Top Navbar Row: Logo + Session Info + Quick Actions */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-5 border-b border-white/10 gap-4">
+            {/* Logo Placement */}
+            <div className="flex items-center gap-4 sm:gap-6">
+              <Link
+                href="/"
+                title="Return to Public Site"
+                className="relative w-44 sm:w-56 md:w-64 h-10 sm:h-12 block group"
+              >
+                <Image
+                  src="/techno-logo-white-4k.png"
+                  alt="Techno Architecture Logo"
+                  fill
+                  priority
+                  unoptimized
+                  sizes="320px"
+                  className="object-contain object-left group-hover:opacity-90 transition-opacity"
+                />
+              </Link>
+              <div className="hidden sm:block h-6 w-px bg-white/20" />
+              <div className="hidden sm:flex flex-col">
+                <span className="text-[9px] uppercase tracking-[0.25em] text-neutral-400 font-mono font-medium">
+                  STUDIO CMS
+                </span>
+                <span className="text-[10px] tracking-wider text-emerald-400 font-mono">
+                  MANAGEMENT CONSOLE
+                </span>
+              </div>
+            </div>
+
+            {/* Session Status & Navigation Actions */}
+            <div className="flex flex-wrap items-center gap-2.5 text-xs">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-neutral-300 text-[11px] font-mono">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Admin: <strong className="text-white">{currentAdminUser}</strong></span>
+              </div>
+
+              <Link
+                href="/"
+                target="_blank"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded text-[11px] font-medium tracking-wide transition-colors border border-white/10"
+              >
+                <span>View Public Site</span>
+                <ExternalLink size={11} />
+              </Link>
+
+              <button
+                onClick={handleLogout}
+                type="button"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-red-500/20 text-neutral-300 hover:text-red-200 border border-white/10 hover:border-red-500/30 rounded text-[11px] font-medium transition-colors"
+              >
+                <LogOut size={12} />
+                <span>Sign Out</span>
+              </button>
+            </div>
           </div>
-          <h1 className="font-display text-2xl sm:text-3xl font-light text-neutral-900 mt-1">
-            Studio Content & System Studio
-          </h1>
-          <p className="text-xs text-neutral-500 mt-0.5">
-            Full administrative control over all architectural projects, services, practice team, monographs, FAQs, gallery, awards, testimonials, and site settings.
-          </p>
+
+          {/* Bottom Header Row: Title, Subtitle, & Global Utilities */}
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pt-1">
+            <div className="space-y-1.5">
+              <span className="text-[9.5px] uppercase tracking-[0.25em] text-emerald-400 font-mono font-semibold block">
+                FULL ADMINISTRATIVE ACCESS
+              </span>
+              <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-light text-white tracking-tight">
+                Studio Content &amp; System Dashboard
+              </h1>
+              <p className="text-xs sm:text-sm text-neutral-400 max-w-2xl font-light leading-relaxed">
+                Full administrative control over all architectural projects, services, practice leadership, monographs, FAQs, gallery, awards, testimonials, and site configuration.
+              </p>
+            </div>
+
+            {/* Data Management Action Buttons */}
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={exportData}
+                type="button"
+                className="flex items-center gap-1.5 px-3.5 py-2 bg-white text-black hover:bg-neutral-200 transition-colors rounded text-xs font-medium uppercase tracking-wider"
+                title="Download full JSON backup of website"
+              >
+                <Download size={13} />
+                <span>Export Backup</span>
+              </button>
+
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                type="button"
+                className="flex items-center gap-1.5 px-3.5 py-2 bg-white/10 hover:bg-white/20 text-white border border-white/15 transition-colors rounded text-xs font-medium uppercase tracking-wider"
+                title="Upload previously exported JSON backup"
+              >
+                <Upload size={13} />
+                <span>Import JSON</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  if (confirm("Reset all website data back to default initial seed data? Any unsaved edits will be replaced.")) {
+                    resetAllToDefaults();
+                    showToast("All entities reset to initial seed defaults.");
+                  }
+                }}
+                type="button"
+                className="flex items-center gap-1.5 px-3 py-2 bg-transparent hover:bg-red-500/20 text-neutral-400 hover:text-red-300 border border-white/10 hover:border-red-500/30 transition-colors rounded text-xs font-medium uppercase tracking-wider"
+              >
+                <RotateCcw size={13} />
+                <span>Reset Defaults</span>
+              </button>
+            </div>
+          </div>
         </div>
+      </header>
 
-        {/* Global Utilities */}
-        <div className="flex flex-wrap items-center gap-2 text-xs">
-          <button
-            onClick={exportData}
-            type="button"
-            className="flex items-center gap-1.5 px-3 py-2 border border-neutral-300 hover:border-black text-neutral-700 hover:text-black transition-colors rounded text-[11px]"
-            title="Download full JSON backup of website"
-          >
-            <Download size={13} />
-            <span>Export Backup</span>
-          </button>
-
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            type="button"
-            className="flex items-center gap-1.5 px-3 py-2 border border-neutral-300 hover:border-black text-neutral-700 hover:text-black transition-colors rounded text-[11px]"
-            title="Upload previously exported JSON backup"
-          >
-            <Upload size={13} />
-            <span>Import JSON</span>
-          </button>
-
-          <button
-            onClick={() => {
-              if (confirm("Reset all website data back to default initial seed data? Any unsaved edits will be replaced.")) {
-                resetAllToDefaults();
-                showToast("All entities reset to initial seed defaults.");
-              }
-            }}
-            type="button"
-            className="flex items-center gap-1.5 px-3 py-2 border border-neutral-200 hover:border-red-500 text-neutral-500 hover:text-red-600 transition-colors rounded text-[11px]"
-          >
-            <RotateCcw size={13} />
-            <span>Reset Defaults</span>
-          </button>
-        </div>
-      </div>
+      {/* Main Dashboard Body: Tabs & Entity Editors */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-8 space-y-8">
 
       {/* Toast Notification */}
       {toastMessage && (
@@ -2305,6 +2365,7 @@ export default function AdminCMSPage() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
