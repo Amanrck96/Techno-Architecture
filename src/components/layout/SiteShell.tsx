@@ -10,6 +10,16 @@ import CookieConsent from "@/components/common/CookieConsent";
 export default function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isLandingPage = pathname === "/";
+  const isAdminPage = pathname.startsWith("/admin");
+
+  if (isAdminPage) {
+    // Dedicated full-width admin studio console without public site navigation rail or public footer
+    return (
+      <main id="main-content" className="w-full min-h-screen">
+        {children}
+      </main>
+    );
+  }
 
   if (isLandingPage) {
     // Pure landing experience matching Studio Bomb: Only gallery animation + logo
