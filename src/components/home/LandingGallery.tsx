@@ -48,9 +48,9 @@ export default function LandingGallery() {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-neutral-950 flex flex-col select-none">
-      {/* 1. TOP FULL BOX / SEPARATE HEADER BAR — Houses Logo Separately with Architectural Elegance */}
-      <header className="relative z-30 w-full bg-white border-b border-neutral-200 px-4 sm:px-8 lg:px-12 py-3 sm:py-4 md:py-4.5 flex items-center justify-between shrink-0 shadow-xs">
-        {/* Official Brand Logo */}
+      {/* 1. TOP FULL BOX — ONLY LOGO (No Tabs in First Page) */}
+      <header className="relative z-30 w-full bg-white border-b border-neutral-200 px-6 sm:px-10 lg:px-16 py-3.5 sm:py-4 md:py-5 flex items-center justify-between shrink-0 shadow-xs">
+        {/* Official Brand Logo Only */}
         <Link
           href="/home"
           onClick={(e) => e.stopPropagation()}
@@ -69,40 +69,9 @@ export default function LandingGallery() {
             />
           </div>
         </Link>
-
-        {/* Right Section: Navigation Links, Slide Counter & Enter Studio */}
-        <div className="flex items-center gap-3 sm:gap-6">
-          <nav className="hidden lg:flex items-center gap-6 text-[10px] tracking-[0.22em] uppercase font-mono text-neutral-600">
-            <Link href="/projects" onClick={(e) => e.stopPropagation()} className="hover:text-black transition-colors font-medium">PROJECTS</Link>
-            <Link href="/about" onClick={(e) => e.stopPropagation()} className="hover:text-black transition-colors font-medium">ABOUT</Link>
-            <Link href="/services" onClick={(e) => e.stopPropagation()} className="hover:text-black transition-colors font-medium">SERVICES</Link>
-            <Link href="/contact" onClick={(e) => e.stopPropagation()} className="hover:text-black transition-colors font-medium">CONTACT</Link>
-          </nav>
-
-          {/* Slide Index Counter */}
-          <div className="text-[10px] sm:text-[11px] font-mono tracking-[0.2em] text-neutral-600 bg-neutral-100 px-3 py-1.5 rounded-full border border-neutral-200">
-            <span className="text-black font-semibold">
-              {String(currentIndex + 1).padStart(2, "0")}
-            </span>
-            <span className="text-neutral-400 mx-1">/</span>
-            <span className="text-neutral-500">
-              {String(showcaseProjects.length).padStart(2, "0")}
-            </span>
-          </div>
-
-          {/* Enter Studio CTA Button */}
-          <Link
-            href="/home"
-            onClick={(e) => e.stopPropagation()}
-            className="inline-flex items-center gap-1.5 text-[9px] sm:text-[10px] tracking-[0.2em] uppercase font-medium text-white bg-black hover:bg-neutral-800 transition-colors py-2 px-3.5 sm:px-4 rounded-xs shadow-xs"
-          >
-            <span>ENTER STUDIO</span>
-            <span aria-hidden="true">→</span>
-          </Link>
-        </div>
       </header>
 
-      {/* 2. HERO IMAGE SLIDER AREA — Unobstructed Architectural Photography */}
+      {/* 2. HERO IMAGE SLIDER AREA — Unobstructed Full Architectural Visual */}
       <div
         onClick={handleImageClick}
         className="relative flex-1 w-full overflow-hidden bg-neutral-950 text-white cursor-pointer"
@@ -144,7 +113,18 @@ export default function LandingGallery() {
             </h2>
           </div>
 
-          <div className="flex items-center gap-2 pointer-events-auto">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 pointer-events-auto">
+            {/* Slide Index Counter */}
+            <div className="text-[10px] sm:text-[11px] font-mono tracking-[0.2em] text-neutral-300 bg-black/60 backdrop-blur-md px-3 py-2 border border-white/20">
+              <span className="text-white font-semibold">
+                {String(currentIndex + 1).padStart(2, "0")}
+              </span>
+              <span className="text-neutral-500 mx-1">/</span>
+              <span className="text-neutral-400">
+                {String(showcaseProjects.length).padStart(2, "0")}
+              </span>
+            </div>
+
             {/* Previous slide */}
             <button
               type="button"
@@ -178,6 +158,16 @@ export default function LandingGallery() {
               className="text-[9px] sm:text-[10px] tracking-[0.25em] uppercase font-medium text-neutral-200 hover:text-white transition-colors py-2 px-3.5 bg-black/60 hover:bg-black backdrop-blur-md border border-white/20"
             >
               VIEW DOSSIER →
+            </Link>
+
+            {/* Enter Studio CTA Button */}
+            <Link
+              href="/home"
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex items-center gap-1.5 text-[9px] sm:text-[10px] tracking-[0.2em] uppercase font-medium text-black bg-white hover:bg-neutral-200 transition-colors py-2 px-4 shadow-sm"
+            >
+              <span>ENTER STUDIO</span>
+              <span aria-hidden="true">→</span>
             </Link>
           </div>
         </div>
