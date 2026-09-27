@@ -4,12 +4,22 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
+import { useCMSStore } from "@/lib/cmsStore";
 
 export default function HomeIntro() {
+  const { siteSettings } = useCMSStore();
+
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
+
+  const tagline = siteSettings?.tagline || "Architecture shaped around people, place and purpose";
+  const shortDesc =
+    siteSettings?.shortDescription ||
+    "Techno Architecture creates thoughtful spaces that balance creativity, comfort, luxury and practical living. From the first idea to the final detail, we approach every project with clarity, care and a strong understanding of how people use space.";
+  const foundedYear = siteSettings?.foundedYear || 2006;
+  const studioCity = siteSettings?.studios?.[0]?.city || "Basavanagudi, Bengaluru";
 
   return (
     <section
@@ -25,7 +35,7 @@ export default function HomeIntro() {
             </span>
           </div>
           <span className="text-[9px] uppercase tracking-[0.22em] text-neutral-400 font-mono">
-            EST. 2006 · BASAVANAGUDI, BENGALURU
+            EST. {foundedYear} · {studioCity.toUpperCase()}
           </span>
         </div>
 
@@ -47,10 +57,10 @@ export default function HomeIntro() {
 
             <div className="space-y-3">
               <h2 className="font-display text-xl sm:text-2xl text-neutral-900 font-light leading-snug">
-                Architecture shaped around people, place and purpose
+                {tagline}
               </h2>
               <p className="text-sm md:text-base text-neutral-600 leading-relaxed font-light tracking-wide">
-                Techno Architecture creates thoughtful spaces that balance creativity, comfort, luxury and practical living. From the first idea to the final detail, we approach every project with clarity, care and a strong understanding of how people use space.
+                {shortDesc}
               </p>
             </div>
 
@@ -106,7 +116,13 @@ export default function HomeIntro() {
                 INTRODUCTION
               </span>
               <p className="text-base sm:text-lg text-neutral-900 leading-relaxed font-light">
-                Led by architect <strong className="font-medium text-black">Rajesh Shivaram</strong>, Techno Architecture is a design practice committed to architecture that is distinctive, environmentally responsible and grounded in everyday life. Our work brings together planning, material expression, natural light and careful detailing to create spaces with lasting value.
+                {siteSettings?.longDescription ? (
+                  siteSettings.longDescription
+                ) : (
+                  <>
+                    Led by architect <strong className="font-medium text-black">Rajesh Shivaram</strong>, Techno Architecture is a design practice committed to architecture that is distinctive, environmentally responsible and grounded in everyday life. Our work brings together planning, material expression, natural light and careful detailing to create spaces with lasting value.
+                  </>
+                )}
               </p>
               <p className="text-sm md:text-base text-neutral-600 leading-relaxed font-light">
                 We work closely with clients from the earliest discussions through design development and execution. This collaborative process helps each project respond to its site, purpose, budget and the people who will inhabit it.
@@ -123,9 +139,9 @@ export default function HomeIntro() {
               </div>
               <div className="p-4 bg-neutral-50 border border-neutral-100 space-y-1">
                 <span className="text-[9px] font-mono text-neutral-400 uppercase tracking-widest block">02 / STUDIO LOCATION</span>
-                <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-900">Basavanagudi, Bengaluru</h4>
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-900">{studioCity}</h4>
                 <p className="text-xs text-neutral-500 font-light leading-relaxed">
-                  Established in 2006, delivering contextual residential, commercial, hospitality and institutional works.
+                  Established in {foundedYear}, delivering contextual residential, commercial, hospitality and institutional works.
                 </p>
               </div>
             </div>

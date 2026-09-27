@@ -4,8 +4,24 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
+import { useCMSStore } from "@/lib/cmsStore";
 
 export default function Footer() {
+  const { siteSettings } = useCMSStore();
+
+  const shortDesc =
+    siteSettings?.shortDescription ||
+    "Techno Architecture is an architecture and design practice creating thoughtful, practical and environmentally responsive spaces.";
+  const email = siteSettings?.contact?.email || "technoarchitecture@gmail.com";
+  const phone = siteSettings?.contact?.phone || "080 4210 3764";
+  const hours = siteSettings?.operatingHours || "Mon - Fri: 10:00 AM - 6:30 PM";
+  const address =
+    siteSettings?.studios?.[0]?.address ||
+    "No. 9, Uttaradi Mutt Road, Shankarpuram, Basavanagudi, Bengaluru, Karnataka 560004";
+  const instagram =
+    siteSettings?.socials?.find((s) => s.platform.toLowerCase() === "instagram")?.url ||
+    "https://www.instagram.com/technoarchitecture_rajesh/";
+
   return (
     <footer className="w-full border-t border-neutral-200 bg-neutral-50 text-neutral-900 pt-16 pb-24 px-6 md:px-12 lg:pr-28">
       <div className="max-w-7xl mx-auto">
@@ -24,17 +40,17 @@ export default function Footer() {
               />
             </div>
             <p className="text-xs leading-relaxed text-neutral-600 max-w-sm tracking-wide font-light">
-              Techno Architecture is an architecture and design practice creating thoughtful, practical and environmentally responsive spaces.
+              {shortDesc}
             </p>
             <div className="pt-2">
               <span className="text-[10px] tracking-[0.2em] uppercase text-neutral-400 block mb-1">
                 General Inquiries
               </span>
               <a
-                href="mailto:technoarchitecture@gmail.com"
+                href={`mailto:${email}`}
                 className="text-xs text-black hover:underline flex items-center gap-1 group font-medium"
               >
-                technoarchitecture@gmail.com
+                {email}
                 <ArrowUpRight size={12} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </a>
             </div>
@@ -47,15 +63,13 @@ export default function Footer() {
             </h3>
             <div className="text-xs text-neutral-600 space-y-1 font-light">
               <strong className="text-neutral-900 block font-medium">Techno Architecture</strong>
-              <p>No. 9, Uttaradi Mutt Road,</p>
-              <p>Shankarpuram, Basavanagudi,</p>
-              <p>Bengaluru, Karnataka 560004</p>
-              <p className="pt-2 text-[11px] font-mono text-neutral-800">080 4210 3764</p>
-              <p className="text-[11px] text-neutral-500">Mon - Fri: 10:00 AM - 6:30 PM</p>
+              <p className="leading-relaxed">{address}</p>
+              <p className="pt-2 text-[11px] font-mono text-neutral-800">{phone}</p>
+              <p className="text-[11px] text-neutral-500">{hours}</p>
             </div>
             <div className="pt-2">
               <a
-                href="https://www.instagram.com/technoarchitecture_rajesh/"
+                href={instagram}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[11px] text-black font-medium hover:underline inline-flex items-center gap-1"

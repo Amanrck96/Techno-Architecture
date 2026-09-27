@@ -287,11 +287,11 @@ export default function ContactPage() {
             <div className="space-y-1">
               <span className="text-[9px] uppercase font-mono tracking-wider text-neutral-400 block">Studio Address</span>
               <p className="text-neutral-800 leading-relaxed font-normal">
-                No. 9, Uttaradi Mutt Road, Shankarpuram, Basavanagudi, Bengaluru, Karnataka 560004
+                {siteSettings?.studios?.[0]?.address || "No. 9, Uttaradi Mutt Road, Shankarpuram, Basavanagudi, Bengaluru, Karnataka 560004"}
               </p>
               <div className="pt-1">
                 <a
-                  href="https://www.google.com/maps/search/?api=1&query=TechnoArchitecture%2C+9+Uttaradi+Mutt+Road%2C+Basavanagudi%2C+Bengaluru+560004"
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteSettings?.studios?.[0]?.address || "TechnoArchitecture, 9 Uttaradi Mutt Road, Basavanagudi, Bengaluru 560004")}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-[11px] text-black font-medium underline hover:text-neutral-600"
@@ -304,22 +304,28 @@ export default function ContactPage() {
 
             <div className="space-y-1 pt-3 border-t border-neutral-200">
               <span className="text-[9px] uppercase font-mono tracking-wider text-neutral-400 block">Office Phone</span>
-              <a href="tel:08042103764" className="text-neutral-900 font-mono text-sm hover:underline block">
-                080 4210 3764
+              <a
+                href={`tel:${(siteSettings?.contact?.phone || "08042103764").replace(/\s+/g, "")}`}
+                className="text-neutral-900 font-mono text-sm hover:underline block"
+              >
+                {siteSettings?.contact?.phone || "080 4210 3764"}
               </a>
             </div>
 
             <div className="space-y-1 pt-3 border-t border-neutral-200">
               <span className="text-[9px] uppercase font-mono tracking-wider text-neutral-400 block">Email</span>
-              <a href="mailto:technoarchitecture@gmail.com" className="text-neutral-900 font-mono text-xs hover:underline block">
-                technoarchitecture@gmail.com
+              <a
+                href={`mailto:${siteSettings?.contact?.email || "technoarchitecture@gmail.com"}`}
+                className="text-neutral-900 font-mono text-xs hover:underline block"
+              >
+                {siteSettings?.contact?.email || "technoarchitecture@gmail.com"}
               </a>
             </div>
 
             <div className="space-y-1 pt-3 border-t border-neutral-200">
               <span className="text-[9px] uppercase font-mono tracking-wider text-neutral-400 block">Business Hours</span>
               <p className="text-neutral-700 leading-relaxed">
-                Monday to Friday, 10:00 AM to 6:30 PM<br />
+                {siteSettings?.operatingHours || "Monday to Friday, 10:00 AM to 6:30 PM"}<br />
                 <span className="text-neutral-500">Saturday closed</span>
               </p>
             </div>
@@ -327,12 +333,18 @@ export default function ContactPage() {
             <div className="space-y-1 pt-3 border-t border-neutral-200">
               <span className="text-[9px] uppercase font-mono tracking-wider text-neutral-400 block">Official Instagram</span>
               <a
-                href="https://www.instagram.com/technoarchitecture_rajesh/"
+                href={
+                  siteSettings?.socials?.find((s) => s.platform.toLowerCase() === "instagram")?.url ||
+                  "https://www.instagram.com/technoarchitecture_rajesh/"
+                }
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-black font-medium hover:underline inline-flex items-center gap-1.5"
               >
-                <span>@technoarchitecture_rajesh</span>
+                <span>
+                  {siteSettings?.socials?.find((s) => s.platform.toLowerCase() === "instagram")?.handle ||
+                    "@technoarchitecture_rajesh"}
+                </span>
               </a>
             </div>
           </div>
