@@ -21,7 +21,8 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-source-sans)", "Source Sans 3", "Helvetica Neue", "Arial", "sans-serif"],
-        display: ["var(--font-archivo)", "Archivo", "sans-serif"],
+        display: ["var(--font-inter)", "Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+        heading: ["var(--font-inter)", "Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
         serif: ["Newsreader", "Cormorant Garamond", "Georgia", "Cambria", "'Times New Roman'", "serif"],
       },
       letterSpacing: {

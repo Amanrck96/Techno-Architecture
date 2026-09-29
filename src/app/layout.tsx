@@ -1,6 +1,22 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import "@/styles/globals.css";
 import SiteShell from "@/components/layout/SiteShell";
+
+const inter = localFont({
+  src: [
+    {
+      path: "../../public/fonts/inter/InterVariable.woff2",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/inter/InterVariable-Italic.woff2",
+      style: "italic",
+    },
+  ],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://technoarchitecture.com"),
@@ -114,7 +130,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="antialiased min-h-screen bg-white text-neutral-900 selection:bg-black selection:text-white">
+      <body className={`${inter.variable} antialiased min-h-screen bg-white text-neutral-900 selection:bg-black selection:text-white`}>
         <SiteShell>{children}</SiteShell>
       </body>
     </html>
