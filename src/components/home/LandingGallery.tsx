@@ -48,16 +48,16 @@ export default function LandingGallery() {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-neutral-950 flex flex-col select-none">
-      {/* 1. TOP FULL BOX — ONLY LOGO (No Tabs in First Page) */}
-      <header className="relative z-30 w-full bg-white border-b border-neutral-200 px-6 sm:px-10 lg:px-16 py-3.5 sm:py-4 md:py-5 flex items-center justify-between shrink-0 shadow-xs">
-        {/* Official Brand Logo Only */}
+      {/* 1. TOP FULL BOX — ONLY LOGO & BENGALURU · INDIA (Landing Page) */}
+      <header className="relative z-30 w-full bg-white border-b border-neutral-200 px-6 sm:px-10 lg:px-16 py-3 sm:py-3.5 md:py-4 flex items-center justify-between shrink-0 shadow-xs">
+        {/* Official Brand Logo + Bengaluru · India below logo */}
         <Link
           href="/home"
           onClick={(e) => e.stopPropagation()}
-          className="inline-block group focus:outline-none transition-transform hover:scale-[1.01]"
+          className="inline-flex flex-col items-start group focus:outline-none transition-opacity hover:opacity-90"
           aria-label="Techno Architecture — Enter Studio"
         >
-          <div className="relative w-48 sm:w-64 md:w-80 lg:w-92 h-10 sm:h-12 md:h-14">
+          <div className="relative w-48 sm:w-60 md:w-72 lg:w-80 h-9 sm:h-11 md:h-12">
             <Image
               src="/techno-brand-logo.png"
               alt="Techno Architecture"
@@ -67,6 +67,9 @@ export default function LandingGallery() {
               sizes="(max-width: 768px) 260px, 380px"
               className="object-contain object-left"
             />
+          </div>
+          <div className="mt-1.5 sm:mt-2 text-[9px] sm:text-[10px] md:text-[11px] font-semibold tracking-[0.28em] text-neutral-900 uppercase font-heading select-none">
+            {"BENGALURU \u00B7 INDIA"}
           </div>
         </Link>
       </header>

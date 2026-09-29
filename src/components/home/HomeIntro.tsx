@@ -31,8 +31,8 @@ export default function HomeIntro() {
 
         {/* Top 2-Column Grid: Left Brand Logo, Right Hero Editorial Statement & CTAs */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
-          {/* Left Column: Official Techno Architecture Brand Logo + Location Subtext */}
-          <div className="lg:col-span-5 flex flex-col items-start">
+          {/* Left Column: Official Techno Architecture Brand Logo */}
+          <div className="lg:col-span-5 flex items-start">
             <Link
               href="/home"
               className="inline-block focus:outline-none transition-opacity hover:opacity-90"
@@ -50,11 +50,6 @@ export default function HomeIntro() {
                 />
               </div>
             </Link>
-
-            {/* Bengaluru · India below logo - matching reference image */}
-            <div className="mt-3.5 sm:mt-4 text-[11px] sm:text-xs md:text-[13px] font-semibold tracking-[0.28em] text-neutral-900 uppercase font-heading">
-              {"BENGALURU \u00B7 INDIA"}
-            </div>
           </div>
 
           {/* Right Column: Editorial Title, Description, and Stacked Action Buttons */}
