@@ -16,8 +16,9 @@ export default function Footer() {
   const phone = siteSettings?.contact?.phone || "080 4210 3764";
   const hours = siteSettings?.operatingHours || "Mon - Fri: 10:00 AM - 6:30 PM";
   const address =
-    siteSettings?.studios?.[0]?.address ||
-    "No. 9, Uttaradi Mutt Road, Shankarpuram, Basavanagudi, Bengaluru, Karnataka 560004";
+    siteSettings?.studios?.[0]?.address
+      ? `${siteSettings.studios[0].address}, Bengaluru, ${siteSettings.studios[0].postalCode || "Karnataka 110033"}`
+      : "No 9, Uttaradhi Mutt Road, Shankarpuram, Basavanagudi, Bengaluru, Karnataka 110033";
   const instagram =
     siteSettings?.socials?.find((s) => s.platform.toLowerCase() === "instagram")?.url ||
     "https://www.instagram.com/technoarchitecture_rajesh/";

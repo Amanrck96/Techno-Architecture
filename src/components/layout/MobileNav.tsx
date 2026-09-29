@@ -41,58 +41,60 @@ export default function MobileNav() {
   }, [isOpen]);
 
   return (
-    <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-neutral-200">
-      <div className="flex items-center justify-between px-6 py-3.5">
-        {/* Mobile Brand Logo */}
-        <Link
-          href="/"
-          className="flex items-center"
-          aria-label="Techno Architecture Home"
-        >
-          <div className="relative w-36 sm:w-44 h-8 sm:h-9">
-            <Image
-              src="/techno-logo-transparent.png"
-              alt="Techno Architecture"
-              fill
-              unoptimized
-              sizes="360px"
-              priority
-              className="object-contain object-left"
-            />
-          </div>
-        </Link>
-
-        {/* Hamburger Toggle */}
-        <div className="flex items-center space-x-3">
+    <>
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-neutral-200">
+        <div className="flex items-center justify-between px-6 py-3.5">
+          {/* Mobile Brand Logo */}
           <Link
-            href="/admin"
-            className="text-neutral-500 hover:text-black p-1"
-            title="Owner & Host Portal"
-            aria-label="Owner & Host Portal"
+            href="/"
+            className="flex items-center"
+            aria-label="Techno Architecture Home"
           >
-            <Lock size={15} />
+            <div className="relative w-36 sm:w-44 h-8 sm:h-9">
+              <Image
+                src="/techno-logo-transparent.png"
+                alt="Techno Architecture"
+                fill
+                unoptimized
+                sizes="360px"
+                priority
+                className="object-contain object-left"
+              />
+            </div>
           </Link>
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            type="button"
-            aria-expanded={isOpen}
-            aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
-            className="p-1.5 text-neutral-900 focus:outline-none focus:ring-1 focus:ring-neutral-400"
-          >
-            {isOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </div>
-      </div>
 
-      {/* Slideout Fullscreen / Drawer Menu */}
+          {/* Hamburger Toggle */}
+          <div className="flex items-center space-x-3">
+            <Link
+              href="/admin"
+              className="text-neutral-500 hover:text-black p-1"
+              title="Owner & Host Portal"
+              aria-label="Owner & Host Portal"
+            >
+              <Lock size={15} />
+            </Link>
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              type="button"
+              aria-expanded={isOpen}
+              aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
+              className="p-1.5 text-neutral-900 focus:outline-none focus:ring-1 focus:ring-neutral-400"
+            >
+              {isOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Slideout Fullscreen / Drawer Menu — Positioned directly against viewport */}
       <div
         className={cn(
-          "fixed inset-x-0 top-[57px] bottom-0 bg-white transition-all duration-500 ease-in-out z-40 flex flex-col justify-between px-8 py-10 overflow-y-auto",
-          isOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-4 pointer-events-none"
+          "lg:hidden fixed inset-x-0 top-[57px] bottom-0 bg-white transition-all duration-300 ease-in-out z-40 flex flex-col justify-between px-8 py-8 overflow-y-auto",
+          isOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"
         )}
       >
-        <nav aria-label="Mobile Menu Navigation">
-          <ul className="flex flex-col space-y-5">
+        <nav aria-label="Mobile Menu Navigation" className="py-2">
+          <ul className="flex flex-col space-y-4">
             {primaryNavigation.map((item) => {
               const isActive =
                 pathname === item.href ||
@@ -104,7 +106,7 @@ export default function MobileNav() {
                     href={item.href}
                     onClick={() => setIsOpen(false)}
                     className={cn(
-                      "block text-sm font-medium tracking-[0.2em] uppercase transition-colors",
+                      "block text-sm font-medium tracking-[0.2em] uppercase transition-colors py-1",
                       isActive ? "text-black font-semibold" : "text-neutral-600 hover:text-black"
                     )}
                   >
@@ -117,7 +119,7 @@ export default function MobileNav() {
         </nav>
 
         {/* Mobile Footer & Socials */}
-        <div className="pt-8 border-t border-neutral-100 flex flex-col space-y-4">
+        <div className="pt-6 pb-2 border-t border-neutral-100 flex flex-col space-y-3">
           <div className="flex items-center space-x-6 text-neutral-500">
             <a
               href="https://www.instagram.com/technoarchitecture_rajesh/"
@@ -152,6 +154,6 @@ export default function MobileNav() {
           </p>
         </div>
       </div>
-    </header>
+    </>
   );
 }

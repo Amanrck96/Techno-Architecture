@@ -14,7 +14,7 @@ export default function AboutContent() {
   const tagline = siteSettings?.tagline || "Architecture shaped around people, place and purpose.";
   const foundedYear = siteSettings?.foundedYear || 2006;
   const studioCity = siteSettings?.studios?.[0]?.city || "Basavanagudi, Bengaluru";
-  const address = siteSettings?.studios?.[0]?.address || "No. 9, Uttaradi Mutt Road, Shankarpuram, Basavanagudi, Bengaluru";
+  const address = siteSettings?.studios?.[0]?.address || "No 9, Uttaradhi Mutt Road, Shankarpuram, Basavanagudi, Bengaluru";
 
   const stats = (siteSettings?.milestones && siteSettings.milestones.length > 0)
     ? siteSettings.milestones

@@ -39,10 +39,56 @@ export default function HomeIntro() {
           </span>
         </div>
 
-        {/* Main Grid: Left Column Brand & Mission; Right Column Core Narrative */}
+        {/* Main Grid: Left Column Core Narrative & Cards; Right Column Brand Logo & Mission */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
-          {/* Left Column: Brand & Logo Presentation */}
-          <div className="lg:col-span-5 space-y-6">
+          {/* Left Column: Practice Narrative & Leadership/Location Cards */}
+          <div className="order-2 lg:order-1 lg:col-span-7 space-y-6 pt-1">
+            <div className="space-y-4 border-l-2 border-neutral-900 pl-6 sm:pl-8">
+              <span className="text-[10px] uppercase tracking-[0.25em] font-mono text-neutral-400 block font-semibold">
+                INTRODUCTION
+              </span>
+              <p className="text-base sm:text-lg text-neutral-900 leading-relaxed font-light">
+                {siteSettings?.longDescription ? (
+                  siteSettings.longDescription
+                ) : (
+                  <>
+                    Led by architect <strong className="font-medium text-black">Rajesh Shivaram</strong>, Techno Architecture is a design practice committed to architecture that is distinctive, environmentally responsible and grounded in everyday life. Our work brings together planning, material expression, natural light and careful detailing to create spaces with lasting value.
+                  </>
+                )}
+              </p>
+              <p className="text-sm md:text-base text-neutral-600 leading-relaxed font-light">
+                We work closely with clients from the earliest discussions through design development and execution. Together with our team and consultants, we make sure every project responds to its site, purpose, budget and the people who will inhabit it.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 pt-2">
+              <div className="p-4 sm:p-5 bg-neutral-50 border border-neutral-200/80 space-y-1 rounded-xs">
+                <span className="text-[9px] font-mono text-neutral-400 uppercase tracking-widest block font-semibold">
+                  01 / PRACTICE LEADERSHIP
+                </span>
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-900">
+                  Ar. Rajesh Shivaram
+                </h4>
+                <p className="text-xs text-neutral-500 font-light leading-relaxed">
+                  Graduate of Bangalore Institute of Technology bringing 20 years of professional architectural experience.
+                </p>
+              </div>
+              <div className="p-4 sm:p-5 bg-neutral-50 border border-neutral-200/80 space-y-1 rounded-xs">
+                <span className="text-[9px] font-mono text-neutral-400 uppercase tracking-widest block font-semibold">
+                  02 / STUDIO LOCATION
+                </span>
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-900">
+                  {studioCity}
+                </h4>
+                <p className="text-xs text-neutral-500 font-light leading-relaxed">
+                  Established in {foundedYear}, delivering contextual residential, commercial, hospitality and institutional works.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Brand & Logo Presentation, CTAs, and In-Page Jump Anchors */}
+          <div className="order-1 lg:order-2 lg:col-span-5 space-y-6">
             <div className="relative w-56 sm:w-64 md:w-72 h-16 sm:h-20">
               <Image
                 src="/techno-logo-transparent.png"
@@ -80,109 +126,15 @@ export default function HomeIntro() {
               </Link>
             </div>
 
-          </div>
-
-          {/* Right Column: Page Directory (b. Projects, c. Why Techno?, d. Testimonials) */}
-          <div className="lg:col-span-7 space-y-5 pt-1">
-            <div className="flex items-center justify-between pb-3 border-b border-neutral-200">
-              <span className="text-[10px] uppercase tracking-[0.25em] font-mono text-neutral-400 font-semibold">
-                INDEX · PAGE DIRECTORY
-              </span>
-              <span className="text-[9px] uppercase tracking-[0.2em] font-mono text-neutral-400">
-                03 SECTIONS
-              </span>
-            </div>
-
-            {/* 3-Column Directory Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-              {/* Card 1: b. Projects */}
-              <button
-                type="button"
-                onClick={() => scrollTo("projects")}
-                className="group text-left p-4 sm:p-4.5 bg-neutral-50 hover:bg-neutral-900 border border-neutral-200/80 hover:border-neutral-900 transition-all duration-300 flex flex-col justify-between h-full rounded-xs cursor-pointer shadow-2xs hover:shadow-md"
-              >
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[8.5px] font-mono tracking-[0.2em] text-neutral-400 group-hover:text-neutral-400 uppercase font-semibold">
-                      01 / SECTION B
-                    </span>
-                    <ArrowDown size={11} className="text-neutral-400 group-hover:text-white group-hover:translate-y-0.5 transition-all" />
-                  </div>
-                  <h3 className="font-display text-sm font-semibold tracking-wide text-neutral-900 group-hover:text-white transition-colors">
-                    b. Projects
-                  </h3>
-                  <p className="text-[11px] text-neutral-500 group-hover:text-neutral-300 leading-relaxed font-light transition-colors">
-                    Curated residential, commercial, interior and institutional commissions.
-                  </p>
-                </div>
-                <div className="pt-3 mt-3 border-t border-neutral-200/70 group-hover:border-neutral-800 flex items-center justify-between text-[9px] font-mono uppercase tracking-[0.18em] text-neutral-500 group-hover:text-neutral-300">
-                  <span>Explore Works</span>
-                  <span>↓</span>
-                </div>
-              </button>
-
-              {/* Card 2: c. Why Techno? */}
-              <button
-                type="button"
-                onClick={() => scrollTo("why-techno")}
-                className="group text-left p-4 sm:p-4.5 bg-neutral-50 hover:bg-neutral-900 border border-neutral-200/80 hover:border-neutral-900 transition-all duration-300 flex flex-col justify-between h-full rounded-xs cursor-pointer shadow-2xs hover:shadow-md"
-              >
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[8.5px] font-mono tracking-[0.2em] text-neutral-400 group-hover:text-neutral-400 uppercase font-semibold">
-                      02 / SECTION C
-                    </span>
-                    <ArrowDown size={11} className="text-neutral-400 group-hover:text-white group-hover:translate-y-0.5 transition-all" />
-                  </div>
-                  <h3 className="font-display text-sm font-semibold tracking-wide text-neutral-900 group-hover:text-white transition-colors">
-                    c. Why Techno?
-                  </h3>
-                  <p className="text-[11px] text-neutral-500 group-hover:text-neutral-300 leading-relaxed font-light transition-colors">
-                    Practice ethos, climate-led passive intelligence and coordinated execution.
-                  </p>
-                </div>
-                <div className="pt-3 mt-3 border-t border-neutral-200/70 group-hover:border-neutral-800 flex items-center justify-between text-[9px] font-mono uppercase tracking-[0.18em] text-neutral-500 group-hover:text-neutral-300">
-                  <span>Read Ethos</span>
-                  <span>↓</span>
-                </div>
-              </button>
-
-              {/* Card 3: d. Testimonials */}
-              <button
-                type="button"
-                onClick={() => scrollTo("testimonials")}
-                className="group text-left p-4 sm:p-4.5 bg-neutral-50 hover:bg-neutral-900 border border-neutral-200/80 hover:border-neutral-900 transition-all duration-300 flex flex-col justify-between h-full rounded-xs cursor-pointer shadow-2xs hover:shadow-md"
-              >
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[8.5px] font-mono tracking-[0.2em] text-neutral-400 group-hover:text-neutral-400 uppercase font-semibold">
-                      03 / SECTION D
-                    </span>
-                    <ArrowDown size={11} className="text-neutral-400 group-hover:text-white group-hover:translate-y-0.5 transition-all" />
-                  </div>
-                  <h3 className="font-display text-sm font-semibold tracking-wide text-neutral-900 group-hover:text-white transition-colors">
-                    d. Testimonials
-                  </h3>
-                  <p className="text-[11px] text-neutral-500 group-hover:text-neutral-300 leading-relaxed font-light transition-colors">
-                    Direct reflections and reviews from homeowners and institutional clients.
-                  </p>
-                </div>
-                <div className="pt-3 mt-3 border-t border-neutral-200/70 group-hover:border-neutral-800 flex items-center justify-between text-[9px] font-mono uppercase tracking-[0.18em] text-neutral-500 group-hover:text-neutral-300">
-                  <span>Read Reviews</span>
-                  <span>↓</span>
-                </div>
-              </button>
-            </div>
-
-            {/* Quick jump pills */}
-            <div className="pt-3 flex flex-wrap items-center gap-2 border-t border-neutral-100">
+            {/* Quick jump navigation */}
+            <div className="pt-4 flex flex-wrap items-center gap-2 text-[9px] sm:text-[9.5px] tracking-[0.18em] uppercase font-mono font-medium border-t border-neutral-100">
               <span className="text-[9px] uppercase tracking-[0.2em] font-mono text-neutral-400 mr-1">
                 Quick Jump:
               </span>
               <button
                 onClick={() => scrollTo("projects")}
                 type="button"
-                className="inline-flex items-center gap-1.5 py-1 px-3 bg-neutral-100 hover:bg-neutral-900 hover:text-white transition-colors rounded-xs text-neutral-800 text-[9px] uppercase font-mono tracking-[0.18em] font-medium cursor-pointer"
+                className="inline-flex items-center gap-1 py-1 px-2.5 bg-neutral-100 hover:bg-neutral-900 hover:text-white transition-colors rounded-sm text-neutral-700 cursor-pointer"
               >
                 <span>b. Projects</span>
                 <ArrowDown size={10} />
@@ -190,7 +142,7 @@ export default function HomeIntro() {
               <button
                 onClick={() => scrollTo("why-techno")}
                 type="button"
-                className="inline-flex items-center gap-1.5 py-1 px-3 bg-neutral-100 hover:bg-neutral-900 hover:text-white transition-colors rounded-xs text-neutral-800 text-[9px] uppercase font-mono tracking-[0.18em] font-medium cursor-pointer"
+                className="inline-flex items-center gap-1 py-1 px-2.5 bg-neutral-100 hover:bg-neutral-900 hover:text-white transition-colors rounded-sm text-neutral-700 cursor-pointer"
               >
                 <span>c. Why Techno?</span>
                 <ArrowDown size={10} />
@@ -198,7 +150,7 @@ export default function HomeIntro() {
               <button
                 onClick={() => scrollTo("testimonials")}
                 type="button"
-                className="inline-flex items-center gap-1.5 py-1 px-3 bg-neutral-100 hover:bg-neutral-900 hover:text-white transition-colors rounded-xs text-neutral-800 text-[9px] uppercase font-mono tracking-[0.18em] font-medium cursor-pointer"
+                className="inline-flex items-center gap-1 py-1 px-2.5 bg-neutral-100 hover:bg-neutral-900 hover:text-white transition-colors rounded-sm text-neutral-700 cursor-pointer"
               >
                 <span>d. Testimonials</span>
                 <ArrowDown size={10} />

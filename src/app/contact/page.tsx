@@ -287,11 +287,17 @@ export default function ContactPage() {
             <div className="space-y-1">
               <span className="text-[9px] uppercase font-mono tracking-wider text-neutral-400 block">Studio Address</span>
               <p className="text-neutral-800 leading-relaxed font-normal">
-                {siteSettings?.studios?.[0]?.address || "No. 9, Uttaradi Mutt Road, Shankarpuram, Basavanagudi, Bengaluru, Karnataka 560004"}
+                {siteSettings?.studios?.[0]?.address
+                  ? `${siteSettings.studios[0].address}, Bengaluru, ${siteSettings.studios[0].postalCode || "Karnataka 110033"}`
+                  : "No 9, Uttaradhi Mutt Road, Shankarpuram, Basavanagudi, Bengaluru, Karnataka 110033"}
               </p>
               <div className="pt-1">
                 <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteSettings?.studios?.[0]?.address || "TechnoArchitecture, 9 Uttaradi Mutt Road, Basavanagudi, Bengaluru 560004")}`}
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                    siteSettings?.studios?.[0]?.address
+                      ? `${siteSettings.studios[0].address}, Bengaluru, ${siteSettings.studios[0].postalCode || "Karnataka 110033"}`
+                      : "TechnoArchitecture, No 9, Uttaradhi Mutt Road, Shankarpuram, Basavanagudi, Bengaluru, Karnataka 110033"
+                  )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-[11px] text-black font-medium underline hover:text-neutral-600"

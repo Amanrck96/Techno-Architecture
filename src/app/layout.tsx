@@ -92,10 +92,10 @@ export default function RootLayout({
     email: "technoarchitecture@gmail.com",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "No. 9, Uttaradi Mutt Road, Shankarpuram, Basavanagudi",
+      streetAddress: "No 9, Uttaradhi Mutt Road, Shankarpuram, Basavanagudi",
       addressLocality: "Bengaluru",
       addressRegion: "Karnataka",
-      postalCode: "560004",
+      postalCode: "110033",
       addressCountry: "IN",
     },
     sameAs: [
