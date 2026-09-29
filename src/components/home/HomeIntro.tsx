@@ -31,14 +31,14 @@ export default function HomeIntro() {
 
         {/* Top 2-Column Grid: Left Brand Logo, Right Hero Editorial Statement & CTAs */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
-          {/* Left Column: Official Techno Architecture Brand Logo + Location Subtext */}
+          {/* Left Column: Official Techno Architecture Brand Logo + Centralized Location Subtext */}
           <div className="lg:col-span-5 flex flex-col items-start">
             <Link
               href="/home"
-              className="inline-block focus:outline-none transition-opacity hover:opacity-90"
+              className="inline-flex flex-col items-center group focus:outline-none transition-opacity hover:opacity-90 w-72 sm:w-80 md:w-96 lg:w-[400px] xl:w-[420px]"
               aria-label="Techno Architecture"
             >
-              <div className="relative w-72 sm:w-80 md:w-96 lg:w-[400px] xl:w-[420px] aspect-[576/162]">
+              <div className="relative w-full aspect-[1024/290]">
                 <Image
                   src="/techno-brand-logo.png"
                   alt="Techno Architecture"
@@ -46,15 +46,15 @@ export default function HomeIntro() {
                   priority
                   unoptimized
                   sizes="(max-width: 768px) 320px, 420px"
-                  className="object-contain object-left"
+                  className="object-contain object-center"
                 />
               </div>
-            </Link>
 
-            {/* Bengaluru · India below logo - matching reference image */}
-            <div className="mt-3 sm:mt-3.5 text-[11px] sm:text-xs md:text-[13px] font-semibold tracking-[0.28em] text-neutral-900 uppercase font-heading select-none">
-              {"BENGALURU \u00B7 INDIA"}
-            </div>
+              {/* Bengaluru · India centralized below logo */}
+              <div className="mt-3 sm:mt-3.5 w-full text-center text-[11px] sm:text-xs md:text-[13px] font-semibold tracking-[0.28em] pl-[0.28em] text-neutral-900 uppercase font-heading select-none">
+                {"BENGALURU \u00B7 INDIA"}
+              </div>
+            </Link>
           </div>
 
           {/* Right Column: Editorial Title, Description, and Stacked Action Buttons */}

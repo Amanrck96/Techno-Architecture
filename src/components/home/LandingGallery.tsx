@@ -50,14 +50,14 @@ export default function LandingGallery() {
     <div className="relative w-screen h-screen overflow-hidden bg-neutral-950 flex flex-col select-none">
       {/* 1. TOP FULL BOX — ONLY LOGO & BENGALURU · INDIA (Landing Page) */}
       <header className="relative z-30 w-full bg-white border-b border-neutral-200 px-6 sm:px-10 lg:px-16 py-3 sm:py-3.5 md:py-4 flex items-center justify-between shrink-0 shadow-xs">
-        {/* Official Brand Logo + Bengaluru · India below logo */}
+        {/* Official Brand Logo + Bengaluru · India centralized below logo */}
         <Link
           href="/home"
           onClick={(e) => e.stopPropagation()}
-          className="inline-flex flex-col items-start group focus:outline-none transition-opacity hover:opacity-90"
+          className="inline-flex flex-col items-center group focus:outline-none transition-opacity hover:opacity-90 w-48 sm:w-60 md:w-72 lg:w-80"
           aria-label="Techno Architecture — Enter Studio"
         >
-          <div className="relative w-48 sm:w-60 md:w-72 lg:w-80 h-9 sm:h-11 md:h-12">
+          <div className="relative w-full h-9 sm:h-11 md:h-12">
             <Image
               src="/techno-brand-logo.png"
               alt="Techno Architecture"
@@ -65,10 +65,10 @@ export default function LandingGallery() {
               priority
               unoptimized
               sizes="(max-width: 768px) 260px, 380px"
-              className="object-contain object-left"
+              className="object-contain object-center"
             />
           </div>
-          <div className="mt-1.5 sm:mt-2 text-[9px] sm:text-[10px] md:text-[11px] font-semibold tracking-[0.28em] text-neutral-900 uppercase font-heading select-none">
+          <div className="mt-1.5 sm:mt-2 w-full text-center text-[9px] sm:text-[10px] md:text-[11px] font-semibold tracking-[0.28em] pl-[0.28em] text-neutral-900 uppercase font-heading select-none">
             {"BENGALURU \u00B7 INDIA"}
           </div>
         </Link>
