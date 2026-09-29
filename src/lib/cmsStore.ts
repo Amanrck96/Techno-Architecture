@@ -36,6 +36,32 @@ function touchClientUpdate(): string {
   return now;
 }
 
+export function getLocalDataset(): any {
+  const data: any = {};
+  if (typeof window === "undefined") return data;
+  try {
+    const sp = localStorage.getItem(STORAGE_KEYS.PROJECTS);
+    if (sp) data.projects = JSON.parse(sp);
+    const ss = localStorage.getItem(STORAGE_KEYS.SERVICES);
+    if (ss) data.services = JSON.parse(ss);
+    const st = localStorage.getItem(STORAGE_KEYS.TEAM);
+    if (st) data.team = JSON.parse(st);
+    const sb = localStorage.getItem(STORAGE_KEYS.BLOG);
+    if (sb) data.blog = JSON.parse(sb);
+    const sf = localStorage.getItem(STORAGE_KEYS.FAQ);
+    if (sf) data.faq = JSON.parse(sf);
+    const sg = localStorage.getItem(STORAGE_KEYS.GALLERY);
+    if (sg) data.gallery = JSON.parse(sg);
+    const sr = localStorage.getItem(STORAGE_KEYS.RECOGNITIONS);
+    if (sr) data.recognitions = JSON.parse(sr);
+    const sset = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+    if (sset) data.siteSettings = JSON.parse(sset);
+    const stm = localStorage.getItem(STORAGE_KEYS.TESTIMONIALS);
+    if (stm) data.testimonials = JSON.parse(stm);
+  } catch (_) {}
+  return data;
+}
+
 // Helper to push updates to server with dual cookie + Authorization header authentication
 export async function syncToServer(payload: {
   entity?: string;
@@ -70,6 +96,7 @@ export async function syncToServer(payload: {
       if (result.updatedAt) {
         try {
           localStorage.setItem(STORAGE_KEYS.SERVER_SYNCED_AT, result.updatedAt);
+          localStorage.setItem(STORAGE_KEYS.CLIENT_UPDATED_AT, result.updatedAt);
         } catch (_) {}
       }
       return { success: true, updatedAt: result.updatedAt };
@@ -97,9 +124,9 @@ export function useCMSStore() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>(initialTestimonials);
 
   const lastServerUpdatedRef = useRef<string>("");
+  const syncTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Function to apply complete dataset to state & local cache
-  // Note: Empty arrays ([]) ARE valid and represent user deleting all items
   const applyDataset = useCallback((data: any) => {
     if (!data || typeof data !== "object") return;
 
@@ -112,12 +139,8 @@ export function useCMSStore() {
       try { localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(data.services)); } catch (_) {}
     }
     if (Array.isArray(data.team)) {
-      const rajeshOnly = data.team
-        .filter((m: TeamMember) => m.name?.toLowerCase().includes("rajesh"))
-        .map((m: TeamMember) => ({ ...m, image: "" }));
-      const finalTeam = rajeshOnly.length > 0 ? rajeshOnly : initialTeam;
-      setTeam(finalTeam);
-      try { localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(finalTeam)); } catch (_) {}
+      setTeam(data.team);
+      try { localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(data.team)); } catch (_) {}
     }
     if (Array.isArray(data.blog)) {
       setBlog(data.blog);
@@ -167,39 +190,29 @@ export function useCMSStore() {
 
       const serverTime = data.updatedAt ? new Date(data.updatedAt).getTime() : 0;
 
-      // If client has newer edits/deletions than the server's payload, NEVER overwrite client state!
-      // Instead, preserve client data and re-sync it to the server.
-      if (clientTime > 0 && clientTime > serverTime) {
-        console.info("[CMS Store] Client has newer edits/deletions than server payload. Preserving local changes and syncing to server...");
-        const localData: any = {};
-        try {
-          const sp = localStorage.getItem(STORAGE_KEYS.PROJECTS);
-          if (sp) localData.projects = JSON.parse(sp);
-          const ss = localStorage.getItem(STORAGE_KEYS.SERVICES);
-          if (ss) localData.services = JSON.parse(ss);
-          const st = localStorage.getItem(STORAGE_KEYS.TEAM);
-          if (st) localData.team = JSON.parse(st);
-          const sb = localStorage.getItem(STORAGE_KEYS.BLOG);
-          if (sb) localData.blog = JSON.parse(sb);
-          const sf = localStorage.getItem(STORAGE_KEYS.FAQ);
-          if (sf) localData.faq = JSON.parse(sf);
-          const sg = localStorage.getItem(STORAGE_KEYS.GALLERY);
-          if (sg) localData.gallery = JSON.parse(sg);
-          const sr = localStorage.getItem(STORAGE_KEYS.RECOGNITIONS);
-          if (sr) localData.recognitions = JSON.parse(sr);
-          const sset = localStorage.getItem(STORAGE_KEYS.SETTINGS);
-          if (sset) localData.siteSettings = JSON.parse(sset);
-          const stm = localStorage.getItem(STORAGE_KEYS.TESTIMONIALS);
-          if (stm) localData.testimonials = JSON.parse(stm);
-        } catch (_) {}
+      // 2. If server returns default seed data, NEVER overwrite client edits!
+      if (data.isDefault) {
+        if (clientTime > 0) {
+          console.info("[CMS Store] Server returned default baseline seed. Syncing local client edits to server...");
+          const localData = getLocalDataset();
+          if (Object.keys(localData).length > 0) {
+            syncToServer({ allData: localData });
+          }
+        }
+        return;
+      }
 
+      // 3. If client has local edits that are newer than or equal to the server data, NEVER overwrite!
+      if (clientTime > 0 && clientTime >= serverTime) {
+        console.info("[CMS Store] Local changes are newer than or equal to server payload. Preserving local edits...");
+        const localData = getLocalDataset();
         if (Object.keys(localData).length > 0) {
           syncToServer({ allData: localData });
         }
         return;
       }
 
-      // If server data has changed since last check, apply it
+      // 4. If server data has changed since last check and is legitimately newer, apply it
       if (data.updatedAt && data.updatedAt === lastServerUpdatedRef.current) {
         return;
       }
@@ -223,21 +236,7 @@ export function useCMSStore() {
       const ss = localStorage.getItem(STORAGE_KEYS.SERVICES);
       if (ss) setServices(JSON.parse(ss));
       const st = localStorage.getItem(STORAGE_KEYS.TEAM);
-      if (st) {
-        try {
-          const parsed = JSON.parse(st);
-          const filtered = Array.isArray(parsed)
-            ? parsed.filter((m: TeamMember) => m.name?.toLowerCase().includes("rajesh"))
-            : [];
-          if (filtered.length > 0) {
-            setTeam(filtered.map((m: TeamMember) => ({ ...m, image: "" })));
-          } else {
-            setTeam(initialTeam);
-          }
-        } catch (_) {
-          setTeam(initialTeam);
-        }
-      }
+      if (st) setTeam(JSON.parse(st));
       const sb = localStorage.getItem(STORAGE_KEYS.BLOG);
       if (sb) setBlog(JSON.parse(sb));
       const sf = localStorage.getItem(STORAGE_KEYS.FAQ);
@@ -265,12 +264,7 @@ export function useCMSStore() {
             const { entity, data } = event.data;
             if (entity === "projects") setProjects(data);
             else if (entity === "services") setServices(data);
-            else if (entity === "team") {
-              const rajeshOnly = Array.isArray(data)
-                ? data.filter((m: TeamMember) => m.name?.toLowerCase().includes("rajesh")).map((m) => ({ ...m, image: "" }))
-                : initialTeam;
-              setTeam(rajeshOnly.length > 0 ? rajeshOnly : initialTeam);
-            }
+            else if (entity === "team") setTeam(data);
             else if (entity === "blog") setBlog(data);
             else if (entity === "faq") setFaq(data);
             else if (entity === "gallery") setGallery(data);
@@ -290,12 +284,7 @@ export function useCMSStore() {
         const { entity, data } = customEvent.detail;
         if (entity === "projects") setProjects(data);
         else if (entity === "services") setServices(data);
-        else if (entity === "team") {
-          const rajeshOnly = Array.isArray(data)
-            ? data.filter((m: TeamMember) => m.name?.toLowerCase().includes("rajesh")).map((m: any) => ({ ...m, image: "" }))
-            : initialTeam;
-          setTeam(rajeshOnly.length > 0 ? rajeshOnly : initialTeam);
-        }
+        else if (entity === "team") setTeam(data);
         else if (entity === "blog") setBlog(data);
         else if (entity === "faq") setFaq(data);
         else if (entity === "gallery") setGallery(data);
@@ -315,7 +304,7 @@ export function useCMSStore() {
 
     const intervalId = setInterval(() => {
       fetchFromServer();
-    }, 8000); // Gentle 8s background poll to keep all viewers live
+    }, 15000); // Gentle 15s background poll to keep all viewers live
 
     return () => {
       if (channel) channel.close();
@@ -339,6 +328,16 @@ export function useCMSStore() {
     }
   };
 
+  // Debounced server sync queue: guarantees 0ms instant UI and prevents network spam while typing
+  const debouncedSyncToServer = useCallback((entity: string, data: any) => {
+    if (syncTimerRef.current) {
+      clearTimeout(syncTimerRef.current);
+    }
+    syncTimerRef.current = setTimeout(() => {
+      syncToServer({ entity, data });
+    }, 600);
+  }, []);
+
   // =========================================================
   // SAVE METHODS (INSTANT OPTIMISTIC UI + PERMANENT SERVER SYNC)
   // =========================================================
@@ -350,8 +349,8 @@ export function useCMSStore() {
       touchClientUpdate();
     } catch (_) {}
     broadcastChange("projects", newProjects);
-    syncToServer({ entity: "projects", data: newProjects });
-  }, []);
+    debouncedSyncToServer("projects", newProjects);
+  }, [debouncedSyncToServer]);
 
   const saveServices = useCallback((newServices: Service[]) => {
     setServices(newServices);
@@ -360,22 +359,18 @@ export function useCMSStore() {
       touchClientUpdate();
     } catch (_) {}
     broadcastChange("services", newServices);
-    syncToServer({ entity: "services", data: newServices });
-  }, []);
+    debouncedSyncToServer("services", newServices);
+  }, [debouncedSyncToServer]);
 
   const saveTeam = useCallback((newTeam: TeamMember[]) => {
-    const sanitized = newTeam
-      .filter((m) => m.name?.toLowerCase().includes("rajesh"))
-      .map((m) => ({ ...m, image: "" }));
-    const finalTeam = sanitized.length > 0 ? sanitized : initialTeam;
-    setTeam(finalTeam);
+    setTeam(newTeam);
     try {
-      localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(finalTeam));
+      localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(newTeam));
       touchClientUpdate();
     } catch (_) {}
-    broadcastChange("team", finalTeam);
-    syncToServer({ entity: "team", data: finalTeam });
-  }, []);
+    broadcastChange("team", newTeam);
+    debouncedSyncToServer("team", newTeam);
+  }, [debouncedSyncToServer]);
 
   const saveBlog = useCallback((newBlog: BlogPost[]) => {
     setBlog(newBlog);
@@ -384,8 +379,8 @@ export function useCMSStore() {
       touchClientUpdate();
     } catch (_) {}
     broadcastChange("blog", newBlog);
-    syncToServer({ entity: "blog", data: newBlog });
-  }, []);
+    debouncedSyncToServer("blog", newBlog);
+  }, [debouncedSyncToServer]);
 
   const saveFaq = useCallback((newFaq: FAQItem[]) => {
     setFaq(newFaq);
@@ -394,8 +389,8 @@ export function useCMSStore() {
       touchClientUpdate();
     } catch (_) {}
     broadcastChange("faq", newFaq);
-    syncToServer({ entity: "faq", data: newFaq });
-  }, []);
+    debouncedSyncToServer("faq", newFaq);
+  }, [debouncedSyncToServer]);
 
   const saveGallery = useCallback((newGallery: GalleryItem[]) => {
     setGallery(newGallery);
@@ -404,8 +399,8 @@ export function useCMSStore() {
       touchClientUpdate();
     } catch (_) {}
     broadcastChange("gallery", newGallery);
-    syncToServer({ entity: "gallery", data: newGallery });
-  }, []);
+    debouncedSyncToServer("gallery", newGallery);
+  }, [debouncedSyncToServer]);
 
   const saveRecognitions = useCallback((newRecognitions: Recognition[]) => {
     setRecognitions(newRecognitions);
@@ -414,8 +409,8 @@ export function useCMSStore() {
       touchClientUpdate();
     } catch (_) {}
     broadcastChange("recognitions", newRecognitions);
-    syncToServer({ entity: "recognitions", data: newRecognitions });
-  }, []);
+    debouncedSyncToServer("recognitions", newRecognitions);
+  }, [debouncedSyncToServer]);
 
   const saveSiteSettings = useCallback((newSettings: SiteSettings) => {
     setSiteSettings(newSettings);
@@ -424,8 +419,8 @@ export function useCMSStore() {
       touchClientUpdate();
     } catch (_) {}
     broadcastChange("siteSettings", newSettings);
-    syncToServer({ entity: "siteSettings", data: newSettings });
-  }, []);
+    debouncedSyncToServer("siteSettings", newSettings);
+  }, [debouncedSyncToServer]);
 
   const saveTestimonials = useCallback((newTestimonials: Testimonial[]) => {
     setTestimonials(newTestimonials);
@@ -434,11 +429,15 @@ export function useCMSStore() {
       touchClientUpdate();
     } catch (_) {}
     broadcastChange("testimonials", newTestimonials);
-    syncToServer({ entity: "testimonials", data: newTestimonials });
-  }, []);
+    debouncedSyncToServer("testimonials", newTestimonials);
+  }, [debouncedSyncToServer]);
 
-  // Force push all current state to server permanently
+  // Force push all current state to server permanently (immediate, flushes queue)
   const saveAllToCloud = useCallback(async () => {
+    if (syncTimerRef.current) {
+      clearTimeout(syncTimerRef.current);
+      syncTimerRef.current = null;
+    }
     touchClientUpdate();
     const allData = {
       projects,
@@ -452,10 +451,17 @@ export function useCMSStore() {
       testimonials,
     };
     const res = await syncToServer({ allData });
+    if (res.updatedAt) {
+      lastServerUpdatedRef.current = res.updatedAt;
+    }
     return res;
   }, [projects, services, team, blog, faq, gallery, recognitions, siteSettings, testimonials]);
 
   const resetAllToDefaults = useCallback(() => {
+    if (syncTimerRef.current) {
+      clearTimeout(syncTimerRef.current);
+      syncTimerRef.current = null;
+    }
     setProjects(initialProjects);
     setServices(initialServices);
     setTeam(initialTeam);
