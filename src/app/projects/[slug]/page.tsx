@@ -10,7 +10,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 export default function ProjectDetailPage() {
   const params = useParams();
   const slug = params?.slug as string;
-  const { projects } = useCMSStore();
+  const { projects, testimonials } = useCMSStore();
 
   const currentIndex = projects.findIndex(
     (p) =>
@@ -213,6 +213,14 @@ export default function ProjectDetailPage() {
   };
 
   const project = sanitizeProject(rawProject);
+
+  const testimonial =
+    project.testimonial ||
+    testimonials?.find(
+      (t) =>
+        t.projectAssociated?.toLowerCase().trim() === project.title.toLowerCase().trim() ||
+        t.projectAssociated?.toLowerCase().trim() === project.slug.toLowerCase().trim()
+    );
 
   // Calculate Previous and Next project
   const prevProject = sanitizeProject(
@@ -447,6 +455,40 @@ export default function ProjectDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Client Reflection / Testimonial Section */}
+      {testimonial && (
+        <section className="bg-neutral-50/90 border border-neutral-200 p-8 sm:p-12 md:p-14 relative overflow-hidden space-y-6">
+          <div className="space-y-1">
+            <span className="text-[10px] uppercase tracking-[0.3em] font-mono font-semibold text-neutral-400 block">
+              CLIENT REFLECTION · TESTIMONIAL
+            </span>
+            <p className="text-xs text-neutral-500 font-light">
+              Our strongest projects grow from trust, open communication and a shared commitment to architectural quality.
+            </p>
+          </div>
+
+          <div className="relative pl-6 sm:pl-8 border-l-2 border-black space-y-4">
+            <blockquote className="font-display text-lg sm:text-xl md:text-2xl font-light text-neutral-900 leading-relaxed italic">
+              &ldquo;{testimonial.quote}&rdquo;
+            </blockquote>
+
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-neutral-200/80">
+              <div>
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-black">
+                  {testimonial.clientName}
+                </h4>
+                <p className="text-[11px] text-neutral-500 font-mono mt-0.5">
+                  {[testimonial.designation, testimonial.company].filter(Boolean).join(" | ") || "Client"}
+                </p>
+              </div>
+              <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400">
+                PROJECT: {project.title.toUpperCase()} ({project.year})
+              </span>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Cinematic Film & Walkthrough Showcase Banner (if available) */}
       {project.videoTour && (

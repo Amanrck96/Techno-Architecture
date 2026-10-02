@@ -38,7 +38,7 @@ export default function HomeProjectsGrid() {
             FEATURED PROJECTS
           </h2>
           <p className="text-xs text-neutral-500 mt-1 tracking-wide">
-            A selection of completed and ongoing work across residential, commercial, hospitality and institutional design.
+            A selection of completed and ongoing work across residential, commercial, hospitality, interior and cultural design.
           </p>
         </div>
 

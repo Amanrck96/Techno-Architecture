@@ -9,7 +9,7 @@ export const initialFAQs: FAQItem[] = [
   {
     id: "faq-1",
     question: "What types of projects does Techno Architecture undertake",
-    answer: "We provide end to end architecture, interior design and structural design services. Our portfolio may include residential, commercial, hospitality and institutional projects. Where additional expertise is required, we can introduce clients to suitable specialist consultants according to the project's scale and technical needs.",
+    answer: "We provide end to end architecture, interior design and structural design services. Our portfolio may include residential, commercial, hospitality and cultural projects. Where additional expertise is required, we can introduce clients to suitable specialist consultants according to the project's scale and technical needs.",
     category: "Design Philosophy",
   },
   {

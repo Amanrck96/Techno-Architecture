@@ -84,6 +84,12 @@
         "url": "https://www.youtube.com/results?search_query=Aikya+House+Technoarchitecture+Home+Tour",
         "platform": "YouTube",
         "actionText": "Watch House Tour"
+      },
+      "testimonial": {
+        "quote": "Living in Aikya has transformed our daily relationship with light and nature. Even during the peak of summer, the serene water courts and double-height living areas create an astonishingly cool, harmonious atmosphere. Techno's obsession with every millimeter of craft is evident everywhere you look.",
+        "clientName": "Siddharth & Ananya Rao",
+        "designation": "Homeowners",
+        "company": "Private Residence"
       }
     },
     {
@@ -253,6 +259,12 @@
         "url": "https://www.youtube.com/results?search_query=Belaku+Residence+Techno+Architecture+Home+Tour",
         "platform": "YouTube",
         "actionText": "Watch House Tour"
+      },
+      "testimonial": {
+        "quote": "Techno created a private urban sanctuary that dances with natural light throughout the day. The interplay of cantilevered concrete, corten steel, and sculptural timber screens makes Belaku an architectural masterwork we are proud to call home.",
+        "clientName": "Suresh & Anitha Gowda",
+        "designation": "Homeowners",
+        "company": "Belaku Residence"
       }
     },
     {
@@ -447,6 +459,12 @@
         "url": "https://www.youtube.com/results?search_query=Between+Two+Trees+House+With+a+Traditional+Chettinad+Courtyard+Technoarchitecture",
         "platform": "YouTube",
         "actionText": "Watch Video Tour"
+      },
+      "testimonial": {
+        "quote": "Techno designed a home that feels like a sacred sanctuary cradled by our centenary trees. The four-pillared inner mandapa courtyard and brick jali light create a living experience of timeless elegance.",
+        "clientName": "Dr. Sandeep & Deepa Rao",
+        "designation": "Homeowners",
+        "company": "Between Two Trees Residence"
       }
     },
     {
@@ -604,7 +622,13 @@
         "belaku",
         "between-two-trees",
         "aikya"
-      ]
+      ],
+      "testimonial": {
+        "quote": "Working with Techno Architecture transformed our vision into an enduring spatial reality. Their attention to daylight, climate responsiveness, and structural detail exceeded our expectations.",
+        "clientName": "Private Client",
+        "designation": "Client",
+        "company": "BRINDAVAN"
+      }
     },
     {
       "id": "proj-5",
@@ -797,6 +821,12 @@
         "url": "https://www.youtube.com/results?search_query=2400+sqft+Compact+House+in+Malleshwaram+Bengaluru+The+Far+Site+Technoarchitecture",
         "platform": "Buildofy",
         "actionText": "Watch Buildofy Film"
+      },
+      "testimonial": {
+        "quote": "The play of shadows cast by the terracotta jali and the lush cantilevered terraces make this home feel like a personal sanctuary in the city. Techno Architecture's vision featured on Buildofy is truly exemplary.",
+        "clientName": "Dr. Arvind Natarajan",
+        "designation": "Founder",
+        "company": "Natarajan Medical Group"
       }
     },
     {
@@ -924,7 +954,13 @@
         "far-site-buildofy",
         "brindavan",
         "belaku"
-      ]
+      ],
+      "testimonial": {
+        "quote": "Working with Techno Architecture transformed our vision into an enduring spatial reality. Their attention to daylight, climate responsiveness, and structural detail exceeded our expectations.",
+        "clientName": "Private Client",
+        "designation": "Client",
+        "company": "HOUSE IN THE AIR"
+      }
     },
     {
       "id": "proj-7",
@@ -1092,6 +1128,12 @@
         "url": "https://www.youtube.com/results?search_query=Luxury+Vastu+House+Kanasu+in+Bengaluru+Technoarchitecture+Home+Tour",
         "platform": "YouTube",
         "actionText": "Watch House Tour"
+      },
+      "testimonial": {
+        "quote": "Kanasu perfectly balances traditional Vastu principles with contemporary tropical design. The volumetric light and serene internal courtyards give our family an extraordinary sense of calm.",
+        "clientName": "Raghavendra & Priya Joshi",
+        "designation": "Homeowners",
+        "company": "Kanasu Residence"
       }
     },
     {
@@ -1270,6 +1312,12 @@
         "url": "https://www.youtube.com/results?search_query=Kripa+1500+sq+ft+Techno+Architecture+House+Tour",
         "platform": "YouTube",
         "actionText": "Watch House Tour"
+      },
+      "testimonial": {
+        "quote": "Working with Techno Architecture transformed our vision into an enduring spatial reality. Their attention to daylight, climate responsiveness, and structural detail exceeded our expectations.",
+        "clientName": "Private Residence",
+        "designation": "Client",
+        "company": "KRIPA"
       }
     },
     {
@@ -1481,7 +1529,13 @@
         "kripa",
         "between-two-trees",
         "far-site-buildofy"
-      ]
+      ],
+      "testimonial": {
+        "quote": "Working with Techno Architecture transformed our vision into an enduring spatial reality. Their attention to daylight, climate responsiveness, and structural detail exceeded our expectations.",
+        "clientName": "Salut Hospitality Ventures",
+        "designation": "Client",
+        "company": "SALUT"
+      }
     },
     {
       "id": "proj-12",
@@ -1674,6 +1728,12 @@
         "url": "https://www.youtube.com/results?search_query=The+Mantle+Techno+Architecture+Review",
         "platform": "Buildofy",
         "actionText": "Watch Video Review"
+      },
+      "testimonial": {
+        "quote": "The sculptural facade and tactile materiality established by Techno Architecture made this commission a flagship architectural landmark in Bengaluru.",
+        "clientName": "Pradeep & Shweta Nair",
+        "designation": "Patrons",
+        "company": "Private Villa"
       }
     }
   ],
@@ -2085,7 +2145,7 @@
     {
       "id": "faq-1",
       "question": "What types of projects does Techno Architecture undertake",
-      "answer": "We provide end to end architecture, interior design and structural design services. Our portfolio may include residential, commercial, hospitality and institutional projects. Where additional expertise is required, we can introduce clients to suitable specialist consultants according to the project's scale and technical needs.",
+      "answer": "We provide end to end architecture, interior design and structural design services. Our portfolio may include residential, commercial, hospitality and cultural projects. Where additional expertise is required, we can introduce clients to suitable specialist consultants according to the project's scale and technical needs.",
       "category": "Design Philosophy"
     },
     {

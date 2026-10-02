@@ -40,6 +40,12 @@ export interface Project {
   featured: boolean;
   relatedSlugs: string[];
   videoTour?: VideoTour;
+  testimonial?: {
+    quote: string;
+    clientName: string;
+    designation?: string;
+    company?: string;
+  };
 }
 
 export const initialProjects: Project[] = [
