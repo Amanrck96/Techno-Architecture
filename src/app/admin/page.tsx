@@ -229,6 +229,38 @@ export default function AdminCMSPage() {
     setTimeout(() => setToastMessage(null), 3500);
   };
 
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+
+  const handleUploadPhoto = async (
+    file: File,
+    onSuccess: (url: string) => void
+  ) => {
+    setIsUploadingPhoto(true);
+    showToast("Uploading photo to cloud storage...");
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: fd,
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Upload failed");
+      }
+      onSuccess(data.url);
+      showToast(
+        data.storage === "firebase"
+          ? "Photo stored in Firebase Storage successfully!"
+          : "Photo uploaded successfully!"
+      );
+    } catch (err: any) {
+      alert(`Photo upload failed: ${err.message}`);
+    } finally {
+      setIsUploadingPhoto(false);
+    }
+  };
+
   // 4. Export JSON
   const exportData = () => {
     const backup = {
@@ -752,7 +784,9 @@ export default function AdminCMSPage() {
                   teamMembers: ["Ar. Rajesh Shivaram"],
                   credits: {
                     principalArchitect: "Ar. Rajesh Shivaram",
-                    projectLead: "Ar. Rajesh Shivaram",
+                    projectArchitect: "",
+                    projectLead: "",
+                    team: "Techno Architecture Studio Team",
                   },
                   featured: false,
                   relatedSlugs: [],
@@ -923,16 +957,38 @@ export default function AdminCMSPage() {
                     <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                       Main Display Image URL (Cover Photo)
                     </label>
-                    <input
-                      type="text"
-                      value={p.mainImage}
-                      onChange={(e) => {
-                        const updated = [...projects];
-                        updated[idx].mainImage = e.target.value;
-                        saveProjects(updated);
-                      }}
-                      className="w-full p-2 border border-neutral-300 rounded text-xs font-mono focus:border-black focus:outline-none"
-                    />
+                    <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+                      <input
+                        type="text"
+                        value={p.mainImage}
+                        onChange={(e) => {
+                          const updated = [...projects];
+                          updated[idx].mainImage = e.target.value;
+                          saveProjects(updated);
+                        }}
+                        placeholder="Image URL or upload file below"
+                        className="flex-1 w-full p-2 border border-neutral-300 rounded text-xs font-mono focus:border-black focus:outline-none"
+                      />
+                      <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 bg-black text-white rounded text-xs font-medium hover:bg-neutral-800 transition-colors shrink-0">
+                        <Upload size={13} />
+                        <span>Upload Photo</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              handleUploadPhoto(file, (url) => {
+                                const updated = [...projects];
+                                updated[idx].mainImage = url;
+                                saveProjects(updated);
+                              });
+                            }
+                          }}
+                        />
+                      </label>
+                    </div>
                   </div>
 
                   <div>
@@ -1038,14 +1094,15 @@ export default function AdminCMSPage() {
                       </div>
 
                       {/* Project Credits */}
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
                         <div>
                           <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                             Principal Architect
                           </label>
                           <input
                             type="text"
-                            value={p.credits?.principalArchitect || ""}
+                            placeholder="Ar. Rajesh Shivaram"
+                            value={p.credits?.principalArchitect || "Ar. Rajesh Shivaram"}
                             onChange={(e) => {
                               const updated = [...projects];
                               updated[idx].credits = {
@@ -1059,16 +1116,37 @@ export default function AdminCMSPage() {
                         </div>
                         <div>
                           <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
-                            Project Lead
+                            Project Architect
                           </label>
                           <input
                             type="text"
-                            value={p.credits?.projectLead || ""}
+                            placeholder="e.g. Vikramaditya Shenoy"
+                            value={p.credits?.projectArchitect || p.credits?.projectLead || ""}
                             onChange={(e) => {
                               const updated = [...projects];
                               updated[idx].credits = {
                                 ...updated[idx].credits,
+                                projectArchitect: e.target.value,
                                 projectLead: e.target.value,
+                              };
+                              saveProjects(updated);
+                            }}
+                            className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                            Team
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="e.g. Karthik Sundaram, Divya Raghavan"
+                            value={p.credits?.team || ""}
+                            onChange={(e) => {
+                              const updated = [...projects];
+                              updated[idx].credits = {
+                                ...updated[idx].credits,
+                                team: e.target.value,
                               };
                               saveProjects(updated);
                             }}
@@ -1259,28 +1337,54 @@ export default function AdminCMSPage() {
 
                       {/* Project Gallery Manager */}
                       <div className="space-y-3 pt-3 border-t border-neutral-200">
-                        <div className="flex justify-between items-center">
+                        <div className="flex flex-wrap justify-between items-center gap-2">
                           <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-700">
                             Project Gallery Photography ({p.gallery?.length || 0} images)
                           </span>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const updated = [...projects];
-                              const newImg: ProjectImage = {
-                                url: "/projects/aikya/elevation-evening.jpg",
-                                caption: "New interior photograph",
-                                aspect: "full",
-                              };
-                              updated[idx].gallery = [...(updated[idx].gallery || []), newImg];
-                              saveProjects(updated);
-                              showToast("New image added to project gallery.");
-                            }}
-                            className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider font-semibold text-black hover:underline"
-                          >
-                            <Plus size={12} />
-                            <span>Add Photo to Gallery</span>
-                          </button>
+                          <div className="flex items-center gap-3">
+                            <label className="cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1 bg-black text-white rounded text-[10px] uppercase tracking-wider font-semibold hover:bg-neutral-800 transition-colors">
+                              <Upload size={12} />
+                              <span>Upload Photo File</span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    handleUploadPhoto(file, (url) => {
+                                      const updated = [...projects];
+                                      const newImg: ProjectImage = {
+                                        url,
+                                        caption: file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " "),
+                                        aspect: "full",
+                                      };
+                                      updated[idx].gallery = [...(updated[idx].gallery || []), newImg];
+                                      saveProjects(updated);
+                                    });
+                                  }
+                                }}
+                              />
+                            </label>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = [...projects];
+                                const newImg: ProjectImage = {
+                                  url: "/projects/aikya/elevation-evening.jpg",
+                                  caption: "New interior photograph",
+                                  aspect: "full",
+                                };
+                                updated[idx].gallery = [...(updated[idx].gallery || []), newImg];
+                                saveProjects(updated);
+                                showToast("New image slot added to project gallery.");
+                              }}
+                              className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider font-semibold text-neutral-600 hover:text-black hover:underline"
+                            >
+                              <Plus size={12} />
+                              <span>Add via URL</span>
+                            </button>
+                          </div>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1289,7 +1393,7 @@ export default function AdminCMSPage() {
                               key={gIdx}
                               className="p-3 bg-white border border-neutral-200 rounded flex gap-3 items-start"
                             >
-                              <div className="relative w-16 h-14 bg-neutral-100 rounded overflow-hidden flex-shrink-0">
+                              <div className="relative w-16 h-14 bg-neutral-100 rounded overflow-hidden flex-shrink-0 group">
                                 <Image
                                   src={img.url}
                                   alt={img.caption || "Gallery photo"}
@@ -1297,19 +1401,57 @@ export default function AdminCMSPage() {
                                   unoptimized
                                   className="object-cover"
                                 />
+                                <label className="absolute inset-0 bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
+                                  <Upload size={14} />
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={(e) => {
+                                      const file = e.target.files?.[0];
+                                      if (file) {
+                                        handleUploadPhoto(file, (url) => {
+                                          const updated = [...projects];
+                                          updated[idx].gallery[gIdx].url = url;
+                                          saveProjects(updated);
+                                        });
+                                      }
+                                    }}
+                                  />
+                                </label>
                               </div>
                               <div className="flex-1 space-y-1.5">
-                                <input
-                                  type="text"
-                                  value={img.url}
-                                  onChange={(e) => {
-                                    const updated = [...projects];
-                                    updated[idx].gallery[gIdx].url = e.target.value;
-                                    saveProjects(updated);
-                                  }}
-                                  placeholder="Image URL"
-                                  className="w-full p-1 border border-neutral-300 rounded text-[11px] font-mono"
-                                />
+                                <div className="flex gap-1.5 items-center">
+                                  <input
+                                    type="text"
+                                    value={img.url}
+                                    onChange={(e) => {
+                                      const updated = [...projects];
+                                      updated[idx].gallery[gIdx].url = e.target.value;
+                                      saveProjects(updated);
+                                    }}
+                                    placeholder="Image URL"
+                                    className="w-full p-1 border border-neutral-300 rounded text-[11px] font-mono"
+                                  />
+                                  <label className="cursor-pointer p-1 text-neutral-500 hover:text-black hover:bg-neutral-100 rounded shrink-0" title="Upload new image file">
+                                    <Upload size={13} />
+                                    <input
+                                      type="file"
+                                      accept="image/*"
+                                      className="hidden"
+                                      onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                          handleUploadPhoto(file, (url) => {
+                                            const updated = [...projects];
+                                            updated[idx].gallery[gIdx].url = url;
+                                            saveProjects(updated);
+                                          });
+                                        }
+                                      }}
+                                    />
+                                  </label>
+                                </div>
                                 <input
                                   type="text"
                                   value={img.caption}

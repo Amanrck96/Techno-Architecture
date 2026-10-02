@@ -15,7 +15,9 @@ export default function HomeProjectsGrid() {
     { id: "all", label: "ALL WORKS" },
     { id: "Residential", label: "RESIDENTIAL" },
     { id: "Commercial", label: "COMMERCIAL" },
+    { id: "Hospitality", label: "HOSPITALITY" },
     { id: "Interior", label: "INTERIOR" },
+    { id: "Cultural", label: "CULTURAL" },
     { id: "completed", label: "COMPLETED" },
     { id: "ongoing", label: "ONGOING" },
   ];

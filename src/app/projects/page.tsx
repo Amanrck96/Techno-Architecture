@@ -18,8 +18,8 @@ export default function ProjectsDirectoryPage() {
     { id: "Residential", label: "RESIDENTIAL" },
     { id: "Commercial", label: "COMMERCIAL" },
     { id: "Hospitality", label: "HOSPITALITY" },
-    { id: "Institutional", label: "INSTITUTIONAL" },
-    { id: "Interior", label: "INTERIORS" },
+    { id: "Interior", label: "INTERIOR" },
+    { id: "Cultural", label: "CULTURAL" },
   ];
 
   const filtered = projects.filter((p) => {

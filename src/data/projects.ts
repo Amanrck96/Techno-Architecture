@@ -29,7 +29,9 @@ export interface Project {
   teamMembers: string[];
   credits: {
     principalArchitect: string;
-    projectLead: string;
+    projectArchitect?: string;
+    projectLead?: string;
+    team?: string;
     structuralEngineer?: string;
     landscapeArchitect?: string;
     lightingConsultant?: string;
@@ -67,9 +69,10 @@ export const initialProjects: Project[] = [
     servicesInvolved: ["Architectural Design", "Interior Architecture", "Landscape Integration"],
     teamMembers: ["Ar. Rajesh Shivaram", "Karthik Sundaram", "Divya Raghavan"],
     credits: {
-      principalArchitect: "Techno Architecture",
-      projectLead: "Ar. Rajesh Shivaram",
-      structuralEngineer: "Matrix Structural Consultants",
+      principalArchitect: "Ar. Rajesh Shivaram",
+      projectArchitect: "Vikramaditya Shenoy",
+      projectLead: "Vikramaditya Shenoy",
+      team: "Techno Architecture Studio Team",
       landscapeArchitect: "Verdant Studio",
       lightingConsultant: "Lumen Praxis",
       generalContractor: "Apex Buildtech Projects",
@@ -126,9 +129,10 @@ export const initialProjects: Project[] = [
     servicesInvolved: ["Luxury Residential Architecture", "Parametric Facade Engineering", "Interior & Landscape Design"],
     teamMembers: ["Ar. Rajesh Shivaram", "Vikramaditya Shenoy", "Naveen Prasad"],
     credits: {
-      principalArchitect: "Techno Architecture",
+      principalArchitect: "Ar. Rajesh Shivaram",
+      projectArchitect: "Vikramaditya Shenoy",
       projectLead: "Vikramaditya Shenoy",
-      structuralEngineer: "Sterling Engineering Consortium",
+      team: "Techno Architecture Studio Team",
       lightingConsultant: "Studio Illumine",
     },
     featured: true,
@@ -188,9 +192,10 @@ export const initialProjects: Project[] = [
     servicesInvolved: ["Heritage Residential Architecture", "Biophilic Tree Preservation", "Interior & Landscape Design"],
     teamMembers: ["Ar. Rajesh Shivaram", "Vikramaditya Shenoy", "Karthik Sundaram"],
     credits: {
-      principalArchitect: "Techno Architecture",
-      projectLead: "Ar. Rajesh Shivaram",
-      structuralEngineer: "Sterling Engineering Consortium",
+      principalArchitect: "Ar. Rajesh Shivaram",
+      projectArchitect: "Vikramaditya Shenoy",
+      projectLead: "Vikramaditya Shenoy",
+      team: "Techno Architecture Studio Team",
       landscapeArchitect: "Verdant Studio",
     },
     featured: true,
@@ -244,9 +249,10 @@ export const initialProjects: Project[] = [
     servicesInvolved: ["Urban Residential Architecture", "Biophilic Facade Engineering", "Bespoke Interior Design"],
     teamMembers: ["Ar. Rajesh Shivaram", "Vikramaditya Shenoy", "Naveen Prasad"],
     credits: {
-      principalArchitect: "Techno Architecture",
+      principalArchitect: "Ar. Rajesh Shivaram",
+      projectArchitect: "Vikramaditya Shenoy",
       projectLead: "Vikramaditya Shenoy",
-      structuralEngineer: "Southern Geotech & Structural",
+      team: "Techno Architecture Studio Team",
     },
     featured: true,
     relatedSlugs: ["belaku", "between-two-trees", "aikya"],
@@ -299,9 +305,10 @@ export const initialProjects: Project[] = [
     servicesInvolved: ["Urban Residential Architecture", "Biophilic Facade Engineering", "Terracotta Jali Screen Craft"],
     teamMembers: ["Ar. Rajesh Shivaram", "Vikramaditya Shenoy", "Karthik Sundaram"],
     credits: {
-      principalArchitect: "Techno Architecture",
+      principalArchitect: "Ar. Rajesh Shivaram",
+      projectArchitect: "Vikramaditya Shenoy",
       projectLead: "Vikramaditya Shenoy",
-      structuralEngineer: "Southern Geotech & Structural",
+      team: "Techno Architecture Studio Team",
     },
     featured: true,
     relatedSlugs: ["aikya", "belaku", "brindavan"],
@@ -348,9 +355,10 @@ export const initialProjects: Project[] = [
     servicesInvolved: ["Urban Residential Architecture", "Cantilever Engineering", "Bespoke Interior Design"],
     teamMembers: ["Vikramaditya Shenoy", "Divya Raghavan", "Naveen Prasad"],
     credits: {
-      principalArchitect: "Techno Architecture",
+      principalArchitect: "Ar. Rajesh Shivaram",
+      projectArchitect: "Vikramaditya Shenoy",
       projectLead: "Vikramaditya Shenoy",
-      structuralEngineer: "Southern Geotech & Structural",
+      team: "Techno Architecture Studio Team",
     },
     featured: true,
     relatedSlugs: ["far-site-buildofy", "brindavan", "belaku"],
@@ -398,9 +406,10 @@ export const initialProjects: Project[] = [
     servicesInvolved: ["Turnkey Architecture", "Structural BIM Coordination", "Interior Design"],
     teamMembers: ["Vikramaditya Shenoy", "Karthik Sundaram", "Aditya Joshi"],
     credits: {
-      principalArchitect: "Vikramaditya Shenoy",
+      principalArchitect: "Ar. Rajesh Shivaram",
+      projectArchitect: "Aditya Joshi",
       projectLead: "Aditya Joshi",
-      structuralEngineer: "Schlaich Bergermann Partner (Advisory)",
+      team: "Techno Architecture Studio Team",
     },
     featured: true,
     relatedSlugs: ["house-in-the-air", "far-site-buildofy", "between-two-trees"],
@@ -456,9 +465,10 @@ export const initialProjects: Project[] = [
     servicesInvolved: ["Urban Residential Architecture", "Biophilic Facade Engineering", "Bespoke Interior Design"],
     teamMembers: ["Vikramaditya Shenoy", "Divya Raghavan", "Naveen Prasad"],
     credits: {
-      principalArchitect: "Vikramaditya Shenoy",
+      principalArchitect: "Ar. Rajesh Shivaram",
+      projectArchitect: "Divya Raghavan",
       projectLead: "Divya Raghavan",
-      structuralEngineer: "Southern Geotech & Structural",
+      team: "Techno Architecture Studio Team",
     },
     featured: true,
     relatedSlugs: ["kanasu", "house-in-the-air", "brindavan"],
@@ -522,9 +532,10 @@ export const initialProjects: Project[] = [
     servicesInvolved: ["Hospitality Architecture", "Interior Design", "Biophilic Landscape Integration"],
     teamMembers: ["Vikramaditya Shenoy", "Divya Raghavan"],
     credits: {
-      principalArchitect: "Vikramaditya Shenoy",
+      principalArchitect: "Ar. Rajesh Shivaram",
+      projectArchitect: "Divya Raghavan",
       projectLead: "Divya Raghavan",
-      structuralEngineer: "Southern Geotech & Structural",
+      team: "Techno Architecture Studio Team",
     },
     featured: false,
     relatedSlugs: ["kripa", "between-two-trees", "far-site-buildofy"],
@@ -577,9 +588,10 @@ export const initialProjects: Project[] = [
     servicesInvolved: ["Architecture", "Interior Architecture", "Landscape Design"],
     teamMembers: ["Ar. Rajesh Shivaram", "Vikramaditya Shenoy", "Naveen Prasad"],
     credits: {
-      principalArchitect: "Rajesh Shivaram",
+      principalArchitect: "Ar. Rajesh Shivaram",
+      projectArchitect: "Techno Architecture",
       projectLead: "Techno Architecture",
-      structuralEngineer: "Southern Geotech & Structural",
+      team: "Techno Architecture Studio Team",
     },
     featured: false,
     relatedSlugs: ["aikya", "between-two-trees", "far-site-buildofy"],

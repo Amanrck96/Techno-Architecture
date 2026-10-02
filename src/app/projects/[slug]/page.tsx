@@ -433,10 +433,14 @@ export default function ProjectDetailPage() {
           <div className="pt-4 border-t border-neutral-200 space-y-2">
             <span className="text-[9px] uppercase tracking-wider text-neutral-400 block">CREDITS & COLLABORATORS</span>
             <div className="text-[11px] text-neutral-600 space-y-1">
-              <p><strong className="text-neutral-900 font-medium">Principal:</strong> {project.credits.principalArchitect}</p>
-              <p><strong className="text-neutral-900 font-medium">Lead:</strong> {project.credits.projectLead}</p>
-              <p><strong className="text-neutral-900 font-medium">Structural:</strong> {project.credits.structuralEngineer}</p>
-              {project.credits.landscapeArchitect && (
+              <p><strong className="text-neutral-900 font-medium">Principal Architect:</strong> {project.credits?.principalArchitect || "Ar. Rajesh Shivaram"}</p>
+              {(project.credits?.projectArchitect || project.credits?.projectLead) && (
+                <p><strong className="text-neutral-900 font-medium">Project Architect:</strong> {project.credits?.projectArchitect || project.credits?.projectLead}</p>
+              )}
+              {(project.credits?.team || (project.teamMembers && project.teamMembers.length > 0)) && (
+                <p><strong className="text-neutral-900 font-medium">Team:</strong> {project.credits?.team || project.teamMembers?.join(", ")}</p>
+              )}
+              {project.credits?.landscapeArchitect && (
                 <p><strong className="text-neutral-900 font-medium">Landscape:</strong> {project.credits.landscapeArchitect}</p>
               )}
             </div>

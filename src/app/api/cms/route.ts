@@ -13,6 +13,7 @@ import { initialRecognitions } from "@/data/recognitions";
 import { initialSiteSettings } from "@/data/siteSettings";
 import { initialTestimonials } from "@/data/testimonials";
 import staticCmsContent from "@/data/cms-content.json";
+import { getFirestoreDb } from "@/lib/firebaseAdmin";
 
 export const dynamic = "force-dynamic";
 
@@ -187,6 +188,22 @@ async function readStore() {
   // Candidates for dataset
   const candidates: any[] = [];
 
+  // 1b. Try Cloud Firestore (Tier 0 persistence)
+  try {
+    const db = getFirestoreDb();
+    if (db) {
+      const doc = await db.collection("cms").doc("content").get();
+      if (doc.exists) {
+        const data = doc.data();
+        if (data && typeof data === "object" && data.updatedAt) {
+          candidates.push(data);
+        }
+      }
+    }
+  } catch (e) {
+    console.warn("Firestore read notice:", e);
+  }
+
   // 2. Try Upstash / Vercel KV if configured
   const upstashData = await getFromUpstashKV();
   if (upstashData && typeof upstashData === "object" && upstashData.updatedAt) {
@@ -239,6 +256,18 @@ async function writeStore(data: any) {
 
   // Multi-tier parallel persistence
   await Promise.allSettled([
+    // Tier 0: Cloud Firestore (Primary enterprise database)
+    (async () => {
+      try {
+        const db = getFirestoreDb();
+        if (db) {
+          await db.collection("cms").doc("content").set(data);
+        }
+      } catch (e) {
+        console.warn("Firestore write notice:", e);
+      }
+    })(),
+
     // Tier 1: Local file (for local development & persistent hosting)
     (async () => {
       try {

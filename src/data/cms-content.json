@@ -66,9 +66,9 @@
         "Divya Raghavan"
       ],
       "credits": {
-        "principalArchitect": "Techno Architecture",
-        "projectLead": "Ar. Rajesh Shivaram",
-        "structuralEngineer": "Matrix Structural Consultants",
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Vikramaditya Shenoy",
+        "team": "Ar. Rajesh Shivaram, Karthik Sundaram, Divya Raghavan",
         "landscapeArchitect": "Verdant Studio",
         "lightingConsultant": "Lumen Praxis",
         "generalContractor": "Apex Buildtech Projects"
@@ -237,9 +237,9 @@
         "Naveen Prasad"
       ],
       "credits": {
-        "principalArchitect": "Techno Architecture",
-        "projectLead": "Vikramaditya Shenoy",
-        "structuralEngineer": "Sterling Engineering Consortium",
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Vikramaditya Shenoy",
+        "team": "Ar. Rajesh Shivaram, Vikramaditya Shenoy, Naveen Prasad",
         "lightingConsultant": "Studio Illumine"
       },
       "featured": true,
@@ -431,9 +431,9 @@
         "Karthik Sundaram"
       ],
       "credits": {
-        "principalArchitect": "Techno Architecture",
-        "projectLead": "Ar. Rajesh Shivaram",
-        "structuralEngineer": "Sterling Engineering Consortium",
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Vikramaditya Shenoy",
+        "team": "Ar. Rajesh Shivaram, Vikramaditya Shenoy, Karthik Sundaram",
         "landscapeArchitect": "Verdant Studio"
       },
       "featured": true,
@@ -595,9 +595,9 @@
         "Naveen Prasad"
       ],
       "credits": {
-        "principalArchitect": "Techno Architecture",
-        "projectLead": "Vikramaditya Shenoy",
-        "structuralEngineer": "Southern Geotech & Structural"
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Vikramaditya Shenoy",
+        "team": "Ar. Rajesh Shivaram, Vikramaditya Shenoy, Naveen Prasad"
       },
       "featured": true,
       "relatedSlugs": [
@@ -782,9 +782,9 @@
         "Karthik Sundaram"
       ],
       "credits": {
-        "principalArchitect": "Techno Architecture",
-        "projectLead": "Vikramaditya Shenoy",
-        "structuralEngineer": "Southern Geotech & Structural"
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Vikramaditya Shenoy",
+        "team": "Ar. Rajesh Shivaram, Vikramaditya Shenoy, Karthik Sundaram"
       },
       "featured": true,
       "relatedSlugs": [
@@ -915,9 +915,9 @@
         "Naveen Prasad"
       ],
       "credits": {
-        "principalArchitect": "Techno Architecture",
-        "projectLead": "Vikramaditya Shenoy",
-        "structuralEngineer": "Southern Geotech & Structural"
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Vikramaditya Shenoy",
+        "team": "Vikramaditya Shenoy, Divya Raghavan, Naveen Prasad"
       },
       "featured": true,
       "relatedSlugs": [
@@ -1077,9 +1077,9 @@
         "Aditya Joshi"
       ],
       "credits": {
-        "principalArchitect": "Vikramaditya Shenoy",
-        "projectLead": "Aditya Joshi",
-        "structuralEngineer": "Schlaich Bergermann Partner (Advisory)"
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Aditya Joshi",
+        "team": "Vikramaditya Shenoy, Karthik Sundaram, Aditya Joshi"
       },
       "featured": true,
       "relatedSlugs": [
@@ -1255,9 +1255,9 @@
         "Naveen Prasad"
       ],
       "credits": {
-        "principalArchitect": "Vikramaditya Shenoy",
-        "projectLead": "Divya Raghavan",
-        "structuralEngineer": "Southern Geotech & Structural"
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Divya Raghavan",
+        "team": "Vikramaditya Shenoy, Divya Raghavan, Naveen Prasad"
       },
       "featured": true,
       "relatedSlugs": [
@@ -1472,9 +1472,9 @@
         "Divya Raghavan"
       ],
       "credits": {
-        "principalArchitect": "Vikramaditya Shenoy",
-        "projectLead": "Divya Raghavan",
-        "structuralEngineer": "Southern Geotech & Structural"
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Divya Raghavan",
+        "team": "Vikramaditya Shenoy, Divya Raghavan"
       },
       "featured": false,
       "relatedSlugs": [
@@ -1659,9 +1659,9 @@
         "Naveen Prasad"
       ],
       "credits": {
-        "principalArchitect": "Rajesh Shivaram",
-        "projectLead": "Techno Architecture",
-        "structuralEngineer": "Southern Geotech & Structural"
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Techno Architecture",
+        "team": "Ar. Rajesh Shivaram, Vikramaditya Shenoy, Naveen Prasad"
       },
       "featured": false,
       "relatedSlugs": [
@@ -4130,5 +4130,5 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-09-27T20:43:58.474Z"
+  "updatedAt": "2026-10-02T12:24:28.865Z"
 }

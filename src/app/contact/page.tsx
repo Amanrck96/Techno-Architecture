@@ -12,23 +12,12 @@ export default function ContactPage() {
     email: "",
     phone: "",
     company: "",
-    service: "Architectural Design",
-    budget: "$250k - $500k",
     message: "",
-    consent: false,
     honeypot: "",
   });
 
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
-
-  const budgetOptions = [
-    "Under $100k / ₹80 Lakhs",
-    "$100k - $250k / ₹80L - ₹2 Cr",
-    "$250k - $500k / ₹2 Cr - ₹4 Cr",
-    "$500k - $1M / ₹4 Cr - ₹8 Cr",
-    "$1M+ / ₹8 Cr+",
-  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,15 +42,12 @@ export default function ContactPage() {
         email: "",
         phone: "",
         company: "",
-        service: "Architectural Design",
-        budget: "$250k - $500k",
         message: "",
-        consent: false,
         honeypot: "",
       });
     } catch (err: any) {
       setStatus("error");
-      setErrorMessage(err.message || "Failed to submit inquiry. Please try again.");
+      setErrorMessage(err.message || "Failed to submit enquiry. Please try again.");
     }
   };
 
@@ -87,7 +73,7 @@ export default function ContactPage() {
             <div className="py-12 text-center space-y-4">
               <CheckCircle2 size={48} className="mx-auto text-black" />
               <h2 className="font-display text-2xl font-light text-neutral-900">
-                Inquiry Successfully Transmitted
+                Enquiry Successfully Transmitted
               </h2>
               <p className="text-xs text-neutral-600 max-w-md mx-auto leading-relaxed">
                 Thank you. Your dossier has been routed directly to our principals. We will review your site parameters and respond within two business days.
@@ -184,48 +170,6 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              {/* Row 3: Service Required & Budget Range */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-1">
-                  <label htmlFor="service" className="text-[10px] uppercase tracking-[0.2em] font-semibold text-neutral-700 block">
-                    Service Required
-                  </label>
-                  <select
-                    id="service"
-                    value={formData.service}
-                    onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-                    className="w-full text-xs p-3 border border-neutral-300 bg-white focus:border-black focus:outline-none transition-colors"
-                  >
-                    {services.map((s) => (
-                      <option key={s.id} value={s.title}>
-                        {s.title}
-                      </option>
-                    ))}
-                    <option value="Full Turnkey Architecture & Interior">
-                      Full Turnkey Architecture & Interior
-                    </option>
-                  </select>
-                </div>
-
-                <div className="space-y-1">
-                  <label htmlFor="budget" className="text-[10px] uppercase tracking-[0.2em] font-semibold text-neutral-700 block">
-                    Estimated Budget Range
-                  </label>
-                  <select
-                    id="budget"
-                    value={formData.budget}
-                    onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                    className="w-full text-xs p-3 border border-neutral-300 bg-white focus:border-black focus:outline-none transition-colors"
-                  >
-                    {budgetOptions.map((opt, idx) => (
-                      <option key={idx} value={opt}>
-                        {opt}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
               {/* Message */}
               <div className="space-y-1">
                 <label htmlFor="message" className="text-[10px] uppercase tracking-[0.2em] font-semibold text-neutral-700 block">
@@ -242,21 +186,6 @@ export default function ContactPage() {
                 />
               </div>
 
-              {/* Consent Checkbox */}
-              <div className="flex items-start space-x-3 pt-2">
-                <input
-                  id="consent"
-                  type="checkbox"
-                  required
-                  checked={formData.consent}
-                  onChange={(e) => setFormData({ ...formData, consent: e.target.checked })}
-                  className="mt-1 accent-black"
-                />
-                <label htmlFor="consent" className="text-[11px] text-neutral-600 leading-normal">
-                  I agree that Techno Architecture may process my provided contact details for the sole purpose of responding to this project inquiry.
-                </label>
-              </div>
-
               {/* Submit Button */}
               <button
                 type="submit"
@@ -267,7 +196,7 @@ export default function ContactPage() {
                   <span>Transmitting Dossier...</span>
                 ) : (
                   <>
-                    <span>Submit Project Inquiry</span>
+                    <span>Submit Enquiry</span>
                     <Send size={13} />
                   </>
                 )}
