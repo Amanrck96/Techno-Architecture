@@ -48,7 +48,7 @@ export async function POST(request: Request) {
       email,
       phone: phone || "Not provided",
       company: company || "Not provided",
-      service: service || "General Architecture & Design Inquiry",
+      service: service || "General Architecture & Design Enquiry",
       budget: budget || "Not specified",
       message,
       createdAt: timestamp,

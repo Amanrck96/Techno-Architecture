@@ -71,7 +71,7 @@ export const initialServices: Service[] = [
     title: "Structural Design",
     shortDescription: "We coordinate the structural system with the architectural concept from early design stages for safe, efficient, and buildable buildings.",
     detailedDescription: "Structural design forms an integral part of our end to end project scope. We coordinate the structural system with the architectural concept from the early design stages, helping the building remain safe, efficient, buildable and aligned with the intended spatial character.",
-    image: "/projects/between-two-trees/two-trees-facade-geometric-composition.jpg",
+    image: "/projects/between-two-trees/between-two-trees-facade-street.jpg",
     process: [
       { step: "01", title: "Structural Concept Development", description: "Establishing load paths and structural logic aligned with architectural vision." },
       { step: "02", title: "Structural System Planning", description: "Selecting optimal RCC frames, steel elements, or composite structural schemes." },
@@ -96,7 +96,7 @@ export const initialServices: Service[] = [
     title: "Specialist Consultant Introductions",
     shortDescription: "Introducing clients to appropriate specialist consultants and coordinating design information within our architectural scope.",
     detailedDescription: "Depending on the project's scale and technical requirements, we introduce clients to appropriate specialist consultants. These may include structural, services, sustainability, lighting, acoustic or other professionals required for the project. Each specialist is appointed separately by the client, while our team coordinates relevant design information within our architectural scope. Specialist consultants are appointed directly by the client. Their scope, fees and deliverables are defined separately according to the project's requirements.",
-    image: "/projects/belaku/belaku-night-illumination-exterior.jpg",
+    image: "/projects/belaku/belaku-elevation-dusk-frontal.jpg",
     process: [
       { step: "01", title: "Identify Specialist Disciplines Required", description: "Assess project scale and technical needs across MEP, acoustics, lighting, and landscape." },
       { step: "02", title: "Introduce Suitable Consultants", description: "Introduce vetted, qualified engineering and technical specialists matching scale." },

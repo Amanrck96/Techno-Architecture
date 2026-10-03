@@ -111,7 +111,7 @@ export default function RootLayout({
       streetAddress: "No 9, Uttaradhi Mutt Road, Shankarpuram, Basavanagudi",
       addressLocality: "Bengaluru",
       addressRegion: "Karnataka",
-      postalCode: "110033",
+      postalCode: "560004",
       addressCountry: "IN",
     },
     sameAs: [

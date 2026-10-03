@@ -144,7 +144,7 @@ export default function FAQPage() {
           href="/contact"
           className="text-xs uppercase tracking-[0.2em] font-medium bg-black text-white px-5 py-2.5 hover:bg-neutral-800 transition-colors flex items-center gap-1.5"
         >
-          <span>Submit Inquiry</span>
+          <span>Submit Enquiry</span>
           <ArrowUpRight size={13} />
         </Link>
       </div>

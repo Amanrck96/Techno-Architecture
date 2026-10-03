@@ -109,7 +109,7 @@ export const initialBlogPosts: BlogPost[] = [
       conclusion: "The architectural horizon belongs to hybridized structures where concrete anchors the earth, steel spans the extraordinary, and mass timber warms the human habitat."
     },
     tags: ["Mass Timber", "CLT", "Embodied Carbon", "Commercial Design"],
-    relatedSlugs: ["monolithic-concrete-tropical-context", "quiet-thresholds-sacred-space"],
+    relatedSlugs: ["monolithic-concrete-tropical-context", "sacred-geometry-light"],
   },
   {
     id: "blog-3",

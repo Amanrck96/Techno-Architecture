@@ -72,7 +72,7 @@ export const initialSiteSettings: SiteSettings = {
     {
       city: "Bengaluru Studio",
       address: "No 9, Uttaradhi Mutt Road, Shankarpuram, Basavanagudi",
-      postalCode: "Karnataka 110033",
+      postalCode: "Karnataka 560004",
       phone: "080 4210 3764",
       isHeadquarters: true,
     }
@@ -85,7 +85,7 @@ export const initialSiteSettings: SiteSettings = {
     },
     {
       platform: "Google Maps",
-      url: "https://www.google.com/maps/search/?api=1&query=TechnoArchitecture%2C+No+9%2C+Uttaradhi+Mutt+Road%2C+Shankarpuram%2C+Basavanagudi%2C+Bengaluru%2C+Karnataka+110033",
+      url: "https://www.google.com/maps/search/?api=1&query=TechnoArchitecture%2C+No+9%2C+Uttaradhi+Mutt+Road%2C+Shankarpuram%2C+Basavanagudi%2C+Bengaluru%2C+Karnataka+560004",
       handle: "TechnoArchitecture Basavanagudi",
     }
   ],
