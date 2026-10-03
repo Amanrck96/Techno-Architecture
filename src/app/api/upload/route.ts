@@ -9,19 +9,25 @@ export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
   try {
-    // 1. Verify admin session
+    // 1. Verify admin session (via HTTP cookie or Authorization header)
     const cookieStore = cookies();
-    const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+    const authHeader = request.headers.get("Authorization") || "";
+    const token =
+      cookieStore.get(SESSION_COOKIE_NAME)?.value ||
+      authHeader.replace(/^Bearer\s+/i, "").trim();
+
     const authResult = verifySessionToken(token);
     
     // In local dev without session, allow upload if no session cookie exists
     const isDev = process.env.NODE_ENV !== "production";
     if (!authResult.valid && !isDev) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
     }
 
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
+    const rawFolder = (formData.get("folder") as string) || "uploads";
+    const folder = rawFolder.replace(/[^a-zA-Z0-9-_]/g, "") || "uploads";
 
     if (!file) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
@@ -36,10 +42,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Limit file size (10MB max)
-    if (file.size > 10 * 1024 * 1024) {
+    // Limit file size (15MB max)
+    if (file.size > 15 * 1024 * 1024) {
       return NextResponse.json(
-        { error: "File exceeds 10MB limit." },
+        { error: "File exceeds 15MB limit." },
         { status: 400 }
       );
     }
@@ -48,12 +54,13 @@ export async function POST(request: Request) {
     const ext = path.extname(file.name) || ".jpg";
     const cleanBase = path.basename(file.name, ext).replace(/[^a-zA-Z0-9-_]/g, "_").toLowerCase();
     const filename = `techno_${cleanBase}_${Date.now()}${ext}`;
+    const storagePath = `${folder}/${filename}`;
 
     // 2. Try uploading to Firebase Storage if configured
     try {
       const bucket = getFirebaseStorageBucket();
       if (bucket) {
-        const fileRef = bucket.file(`projects/${filename}`);
+        const fileRef = bucket.file(storagePath);
         await fileRef.save(buffer, {
           metadata: {
             contentType: file.type,
@@ -66,40 +73,43 @@ export async function POST(request: Request) {
         // Make public or generate public URL
         try {
           await fileRef.makePublic();
-          const publicUrl = `https://storage.googleapis.com/${bucket.name}/projects/${filename}`;
+          const publicUrl = `https://storage.googleapis.com/${bucket.name}/${storagePath}`;
           return NextResponse.json({
             success: true,
             url: publicUrl,
             storage: "firebase",
             name: filename,
+            folder,
           });
         } catch (_) {
           // Alternatively standard Firebase media link
-          const downloadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(`projects/${filename}`)}?alt=media&token=${filename}`;
+          const downloadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(storagePath)}?alt=media&token=${filename}`;
           return NextResponse.json({
             success: true,
             url: downloadUrl,
             storage: "firebase",
             name: filename,
+            folder,
           });
         }
       }
     } catch (fbErr) {
-      console.warn("Firebase Storage upload skipped or failed, falling back to local:", fbErr);
+      console.warn("Firebase Storage upload skipped or failed, falling back to local server storage:", fbErr);
     }
 
-    // 3. Fallback: Save to public/uploads/
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
+    // 3. Fallback: Save to public/uploads/[folder]/
+    const uploadsDir = path.join(process.cwd(), "public", "uploads", folder);
     await fs.mkdir(uploadsDir, { recursive: true });
     const localFilePath = path.join(uploadsDir, filename);
     await fs.writeFile(localFilePath, buffer);
 
-    const publicUrl = `/uploads/${filename}`;
+    const publicUrl = `/uploads/${folder}/${filename}`;
     return NextResponse.json({
       success: true,
       url: publicUrl,
       storage: "local",
       name: filename,
+      folder,
     });
   } catch (error: any) {
     console.error("Upload API error:", error);

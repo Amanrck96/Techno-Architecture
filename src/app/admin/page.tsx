@@ -64,6 +64,7 @@ import {
   HardDrive,
   Key,
   Check,
+  Camera,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ImageMouseAdjuster } from "@/components/admin/ImageMouseAdjuster";
@@ -335,18 +336,29 @@ export default function AdminCMSPage() {
   };
 
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [uploadingTargetId, setUploadingTargetId] = useState<string | null>(null);
 
   const handleUploadPhoto = async (
     file: File,
-    onSuccess: (url: string) => void
+    onSuccess: (url: string) => void,
+    folder: string = "uploads"
   ) => {
     setIsUploadingPhoto(true);
-    showToast("Uploading photo to cloud storage...");
+    showToast("Uploading photo from your laptop to cloud storage...");
     try {
       const fd = new FormData();
       fd.append("file", file);
+      if (folder) fd.append("folder", folder);
+
+      const token = typeof window !== "undefined" ? localStorage.getItem("techno_admin_token") : null;
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
       const res = await fetch("/api/upload", {
         method: "POST",
+        headers,
         body: fd,
       });
       const data = await res.json();
@@ -357,12 +369,13 @@ export default function AdminCMSPage() {
       showToast(
         data.storage === "firebase"
           ? "Photo stored in Firebase Storage successfully!"
-          : "Photo uploaded successfully!"
+          : "Photo uploaded from laptop successfully!"
       );
     } catch (err: any) {
       alert(`Photo upload failed: ${err.message}`);
     } finally {
       setIsUploadingPhoto(false);
+      setUploadingTargetId(null);
     }
   };
 
@@ -2057,18 +2070,43 @@ export default function AdminCMSPage() {
                   </div>
                   <div>
                     <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
-                      Cover Image URL
+                      Cover Image (Upload from Laptop or URL)
                     </label>
-                    <input
-                      type="text"
-                      value={s.image}
-                      onChange={(e) => {
-                        const updated = [...services];
-                        updated[idx].image = e.target.value;
-                        saveServices(updated);
-                      }}
-                      className="w-full p-2 border border-neutral-300 rounded font-mono"
-                    />
+                    <div className="flex gap-1.5 items-center">
+                      <input
+                        type="text"
+                        value={s.image}
+                        onChange={(e) => {
+                          const updated = [...services];
+                          updated[idx].image = e.target.value;
+                          saveServices(updated);
+                        }}
+                        placeholder="Image URL or upload from laptop"
+                        className="flex-1 min-w-0 p-2 border border-neutral-300 rounded font-mono text-xs focus:border-black focus:outline-none"
+                      />
+                      <label
+                        title="Upload from Laptop"
+                        className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 bg-black text-white rounded text-xs font-medium hover:bg-neutral-800 transition-colors shrink-0"
+                      >
+                        <Upload size={12} />
+                        <span>From Laptop</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              handleUploadPhoto(file, (url) => {
+                                const updated = [...services];
+                                updated[idx].image = url;
+                                saveServices(updated);
+                              }, "services");
+                            }
+                          }}
+                        />
+                      </label>
+                    </div>
                   </div>
                 </div>
 
@@ -2334,7 +2372,7 @@ export default function AdminCMSPage() {
             {team.map((m, idx) => (
               <div key={m.id} className="p-4 border border-neutral-200 bg-white space-y-3 rounded shadow-xs text-xs">
                 <div className="flex items-center gap-3">
-                  <div className="relative w-12 h-14 bg-neutral-100 rounded overflow-hidden flex-shrink-0">
+                  <div className="relative w-12 h-14 bg-neutral-100 rounded overflow-hidden flex-shrink-0 group">
                     {m.image ? (
                       <Image
                         src={m.image}
@@ -2348,6 +2386,32 @@ export default function AdminCMSPage() {
                         No Photo
                       </div>
                     )}
+                    {/* Hover Click-to-Upload overlay from laptop */}
+                    <label
+                      title="Click to upload photo from your laptop"
+                      className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white cursor-pointer"
+                    >
+                      <Camera size={13} />
+                      <span className="text-[7px] uppercase font-mono mt-0.5 tracking-tighter">
+                        {uploadingTargetId === m.id ? "..." : "Change"}
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setUploadingTargetId(m.id);
+                            handleUploadPhoto(file, (url) => {
+                              const updated = [...team];
+                              updated[idx].image = url;
+                              saveTeam(updated);
+                            }, "team");
+                          }
+                        }}
+                      />
+                    </label>
                   </div>
                   <div className="flex-1">
                     <input
@@ -2419,17 +2483,71 @@ export default function AdminCMSPage() {
                 </div>
 
                 <div>
-                  <label className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">Photo URL</label>
-                  <input
-                    type="text"
-                    value={m.image}
-                    onChange={(e) => {
-                      const updated = [...team];
-                      updated[idx].image = e.target.value;
-                      saveTeam(updated);
-                    }}
-                    className="w-full p-1.5 border border-neutral-300 rounded text-xs font-mono"
-                  />
+                  <div className="flex justify-between items-center mb-1">
+                    <label className="text-[9px] uppercase font-mono text-neutral-500 font-medium">
+                      Practitioner Photo
+                    </label>
+                    <span className="text-[9px] text-neutral-400 font-mono">Both options available</span>
+                  </div>
+                  <div className="flex gap-1.5 items-center">
+                    <input
+                      type="text"
+                      value={m.image}
+                      onChange={(e) => {
+                        const updated = [...team];
+                        updated[idx].image = e.target.value;
+                        saveTeam(updated);
+                      }}
+                      placeholder="Photo URL or upload from laptop"
+                      className="flex-1 min-w-0 p-1.5 border border-neutral-300 rounded text-xs font-mono focus:border-black focus:outline-none"
+                    />
+                    <label
+                      title="Upload photo file from your laptop"
+                      className={`cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 bg-black text-white rounded text-xs font-medium hover:bg-neutral-800 transition-colors shrink-0 ${
+                        uploadingTargetId === m.id ? "opacity-60 pointer-events-none" : ""
+                      }`}
+                    >
+                      {uploadingTargetId === m.id ? (
+                        <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Upload size={12} />
+                      )}
+                      <span>{uploadingTargetId === m.id ? "Uploading..." : "From Laptop"}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setUploadingTargetId(m.id);
+                            handleUploadPhoto(file, (url) => {
+                              const updated = [...team];
+                              updated[idx].image = url;
+                              saveTeam(updated);
+                            }, "team");
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+                  <div className="flex items-center justify-between mt-1 text-[9px] text-neutral-400">
+                    <span>Stored in Firebase Cloud Storage</span>
+                    {m.image && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = [...team];
+                          updated[idx].image = "";
+                          saveTeam(updated);
+                          showToast(`Cleared photo for ${m.name}`);
+                        }}
+                        className="text-neutral-400 hover:text-red-500 underline"
+                      >
+                        Remove photo
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <div>
@@ -2972,17 +3090,41 @@ export default function AdminCMSPage() {
                     className="w-full p-1.5 border border-neutral-300 rounded text-xs"
                     placeholder="Caption"
                   />
-                  <input
-                    type="text"
-                    value={g.imageUrl}
-                    onChange={(e) => {
-                      const updated = [...gallery];
-                      updated[idx].imageUrl = e.target.value;
-                      saveGallery(updated);
-                    }}
-                    className="w-full p-1.5 border border-neutral-300 rounded text-[11px] font-mono"
-                    placeholder="Image URL"
-                  />
+                  <div className="flex gap-1.5 items-center">
+                    <input
+                      type="text"
+                      value={g.imageUrl}
+                      onChange={(e) => {
+                        const updated = [...gallery];
+                        updated[idx].imageUrl = e.target.value;
+                        saveGallery(updated);
+                      }}
+                      className="flex-1 min-w-0 p-1.5 border border-neutral-300 rounded text-[11px] font-mono focus:border-black focus:outline-none"
+                      placeholder="Image URL or upload from laptop"
+                    />
+                    <label
+                      title="Upload from Laptop"
+                      className="cursor-pointer inline-flex items-center gap-1 px-2.5 py-1.5 bg-black text-white rounded text-[10px] font-medium hover:bg-neutral-800 transition-colors shrink-0"
+                    >
+                      <Upload size={11} />
+                      <span>From Laptop</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            handleUploadPhoto(file, (url) => {
+                              const updated = [...gallery];
+                              updated[idx].imageUrl = url;
+                              saveGallery(updated);
+                            }, "gallery");
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 pt-1 border-t border-neutral-100">
