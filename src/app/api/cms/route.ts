@@ -6,22 +6,22 @@ import { verifySessionToken, SESSION_COOKIE_NAME } from "@/lib/auth";
 import { initialProjects } from "@/data/projects";
 import { initialServices } from "@/data/services";
 import { initialTeam } from "@/data/team";
-import { initialBlogPosts } from "@/data/blog";
-import { initialFAQs } from "@/data/faq";
-import { initialGalleryItems } from "@/data/gallery";
-import { initialRecognitions } from "@/data/recognitions";
-import { initialSiteSettings } from "@/data/siteSettings";
-import { initialTestimonials } from "@/data/testimonials";
+import { BlogPost, initialBlogPosts } from "@/data/blog";
+import { FAQItem, initialFAQs } from "@/data/faq";
+import { GalleryItem, initialGalleryItems } from "@/data/gallery";
+import { Recognition, initialRecognitions } from "@/data/recognitions";
+import { SiteSettings, initialSiteSettings } from "@/data/siteSettings";
+import { Testimonial, initialTestimonials } from "@/data/testimonials";
 import staticCmsContent from "@/data/cms-content.json";
 import { getFirestoreDb } from "@/lib/firebaseAdmin";
 
 export const dynamic = "force-dynamic";
 
 const DATA_FILE_PATH = path.join(process.cwd(), "src", "data", "cms-content.json");
-const TMP_FILE_PATH = path.join("/tmp", "cms-content.json");
-
-// Dedicated cloud KV bucket for zero-config persistence on Vercel/serverless
-const KVDB_BUCKET_ID = process.env.KVDB_BUCKET_ID || "p9uN8c3T84jL1K2x9Z7a";
+// Use /tmp only in Vercel/serverless environments; use local project cache in dev to avoid writing to C:\tmp
+const TMP_FILE_PATH = process.env.VERCEL
+  ? path.join("/tmp", "cms-content.json")
+  : path.join(process.cwd(), ".next", "cache", "cms-tmp.json");
 
 // In-memory store on globalThis to survive serverless warm invocations
 declare global {
@@ -48,12 +48,12 @@ function getDefaultData() {
 }
 
 // -------------------------------------------------------------
-// CLOUD STORAGE ADAPTERS (Upstash KV / Vercel KV / GitHub / KVdb)
+// CLOUD STORAGE ADAPTERS (Upstash KV / Vercel KV / GitHub / Firestore)
 // -------------------------------------------------------------
 
-async function getFromUpstashKV(): Promise<any | null> {
-  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+async function getFromUpstashKV(explicitUrl?: string, explicitToken?: string): Promise<any | null> {
+  const url = explicitUrl || process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+  const token = explicitToken || process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
   if (!url || !token) return null;
   try {
     const res = await fetch(`${url}/get/techno_cms_data`, {
@@ -68,15 +68,15 @@ async function getFromUpstashKV(): Promise<any | null> {
       }
     }
   } catch (e) {
-    console.warn("Upstash KV read notice:", e);
+    console.warn("[CMS Store] Upstash KV read notice:", e);
   }
   return null;
 }
 
-async function saveToUpstashKV(data: any): Promise<boolean> {
-  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (!url || !token) return false;
+async function saveToUpstashKV(data: any, explicitUrl?: string, explicitToken?: string): Promise<{ success: boolean; error?: string }> {
+  const url = explicitUrl || process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+  const token = explicitToken || process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) return { success: false, error: "Upstash KV credentials not configured." };
   try {
     const res = await fetch(`${url}/set/techno_cms_data`, {
       method: "POST",
@@ -86,54 +86,26 @@ async function saveToUpstashKV(data: any): Promise<boolean> {
       },
       body: JSON.stringify(typeof data === "string" ? data : JSON.stringify(data)),
     });
-    return res.ok;
-  } catch (e) {
-    console.warn("Upstash KV save notice:", e);
-    return false;
-  }
-}
-
-async function getFromCloudKV(): Promise<any | null> {
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 2500);
-    const res = await fetch(`https://kvdb.io/${KVDB_BUCKET_ID}/techno_cms_content`, {
-      cache: "no-store",
-      signal: controller.signal,
-    });
-    clearTimeout(timeout);
     if (res.ok) {
-      const json = await res.json();
-      if (json && typeof json === "object" && json.updatedAt) {
-        return json;
-      }
+      return { success: true };
     }
-  } catch (_) {}
-  return null;
-}
-
-async function saveToCloudKV(data: any): Promise<boolean> {
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 3000);
-    const res = await fetch(`https://kvdb.io/${KVDB_BUCKET_ID}/techno_cms_content`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-      signal: controller.signal,
-    });
-    clearTimeout(timeout);
-    return res.ok;
-  } catch (_) {
-    return false;
+    const errText = await res.text();
+    return { success: false, error: `Upstash returned HTTP ${res.status}: ${errText}` };
+  } catch (e: any) {
+    console.warn("[CMS Store] Upstash KV save notice:", e);
+    return { success: false, error: e?.message || "Network error connecting to Upstash." };
   }
 }
 
-async function saveToGitHub(data: any): Promise<boolean> {
-  const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
-  const repo = process.env.GITHUB_REPOSITORY || "Kima1011/Techno-Architecture";
+async function saveToGitHub(
+  data: any,
+  explicitToken?: string,
+  explicitRepo?: string
+): Promise<{ success: boolean; sha?: string; error?: string }> {
+  const token = explicitToken || process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
+  const repo = explicitRepo || process.env.GITHUB_REPOSITORY || "Kima1011/Techno-Architecture";
   const filePath = "src/data/cms-content.json";
-  if (!token) return false;
+  if (!token) return { success: false, error: "GitHub Personal Access Token not provided." };
 
   try {
     const getRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
@@ -148,6 +120,8 @@ async function saveToGitHub(data: any): Promise<boolean> {
     if (getRes.ok) {
       const fileInfo = await getRes.json();
       sha = fileInfo.sha;
+    } else if (getRes.status === 401 || getRes.status === 403) {
+      return { success: false, error: `GitHub authorization failed (HTTP ${getRes.status}). Verify your token has 'repo' access.` };
     }
 
     const contentStr = JSON.stringify(data, null, 2);
@@ -168,10 +142,16 @@ async function saveToGitHub(data: any): Promise<boolean> {
       }),
     });
 
-    return putRes.ok;
-  } catch (err) {
-    console.warn("GitHub API commit error:", err);
-    return false;
+    if (putRes.ok) {
+      const putData = await putRes.json();
+      return { success: true, sha: putData.content?.sha };
+    }
+
+    const putErr = await putRes.text();
+    return { success: false, error: `GitHub commit rejected (HTTP ${putRes.status}): ${putErr}` };
+  } catch (err: any) {
+    console.warn("[CMS Store] GitHub API commit error:", err);
+    return { success: false, error: err?.message || "Network error connecting to GitHub API." };
   }
 }
 
@@ -179,7 +159,7 @@ async function saveToGitHub(data: any): Promise<boolean> {
 // READ & WRITE STORE
 // -------------------------------------------------------------
 
-async function readStore() {
+async function readStore(customUpstashUrl?: string, customUpstashToken?: string) {
   // 1. If in-memory store is already populated in this container, return a clone
   if (globalThis.__techno_cms_store__) {
     return JSON.parse(JSON.stringify(globalThis.__techno_cms_store__));
@@ -201,31 +181,16 @@ async function readStore() {
       }
     }
   } catch (e) {
-    console.warn("Firestore read notice:", e);
+    console.warn("[CMS Store] Firestore read notice:", e);
   }
 
   // 2. Try Upstash / Vercel KV if configured
-  const upstashData = await getFromUpstashKV();
+  const upstashData = await getFromUpstashKV(customUpstashUrl, customUpstashToken);
   if (upstashData && typeof upstashData === "object" && upstashData.updatedAt) {
     candidates.push(upstashData);
   }
 
-  // 3. Try Cloud KV bucket
-  const cloudData = await getFromCloudKV();
-  if (cloudData && typeof cloudData === "object" && cloudData.updatedAt) {
-    candidates.push(cloudData);
-  }
-
-  // 4. Try reading from /tmp (written in serverless environments like Vercel)
-  try {
-    const raw = await fs.readFile(TMP_FILE_PATH, "utf-8");
-    const data = JSON.parse(raw);
-    if (data && typeof data === "object" && data.updatedAt) {
-      candidates.push(data);
-    }
-  } catch (_) {}
-
-  // 5. Try reading from DATA_FILE_PATH (static or persistent disk)
+  // 3. Try reading from DATA_FILE_PATH (static or persistent disk)
   try {
     const raw = await fs.readFile(DATA_FILE_PATH, "utf-8");
     const data = JSON.parse(raw);
@@ -234,7 +199,16 @@ async function readStore() {
     }
   } catch (_) {}
 
-  // 6. Statically bundled seed data from build
+  // 4. Try reading from TMP_FILE_PATH (written in serverless environments like Vercel)
+  try {
+    const raw = await fs.readFile(TMP_FILE_PATH, "utf-8");
+    const data = JSON.parse(raw);
+    if (data && typeof data === "object" && data.updatedAt) {
+      candidates.push(data);
+    }
+  } catch (_) {}
+
+  // 5. Statically bundled seed data from build
   const defaultData = getDefaultData();
   candidates.push(defaultData);
 
@@ -250,49 +224,121 @@ async function readStore() {
   return bestData;
 }
 
-async function writeStore(data: any) {
+export interface WriteStoreResult {
+  localDisk: boolean;
+  tmp: boolean;
+  upstash: boolean;
+  github: boolean;
+  firestore: boolean;
+  isPermanent: boolean;
+  summaryMessage: string;
+  errorDetails: string[];
+}
+
+async function writeStore(
+  data: any,
+  options?: {
+    githubToken?: string;
+    githubRepo?: string;
+    upstashUrl?: string;
+    upstashToken?: string;
+  }
+): Promise<WriteStoreResult> {
   // Always update in-memory store immediately
   globalThis.__techno_cms_store__ = JSON.parse(JSON.stringify(data));
 
-  // Multi-tier parallel persistence
-  await Promise.allSettled([
-    // Tier 0: Cloud Firestore (Primary enterprise database)
-    (async () => {
-      try {
-        const db = getFirestoreDb();
-        if (db) {
-          await db.collection("cms").doc("content").set(data);
-        }
-      } catch (e) {
-        console.warn("Firestore write notice:", e);
-      }
-    })(),
+  const result: WriteStoreResult = {
+    localDisk: false,
+    tmp: false,
+    upstash: false,
+    github: false,
+    firestore: false,
+    isPermanent: false,
+    summaryMessage: "",
+    errorDetails: [],
+  };
 
-    // Tier 1: Local file (for local development & persistent hosting)
+  // Multi-tier parallel persistence
+  const tasks = await Promise.allSettled([
+    // Tier 0: Local file (for local development & persistent hosting)
     (async () => {
       try {
         const dir = path.dirname(DATA_FILE_PATH);
         await fs.mkdir(dir, { recursive: true });
         await fs.writeFile(DATA_FILE_PATH, JSON.stringify(data, null, 2), "utf-8");
-      } catch (_) {}
+        result.localDisk = true;
+      } catch (err: any) {
+        // Read-only filesystem is expected on Vercel runtime
+        if (err?.code !== "EROFS") {
+          result.errorDetails.push(`Local disk error: ${err?.message}`);
+        }
+      }
     })(),
 
-    // Tier 2: /tmp file (for warm serverless execution)
+    // Tier 1: Cloud Firestore (if configured)
     (async () => {
       try {
-        await fs.writeFile(TMP_FILE_PATH, JSON.stringify(data, null, 2), "utf-8");
-      } catch (_) {}
+        const db = getFirestoreDb();
+        if (db) {
+          await db.collection("cms").doc("content").set(data);
+          result.firestore = true;
+        }
+      } catch (e: any) {
+        console.warn("[CMS Store] Firestore write notice:", e);
+        result.errorDetails.push(`Firestore: ${e?.message}`);
+      }
     })(),
 
-    // Tier 3: Upstash / Vercel KV (if configured)
-    saveToUpstashKV(data),
+    // Tier 2: Upstash / Vercel KV (if configured or provided by admin)
+    (async () => {
+      const upstashRes = await saveToUpstashKV(data, options?.upstashUrl, options?.upstashToken);
+      if (upstashRes.success) {
+        result.upstash = true;
+      } else if (options?.upstashUrl) {
+        result.errorDetails.push(`Upstash: ${upstashRes.error}`);
+      }
+    })(),
 
-    // Tier 4: Cloud KV (zero-config persistence for Vercel)
-    saveToCloudKV(data),
+    // Tier 3: GitHub direct commit (if configured or provided by admin)
+    (async () => {
+      const ghRes = await saveToGitHub(data, options?.githubToken, options?.githubRepo);
+      if (ghRes.success) {
+        result.github = true;
+      } else if (options?.githubToken || process.env.GITHUB_TOKEN || process.env.GH_TOKEN) {
+        result.errorDetails.push(`GitHub: ${ghRes.error}`);
+      }
+    })(),
 
-    // Tier 5: GitHub commit (if GITHUB_TOKEN configured)
-    saveToGitHub(data),
+    // Tier 4: /tmp or local cache file (for warm serverless execution)
+    (async () => {
+      try {
+        const dir = path.dirname(TMP_FILE_PATH);
+        await fs.mkdir(dir, { recursive: true });
+        await fs.writeFile(TMP_FILE_PATH, JSON.stringify(data, null, 2), "utf-8");
+        result.tmp = true;
+      } catch (err: any) {
+        result.errorDetails.push(`Temp cache error: ${err?.message}`);
+      }
+    })(),
   ]);
+
+  // Determine if persistence is 100% permanent
+  result.isPermanent = result.localDisk || result.github || result.upstash || result.firestore;
+
+  if (result.github) {
+    result.summaryMessage = "Committed permanently to GitHub repository (triggers production redeploy).";
+  } else if (result.upstash) {
+    result.summaryMessage = "Saved permanently to Upstash cloud key-value store.";
+  } else if (result.firestore) {
+    result.summaryMessage = "Saved permanently to Cloud Firestore.";
+  } else if (result.localDisk) {
+    result.summaryMessage = "Saved permanently to src/data/cms-content.json on disk.";
+  } else {
+    result.summaryMessage =
+      "Saved to temporary serverless memory (/tmp). Notice: Changes will reset when the serverless function restarts. Connect GitHub or Upstash in Settings for 100% permanent cloud persistence across all visitors.";
+  }
+
+  return result;
 }
 
 // -------------------------------------------------------------
@@ -300,16 +346,37 @@ async function writeStore(data: any) {
 // -------------------------------------------------------------
 
 // GET: Public endpoint for live website data hydration
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const data = await readStore();
-    return NextResponse.json(data, {
-      headers: {
-        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
-        Pragma: "no-cache",
-        Expires: "0",
+    const url = new URL(request.url);
+    const customUpstashUrl = request.headers.get("x-upstash-url") || url.searchParams.get("upstashUrl") || undefined;
+    const customUpstashToken = request.headers.get("x-upstash-token") || url.searchParams.get("upstashToken") || undefined;
+
+    const data = await readStore(customUpstashUrl, customUpstashToken);
+
+    // Attach read-only metadata about storage health
+    const storageInfo = {
+      isVercel: Boolean(process.env.VERCEL),
+      isProduction: process.env.NODE_ENV === "production",
+      hasGitHubToken: Boolean(process.env.GITHUB_TOKEN || process.env.GH_TOKEN),
+      hasUpstashKV: Boolean(process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL),
+      hasFirestore: Boolean(getFirestoreDb()),
+      localDiskWritable: process.env.NODE_ENV !== "production" || !process.env.VERCEL,
+    };
+
+    return NextResponse.json(
+      {
+        ...data,
+        _storageInfo: storageInfo,
       },
-    });
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      }
+    );
   } catch (error) {
     console.error("GET /api/cms error:", error);
     return NextResponse.json(getDefaultData(), { status: 200 });
@@ -338,16 +405,46 @@ export async function POST(request: Request) {
 
     // 2. Parse payload
     const body = await request.json();
-    const current = await readStore();
+
+    // Extract optional client-provided tokens from headers or request body
+    const githubToken = request.headers.get("x-github-token") || body.githubToken;
+    const githubRepo = request.headers.get("x-github-repo") || body.githubRepo;
+    const upstashUrl = request.headers.get("x-upstash-url") || body.upstashUrl;
+    const upstashToken = request.headers.get("x-upstash-token") || body.upstashToken;
+
+    const storageOptions = {
+      githubToken: githubToken || undefined,
+      githubRepo: githubRepo || undefined,
+      upstashUrl: upstashUrl || undefined,
+      upstashToken: upstashToken || undefined,
+    };
+
+    // Action: Test credentials
+    if (body.action === "test-connection") {
+      const results: any = {};
+      if (githubToken) {
+        const ghTest = await saveToGitHub({ _test: true }, githubToken, githubRepo);
+        results.github = ghTest;
+      }
+      if (upstashUrl && upstashToken) {
+        const upTest = await saveToUpstashKV({ _test: true }, upstashUrl, upstashToken);
+        results.upstash = upTest;
+      }
+      return NextResponse.json({ success: true, results });
+    }
+
+    const current = await readStore(upstashUrl, upstashToken);
 
     if (body.reset === true) {
       const defaultData = getDefaultData();
       defaultData.updatedAt = new Date().toISOString();
       delete (defaultData as any).isDefault;
-      await writeStore(defaultData);
+      delete (defaultData as any)._storageInfo;
+      const storageStatus = await writeStore(defaultData, storageOptions);
       return NextResponse.json({
         success: true,
         message: "All data reset to initial seed defaults.",
+        storageStatus,
         data: defaultData,
         updatedAt: defaultData.updatedAt,
       });
@@ -360,10 +457,12 @@ export async function POST(request: Request) {
         updatedAt: new Date().toISOString(),
       };
       delete (updated as any).isDefault;
-      await writeStore(updated);
+      delete (updated as any)._storageInfo;
+      const storageStatus = await writeStore(updated, storageOptions);
       return NextResponse.json({
         success: true,
-        message: "Full store updated permanently.",
+        message: storageStatus.summaryMessage,
+        storageStatus,
         data: updated,
         updatedAt: updated.updatedAt,
       });
@@ -373,11 +472,13 @@ export async function POST(request: Request) {
       current[body.entity] = body.data;
       current.updatedAt = new Date().toISOString();
       delete (current as any).isDefault;
-      await writeStore(current);
+      delete (current as any)._storageInfo;
+      const storageStatus = await writeStore(current, storageOptions);
       return NextResponse.json({
         success: true,
         entity: body.entity,
-        message: `Entity "${body.entity}" updated permanently.`,
+        message: storageStatus.summaryMessage,
+        storageStatus,
         updatedAt: current.updatedAt,
       });
     }

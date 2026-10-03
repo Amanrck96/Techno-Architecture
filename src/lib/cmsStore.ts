@@ -23,10 +23,45 @@ export const STORAGE_KEYS = {
   TESTIMONIALS: "techno_cms_testimonials_v5",
   CLIENT_UPDATED_AT: "techno_cms_client_updated_at",
   SERVER_SYNCED_AT: "techno_cms_server_synced_at",
+  GITHUB_TOKEN: "techno_cms_github_token",
+  GITHUB_REPO: "techno_cms_github_repo",
+  UPSTASH_URL: "techno_cms_upstash_url",
+  UPSTASH_TOKEN: "techno_cms_upstash_token",
 };
 
 const SYNC_CHANNEL_NAME = "techno_cms_live_sync";
 const SYNC_EVENT_NAME = "techno_cms_local_update";
+
+export function getStorageCredentials() {
+  if (typeof window === "undefined") {
+    return { githubToken: "", githubRepo: "Kima1011/Techno-Architecture", upstashUrl: "", upstashToken: "" };
+  }
+  try {
+    return {
+      githubToken: localStorage.getItem(STORAGE_KEYS.GITHUB_TOKEN) || "",
+      githubRepo: localStorage.getItem(STORAGE_KEYS.GITHUB_REPO) || "Kima1011/Techno-Architecture",
+      upstashUrl: localStorage.getItem(STORAGE_KEYS.UPSTASH_URL) || "",
+      upstashToken: localStorage.getItem(STORAGE_KEYS.UPSTASH_TOKEN) || "",
+    };
+  } catch (_) {
+    return { githubToken: "", githubRepo: "Kima1011/Techno-Architecture", upstashUrl: "", upstashToken: "" };
+  }
+}
+
+export function saveStorageCredentials(creds: {
+  githubToken?: string;
+  githubRepo?: string;
+  upstashUrl?: string;
+  upstashToken?: string;
+}) {
+  if (typeof window === "undefined") return;
+  try {
+    if (creds.githubToken !== undefined) localStorage.setItem(STORAGE_KEYS.GITHUB_TOKEN, creds.githubToken.trim());
+    if (creds.githubRepo !== undefined) localStorage.setItem(STORAGE_KEYS.GITHUB_REPO, creds.githubRepo.trim());
+    if (creds.upstashUrl !== undefined) localStorage.setItem(STORAGE_KEYS.UPSTASH_URL, creds.upstashUrl.trim());
+    if (creds.upstashToken !== undefined) localStorage.setItem(STORAGE_KEYS.UPSTASH_TOKEN, creds.upstashToken.trim());
+  } catch (_) {}
+}
 
 function touchClientUpdate(): string {
   const now = new Date().toISOString();
@@ -68,7 +103,18 @@ export async function syncToServer(payload: {
   data?: any;
   allData?: any;
   reset?: boolean;
-}): Promise<{ success: boolean; updatedAt?: string; error?: any }> {
+  action?: string;
+  githubToken?: string;
+  githubRepo?: string;
+  upstashUrl?: string;
+  upstashToken?: string;
+}): Promise<{
+  success: boolean;
+  updatedAt?: string;
+  storageStatus?: any;
+  message?: string;
+  error?: any;
+}> {
   try {
     const token =
       typeof window !== "undefined"
@@ -76,12 +122,26 @@ export async function syncToServer(payload: {
           sessionStorage.getItem("techno_admin_token")
         : null;
 
+    const creds = getStorageCredentials();
+
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
       headers["x-admin-token"] = token;
+    }
+    if (payload.githubToken || creds.githubToken) {
+      headers["x-github-token"] = payload.githubToken || creds.githubToken;
+    }
+    if (payload.githubRepo || creds.githubRepo) {
+      headers["x-github-repo"] = payload.githubRepo || creds.githubRepo;
+    }
+    if (payload.upstashUrl || creds.upstashUrl) {
+      headers["x-upstash-url"] = payload.upstashUrl || creds.upstashUrl;
+    }
+    if (payload.upstashToken || creds.upstashToken) {
+      headers["x-upstash-token"] = payload.upstashToken || creds.upstashToken;
     }
 
     const res = await fetch("/api/cms", {
@@ -99,7 +159,12 @@ export async function syncToServer(payload: {
           localStorage.setItem(STORAGE_KEYS.CLIENT_UPDATED_AT, result.updatedAt);
         } catch (_) {}
       }
-      return { success: true, updatedAt: result.updatedAt };
+      return {
+        success: true,
+        updatedAt: result.updatedAt,
+        storageStatus: result.storageStatus,
+        message: result.message,
+      };
     } else {
       const err = await res.json().catch(() => ({}));
       console.warn("Failed to persist CMS update to server:", err);
@@ -122,6 +187,16 @@ export function useCMSStore() {
   const [recognitions, setRecognitions] = useState<Recognition[]>(initialRecognitions);
   const [siteSettings, setSiteSettings] = useState<SiteSettings>(initialSiteSettings);
   const [testimonials, setTestimonials] = useState<Testimonial[]>(initialTestimonials);
+
+  // Storage health status from server
+  const [serverStorageInfo, setServerStorageInfo] = useState<{
+    isVercel?: boolean;
+    isProduction?: boolean;
+    hasGitHubToken?: boolean;
+    hasUpstashKV?: boolean;
+    hasFirestore?: boolean;
+    localDiskWritable?: boolean;
+  }>({});
 
   const lastServerUpdatedRef = useRef<string>("");
   const syncTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -171,13 +246,23 @@ export function useCMSStore() {
   // Fetch latest live data from server permanently with client-timestamp protection
   const fetchFromServer = useCallback(async () => {
     try {
+      const creds = getStorageCredentials();
+      const headers: Record<string, string> = {};
+      if (creds.upstashUrl) headers["x-upstash-url"] = creds.upstashUrl;
+      if (creds.upstashToken) headers["x-upstash-token"] = creds.upstashToken;
+
       const res = await fetch("/api/cms", {
         cache: "no-store",
+        headers,
       });
       if (!res.ok) return;
 
       const data = await res.json();
       if (!data) return;
+
+      if (data._storageInfo) {
+        setServerStorageInfo(data._storageInfo);
+      }
 
       // 1. Check client vs server timestamps to prevent stale server data from overwriting local edits/deletions
       let clientTime = 0;
@@ -503,6 +588,7 @@ export function useCMSStore() {
     recognitions,
     siteSettings,
     testimonials,
+    serverStorageInfo,
     saveProjects,
     saveServices,
     saveTeam,
@@ -514,5 +600,6 @@ export function useCMSStore() {
     saveTestimonials,
     saveAllToCloud,
     resetAllToDefaults,
+    refetchFromServer: fetchFromServer,
   };
 }

@@ -3,7 +3,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useCMSStore } from "@/lib/cmsStore";
+import {
+  useCMSStore,
+  getStorageCredentials,
+  saveStorageCredentials,
+  syncToServer,
+} from "@/lib/cmsStore";
 import { Project, ProjectImage, VideoTour } from "@/data/projects";
 import { Service } from "@/data/services";
 import { TeamMember } from "@/data/team";
@@ -54,6 +59,11 @@ import {
   Compass,
   ListChecks,
   Layers,
+  GitBranch,
+  Database,
+  HardDrive,
+  Key,
+  Check,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ImageMouseAdjuster } from "@/components/admin/ImageMouseAdjuster";
@@ -80,6 +90,7 @@ export default function AdminCMSPage() {
     recognitions,
     siteSettings,
     testimonials,
+    serverStorageInfo,
     saveProjects,
     saveServices,
     saveTeam,
@@ -103,6 +114,25 @@ export default function AdminCMSPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isSubmittingAuth, setIsSubmittingAuth] = useState<boolean>(false);
   const [isSyncingCloud, setIsSyncingCloud] = useState<boolean>(false);
+
+  // Storage & Persistence Configuration
+  const [githubTokenInput, setGithubTokenInput] = useState<string>("");
+  const [githubRepoInput, setGithubRepoInput] = useState<string>("Kima1011/Techno-Architecture");
+  const [upstashUrlInput, setUpstashUrlInput] = useState<string>("");
+  const [upstashTokenInput, setUpstashTokenInput] = useState<string>("");
+  const [isCommittingGit, setIsCommittingGit] = useState<boolean>(false);
+  const [storageFeedback, setStorageFeedback] = useState<{ type: "success" | "error" | "info"; msg: string } | null>(null);
+
+  // Initialize storage credentials from local storage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const creds = getStorageCredentials();
+      if (creds.githubToken) setGithubTokenInput(creds.githubToken);
+      if (creds.githubRepo) setGithubRepoInput(creds.githubRepo);
+      if (creds.upstashUrl) setUpstashUrlInput(creds.upstashUrl);
+      if (creds.upstashToken) setUpstashTokenInput(creds.upstashToken);
+    }
+  }, []);
 
   // Tab & Notification states
   const [activeTab, setActiveTab] = useState<AdminTab>("projects");
@@ -216,11 +246,11 @@ export default function AdminCMSPage() {
     try {
       const res = await saveAllToCloud();
       if (res && res.success) {
-        showToast("All changes saved & synced to cloud permanently.");
+        showToast(res.message || "All changes saved & synced permanently.");
       } else {
-        showToast("Saved locally. Server responded with warning.");
+        showToast("Saved locally. Notice: " + (res?.error?.message || "Server returned warning."));
       }
-    } catch (e) {
+    } catch (e: any) {
       showToast("Saved locally. Network error reaching server.");
     } finally {
       setIsSyncingCloud(false);
@@ -230,6 +260,78 @@ export default function AdminCMSPage() {
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3500);
+  };
+
+  const handleSaveStorageCredentials = () => {
+    saveStorageCredentials({
+      githubToken: githubTokenInput.trim(),
+      githubRepo: githubRepoInput.trim() || "Kima1011/Techno-Architecture",
+      upstashUrl: upstashUrlInput.trim(),
+      upstashToken: upstashTokenInput.trim(),
+    });
+    setStorageFeedback({
+      type: "success",
+      msg: "Credentials saved securely in your browser! Future CMS saves will use these credentials automatically.",
+    });
+    showToast("Storage credentials saved successfully.");
+  };
+
+  const handleCommitToGitHub = async () => {
+    if (!githubTokenInput.trim()) {
+      setStorageFeedback({
+        type: "error",
+        msg: "Please enter your GitHub Personal Access Token first.",
+      });
+      return;
+    }
+    setIsCommittingGit(true);
+    setStorageFeedback(null);
+    try {
+      // Save credentials first
+      saveStorageCredentials({
+        githubToken: githubTokenInput.trim(),
+        githubRepo: githubRepoInput.trim() || "Kima1011/Techno-Architecture",
+      });
+
+      const allData = {
+        projects,
+        services,
+        team,
+        blog,
+        faq,
+        gallery,
+        recognitions,
+        siteSettings,
+        testimonials,
+      };
+
+      const res = await syncToServer({
+        allData,
+        githubToken: githubTokenInput.trim(),
+        githubRepo: githubRepoInput.trim() || "Kima1011/Techno-Architecture",
+      });
+
+      if (res.success && res.storageStatus?.github) {
+        setStorageFeedback({
+          type: "success",
+          msg: "✅ Successfully committed directly to GitHub repository (main branch)! Vercel will automatically rebuild and deploy the new content.",
+        });
+        showToast("Committed to GitHub! Vercel redeployment triggered.");
+      } else {
+        const errDetail = res.storageStatus?.errorDetails?.join("; ") || res.error?.message || "GitHub commit failed.";
+        setStorageFeedback({
+          type: "error",
+          msg: `❌ GitHub commit failed: ${errDetail}`,
+        });
+      }
+    } catch (e: any) {
+      setStorageFeedback({
+        type: "error",
+        msg: `❌ Network error: ${e?.message}`,
+      });
+    } finally {
+      setIsCommittingGit(false);
+    }
   };
 
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
@@ -264,7 +366,32 @@ export default function AdminCMSPage() {
     }
   };
 
-  // 4. Export JSON
+  // 4. Export Clean cms-content.json for Git Repo
+  const exportCmsJson = () => {
+    const cleanData = {
+      projects,
+      services,
+      team,
+      blog,
+      faq,
+      gallery,
+      recognitions,
+      siteSettings,
+      testimonials,
+      updatedAt: new Date().toISOString(),
+    };
+    const blob = new Blob([JSON.stringify(cleanData, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "cms-content.json";
+    a.click();
+    showToast("Downloaded clean cms-content.json for Git repository.");
+  };
+
+  // 5. Export Full Timestamped Backup Archive
   const exportData = () => {
     const backup = {
       projects,
@@ -527,6 +654,34 @@ export default function AdminCMSPage() {
                 <span>Admin: <strong className="text-white">{currentAdminUser}</strong></span>
               </div>
 
+              {/* Persistence Status Badge */}
+              {serverStorageInfo?.localDiskWritable ? (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[11px] font-mono" title="Local filesystem detected. Edits write directly to src/data/cms-content.json on disk.">
+                  <ShieldCheck size={12} className="text-emerald-400" />
+                  <span>Storage: <strong>Local Disk (Permanent)</strong></span>
+                </div>
+              ) : serverStorageInfo?.hasGitHubToken || githubTokenInput ? (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[11px] font-mono" title="GitHub Auto-Commit enabled. Edits commit directly to repository.">
+                  <GitBranch size={12} className="text-emerald-400" />
+                  <span>Storage: <strong>GitHub Auto-Commit</strong></span>
+                </div>
+              ) : serverStorageInfo?.hasUpstashKV || upstashUrlInput ? (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[11px] font-mono" title="Upstash Redis cloud KV active.">
+                  <Database size={12} className="text-emerald-400" />
+                  <span>Storage: <strong>Upstash Cloud KV</strong></span>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("settings")}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-300 text-[11px] font-mono hover:bg-amber-500/25 transition-colors"
+                  title="Serverless filesystem is read-only. Click to configure GitHub or Upstash in Settings for 100% permanent cloud persistence."
+                >
+                  <AlertCircle size={12} className="text-amber-400" />
+                  <span>Storage: <strong>Temporary Memory (/tmp)</strong> ⚠️</span>
+                </button>
+              )}
+
               <Link
                 href="/"
                 target="_blank"
@@ -579,9 +734,19 @@ export default function AdminCMSPage() {
               </button>
 
               <button
+                onClick={exportCmsJson}
+                type="button"
+                className="flex items-center gap-1.5 px-3.5 py-2 bg-white text-black hover:bg-neutral-200 transition-colors rounded text-xs font-medium uppercase tracking-wider shadow-sm"
+                title="Download clean production cms-content.json to replace in repository"
+              >
+                <Download size={13} />
+                <span>Download cms-content.json</span>
+              </button>
+
+              <button
                 onClick={exportData}
                 type="button"
-                className="flex items-center gap-1.5 px-3.5 py-2 bg-white text-black hover:bg-neutral-200 transition-colors rounded text-xs font-medium uppercase tracking-wider"
+                className="flex items-center gap-1.5 px-3.5 py-2 bg-white/10 hover:bg-white/20 text-white border border-white/15 transition-colors rounded text-xs font-medium uppercase tracking-wider"
                 title="Download full JSON backup of website"
               >
                 <Download size={13} />
@@ -3095,6 +3260,230 @@ export default function AdminCMSPage() {
               <Save size={13} />
               <span>Save Settings</span>
             </button>
+          </div>
+
+          {/* Section 0: Cloud Persistence & Permanent Version Control Integration */}
+          <div className="p-6 bg-gradient-to-br from-neutral-900 to-neutral-950 text-white border border-neutral-800 rounded-lg space-y-6 shadow-xl">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-white/10 gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                  <GitBranch size={20} />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold tracking-wide text-white uppercase">
+                    Permanent Cloud Storage &amp; Git Version Control
+                  </h3>
+                  <p className="text-xs text-neutral-400">
+                    Why changes can be temporary on Vercel: Serverless runtimes have a read-only filesystem, so saves without a cloud connection only stay in ephemeral /tmp memory.
+                  </p>
+                </div>
+              </div>
+
+              {/* Status Badge */}
+              <div className="flex items-center gap-2">
+                {serverStorageInfo?.localDiskWritable ? (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-emerald-500/20 text-emerald-300 text-xs font-mono font-medium border border-emerald-500/30">
+                    <CheckCircle2 size={13} /> Local Disk Direct Write (Active)
+                  </span>
+                ) : serverStorageInfo?.hasGitHubToken || githubTokenInput ? (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-emerald-500/20 text-emerald-300 text-xs font-mono font-medium border border-emerald-500/30">
+                    <CheckCircle2 size={13} /> GitHub Auto-Commit (Configured)
+                  </span>
+                ) : serverStorageInfo?.hasUpstashKV || upstashUrlInput ? (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-emerald-500/20 text-emerald-300 text-xs font-mono font-medium border border-emerald-500/30">
+                    <CheckCircle2 size={13} /> Upstash Cloud KV (Configured)
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-amber-500/20 text-amber-300 text-xs font-mono font-medium border border-amber-500/40">
+                    <AlertCircle size={13} /> Temporary Serverless Cache Only
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Persistence Options Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Option A: GitHub Direct Commit */}
+              <div className="p-4 bg-white/5 border border-white/10 rounded-lg space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <GitBranch size={16} className="text-emerald-400" />
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-white">
+                      Option A: GitHub Direct Auto-Commit (Recommended)
+                    </h4>
+                  </div>
+                  <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    100% Free &amp; Permanent
+                  </span>
+                </div>
+
+                <p className="text-xs text-neutral-300 leading-relaxed">
+                  Every time you save in the Admin Dashboard, the CMS will commit directly to <code className="text-emerald-300 font-mono">src/data/cms-content.json</code> on your GitHub repository. Vercel automatically deploys the commit, making every edit 100% permanent across all devices.
+                </p>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="text-[10px] uppercase font-mono text-neutral-400 block mb-1">
+                      GitHub Personal Access Token (PAT)
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        value={githubTokenInput}
+                        onChange={(e) => setGithubTokenInput(e.target.value)}
+                        placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                        className="w-full p-2.5 bg-black/40 border border-white/20 rounded font-mono text-xs text-white placeholder-neutral-500 focus:border-emerald-400 focus:outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-2.5 top-2.5 text-neutral-400 hover:text-white"
+                      >
+                        {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] uppercase font-mono text-neutral-400 block mb-1">
+                      Target Repository (owner/repo)
+                    </label>
+                    <input
+                      type="text"
+                      value={githubRepoInput}
+                      onChange={(e) => setGithubRepoInput(e.target.value)}
+                      placeholder="Kima1011/Techno-Architecture"
+                      className="w-full p-2 bg-black/40 border border-white/20 rounded font-mono text-xs text-white placeholder-neutral-500"
+                    />
+                  </div>
+
+                  <div className="pt-2 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={handleSaveStorageCredentials}
+                      className="px-3.5 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded text-xs font-medium transition-colors"
+                    >
+                      Save Token Locally
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleCommitToGitHub}
+                      disabled={isCommittingGit}
+                      className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-800 text-white rounded text-xs font-medium transition-colors flex items-center gap-1.5"
+                    >
+                      {isCommittingGit ? (
+                        <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <GitBranch size={13} />
+                      )}
+                      <span>{isCommittingGit ? "Committing..." : "Commit All Data to GitHub Now"}</span>
+                    </button>
+                  </div>
+
+                  <div className="p-2.5 bg-black/30 border border-white/10 rounded text-[11px] text-neutral-400 space-y-1">
+                    <span className="font-semibold text-neutral-300 block">How to get a GitHub Token in 1 minute:</span>
+                    <ol className="list-decimal list-inside space-y-0.5 text-neutral-400">
+                      <li>Go to github.com → Click avatar → <strong>Settings</strong></li>
+                      <li>Scroll down left sidebar → <strong>Developer Settings</strong> → <strong>Personal access tokens</strong> → <strong>Tokens (classic)</strong></li>
+                      <li>Click <strong>Generate new token (classic)</strong> → Check <strong>repo</strong> checkbox → Click <strong>Generate token</strong></li>
+                      <li>Copy the token and paste it above!</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+
+              {/* Option B: Upstash KV / Vercel KV REST */}
+              <div className="p-4 bg-white/5 border border-white/10 rounded-lg space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Database size={16} className="text-cyan-400" />
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-white">
+                      Option B: Upstash Redis / Vercel KV (Instant Live Sync)
+                    </h4>
+                  </div>
+                  <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                    Free Tier (10k ops/day)
+                  </span>
+                </div>
+
+                <p className="text-xs text-neutral-300 leading-relaxed">
+                  Upstash Redis provides instant, sub-millisecond cloud storage without waiting for Vercel rebuilds. Perfect for instant changes across multiple admin tabs or visitors.
+                </p>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="text-[10px] uppercase font-mono text-neutral-400 block mb-1">
+                      Upstash REST API URL
+                    </label>
+                    <input
+                      type="text"
+                      value={upstashUrlInput}
+                      onChange={(e) => setUpstashUrlInput(e.target.value)}
+                      placeholder="https://xxxx-xxxxx.upstash.io"
+                      className="w-full p-2 bg-black/40 border border-white/20 rounded font-mono text-xs text-white placeholder-neutral-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] uppercase font-mono text-neutral-400 block mb-1">
+                      Upstash REST Token
+                    </label>
+                    <input
+                      type="password"
+                      value={upstashTokenInput}
+                      onChange={(e) => setUpstashTokenInput(e.target.value)}
+                      placeholder="AXxx..."
+                      className="w-full p-2 bg-black/40 border border-white/20 rounded font-mono text-xs text-white placeholder-neutral-500"
+                    />
+                  </div>
+
+                  <div className="pt-2 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={handleSaveStorageCredentials}
+                      className="px-3.5 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded text-xs font-medium transition-colors"
+                    >
+                      Save Upstash Credentials
+                    </button>
+                    <button
+                      type="button"
+                      onClick={exportCmsJson}
+                      className="px-3.5 py-1.5 bg-white text-black hover:bg-neutral-200 rounded text-xs font-medium transition-colors flex items-center gap-1.5"
+                    >
+                      <Download size={13} />
+                      <span>Download cms-content.json</span>
+                    </button>
+                  </div>
+
+                  <div className="p-2.5 bg-black/30 border border-white/10 rounded text-[11px] text-neutral-400 space-y-1">
+                    <span className="font-semibold text-neutral-300 block">How to connect Upstash in 30 seconds:</span>
+                    <p className="text-neutral-400">
+                      Sign up at <a href="https://upstash.com" target="_blank" rel="noopener noreferrer" className="text-cyan-400 underline">upstash.com</a> (Free forever) → Create Redis Database → Copy <strong>UPSTASH_REDIS_REST_URL</strong> and <strong>UPSTASH_REDIS_REST_TOKEN</strong> above.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Feedback Alert */}
+            {storageFeedback && (
+              <div
+                className={`p-3.5 rounded border text-xs flex items-start gap-2.5 ${
+                  storageFeedback.type === "success"
+                    ? "bg-emerald-950/60 border-emerald-500/50 text-emerald-200"
+                    : storageFeedback.type === "error"
+                    ? "bg-red-950/60 border-red-500/50 text-red-200"
+                    : "bg-blue-950/60 border-blue-500/50 text-blue-200"
+                }`}
+              >
+                {storageFeedback.type === "success" ? (
+                  <CheckCircle2 size={16} className="text-emerald-400 flex-shrink-0 mt-0.5" />
+                ) : (
+                  <AlertCircle size={16} className="text-red-400 flex-shrink-0 mt-0.5" />
+                )}
+                <span>{storageFeedback.msg}</span>
+              </div>
+            )}
           </div>
 
           {/* Section A: Practice Identity */}
