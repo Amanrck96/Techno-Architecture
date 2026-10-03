@@ -12,6 +12,13 @@ import {
   type UserCredential,
 } from "firebase/auth";
 import { getFirestore, type Firestore } from "firebase/firestore";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+  type FirebaseStorage,
+} from "firebase/storage";
 
 // Client-side Firebase Configuration
 const firebaseConfig = {
@@ -103,4 +110,69 @@ export function onAuthUserChanged(callback: (user: User | null) => void): (() =>
   return onAuthStateChanged(clientAuth, callback);
 }
 
-export { app, auth, db, googleProvider };
+// -------------------------------------------------------------
+// Firebase Storage Client Helpers
+// -------------------------------------------------------------
+let storage: FirebaseStorage | null = null;
+
+export function getFirebaseStorage(): FirebaseStorage | null {
+  const firebaseApp = getFirebaseApp();
+  if (!firebaseApp) return null;
+  if (!storage) {
+    storage = getStorage(firebaseApp);
+  }
+  return storage;
+}
+
+export async function uploadToFirebaseStorage(
+  file: File | Blob,
+  folder: string = "uploads",
+  customFilename?: string,
+  onProgress?: (progressPercent: number) => void
+): Promise<{ url: string; fullPath: string; name: string }> {
+  const clientStorage = getFirebaseStorage();
+  if (!clientStorage) {
+    throw new Error("Firebase Storage client is not initialized.");
+  }
+
+  const cleanFolder = folder.replace(/[^a-zA-Z0-9-_]/g, "") || "uploads";
+  const originalName = file instanceof File ? file.name : "upload.bin";
+  const ext = originalName.includes(".") ? originalName.slice(originalName.lastIndexOf(".")) : "";
+  const cleanBase = originalName.replace(ext, "").replace(/[^a-zA-Z0-9-_]/g, "_").toLowerCase();
+  const filename = customFilename || `techno_${cleanBase}_${Date.now()}${ext}`;
+  const fullPath = `${cleanFolder}/${filename}`;
+
+  const storageRef = ref(clientStorage, fullPath);
+  const uploadTask = uploadBytesResumable(storageRef, file, {
+    contentType: file.type || "application/octet-stream",
+  });
+
+  return new Promise((resolve, reject) => {
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        if (snapshot.totalBytes > 0 && onProgress) {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          onProgress(Math.round(progress));
+        }
+      },
+      (error) => {
+        reject(error);
+      },
+      async () => {
+        try {
+          const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+          resolve({
+            url: downloadUrl,
+            fullPath,
+            name: filename,
+          });
+        } catch (err) {
+          reject(err);
+        }
+      }
+    );
+  });
+}
+
+export { app, auth, db, storage, googleProvider };

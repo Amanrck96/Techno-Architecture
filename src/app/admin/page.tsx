@@ -9,7 +9,12 @@ import {
   saveStorageCredentials,
   syncToServer,
 } from "@/lib/cmsStore";
-import { loginWithGoogle, loginWithEmail, logout as firebaseLogout } from "@/lib/firebaseClient";
+import {
+  loginWithGoogle,
+  loginWithEmail,
+  logout as firebaseLogout,
+  uploadToFirebaseStorage,
+} from "@/lib/firebaseClient";
 import { Project, ProjectImage, VideoTour } from "@/data/projects";
 import { Service } from "@/data/services";
 import { TeamMember } from "@/data/team";
@@ -428,13 +433,41 @@ export default function AdminCMSPage() {
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [uploadingTargetId, setUploadingTargetId] = useState<string | null>(null);
 
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+
   const handleUploadPhoto = async (
     file: File,
     onSuccess: (url: string) => void,
     folder: string = "uploads"
   ) => {
     setIsUploadingPhoto(true);
-    showToast("Uploading photo from your laptop to cloud storage...");
+    setUploadProgress(0);
+    const isVideo = file.type.startsWith("video/");
+    const mediaLabel = isVideo ? "video" : "media";
+    showToast(`Uploading ${mediaLabel} to Firebase Storage...`);
+
+    // Priority 1: Direct Client-Side Firebase Storage Upload
+    try {
+      const fbResult = await uploadToFirebaseStorage(file, folder, undefined, (pct) => {
+        setUploadProgress(pct);
+        if (pct % 25 === 0 || pct === 100) {
+          showToast(`Uploading ${mediaLabel} to Firebase: ${pct}%`);
+        }
+      });
+
+      if (fbResult && fbResult.url) {
+        onSuccess(fbResult.url);
+        showToast(`✅ ${isVideo ? "Video" : "Photo"} stored permanently in Firebase Storage!`);
+        setIsUploadingPhoto(false);
+        setUploadProgress(null);
+        setUploadingTargetId(null);
+        return;
+      }
+    } catch (fbErr: any) {
+      console.warn("Direct Firebase Storage upload encountered error, trying API fallback:", fbErr);
+    }
+
+    // Priority 2: Upload via Next.js server /api/upload endpoint (which also uploads to Firebase bucket)
     try {
       const fd = new FormData();
       fd.append("file", file);
@@ -458,13 +491,14 @@ export default function AdminCMSPage() {
       onSuccess(data.url);
       showToast(
         data.storage === "firebase"
-          ? "Photo stored in Firebase Storage successfully!"
-          : "Photo uploaded from laptop successfully!"
+          ? `✅ ${isVideo ? "Video" : "Photo"} stored in Firebase Storage successfully!`
+          : `✅ ${isVideo ? "Video" : "Photo"} uploaded successfully!`
       );
     } catch (err: any) {
-      alert(`Photo upload failed: ${err.message}`);
+      alert(`Media upload failed: ${err.message}`);
     } finally {
       setIsUploadingPhoto(false);
+      setUploadProgress(null);
       setUploadingTargetId(null);
     }
   };
@@ -1772,7 +1806,7 @@ export default function AdminCMSPage() {
                                 <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                                   Video Link URL (YouTube, Buildofy, Instagram, or Vimeo)
                                 </label>
-                                <div className="flex gap-2">
+                                <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
                                   <input
                                     type="url"
                                     value={p.videoTour.url || ""}
@@ -1783,15 +1817,40 @@ export default function AdminCMSPage() {
                                         saveProjects(updated);
                                       }
                                     }}
-                                    placeholder="https://www.youtube.com/watch?v=..."
-                                    className="flex-1 p-2 border border-neutral-300 rounded text-xs font-mono bg-white"
+                                    placeholder="https://... or upload video file below"
+                                    className="flex-1 w-full p-2 border border-neutral-300 rounded text-xs font-mono bg-white"
                                   />
+                                  <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 bg-black text-white rounded text-xs font-medium hover:bg-neutral-800 transition-colors shrink-0">
+                                    <Upload size={13} />
+                                    <span>Upload Video</span>
+                                    <input
+                                      type="file"
+                                      accept="video/*"
+                                      className="hidden"
+                                      onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                          handleUploadPhoto(file, (url) => {
+                                            const updated = [...projects];
+                                            if (updated[idx].videoTour) {
+                                              updated[idx].videoTour = {
+                                                ...updated[idx].videoTour!,
+                                                url,
+                                                platform: "Firebase Storage" as any,
+                                              };
+                                              saveProjects(updated);
+                                            }
+                                          }, "videos");
+                                        }
+                                      }}
+                                    />
+                                  </label>
                                   {p.videoTour.url && (
                                     <a
                                       href={p.videoTour.url}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="px-2.5 py-1.5 bg-neutral-200 hover:bg-neutral-300 text-neutral-800 rounded text-[11px] font-mono flex items-center gap-1 transition-colors flex-shrink-0"
+                                      className="px-2.5 py-1.5 bg-neutral-200 hover:bg-neutral-300 text-neutral-800 rounded text-[11px] font-mono flex items-center gap-1 transition-colors shrink-0"
                                       title="Open link in new tab"
                                     >
                                       <ExternalLink size={12} />
@@ -1817,6 +1876,7 @@ export default function AdminCMSPage() {
                                     }}
                                     className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
                                   >
+                                    <option value="Firebase Storage">Firebase Storage</option>
                                     <option value="YouTube">YouTube</option>
                                     <option value="Buildofy">Buildofy</option>
                                     <option value="Instagram">Instagram</option>

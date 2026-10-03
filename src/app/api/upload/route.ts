@@ -33,19 +33,40 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    // Validate mime type
-    const validMimes = ["image/jpeg", "image/png", "image/webp", "image/avif", "image/gif"];
+    // Validate mime type (Images, Videos, PDFs)
+    const validImageMimes = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/webp",
+      "image/avif",
+      "image/gif",
+      "image/svg+xml",
+    ];
+    const validVideoMimes = [
+      "video/mp4",
+      "video/webm",
+      "video/quicktime",
+      "video/ogg",
+      "video/x-msvideo",
+      "video/mpeg",
+    ];
+    const validMimes = [...validImageMimes, ...validVideoMimes, "application/pdf"];
+
+    const isVideo = validVideoMimes.includes(file.type);
+    const maxSizeBytes = isVideo ? 100 * 1024 * 1024 : 30 * 1024 * 1024; // 100MB for video, 30MB for images
+
     if (!validMimes.includes(file.type)) {
       return NextResponse.json(
-        { error: "Invalid file type. Please upload a JPG, PNG, WEBP, or GIF image." },
+        { error: "Invalid file type. Supported formats: JPG, PNG, WEBP, GIF, SVG, MP4, WEBM, MOV." },
         { status: 400 }
       );
     }
 
-    // Limit file size (15MB max)
-    if (file.size > 15 * 1024 * 1024) {
+    // Limit file size
+    if (file.size > maxSizeBytes) {
       return NextResponse.json(
-        { error: "File exceeds 15MB limit." },
+        { error: `File exceeds maximum allowed size (${isVideo ? "100MB for videos" : "30MB for images"}).` },
         { status: 400 }
       );
     }
