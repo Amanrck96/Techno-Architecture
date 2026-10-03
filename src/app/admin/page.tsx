@@ -1177,7 +1177,6 @@ export default function AdminCMSPage() {
                         <option value="Commercial">Commercial</option>
                         <option value="Hospitality">Hospitality</option>
                         <option value="Interior">Interior</option>
-                        <option value="Institutional">Institutional</option>
                       </select>
                     </div>
                     <div>

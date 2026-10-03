@@ -129,7 +129,7 @@ export default function HomeIntro() {
                 {studioCity}
               </h3>
               <p className="text-xs sm:text-[13px] text-neutral-600 font-light leading-relaxed">
-                Established in {foundedYear}, delivering contextual residential, commercial, hospitality, interior and institutional works.
+                Established in {foundedYear}, delivering contextual residential, commercial, hospitality and bespoke interior architecture.
               </p>
             </div>
           </div>

@@ -15,7 +15,7 @@ export interface Project {
   id: string;
   slug: string;
   title: string;
-  category: "Residential" | "Commercial" | "Interior" | "Institutional" | "Hospitality";
+  category: "Residential" | "Commercial" | "Interior" | "Hospitality";
   status: "completed" | "ongoing";
   location: string;
   year: number;

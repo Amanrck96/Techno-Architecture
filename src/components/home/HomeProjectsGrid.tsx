@@ -13,13 +13,12 @@ export default function HomeProjectsGrid() {
 
   const categories = [
     { id: "all", label: "ALL WORKS" },
+    { id: "completed", label: "COMPLETED" },
+    { id: "ongoing", label: "ONGOING" },
     { id: "Residential", label: "RESIDENTIAL" },
     { id: "Commercial", label: "COMMERCIAL" },
     { id: "Hospitality", label: "HOSPITALITY" },
     { id: "Interior", label: "INTERIOR" },
-    { id: "Institutional", label: "INSTITUTIONAL" },
-    { id: "completed", label: "COMPLETED" },
-    { id: "ongoing", label: "ONGOING" },
   ];
 
   const filteredProjects = projects.filter((p) => {
@@ -38,7 +37,7 @@ export default function HomeProjectsGrid() {
             FEATURED PROJECTS
           </h2>
           <p className="text-xs text-neutral-500 mt-1 tracking-wide">
-            A selection of completed and ongoing work across residential, commercial, hospitality, interior and institutional design.
+            A selection of completed and ongoing work across residential, commercial, hospitality and interior design.
           </p>
         </div>
 

@@ -21,7 +21,6 @@ export default function ProjectsDirectoryPage() {
     { id: "Commercial", label: "COMMERCIAL" },
     { id: "Hospitality", label: "HOSPITALITY" },
     { id: "Interior", label: "INTERIOR" },
-    { id: "Institutional", label: "INSTITUTIONAL" },
   ];
 
   const handleShuffle = () => {

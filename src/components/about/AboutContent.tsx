@@ -156,7 +156,7 @@ export default function AboutContent() {
               <p className="text-neutral-500 text-xs">20 Years of Professional Architectural Practice</p>
             </div>
             <div className="pt-2 text-[11px] text-neutral-600 leading-relaxed font-light">
-              Leading the firm since inception, shaping a portfolio of notable private villas, commercial hubs, interior spaces, and institutional projects across South India.
+              Leading the firm since inception, shaping a portfolio of notable private villas, commercial hubs, bespoke interiors, and hospitality environments across South India.
             </div>
           </div>
 
@@ -531,7 +531,7 @@ export default function AboutContent() {
                 <span className="text-[9px] font-mono uppercase tracking-widest text-neutral-400">EXPERIENCE</span>
               </div>
               <h4 className="text-xs font-semibold text-neutral-900 uppercase tracking-wider">20 Years Practice</h4>
-              <p className="text-[11px] text-neutral-600 font-light leading-relaxed">Two decades of continuous architectural practice leading bespoke residential, commercial and institutional projects.</p>
+              <p className="text-[11px] text-neutral-600 font-light leading-relaxed">Two decades of continuous architectural practice leading bespoke residential, commercial, hospitality and interior projects.</p>
             </div>
 
             <div className="p-4 bg-neutral-50 border border-neutral-100 space-y-1.5">
@@ -685,7 +685,7 @@ export default function AboutContent() {
             Have a project in mind?
           </h3>
           <p className="text-xs text-neutral-400 max-w-xl font-light leading-relaxed">
-            Let us discuss your project across residential, commercial, hospitality, interior or institutional spaces. We review site parameters and provide a structured design proposal.
+            Let us discuss your project across residential, commercial, hospitality or bespoke interior spaces. We review site parameters and provide a structured design proposal.
           </p>
         </div>
         <Link
