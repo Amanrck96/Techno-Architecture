@@ -22,12 +22,13 @@ import {
 
 // Client-side Firebase Configuration
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyAw8ikqz3kMoFRu3HhT1adl8ikKq5ies0I",
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "technoarchitecture-7d718.firebaseapp.com",
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "technoarchitecture-7d718",
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "technoarchitecture-7d718.appspot.com",
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "technoarchitecture-7d718.firebasestorage.app",
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "361435214203",
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:361435214203:web:27a627d1dac7458d7e4dde",
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || "G-S9LDM3NEE3",
 };
 
 let app: FirebaseApp | null = null;
