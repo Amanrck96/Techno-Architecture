@@ -93,15 +93,18 @@ service cloud.firestore {
     // ===============================================================
 
     function isValidEnquiry(data) {
-      return hasRequiredFields(['name', 'email', 'message']) &&
-             hasOnlyAllowedFields(['name', 'email', 'phone', 'projectType', 'budget', 'message', 'createdAt', 'status']) &&
-             validStringLength('name', 1, 100) &&
-             isValidEmail(data.email) &&
-             validStringLength('message', 1, 5000) &&
-             isValidOptionalString('phone', 0, 30) &&
-             isValidOptionalString('projectType', 0, 100) &&
-             isValidOptionalString('budget', 0, 100) &&
-             (!( 'status' in data ) || data.status in ['new', 'in-review', 'contacted', 'archived']);
+      return (
+        (('name' in data && validStringLength('name', 1, 100)) ||
+         ('fullName' in data && validStringLength('fullName', 1, 100))) &&
+        'email' in data && isValidEmail(data.email) &&
+        'message' in data && validStringLength('message', 1, 5000) &&
+        isValidOptionalString('phone', 0, 50) &&
+        isValidOptionalString('company', 0, 100) &&
+        isValidOptionalString('service', 0, 100) &&
+        isValidOptionalString('projectType', 0, 100) &&
+        isValidOptionalString('budget', 0, 100) &&
+        (!( 'status' in data ) || data.status in ['new', 'in-review', 'contacted', 'archived'])
+      );
     }
 
     function isValidUser(data) {
@@ -135,6 +138,11 @@ service cloud.firestore {
     // CMS Content Collection
     // Public read access for website content (projects, studio info, hero banners)
     // Only authenticated admins can modify website content
+    match /cms/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     match /cms_content/{docId} {
       allow read: if true;
       allow write: if isAdmin();

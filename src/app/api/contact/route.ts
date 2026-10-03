@@ -63,7 +63,32 @@ export async function POST(request: Request) {
       if (db) {
         await db.collection("enquiries").add(enquiryData);
         savedToFirestore = true;
-        console.log("Enquiry successfully saved to Firestore 'enquiries' collection.");
+        console.log("Enquiry successfully saved to Firestore 'enquiries' collection via Admin SDK.");
+      } else {
+        // Direct Firestore REST API fallback (always active with official project API key)
+        const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "technoarchitecture-7d718";
+        const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyAw8ikqz3kMoFRu3HhT1adl8ikKq5ies0I";
+        const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/enquiries?key=${apiKey}`;
+        const restRes = await fetch(firestoreUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fields: {
+              fullName: { stringValue: enquiryData.fullName },
+              email: { stringValue: enquiryData.email },
+              phone: { stringValue: enquiryData.phone },
+              company: { stringValue: enquiryData.company },
+              service: { stringValue: enquiryData.service },
+              budget: { stringValue: enquiryData.budget },
+              message: { stringValue: enquiryData.message },
+              status: { stringValue: enquiryData.status },
+            },
+          }),
+        });
+        if (restRes.ok) {
+          savedToFirestore = true;
+          console.log("Enquiry successfully saved to Firestore 'enquiries' collection via REST API.");
+        }
       }
     } catch (dbErr) {
       console.warn("Firestore save notice:", dbErr);
