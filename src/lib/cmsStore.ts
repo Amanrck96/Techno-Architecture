@@ -283,7 +283,10 @@ export function useCMSStore() {
           if (Object.keys(localData).length > 0) {
             syncToServer({ allData: localData });
           }
+          return;
         }
+        // If client has no local cache (e.g. public visitor or new device), apply the server data!
+        applyDataset(data);
         return;
       }
 

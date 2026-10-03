@@ -1,7 +1,5 @@
 "use client";
 
-import TestimonialsSection from "@/components/home/TestimonialsSection";
-
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -548,16 +546,6 @@ export default function AboutContent() {
         </div>
       </motion.div>
 
-      {/* 9. Client Testimonials & Perspectives (Merged with About) */}
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="w-full pt-4 border-t border-neutral-200"
-      >
-        <TestimonialsSection />
-      </motion.div>
 
       {/* 10. Call to Action Banner */}
       <motion.div

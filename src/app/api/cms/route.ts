@@ -160,8 +160,8 @@ async function saveToGitHub(
 // -------------------------------------------------------------
 
 async function readStore(customUpstashUrl?: string, customUpstashToken?: string) {
-  // 1. If in-memory store is already populated in this container, return a clone
-  if (globalThis.__techno_cms_store__) {
+  // 1. In production serverless warm containers, return in-memory cache. In development, read disk fresh every time.
+  if (process.env.NODE_ENV === "production" && globalThis.__techno_cms_store__) {
     return JSON.parse(JSON.stringify(globalThis.__techno_cms_store__));
   }
 
