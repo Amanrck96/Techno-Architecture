@@ -2,12 +2,11 @@ import React from "react";
 import HomeIntro from "@/components/home/HomeIntro";
 import HomeProjectsGrid from "@/components/home/HomeProjectsGrid";
 import WhyTechno from "@/components/home/WhyTechno";
-import TestimonialsSection from "@/components/home/TestimonialsSection";
 
 export const metadata = {
-  title: "HOME — Techno Architecture | Introduction · Projects · Philosophy · Testimonials",
+  title: "HOME — Techno Architecture | Introduction · Projects · Philosophy",
   description:
-    "Explore Techno Architecture: Practice Introduction, Selected Architectural Projects, Why Techno Philosophy, and Client Testimonials.",
+    "Explore Techno Architecture: Practice Introduction, Selected Architectural Projects, and Why Techno Philosophy. Led by architect Rajesh Shivaram.",
 };
 
 export default function HomeDirectoryPage() {
@@ -21,9 +20,6 @@ export default function HomeDirectoryPage() {
 
       {/* c. Why Techno? */}
       <WhyTechno />
-
-      {/* d. Testimonials */}
-      <TestimonialsSection />
     </div>
   );
 }

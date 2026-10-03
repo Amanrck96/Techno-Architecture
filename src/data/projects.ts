@@ -15,7 +15,7 @@ export interface Project {
   id: string;
   slug: string;
   title: string;
-  category: "Residential" | "Commercial" | "Interior" | "Cultural" | "Hospitality";
+  category: "Residential" | "Commercial" | "Interior" | "Institutional" | "Hospitality";
   status: "completed" | "ongoing";
   location: string;
   year: number;
@@ -91,6 +91,12 @@ export const initialProjects: Project[] = [
       platform: "YouTube",
       actionText: "Watch House Tour",
     },
+    testimonial: {
+      quote: "Living in Aikya has transformed our daily relationship with light and nature. Even during the peak of summer, the serene water courts and double-height living areas create an astonishingly cool, harmonious atmosphere. Techno's obsession with every millimeter of craft is evident everywhere you look.",
+      clientName: "Siddharth & Ananya Rao",
+      designation: "Homeowners",
+      company: "Private Residence",
+    },
   },
   {
     id: "proj-2",
@@ -148,6 +154,12 @@ export const initialProjects: Project[] = [
       url: "https://www.youtube.com/results?search_query=Belaku+Residence+Techno+Architecture+Home+Tour",
       platform: "YouTube",
       actionText: "Watch House Tour",
+    },
+    testimonial: {
+      quote: "Techno created a private urban sanctuary that dances with natural light throughout the day. The interplay of cantilevered concrete, corten steel, and sculptural timber screens makes Belaku an architectural masterwork we are proud to call home.",
+      clientName: "Suresh & Anitha Gowda",
+      designation: "Homeowners",
+      company: "Belaku Residence",
     },
   },
   {
@@ -212,6 +224,12 @@ export const initialProjects: Project[] = [
       platform: "YouTube",
       actionText: "Watch Video Tour",
     },
+    testimonial: {
+      quote: "Techno designed a home that feels like a sacred sanctuary cradled by our centenary trees. The four-pillared inner mandapa courtyard and brick jali light create a living experience of timeless elegance.",
+      clientName: "Dr. Sandeep & Deepa Rao",
+      designation: "Homeowners",
+      company: "Between Two Trees Residence",
+    },
   },
   {
     id: "proj-4",
@@ -262,6 +280,12 @@ export const initialProjects: Project[] = [
     },
     featured: true,
     relatedSlugs: ["belaku", "between-two-trees", "aikya"],
+    testimonial: {
+      quote: "Techno Architecture crafted Brindavan as a serene haven where suspended granite staircases and floating volumes blend seamlessly with traditional materials. Every room feels alive with natural ventilation and daylight.",
+      clientName: "K. S. Balasubramanian & Family",
+      designation: "Homeowners",
+      company: "Brindavan Villa",
+    },
   },
   {
     id: "proj-5",
@@ -324,6 +348,12 @@ export const initialProjects: Project[] = [
       platform: "Buildofy",
       actionText: "Watch Buildofy Film",
     },
+    testimonial: {
+      quote: "The play of shadows cast by the terracotta jali and the lush cantilevered terraces make this home feel like a personal sanctuary in the city. Techno Architecture's vision featured on Buildofy is truly exemplary.",
+      clientName: "Dr. Arvind Natarajan",
+      designation: "Founder",
+      company: "Natarajan Medical Group",
+    },
   },
   {
     id: "proj-6",
@@ -368,6 +398,12 @@ export const initialProjects: Project[] = [
     },
     featured: true,
     relatedSlugs: ["far-site-buildofy", "brindavan", "belaku"],
+    testimonial: {
+      quote: "The elevated glass prayer sanctuary and seamless terrace verandas make House in the Air feel suspended above the city. Living here is a serene daily experience of panoramic sky and floating greens.",
+      clientName: "Rahul & Meera Krishnan",
+      designation: "Homeowners",
+      company: "House in the Air",
+    },
   },
   {
     id: "proj-7",
@@ -424,6 +460,12 @@ export const initialProjects: Project[] = [
       url: "https://www.youtube.com/results?search_query=Luxury+Vastu+House+Kanasu+in+Bengaluru+Technoarchitecture+Home+Tour",
       platform: "YouTube",
       actionText: "Watch House Tour",
+    },
+    testimonial: {
+      quote: "Kanasu perfectly balances traditional Vastu principles with contemporary tropical design. The volumetric light and serene internal courtyards give our family an extraordinary sense of calm.",
+      clientName: "Raghavendra & Priya Joshi",
+      designation: "Homeowners",
+      company: "Kanasu Residence",
     },
   },
   {
@@ -483,6 +525,12 @@ export const initialProjects: Project[] = [
       url: "https://www.youtube.com/results?search_query=Kripa+1500+sq+ft+Techno+Architecture+House+Tour",
       platform: "YouTube",
       actionText: "Watch House Tour",
+    },
+    testimonial: {
+      quote: "Kripa's climate-responsive screens, timber terraces, and central water court provide our family with unmatched comfort and thermal serenity throughout Bengaluru's changing seasons.",
+      clientName: "Vikram & Radhika Chandran",
+      designation: "Homeowners",
+      company: "Kripa Residence",
     },
   },
   {
@@ -545,6 +593,12 @@ export const initialProjects: Project[] = [
     },
     featured: false,
     relatedSlugs: ["kripa", "between-two-trees", "far-site-buildofy"],
+    testimonial: {
+      quote: "Techno Architecture's design of Salut created one of Bengaluru's most distinctive brewery landmarks. The terracotta breeze-block jali and biophilic garden wall attract design enthusiasts from all across India.",
+      clientName: "Salut Hospitality Ventures",
+      designation: "Patrons",
+      company: "Salut Craft Brewery",
+    },
   },
   {
     id: "proj-12",
@@ -606,6 +660,12 @@ export const initialProjects: Project[] = [
       url: "https://www.youtube.com/results?search_query=The+Mantle+Techno+Architecture+Review",
       platform: "Buildofy",
       actionText: "Watch Video Review",
+    },
+    testimonial: {
+      quote: "The sculptural facade and tactile materiality established by Techno Architecture made this commission a flagship architectural landmark in Bengaluru. Featured on Buildofy, it is an absolute masterpiece.",
+      clientName: "Pradeep & Shweta Nair",
+      designation: "Patrons",
+      company: "The Mantle Residence",
     },
   },
 ];

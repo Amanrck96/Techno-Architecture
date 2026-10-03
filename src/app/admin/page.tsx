@@ -24,6 +24,9 @@ import {
   Settings,
   MessageSquareQuote,
   Plus,
+  Shuffle,
+  ArrowUp,
+  ArrowDown,
   Save,
   RotateCcw,
   Download,
@@ -758,48 +761,69 @@ export default function AdminCMSPage() {
                 Create, update, manage photo galleries, credits, and project specifications.
               </p>
             </div>
-            <button
-              onClick={() => {
-                const newP: Project = {
-                  id: `proj-${Date.now()}`,
-                  slug: `project-${projects.length + 1}`,
-                  title: `NEW ARCHITECTURAL WORK ${projects.length + 1}`,
-                  category: "Residential",
-                  status: "ongoing",
-                  location: "Bengaluru, India",
-                  year: new Date().getFullYear(),
-                  client: "Private Client",
-                  area: "4,500 sq.ft",
-                  description: "A contemporary spatial exploration responding to tropical light, breezes and site context.",
-                  processNarrative: "Detailed volumetric planning and climatic integration.",
-                  mainImage: "/projects/aikya/elevation-east.jpg",
-                  gallery: [
-                    {
-                      url: "/projects/aikya/elevation-east.jpg",
-                      caption: "Frontal elevation and arrival court",
-                      aspect: "full",
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  if (confirm("Shuffle projects order across the entire portfolio?")) {
+                    const shuffled = [...projects];
+                    for (let i = shuffled.length - 1; i > 0; i--) {
+                      const j = Math.floor(Math.random() * (i + 1));
+                      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                    }
+                    saveProjects(shuffled);
+                    showToast("Projects portfolio order shuffled and saved.");
+                  }
+                }}
+                className="inline-flex items-center gap-1.5 px-3 py-2 bg-white text-neutral-800 border border-neutral-300 text-xs uppercase tracking-wider font-medium hover:border-black hover:text-black transition-colors rounded shadow-xs cursor-pointer"
+                title="Randomly shuffle project display order"
+              >
+                <Shuffle size={13} />
+                <span>Shuffle Order</span>
+              </button>
+              <button
+                onClick={() => {
+                  const newP: Project = {
+                    id: `proj-${Date.now()}`,
+                    slug: `project-${projects.length + 1}`,
+                    title: `NEW ARCHITECTURAL WORK ${projects.length + 1}`,
+                    category: "Residential",
+                    status: "ongoing",
+                    location: "Bengaluru, India",
+                    year: new Date().getFullYear(),
+                    client: "Private Client",
+                    area: "4,500 sq.ft",
+                    description: "A contemporary spatial exploration responding to tropical light, breezes and site context.",
+                    processNarrative: "Detailed volumetric planning and climatic integration.",
+                    mainImage: "/projects/aikya/elevation-east.jpg",
+                    gallery: [
+                      {
+                        url: "/projects/aikya/elevation-east.jpg",
+                        caption: "Frontal elevation and arrival court",
+                        aspect: "full",
+                      },
+                    ],
+                    servicesInvolved: ["Architectural Design", "Interior Architecture"],
+                    teamMembers: ["Ar. Rajesh Shivaram"],
+                    credits: {
+                      principalArchitect: "Ar. Rajesh Shivaram",
+                      projectArchitect: "",
+                      projectLead: "",
+                      team: "Techno Architecture Studio Team",
                     },
-                  ],
-                  servicesInvolved: ["Architectural Design", "Interior Architecture"],
-                  teamMembers: ["Ar. Rajesh Shivaram"],
-                  credits: {
-                    principalArchitect: "Ar. Rajesh Shivaram",
-                    projectArchitect: "",
-                    projectLead: "",
-                    team: "Techno Architecture Studio Team",
-                  },
-                  featured: false,
-                  relatedSlugs: [],
-                };
-                saveProjects([newP, ...projects]);
-                setExpandedProjectId(newP.id);
-                showToast("New project created. Edit details below.");
-              }}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-black text-white text-xs uppercase tracking-wider font-medium hover:bg-neutral-800 transition-colors rounded shadow-sm self-start"
-            >
-              <Plus size={14} />
-              <span>Add New Project</span>
-            </button>
+                    featured: false,
+                    relatedSlugs: [],
+                  };
+                  saveProjects([newP, ...projects]);
+                  setExpandedProjectId(newP.id);
+                  showToast("New project created. Edit details below.");
+                }}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-black text-white text-xs uppercase tracking-wider font-medium hover:bg-neutral-800 transition-colors rounded shadow-sm self-start cursor-pointer"
+              >
+                <Plus size={14} />
+                <span>Add New Project</span>
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 gap-5">
@@ -851,6 +875,47 @@ export default function AdminCMSPage() {
                     </div>
 
                     <div className="flex items-center space-x-2">
+                      {/* Project Rearrangement Order Controls */}
+                      <div className="flex items-center border border-neutral-200 rounded overflow-hidden bg-neutral-50 shadow-xs">
+                        <button
+                          type="button"
+                          disabled={idx === 0}
+                          onClick={() => {
+                            if (idx === 0) return;
+                            const updated = [...projects];
+                            const temp = updated[idx];
+                            updated[idx] = updated[idx - 1];
+                            updated[idx - 1] = temp;
+                            saveProjects(updated);
+                            showToast(`Moved "${p.title}" up to #${idx}.`);
+                          }}
+                          className="p-1 hover:bg-neutral-200 text-neutral-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
+                          title="Move project up in display order"
+                        >
+                          <ArrowUp size={12} />
+                        </button>
+                        <span className="text-[10px] font-mono px-2 text-neutral-700 font-semibold select-none border-x border-neutral-200">
+                          #{idx + 1}
+                        </span>
+                        <button
+                          type="button"
+                          disabled={idx === projects.length - 1}
+                          onClick={() => {
+                            if (idx === projects.length - 1) return;
+                            const updated = [...projects];
+                            const temp = updated[idx];
+                            updated[idx] = updated[idx + 1];
+                            updated[idx + 1] = temp;
+                            saveProjects(updated);
+                            showToast(`Moved "${p.title}" down to #${idx + 2}.`);
+                          }}
+                          className="p-1 hover:bg-neutral-200 text-neutral-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
+                          title="Move project down in display order"
+                        >
+                          <ArrowDown size={12} />
+                        </button>
+                      </div>
+
                       <Link
                         href={`/projects/${p.slug}`}
                         target="_blank"
@@ -931,7 +996,7 @@ export default function AdminCMSPage() {
                         <option value="Commercial">Commercial</option>
                         <option value="Hospitality">Hospitality</option>
                         <option value="Interior">Interior</option>
-                        <option value="Cultural">Cultural</option>
+                        <option value="Institutional">Institutional</option>
                       </select>
                     </div>
                     <div>
@@ -1005,6 +1070,146 @@ export default function AdminCMSPage() {
                       }}
                       className="w-full p-2 border border-neutral-300 rounded text-xs leading-relaxed focus:border-black focus:outline-none"
                     />
+                  </div>
+
+                  {/* Prominent Project Client Testimonial Card */}
+                  <div className="p-4 border border-neutral-200 bg-neutral-50/80 rounded space-y-3">
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <MessageSquareQuote size={15} className="text-neutral-600" />
+                        <span className="text-[11px] uppercase font-mono font-semibold text-neutral-800 tracking-wider">
+                          Project Client Testimonial & Review
+                        </span>
+                        {p.testimonial ? (
+                          <span className="text-[8px] font-mono uppercase px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium">
+                            Active
+                          </span>
+                        ) : (
+                          <span className="text-[8px] font-mono uppercase px-1.5 py-0.5 rounded bg-neutral-200 text-neutral-600 font-medium">
+                            None
+                          </span>
+                        )}
+                      </div>
+                      {p.testimonial ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = [...projects];
+                            delete updated[idx].testimonial;
+                            saveProjects(updated);
+                            showToast(`Removed testimonial from "${p.title}".`);
+                          }}
+                          className="text-[10px] uppercase tracking-wider font-mono text-red-600 hover:underline cursor-pointer"
+                        >
+                          Remove Testimonial
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = [...projects];
+                            updated[idx].testimonial = {
+                              quote: `Working with Techno Architecture on ${p.title} was an extraordinary experience. Their obsession with light, craftsmanship, and spatial clarity exceeded our expectations.`,
+                              clientName: p.client && p.client !== "Confidential" && p.client !== "Private Client" ? p.client : "Homeowner",
+                              designation: "Client",
+                              company: p.title,
+                            };
+                            saveProjects(updated);
+                            showToast(`Testimonial added to "${p.title}".`);
+                          }}
+                          className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider font-semibold text-black hover:underline cursor-pointer"
+                        >
+                          <Plus size={11} />
+                          <span>+ Add Client Testimonial</span>
+                        </button>
+                      )}
+                    </div>
+
+                    {p.testimonial ? (
+                      <div className="space-y-3 pt-2 border-t border-neutral-200 text-xs">
+                        <div>
+                          <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                            Client Quote / Review
+                          </label>
+                          <textarea
+                            rows={3}
+                            value={p.testimonial.quote || ""}
+                            onChange={(e) => {
+                              const updated = [...projects];
+                              if (updated[idx].testimonial) {
+                                updated[idx].testimonial = { ...updated[idx].testimonial!, quote: e.target.value };
+                                saveProjects(updated);
+                              }
+                            }}
+                            placeholder="Client testimonial or reflection quote..."
+                            className="w-full p-2 border border-neutral-300 rounded text-xs bg-white leading-relaxed focus:border-black focus:outline-none"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                          <div>
+                            <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                              Client Name
+                            </label>
+                            <input
+                              type="text"
+                              value={p.testimonial.clientName || ""}
+                              onChange={(e) => {
+                                const updated = [...projects];
+                                if (updated[idx].testimonial) {
+                                  updated[idx].testimonial = { ...updated[idx].testimonial!, clientName: e.target.value };
+                                  saveProjects(updated);
+                                }
+                              }}
+                              placeholder="e.g. Suresh & Anitha Gowda"
+                              className="w-full p-2 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                              Designation / Role
+                            </label>
+                            <input
+                              type="text"
+                              value={p.testimonial.designation || ""}
+                              onChange={(e) => {
+                                const updated = [...projects];
+                                if (updated[idx].testimonial) {
+                                  updated[idx].testimonial = { ...updated[idx].testimonial!, designation: e.target.value };
+                                  saveProjects(updated);
+                                }
+                              }}
+                              placeholder="e.g. Homeowner / Founder"
+                              className="w-full p-2 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                              Company / Residence
+                            </label>
+                            <input
+                              type="text"
+                              value={p.testimonial.company || ""}
+                              onChange={(e) => {
+                                const updated = [...projects];
+                                if (updated[idx].testimonial) {
+                                  updated[idx].testimonial = { ...updated[idx].testimonial!, company: e.target.value };
+                                  saveProjects(updated);
+                                }
+                              }}
+                              placeholder="e.g. Belaku Residence"
+                              className="w-full p-2 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-[11px] text-neutral-500 italic">
+                        No testimonial attached to this project. Click &ldquo;+ Add Client Testimonial&rdquo; above to attach a client quote.
+                      </p>
+                    )}
                   </div>
 
                   {/* Expanded Full Control Section */}
@@ -1329,130 +1534,6 @@ export default function AdminCMSPage() {
                                     className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
                                   />
                                 </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Project Client Testimonial / Reflection */}
-                      <div className="space-y-3 pt-3 border-t border-neutral-200">
-                        <div className="flex justify-between items-center">
-                          <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-700">
-                            Client Reflection / Testimonial
-                          </span>
-                          {p.testimonial ? (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const updated = [...projects];
-                                delete updated[idx].testimonial;
-                                saveProjects(updated);
-                                showToast(`Removed testimonial from "${p.title}".`);
-                              }}
-                              className="text-[10px] uppercase tracking-wider font-mono text-red-600 hover:underline"
-                            >
-                              Remove Testimonial
-                            </button>
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const updated = [...projects];
-                                updated[idx].testimonial = {
-                                  quote: "Working with Techno Architecture was an extraordinary journey in realizing our vision with absolute craftsmanship.",
-                                  clientName: p.client && p.client !== "Confidential" && p.client !== "Private Client" ? p.client : "Homeowner",
-                                  designation: "Client",
-                                  company: "",
-                                };
-                                saveProjects(updated);
-                                showToast(`Testimonial added to "${p.title}".`);
-                              }}
-                              className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider font-semibold text-black hover:underline"
-                            >
-                              <Plus size={11} />
-                              <span>+ Add Client Testimonial</span>
-                            </button>
-                          )}
-                        </div>
-
-                        {p.testimonial && (
-                          <div className="space-y-3 pt-3 border-t border-neutral-200/80 text-xs">
-                            <div>
-                              <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
-                                Client Quote / Reflection
-                              </label>
-                              <textarea
-                                rows={3}
-                                value={p.testimonial.quote || ""}
-                                onChange={(e) => {
-                                  const updated = [...projects];
-                                  if (updated[idx].testimonial) {
-                                    updated[idx].testimonial = { ...updated[idx].testimonial!, quote: e.target.value };
-                                    saveProjects(updated);
-                                  }
-                                }}
-                                placeholder="Client review or reflection quote..."
-                                className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
-                              />
-                            </div>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                              <div>
-                                <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
-                                  Client Name
-                                </label>
-                                <input
-                                  type="text"
-                                  value={p.testimonial.clientName || ""}
-                                  onChange={(e) => {
-                                    const updated = [...projects];
-                                    if (updated[idx].testimonial) {
-                                      updated[idx].testimonial = { ...updated[idx].testimonial!, clientName: e.target.value };
-                                      saveProjects(updated);
-                                    }
-                                  }}
-                                  placeholder="e.g. Anand & Priya Nair"
-                                  className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
-                                />
-                              </div>
-
-                              <div>
-                                <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
-                                  Designation / Role
-                                </label>
-                                <input
-                                  type="text"
-                                  value={p.testimonial.designation || ""}
-                                  onChange={(e) => {
-                                    const updated = [...projects];
-                                    if (updated[idx].testimonial) {
-                                      updated[idx].testimonial = { ...updated[idx].testimonial!, designation: e.target.value };
-                                      saveProjects(updated);
-                                    }
-                                  }}
-                                  placeholder="e.g. Homeowner / Founder"
-                                  className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
-                                />
-                              </div>
-
-                              <div>
-                                <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
-                                  Company / Residence
-                                </label>
-                                <input
-                                  type="text"
-                                  value={p.testimonial.company || ""}
-                                  onChange={(e) => {
-                                    const updated = [...projects];
-                                    if (updated[idx].testimonial) {
-                                      updated[idx].testimonial = { ...updated[idx].testimonial!, company: e.target.value };
-                                      saveProjects(updated);
-                                    }
-                                  }}
-                                  placeholder="Optional company or location"
-                                  className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
-                                />
                               </div>
                             </div>
                           </div>
@@ -2885,7 +2966,7 @@ export default function AdminCMSPage() {
                 Client Testimonials & Trust ({testimonials.length})
               </h2>
               <p className="text-xs text-neutral-500">
-                Manage client quotes displayed in the homepage Testimonials section.
+                Manage client quotes displayed on the About Us page Testimonials section.
               </p>
             </div>
             <button

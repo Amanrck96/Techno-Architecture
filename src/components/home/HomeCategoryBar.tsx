@@ -13,7 +13,6 @@ const sections: CategorySection[] = [
   { id: "introduction", letter: "a", title: "Introduction" },
   { id: "projects", letter: "b", title: "Projects" },
   { id: "why-techno", letter: "c", title: "Why Techno?" },
-  { id: "testimonials", letter: "d", title: "Testimonials" },
 ];
 
 export default function HomeCategoryBar() {

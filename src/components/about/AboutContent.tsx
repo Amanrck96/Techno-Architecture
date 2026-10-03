@@ -1,5 +1,7 @@
 "use client";
 
+import TestimonialsSection from "@/components/home/TestimonialsSection";
+
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -156,7 +158,7 @@ export default function AboutContent() {
               <p className="text-neutral-500 text-xs">20 Years of Professional Architectural Practice</p>
             </div>
             <div className="pt-2 text-[11px] text-neutral-600 leading-relaxed font-light">
-              Leading the firm since inception, shaping a portfolio of notable private villas, commercial hubs, interior spaces, and cultural projects across South India.
+              Leading the firm since inception, shaping a portfolio of notable private villas, commercial hubs, interior spaces, and institutional projects across South India.
             </div>
           </div>
 
@@ -170,13 +172,13 @@ export default function AboutContent() {
           </div>
 
           <div className="pt-2">
-            <Link
-              href="/team"
+            <a
+              href="#team"
               className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] font-semibold text-black hover:translate-x-1 transition-transform"
             >
               <span>Explore Studio Practitioners & Team</span>
               <ArrowUpRight size={14} />
-            </Link>
+            </a>
           </div>
         </motion.div>
 
@@ -501,7 +503,7 @@ export default function AboutContent() {
                 <span className="text-[9px] font-mono uppercase tracking-widest text-neutral-400">EXPERIENCE</span>
               </div>
               <h4 className="text-xs font-semibold text-neutral-900 uppercase tracking-wider">20 Years Practice</h4>
-              <p className="text-[11px] text-neutral-600 font-light leading-relaxed">Two decades of continuous architectural practice leading bespoke residential, commercial and cultural projects.</p>
+              <p className="text-[11px] text-neutral-600 font-light leading-relaxed">Two decades of continuous architectural practice leading bespoke residential, commercial and institutional projects.</p>
             </div>
 
             <div className="p-4 bg-neutral-50 border border-neutral-100 space-y-1.5">
@@ -546,7 +548,18 @@ export default function AboutContent() {
         </div>
       </motion.div>
 
-      {/* 9. Call to Action Banner */}
+      {/* 9. Client Testimonials & Perspectives (Merged with About) */}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="w-full pt-4 border-t border-neutral-200"
+      >
+        <TestimonialsSection />
+      </motion.div>
+
+      {/* 10. Call to Action Banner */}
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -562,7 +575,7 @@ export default function AboutContent() {
             Have a project in mind?
           </h3>
           <p className="text-xs text-neutral-400 max-w-xl font-light leading-relaxed">
-            Let us discuss your project across residential, commercial, hospitality, interior or cultural spaces. We review site parameters and provide a structured design proposal.
+            Let us discuss your project across residential, commercial, hospitality, interior or institutional spaces. We review site parameters and provide a structured design proposal.
           </p>
         </div>
         <Link

@@ -624,10 +624,10 @@
         "aikya"
       ],
       "testimonial": {
-        "quote": "Working with Techno Architecture transformed our vision into an enduring spatial reality. Their attention to daylight, climate responsiveness, and structural detail exceeded our expectations.",
-        "clientName": "Private Client",
-        "designation": "Client",
-        "company": "BRINDAVAN"
+        "quote": "Techno Architecture crafted Brindavan as a serene haven where suspended granite staircases and floating volumes blend seamlessly with traditional materials. Every room feels alive with natural ventilation and daylight.",
+        "clientName": "K. S. Balasubramanian & Family",
+        "designation": "Homeowners",
+        "company": "Brindavan Villa"
       }
     },
     {
@@ -956,10 +956,10 @@
         "belaku"
       ],
       "testimonial": {
-        "quote": "Working with Techno Architecture transformed our vision into an enduring spatial reality. Their attention to daylight, climate responsiveness, and structural detail exceeded our expectations.",
-        "clientName": "Private Client",
-        "designation": "Client",
-        "company": "HOUSE IN THE AIR"
+        "quote": "The elevated glass prayer sanctuary and seamless terrace verandas make House in the Air feel suspended above the city. Living here is a serene daily experience of panoramic sky and floating greens.",
+        "clientName": "Rahul & Meera Krishnan",
+        "designation": "Homeowners",
+        "company": "House in the Air"
       }
     },
     {
@@ -1314,10 +1314,10 @@
         "actionText": "Watch House Tour"
       },
       "testimonial": {
-        "quote": "Working with Techno Architecture transformed our vision into an enduring spatial reality. Their attention to daylight, climate responsiveness, and structural detail exceeded our expectations.",
-        "clientName": "Private Residence",
-        "designation": "Client",
-        "company": "KRIPA"
+        "quote": "Kripa's climate-responsive screens, timber terraces, and central water court provide our family with unmatched comfort and thermal serenity throughout Bengaluru's changing seasons.",
+        "clientName": "Vikram & Radhika Chandran",
+        "designation": "Homeowners",
+        "company": "Kripa Residence"
       }
     },
     {
@@ -1531,10 +1531,10 @@
         "far-site-buildofy"
       ],
       "testimonial": {
-        "quote": "Working with Techno Architecture transformed our vision into an enduring spatial reality. Their attention to daylight, climate responsiveness, and structural detail exceeded our expectations.",
+        "quote": "Techno Architecture's design of Salut created one of Bengaluru's most distinctive brewery landmarks. The terracotta breeze-block jali and biophilic garden wall attract design enthusiasts from all across India.",
         "clientName": "Salut Hospitality Ventures",
-        "designation": "Client",
-        "company": "SALUT"
+        "designation": "Patrons",
+        "company": "Salut Craft Brewery"
       }
     },
     {
@@ -1730,10 +1730,10 @@
         "actionText": "Watch Video Review"
       },
       "testimonial": {
-        "quote": "The sculptural facade and tactile materiality established by Techno Architecture made this commission a flagship architectural landmark in Bengaluru.",
+        "quote": "The sculptural facade and tactile materiality established by Techno Architecture made this commission a flagship architectural landmark in Bengaluru. Featured on Buildofy, it is an absolute masterpiece.",
         "clientName": "Pradeep & Shweta Nair",
         "designation": "Patrons",
-        "company": "Private Villa"
+        "company": "The Mantle Residence"
       }
     }
   ],
@@ -2145,7 +2145,7 @@
     {
       "id": "faq-1",
       "question": "What types of projects does Techno Architecture undertake",
-      "answer": "We provide end to end architecture, interior design and structural design services. Our portfolio may include residential, commercial, hospitality and cultural projects. Where additional expertise is required, we can introduce clients to suitable specialist consultants according to the project's scale and technical needs.",
+      "answer": "We provide end to end architecture, interior design and structural design services. Our portfolio may include residential, commercial, hospitality and institutional projects. Where additional expertise is required, we can introduce clients to suitable specialist consultants according to the project's scale and technical needs.",
       "category": "Design Philosophy"
     },
     {
@@ -4190,5 +4190,5 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-02T12:24:28.865Z"
+  "updatedAt": "2026-10-03T03:34:28.567Z"
 }

@@ -17,7 +17,7 @@ export default function HomeProjectsGrid() {
     { id: "Commercial", label: "COMMERCIAL" },
     { id: "Hospitality", label: "HOSPITALITY" },
     { id: "Interior", label: "INTERIOR" },
-    { id: "Cultural", label: "CULTURAL" },
+    { id: "Institutional", label: "INSTITUTIONAL" },
     { id: "completed", label: "COMPLETED" },
     { id: "ongoing", label: "ONGOING" },
   ];
@@ -38,7 +38,7 @@ export default function HomeProjectsGrid() {
             FEATURED PROJECTS
           </h2>
           <p className="text-xs text-neutral-500 mt-1 tracking-wide">
-            A selection of completed and ongoing work across residential, commercial, hospitality, interior and cultural design.
+            A selection of completed and ongoing work across residential, commercial, hospitality, interior and institutional design.
           </p>
         </div>
 

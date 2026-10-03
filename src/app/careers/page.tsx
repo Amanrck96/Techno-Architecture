@@ -13,7 +13,7 @@ export default function CareersPage() {
       {/* Breadcrumb / Top Link */}
       <div className="border-b border-neutral-200 pb-4">
         <Link
-          href="/team"
+          href="/about#team"
           className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-medium text-neutral-500 hover:text-black transition-colors"
         >
           <ArrowLeft size={13} />
