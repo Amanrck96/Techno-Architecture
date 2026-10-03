@@ -411,26 +411,22 @@ export default function AboutContent() {
         </div>
       </motion.div>
 
-      {/* 8. OUR TEAM & PRACTICE LEADERSHIP (Merged with About Us) */}
-      <motion.div
+      {/* 8. OUR TEAM & PRACTICE LEADERSHIP (Studio Practitioners & Leadership) */}
+      <section
         id="team"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="space-y-8 scroll-mt-24 pt-4"
+        className="space-y-12 scroll-mt-24 pt-6"
       >
-        <div className="border-t border-neutral-200 pt-8">
+        <div className="border-t border-neutral-200 pt-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between pb-6 border-b border-neutral-200 gap-4">
             <div>
-              <span className="text-[9.5px] uppercase tracking-[0.3em] font-mono font-semibold text-neutral-400 block">
+              <span className="text-[10px] uppercase tracking-[0.3em] font-mono font-semibold text-neutral-400 block">
                 08 / PRACTICE LEADERSHIP & STUDIO TEAM
               </span>
-              <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-light text-neutral-900 tracking-tight mt-1">
+              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-neutral-900 tracking-tight mt-1">
                 Our Team
               </h2>
               <p className="text-xs sm:text-sm text-neutral-600 max-w-2xl mt-2 tracking-wide font-light leading-relaxed">
-                Techno Architecture is an architecture and design practice led by Principal Architect Ar. Rajesh Shivaram. Combining design exploration with practical problem-solving, our studio creates buildings and interiors that are clear in concept, comfortable to use and responsive to their environment.
+                Techno Architecture is led by Principal Architect Ar. Rajesh Shivaram and driven by a tight-knit, multidisciplinary studio of architects, interior specialists, computational designers, and technical planners.
               </p>
             </div>
             {rajesh?.socials?.[0]?.url && (
@@ -438,7 +434,7 @@ export default function AboutContent() {
                 href={rajesh.socials[0].url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-xs font-medium text-neutral-700 hover:text-black border border-neutral-300 hover:border-black px-4 py-2 transition-colors self-start md:self-end shrink-0"
+                className="inline-flex items-center gap-2 text-xs font-medium text-neutral-700 hover:text-black border border-neutral-300 hover:border-black px-4 py-2.5 transition-colors self-start md:self-end shrink-0 bg-white"
               >
                 <Instagram size={14} />
                 <span>Follow @technoarchitecture_rajesh</span>
@@ -448,44 +444,78 @@ export default function AboutContent() {
           </div>
         </div>
 
-        {/* Leadership Profile: Ar. Rajesh Shivaram */}
-        <div className="border border-neutral-200 bg-white p-6 sm:p-10 lg:p-12 space-y-10">
+        {/* Principal Architect Feature Profile */}
+        <div className="border border-neutral-200 bg-white p-6 sm:p-10 lg:p-12 space-y-10 shadow-xs">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-            <div className="lg:col-span-5 space-y-3">
-              <span className="text-[9.5px] font-mono uppercase tracking-[0.25em] text-neutral-400 block">
-                PRACTICE LEADERSHIP
-              </span>
-              <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-light text-neutral-900 tracking-tight">
-                {rajesh?.name || "Ar. Rajesh Shivaram"}
-              </h3>
-              <p className="text-xs font-semibold uppercase tracking-wider text-black">
-                {rajesh?.role || "Principal Architect"}
-              </p>
-              <p className="text-xs text-neutral-500 font-mono">
-                {rajesh?.credentials || "B.Arch (Bangalore Institute of Technology)"}
-              </p>
-              <div className="pt-2">
-                <span className="inline-block text-[9px] uppercase tracking-[0.2em] font-mono bg-neutral-100 text-neutral-700 px-3 py-1 border border-neutral-200">
-                  BASE: BASAVANAGUDI, BENGALURU · EST. 2006
+            {/* Leadership Portrait & Core Info */}
+            <div className="lg:col-span-5 space-y-5">
+              <div className="relative w-full aspect-[4/5] max-w-sm bg-neutral-100 border border-neutral-200 overflow-hidden shadow-sm">
+                <Image
+                  src={rajesh?.image || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=85"}
+                  alt={rajesh?.name || "Ar. Rajesh Shivaram"}
+                  fill
+                  unoptimized
+                  className="object-cover object-top hover:scale-102 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute bottom-4 left-4 right-4 text-white">
+                  <span className="text-[9px] font-mono uppercase tracking-[0.25em] text-neutral-300 block">
+                    FOUNDER & PRINCIPAL
+                  </span>
+                  <p className="font-display text-lg font-light text-white tracking-wide">
+                    {rajesh?.name || "Ar. Rajesh Shivaram"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-1.5 pt-1">
+                <span className="text-[9.5px] font-mono uppercase tracking-[0.25em] text-neutral-400 block">
+                  PRACTICE LEADERSHIP
                 </span>
+                <h3 className="font-display text-2xl sm:text-3xl font-light text-neutral-900 tracking-tight">
+                  {rajesh?.name || "Ar. Rajesh Shivaram"}
+                </h3>
+                <p className="text-xs font-semibold uppercase tracking-wider text-black">
+                  {rajesh?.role || "Principal Architect"}
+                </p>
+                <p className="text-xs text-neutral-500 font-mono">
+                  {rajesh?.credentials || "B.Arch (Bangalore Institute of Technology)"}
+                </p>
+                <div className="pt-2">
+                  <span className="inline-block text-[9px] uppercase tracking-[0.2em] font-mono bg-neutral-100 text-neutral-700 px-3 py-1 border border-neutral-200">
+                    BASE: BASAVANAGUDI, BENGALURU · EST. 2006
+                  </span>
+                </div>
               </div>
             </div>
 
-            <div className="lg:col-span-7 space-y-4 text-neutral-700 leading-relaxed font-light text-xs sm:text-sm border-l border-neutral-200 pl-6 lg:pl-10">
-              <p className="text-neutral-900 font-normal">
-                {rajesh?.bio || "A graduate of Bangalore Institute of Technology, Rajesh Shivaram is the Principal Architect of Techno Architecture and brings 20 years of professional experience to the practice."}
+            {/* Leadership Narrative & Philosophy */}
+            <div className="lg:col-span-7 space-y-5 text-neutral-700 leading-relaxed font-light text-xs sm:text-sm lg:border-l lg:border-neutral-200 lg:pl-10">
+              <div className="border-l-2 border-neutral-900 pl-4 space-y-1">
+                <span className="text-[10px] uppercase font-mono tracking-widest text-neutral-400">DESIGN STEWARDSHIP</span>
+                <p className="text-sm sm:text-base text-neutral-900 font-normal leading-snug">
+                  {rajesh?.bio || "A graduate of Bangalore Institute of Technology, Rajesh Shivaram is the Principal Architect of Techno Architecture and brings 20 years of professional experience to the practice."}
+                </p>
+              </div>
+              <p>
+                Our work is shaped through rigorous architectural dialogue. We listen carefully, study site contours and climatic paths, and translate each client&apos;s aspirations into a design that feels personal while remaining technically sound, durable, and buildable.
               </p>
               <p>
-                Our work is shaped through dialogue. We listen carefully, study the site and translate each client&apos;s priorities into a design that feels personal while remaining technically sound and buildable.
+                Under Rajesh&apos;s direction, Techno Architecture provides a complete end-to-end delivery framework where masterplanning, architecture, interior detailing, structural coordination, and site construction are integrated as one seamless discipline. This eliminates fragmented handoffs and ensures every finished structure endures with poetic clarity.
               </p>
-              <p>
-                Under Rajesh&apos;s direction, Techno Architecture provides an end-to-end approach in which architecture, interiors, structural planning and execution support are coordinated together. This continuity reduces fragmented decisions and keeps each completed commission cohesive from its boldest architectural forms down to its finest bespoke details.
-              </p>
+              <div className="p-4 bg-neutral-50 border border-neutral-200 space-y-1 mt-4">
+                <span className="text-[9.5px] uppercase tracking-widest font-mono text-neutral-500 block font-semibold">
+                  PRACTICE PHILOSOPHY
+                </span>
+                <p className="text-xs text-neutral-700 italic">
+                  &ldquo;A building is not an isolated sculpture; it is an enduring relationship between climate, material craft, and the human lives it shelters.&rdquo;
+                </p>
+              </div>
             </div>
           </div>
 
           {/* Practice Pillars */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-6 border-t border-neutral-200">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-8 border-t border-neutral-200">
             <div className="p-4 bg-neutral-50 border border-neutral-100 space-y-1.5">
               <div className="flex items-center gap-2 text-neutral-500">
                 <GraduationCap size={15} />
@@ -524,9 +554,101 @@ export default function AboutContent() {
           </div>
         </div>
 
+        {/* Studio Practitioners & Team Members Grid */}
+        <div className="space-y-6 pt-4">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-neutral-200 pb-4">
+            <div>
+              <span className="text-[9.5px] uppercase tracking-[0.25em] text-neutral-400 block font-mono font-semibold">
+                STUDIO PRACTITIONERS
+              </span>
+              <h3 className="font-display text-2xl font-light text-neutral-900 tracking-tight">
+                Architects & Specialists ({team.length})
+              </h3>
+            </div>
+            <p className="text-xs text-neutral-500 font-light max-w-md">
+              Our multidisciplinary team collaborating across research, schematic design, technical BIM modeling, and on-site coordination.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {team.map((member, mIdx) => (
+              <div
+                key={member.id || mIdx}
+                className="group border border-neutral-200 bg-white hover:border-black transition-all duration-300 flex flex-col justify-between overflow-hidden shadow-xs hover:shadow-md"
+              >
+                <div>
+                  {/* Member Photo */}
+                  <div className="relative w-full aspect-[4/3] bg-neutral-100 overflow-hidden">
+                    {member.image ? (
+                      <Image
+                        src={member.image}
+                        alt={member.name}
+                        fill
+                        unoptimized
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-100 text-neutral-400">
+                        <span className="font-display text-3xl font-light tracking-wider text-neutral-300">
+                          {member.name.split(" ").map(n => n[0]).join("")}
+                        </span>
+                        <span className="text-[9px] font-mono uppercase tracking-widest mt-1">Techno Studio</span>
+                      </div>
+                    )}
+                    <div className="absolute top-3 left-3">
+                      <span className="text-[8.5px] font-mono uppercase tracking-wider px-2 py-0.5 bg-black/80 backdrop-blur-xs text-white">
+                        {member.discipline || "Architecture"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Member Details */}
+                  <div className="p-5 space-y-2.5">
+                    <div>
+                      <h4 className="font-display text-lg font-medium text-neutral-900 tracking-tight group-hover:text-black">
+                        {member.name}
+                      </h4>
+                      <p className="text-xs font-medium text-neutral-700 uppercase tracking-wider">
+                        {member.role}
+                      </p>
+                      {member.credentials && (
+                        <p className="text-[11px] font-mono text-neutral-400 mt-0.5">
+                          {member.credentials}
+                        </p>
+                      )}
+                    </div>
+                    {member.bio && (
+                      <p className="text-xs text-neutral-600 font-light leading-relaxed line-clamp-3">
+                        {member.bio}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {member.socials && member.socials.length > 0 && (
+                  <div className="px-5 pb-4 pt-1 border-t border-neutral-100 flex items-center gap-3">
+                    {member.socials.map((s, sIdx) => (
+                      <a
+                        key={sIdx}
+                        href={s.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[10px] font-mono text-neutral-400 hover:text-black transition-colors uppercase tracking-wider flex items-center gap-1"
+                      >
+                        <span>{s.platform}</span>
+                        <ArrowUpRight size={10} />
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Studio Culture & Teamwork Note */}
-        <div className="p-6 md:p-8 border border-neutral-200 bg-neutral-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-          <div className="space-y-1">
+        <div className="p-6 md:p-8 border border-neutral-200 bg-neutral-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shadow-xs">
+          <div className="space-y-1.5">
             <span className="text-[9.5px] uppercase tracking-[0.25em] text-neutral-400 block font-semibold font-mono">
               STUDIO TEAM & CULTURE
             </span>
@@ -534,17 +656,17 @@ export default function AboutContent() {
               Collaborative Practice & Careers
             </h4>
             <p className="text-xs text-neutral-600 max-w-2xl leading-relaxed font-light">
-              Every project is developed through teamwork. Architects and designers contribute across research, planning, visualisation, documentation, material development and site coordination, allowing ideas to be tested at every stage.
+              Every project is developed through teamwork. Architects and designers contribute across research, planning, visualisation, documentation, material prototyping and site coordination, allowing ideas to be tested at every stage.
             </p>
           </div>
           <Link
             href="/careers"
-            className="text-[11px] uppercase tracking-[0.2em] font-medium bg-black text-white px-5 py-3 hover:bg-neutral-800 transition-colors whitespace-nowrap shrink-0"
+            className="text-[11px] uppercase tracking-[0.2em] font-medium bg-black text-white px-6 py-3.5 hover:bg-neutral-800 transition-colors whitespace-nowrap shrink-0 shadow-xs"
           >
             View Careers & Join Us
           </Link>
         </div>
-      </motion.div>
+      </section>
 
 
       {/* 10. Call to Action Banner */}

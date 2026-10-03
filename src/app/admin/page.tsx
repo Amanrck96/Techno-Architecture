@@ -930,7 +930,7 @@ export default function AdminCMSPage() {
               <button
                 type="button"
                 onClick={() => {
-                  if (confirm("Shuffle projects order across the entire portfolio?")) {
+                  if (confirm("Shuffle projects order across the entire portfolio? This will randomize the display sequence on the Home and Projects pages.")) {
                     const shuffled = [...projects];
                     for (let i = shuffled.length - 1; i > 0; i--) {
                       const j = Math.floor(Math.random() * (i + 1));
@@ -940,10 +940,10 @@ export default function AdminCMSPage() {
                     showToast("Projects portfolio order shuffled and saved.");
                   }
                 }}
-                className="inline-flex items-center gap-1.5 px-3 py-2 bg-white text-neutral-800 border border-neutral-300 text-xs uppercase tracking-wider font-medium hover:border-black hover:text-black transition-colors rounded shadow-xs cursor-pointer"
+                className="inline-flex items-center gap-2 px-3.5 py-2 bg-neutral-900 text-white hover:bg-neutral-800 text-xs uppercase tracking-wider font-medium transition-colors rounded shadow-xs cursor-pointer"
                 title="Randomly shuffle project display order"
               >
-                <Shuffle size={13} />
+                <Shuffle size={14} className="text-amber-400" />
                 <span>Shuffle Order</span>
               </button>
               <button
@@ -1041,7 +1041,10 @@ export default function AdminCMSPage() {
 
                     <div className="flex items-center space-x-2">
                       {/* Project Rearrangement Order Controls */}
-                      <div className="flex items-center border border-neutral-200 rounded overflow-hidden bg-neutral-50 shadow-xs">
+                      <div className="flex items-center border border-neutral-300 rounded overflow-hidden bg-white shadow-2xs" title="Rearrange project position in portfolio">
+                        <span className="text-[9px] font-mono uppercase px-1.5 text-neutral-400 font-semibold bg-neutral-50 border-r border-neutral-200 select-none">
+                          ORDER
+                        </span>
                         <button
                           type="button"
                           disabled={idx === 0}
@@ -1052,14 +1055,14 @@ export default function AdminCMSPage() {
                             updated[idx] = updated[idx - 1];
                             updated[idx - 1] = temp;
                             saveProjects(updated);
-                            showToast(`Moved "${p.title}" up to #${idx}.`);
+                            showToast(`Moved "${p.title}" up to position #${idx}.`);
                           }}
-                          className="p-1 hover:bg-neutral-200 text-neutral-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
-                          title="Move project up in display order"
+                          className="p-1.5 hover:bg-neutral-100 text-neutral-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
+                          title="Move project UP"
                         >
-                          <ArrowUp size={12} />
+                          <ArrowUp size={13} />
                         </button>
-                        <span className="text-[10px] font-mono px-2 text-neutral-700 font-semibold select-none border-x border-neutral-200">
+                        <span className="text-[11px] font-mono px-2 text-neutral-900 font-bold select-none border-x border-neutral-200 bg-neutral-50/50">
                           #{idx + 1}
                         </span>
                         <button
@@ -1072,12 +1075,12 @@ export default function AdminCMSPage() {
                             updated[idx] = updated[idx + 1];
                             updated[idx + 1] = temp;
                             saveProjects(updated);
-                            showToast(`Moved "${p.title}" down to #${idx + 2}.`);
+                            showToast(`Moved "${p.title}" down to position #${idx + 2}.`);
                           }}
-                          className="p-1 hover:bg-neutral-200 text-neutral-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
-                          title="Move project down in display order"
+                          className="p-1.5 hover:bg-neutral-100 text-neutral-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
+                          title="Move project DOWN"
                         >
-                          <ArrowDown size={12} />
+                          <ArrowDown size={13} />
                         </button>
                       </div>
 
