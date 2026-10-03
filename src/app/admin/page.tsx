@@ -1327,7 +1327,11 @@ export default function AdminCMSPage() {
                         Category
                       </label>
                       <select
-                        value={p.category}
+                        value={
+                          ["Residential", "Commercial", "Hospitality", "Interior"].includes(p.category)
+                            ? p.category
+                            : "Residential"
+                        }
                         onChange={(e) => {
                           const updated = [...projects];
                           updated[idx].category = e.target.value as any;

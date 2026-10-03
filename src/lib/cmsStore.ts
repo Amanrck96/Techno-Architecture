@@ -11,8 +11,24 @@ import { Recognition, initialRecognitions } from "@/data/recognitions";
 import { SiteSettings, initialSiteSettings } from "@/data/siteSettings";
 import { Testimonial, initialTestimonials } from "@/data/testimonials";
 
+export const VALID_PROJECT_CATEGORIES = ["Residential", "Commercial", "Hospitality", "Interior"] as const;
+export type ValidProjectCategory = (typeof VALID_PROJECT_CATEGORIES)[number];
+
+export function sanitizeProjectCategory(cat: any): ValidProjectCategory {
+  if (cat === "Commercial" || cat === "Hospitality" || cat === "Interior") return cat;
+  return "Residential";
+}
+
+export function sanitizeProjectsList(list: any[]): Project[] {
+  if (!Array.isArray(list)) return [];
+  return list.map((p) => ({
+    ...p,
+    category: sanitizeProjectCategory(p?.category),
+  }));
+}
+
 export const STORAGE_KEYS = {
-  PROJECTS: "techno_cms_projects_v6",
+  PROJECTS: "techno_cms_projects_v7",
   SERVICES: "techno_cms_services_v5",
   TEAM: "techno_cms_team_v5",
   BLOG: "techno_cms_blog_v5",
@@ -206,8 +222,9 @@ export function useCMSStore() {
     if (!data || typeof data !== "object") return;
 
     if (Array.isArray(data.projects)) {
-      setProjects(data.projects);
-      try { localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(data.projects)); } catch (_) {}
+      const sanitized = sanitizeProjectsList(data.projects);
+      setProjects(sanitized);
+      try { localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(sanitized)); } catch (_) {}
     }
     if (Array.isArray(data.services)) {
       setServices(data.services);
@@ -317,10 +334,15 @@ export function useCMSStore() {
   useEffect(() => {
     setIsClient(true);
 
-    // 1. Quick initial hydration from local cache if present
+    // 1. Quick initial hydration from local cache if present (purging legacy v6/v5 caches)
     try {
+      localStorage.removeItem("techno_cms_projects_v6");
+      localStorage.removeItem("techno_cms_projects_v5");
       const sp = localStorage.getItem(STORAGE_KEYS.PROJECTS);
-      if (sp) setProjects(JSON.parse(sp));
+      if (sp) {
+        const parsed = JSON.parse(sp);
+        setProjects(sanitizeProjectsList(parsed));
+      }
       const ss = localStorage.getItem(STORAGE_KEYS.SERVICES);
       if (ss) setServices(JSON.parse(ss));
       const st = localStorage.getItem(STORAGE_KEYS.TEAM);
@@ -431,13 +453,14 @@ export function useCMSStore() {
   // =========================================================
 
   const saveProjects = useCallback((newProjects: Project[]) => {
-    setProjects(newProjects);
+    const sanitized = sanitizeProjectsList(newProjects);
+    setProjects(sanitized);
     try {
-      localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(newProjects));
+      localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(sanitized));
       touchClientUpdate();
     } catch (_) {}
-    broadcastChange("projects", newProjects);
-    debouncedSyncToServer("projects", newProjects);
+    broadcastChange("projects", sanitized);
+    debouncedSyncToServer("projects", sanitized);
   }, [debouncedSyncToServer]);
 
   const saveServices = useCallback((newServices: Service[]) => {
