@@ -151,11 +151,6 @@ function renderHtmlTemplate(payload: EnquiryEmailPayload, timestamp: string): st
             ${formattedMessage}
           </div>
         </div>
-
-        <!-- Quick Reply Callout -->
-        <div style="margin-top: 32px; padding: 16px; background-color: #f5f5f5; border: 1px solid #e5e5e5; font-size: 12px; color: #525252;">
-          <strong>Quick Action:</strong> Click <em>Reply</em> in your email client to respond directly to <strong>${fullName}</strong> (&lt;${email}&gt;).
-        </div>
       </td>
     </tr>
 
@@ -170,7 +165,6 @@ function renderHtmlTemplate(payload: EnquiryEmailPayload, timestamp: string): st
               </div>
               <div>Primary Recipient: <strong style="color: #171717;">rajesh@technoarchitecture.co.in</strong></div>
               <div>Permanent CC: <strong style="color: #171717;">enquiries@technoarchitecture.co.in</strong></div>
-              <div>Direct Reply-To: <strong style="color: #171717;">${email}</strong></div>
             </td>
           </tr>
           <tr>
@@ -214,7 +208,6 @@ ${message || "No narrative provided"}
 ROUTING DETAILS:
 - Primary To: rajesh@technoarchitecture.co.in
 - Permanent CC: enquiries@technoarchitecture.co.in
-- Reply-To: ${fullName} <${email}>
 
 Techno Architecture Studio, Bengaluru
 ==================================================
@@ -243,7 +236,6 @@ export async function sendEnquiryNotification(payload: EnquiryEmailPayload): Pro
       from: `"Techno Architecture Studio" <${senderUser}>`,
       to: primaryTo,
       cc: permanentCc,
-      replyTo: `${payload.fullName} <${payload.email}>`,
       subject: `New Project Enquiry: ${payload.fullName} — Techno Architecture`,
       text: renderPlainText(payload, timestamp),
       html: renderHtmlTemplate(payload, timestamp),
@@ -255,7 +247,6 @@ export async function sendEnquiryNotification(payload: EnquiryEmailPayload): Pro
       messageId: info.messageId,
       to: primaryTo,
       cc: permanentCc,
-      replyTo: payload.email,
     });
 
     return {
