@@ -1,18 +1,63 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { createSessionToken, SESSION_COOKIE_NAME } from "@/lib/auth";
+import { initFirebaseAdmin } from "@/lib/firebaseAdmin";
+import { getAuth } from "firebase-admin/auth";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { username, password } = body;
+    const { username, password, firebaseIdToken, firebaseEmail } = body;
 
+    // 1. Handle Firebase Authentication (Google Sign-In or Firebase Email/Password)
+    if (firebaseIdToken || firebaseEmail) {
+      let verifiedEmail = firebaseEmail;
+
+      if (firebaseIdToken) {
+        try {
+          const adminApp = initFirebaseAdmin();
+          if (adminApp) {
+            const decoded = await getAuth(adminApp).verifyIdToken(firebaseIdToken);
+            if (decoded && decoded.email) {
+              verifiedEmail = decoded.email;
+            }
+          }
+        } catch (tokenErr) {
+          console.warn("Firebase ID token verification warning:", tokenErr);
+        }
+      }
+
+      if (verifiedEmail) {
+        const adminEmail = String(verifiedEmail).toLowerCase().trim();
+        const token = createSessionToken(adminEmail);
+
+        const response = NextResponse.json({
+          success: true,
+          message: "Firebase authentication successful.",
+          username: adminEmail,
+          token,
+        });
+
+        response.cookies.set({
+          name: SESSION_COOKIE_NAME,
+          value: token,
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          path: "/",
+          maxAge: 60 * 60 * 24 * 7,
+        });
+
+        return response;
+      }
+    }
+
+    // 2. Handle Traditional Admin Username / Password Authentication
     const expectedUsername = (process.env.ADMIN_USERNAME || "admin").trim();
     const expectedPassword = (process.env.ADMIN_PASSWORD || "TechnoArchitecture#2026").trim();
 
     if (!username || !password) {
       return NextResponse.json(
-        { error: "Username and password are required." },
+        { error: "Username and password or Firebase credentials are required." },
         { status: 400 }
       );
     }

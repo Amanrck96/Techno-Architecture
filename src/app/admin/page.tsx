@@ -9,6 +9,7 @@ import {
   saveStorageCredentials,
   syncToServer,
 } from "@/lib/cmsStore";
+import { loginWithGoogle, loginWithEmail, logout as firebaseLogout } from "@/lib/firebaseClient";
 import { Project, ProjectImage, VideoTour } from "@/data/projects";
 import { Service } from "@/data/services";
 import { TeamMember } from "@/data/team";

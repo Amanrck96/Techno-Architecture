@@ -1,0 +1,157 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: enquiries
+    // Document ID: auto-generated document ID
+    // Fields:
+    //   - name: string (required, 1-100 chars) - sender name
+    //   - email: string (required, valid email, max 120 chars) - sender email
+    //   - phone: string (optional, max 30 chars) - contact number
+    //   - projectType: string (optional, max 100 chars) - category or scope
+    //   - budget: string (optional, max 100 chars) - estimated budget
+    //   - message: string (required, 1-5000 chars) - inquiry message
+    //   - createdAt: timestamp (required) - creation timestamp
+    //   - status: string (optional, ['new', 'in-review', 'contacted', 'archived'])
+    //
+    // Collection: cms_content
+    // Document ID: section or content key (e.g., 'home', 'projects', 'studio')
+    // Fields:
+    //   - content: any valid map/array - site content
+    //   - updatedAt: timestamp (required) - update timestamp
+    //   - updatedBy: string (required) - admin user ID
+    //
+    // Collection: users
+    // Document ID: user UID (request.auth.uid)
+    // Fields:
+    //   - email: string (required, valid email)
+    //   - displayName: string (optional, max 100 chars)
+    //   - role: string (required, ['admin', 'editor', 'viewer'])
+    //   - photoURL: string (optional, max 500 chars)
+    //   - createdAt: timestamp (required)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.admin == true ||
+        request.auth.token.email in [
+          'rajesh@technoarchitecture.co.in',
+          'enquiries@technoarchitecture.co.in',
+          'admin@technoarchitecture.co.in'
+        ] ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function validStringLength(field, minLen, maxLen) {
+      return request.resource.data[field] is string &&
+             request.resource.data[field].size() >= minLen &&
+             request.resource.data[field].size() <= maxLen;
+    }
+
+    function isValidOptionalString(field, minLen, maxLen) {
+      return !(field in request.resource.data) ||
+             (request.resource.data[field] is string &&
+              request.resource.data[field].size() >= minLen &&
+              request.resource.data[field].size() <= maxLen);
+    }
+
+    function isValidEmail(email) {
+      return email is string &&
+             email.size() <= 120 &&
+             email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidEnquiry(data) {
+      return hasRequiredFields(['name', 'email', 'message']) &&
+             hasOnlyAllowedFields(['name', 'email', 'phone', 'projectType', 'budget', 'message', 'createdAt', 'status']) &&
+             validStringLength('name', 1, 100) &&
+             isValidEmail(data.email) &&
+             validStringLength('message', 1, 5000) &&
+             isValidOptionalString('phone', 0, 30) &&
+             isValidOptionalString('projectType', 0, 100) &&
+             isValidOptionalString('budget', 0, 100) &&
+             (!( 'status' in data ) || data.status in ['new', 'in-review', 'contacted', 'archived']);
+    }
+
+    function isValidUser(data) {
+      return hasRequiredFields(['email', 'role', 'createdAt']) &&
+             hasOnlyAllowedFields(['email', 'displayName', 'role', 'photoURL', 'createdAt']) &&
+             isValidEmail(data.email) &&
+             data.role in ['admin', 'editor', 'viewer'] &&
+             isValidOptionalString('displayName', 0, 100) &&
+             isValidOptionalString('photoURL', 0, 500);
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+
+    // Default deny for unmatched collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Enquiries Collection
+    // Public can submit contact enquiries if data conforms to schema
+    // Only authenticated admins can read, update, or delete enquiries
+    match /enquiries/{enquiryId} {
+      allow create: if isValidEnquiry(request.resource.data);
+      allow read: if isAdmin();
+      allow update: if isAdmin() && isValidEnquiry(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    // CMS Content Collection
+    // Public read access for website content (projects, studio info, hero banners)
+    // Only authenticated admins can modify website content
+    match /cms_content/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Users Collection
+    // Users can read and manage their own document; admins have full access
+    // Non-admins cannot elevate their role to admin
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated() &&
+                      isValidUser(request.resource.data) &&
+                      ((isOwner(userId) && request.resource.data.role == 'viewer') || isAdmin());
+      allow update: if isAuthenticated() &&
+                      isValidUser(request.resource.data) &&
+                      ((isOwner(userId) && request.resource.data.role == resource.data.role) || isAdmin());
+      allow delete: if isAdmin();
+    }
+  }
+}
