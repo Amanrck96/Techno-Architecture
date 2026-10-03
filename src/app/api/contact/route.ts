@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getFirestoreDb } from "@/lib/firebaseAdmin";
+import { sendEnquiryNotification } from "@/lib/mailer";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +26,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 2. Required fields check (Name, Email, Message - budget, service, and consent checkbox are NOT required)
+    // 2. Required fields check (Name, Email, Message - budget, service, and consent checkbox are optional)
     if (!fullName || !email || !message) {
       return NextResponse.json(
         { error: "Please provide your name, email address, and project requirements." },
@@ -68,22 +69,33 @@ export async function POST(request: Request) {
       console.warn("Firestore save notice:", dbErr);
     }
 
-    // 5. Designated recipient emails:
-    // Mail should come to Rajesh and enquiry mail
-    const primaryRecipients = [
-      process.env.RAJESH_EMAIL || "rajesh@technoarchitecture.in",
-      process.env.ENQUIRY_EMAIL || "technoarchitecture@gmail.com",
-    ];
+    // 5. Send Email via Google Workspace SMTP:
+    // TO: rajesh@technoarchitecture.co.in
+    // CC (permanent): enquiries@technoarchitecture.co.in
+    // Reply-To: client email
+    let emailDispatched = false;
+    let emailMessageId: string | undefined;
 
-    console.log("Techno Architecture Enquiry Received:", {
-      ...enquiryData,
-      savedToFirestore,
-      dispatchedTo: primaryRecipients,
-    });
+    try {
+      const mailResult = await sendEnquiryNotification(enquiryData);
+      if (mailResult.success) {
+        emailDispatched = true;
+        emailMessageId = mailResult.messageId;
+        console.log("Enquiry notification dispatched to rajesh@technoarchitecture.co.in (CC: enquiries@technoarchitecture.co.in)");
+      } else {
+        console.warn("SMTP notification returned unsuccessful:", mailResult.error);
+      }
+    } catch (mailErr) {
+      console.error("Error during SMTP email dispatch:", mailErr);
+    }
 
-    // 6. Optional SMTP / Resend dispatch if API key or SMTP is configured
-    if (process.env.RESEND_API_KEY) {
+    // 6. Optional fallback: Resend dispatch if configured
+    if (!emailDispatched && process.env.RESEND_API_KEY) {
       try {
+        const primaryRecipients = [
+          process.env.PRIMARY_TO_EMAIL || "rajesh@technoarchitecture.co.in",
+          process.env.PERMANENT_CC_EMAIL || "enquiries@technoarchitecture.co.in",
+        ];
         await fetch("https://api.resend.com/emails", {
           method: "POST",
           headers: {
@@ -91,8 +103,9 @@ export async function POST(request: Request) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            from: process.env.EMAIL_FROM || "Techno Architecture <notifications@technoarchitecture.in>",
+            from: process.env.EMAIL_FROM || "Techno Architecture <notifications@technoarchitecture.co.in>",
             to: primaryRecipients,
+            reply_to: email,
             subject: `New Architectural Enquiry from ${fullName}`,
             html: `
               <h2>New Project Enquiry</h2>
@@ -106,8 +119,9 @@ export async function POST(request: Request) {
             `,
           }),
         });
-      } catch (mailErr) {
-        console.warn("Email service dispatch error:", mailErr);
+        emailDispatched = true;
+      } catch (resendErr) {
+        console.warn("Resend fallback dispatch error:", resendErr);
       }
     }
 
@@ -116,6 +130,8 @@ export async function POST(request: Request) {
         success: true,
         message: "Thank you. Your architectural enquiry has been received and routed to Ar. Rajesh Shivaram and the studio team.",
         savedToFirestore,
+        emailDispatched,
+        messageId: emailMessageId,
       },
       { status: 200 }
     );
