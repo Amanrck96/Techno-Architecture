@@ -1335,6 +1335,130 @@ export default function AdminCMSPage() {
                         )}
                       </div>
 
+                      {/* Project Client Testimonial / Reflection */}
+                      <div className="space-y-3 pt-3 border-t border-neutral-200">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-700">
+                            Client Reflection / Testimonial
+                          </span>
+                          {p.testimonial ? (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = [...projects];
+                                delete updated[idx].testimonial;
+                                saveProjects(updated);
+                                showToast(`Removed testimonial from "${p.title}".`);
+                              }}
+                              className="text-[10px] uppercase tracking-wider font-mono text-red-600 hover:underline"
+                            >
+                              Remove Testimonial
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = [...projects];
+                                updated[idx].testimonial = {
+                                  quote: "Working with Techno Architecture was an extraordinary journey in realizing our vision with absolute craftsmanship.",
+                                  clientName: p.client && p.client !== "Confidential" && p.client !== "Private Client" ? p.client : "Homeowner",
+                                  designation: "Client",
+                                  company: "",
+                                };
+                                saveProjects(updated);
+                                showToast(`Testimonial added to "${p.title}".`);
+                              }}
+                              className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider font-semibold text-black hover:underline"
+                            >
+                              <Plus size={11} />
+                              <span>+ Add Client Testimonial</span>
+                            </button>
+                          )}
+                        </div>
+
+                        {p.testimonial && (
+                          <div className="space-y-3 pt-3 border-t border-neutral-200/80 text-xs">
+                            <div>
+                              <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                                Client Quote / Reflection
+                              </label>
+                              <textarea
+                                rows={3}
+                                value={p.testimonial.quote || ""}
+                                onChange={(e) => {
+                                  const updated = [...projects];
+                                  if (updated[idx].testimonial) {
+                                    updated[idx].testimonial = { ...updated[idx].testimonial!, quote: e.target.value };
+                                    saveProjects(updated);
+                                  }
+                                }}
+                                placeholder="Client review or reflection quote..."
+                                className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
+                              />
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                              <div>
+                                <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                                  Client Name
+                                </label>
+                                <input
+                                  type="text"
+                                  value={p.testimonial.clientName || ""}
+                                  onChange={(e) => {
+                                    const updated = [...projects];
+                                    if (updated[idx].testimonial) {
+                                      updated[idx].testimonial = { ...updated[idx].testimonial!, clientName: e.target.value };
+                                      saveProjects(updated);
+                                    }
+                                  }}
+                                  placeholder="e.g. Anand & Priya Nair"
+                                  className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
+                                />
+                              </div>
+
+                              <div>
+                                <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                                  Designation / Role
+                                </label>
+                                <input
+                                  type="text"
+                                  value={p.testimonial.designation || ""}
+                                  onChange={(e) => {
+                                    const updated = [...projects];
+                                    if (updated[idx].testimonial) {
+                                      updated[idx].testimonial = { ...updated[idx].testimonial!, designation: e.target.value };
+                                      saveProjects(updated);
+                                    }
+                                  }}
+                                  placeholder="e.g. Homeowner / Founder"
+                                  className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
+                                />
+                              </div>
+
+                              <div>
+                                <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                                  Company / Residence
+                                </label>
+                                <input
+                                  type="text"
+                                  value={p.testimonial.company || ""}
+                                  onChange={(e) => {
+                                    const updated = [...projects];
+                                    if (updated[idx].testimonial) {
+                                      updated[idx].testimonial = { ...updated[idx].testimonial!, company: e.target.value };
+                                      saveProjects(updated);
+                                    }
+                                  }}
+                                  placeholder="Optional company or location"
+                                  className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
                       {/* Project Gallery Manager */}
                       <div className="space-y-3 pt-3 border-t border-neutral-200">
                         <div className="flex flex-wrap justify-between items-center gap-2">

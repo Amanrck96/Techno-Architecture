@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Shuffle, RotateCcw } from "lucide-react";
 import { useCMSStore } from "@/lib/cmsStore";
 import { Project } from "@/data/projects";
 import { cn } from "@/lib/utils";
@@ -10,6 +11,7 @@ import { cn } from "@/lib/utils";
 export default function ProjectsDirectoryPage() {
   const { projects } = useCMSStore();
   const [activeFilter, setActiveFilter] = useState<string>("all");
+  const [shuffledOrder, setShuffledOrder] = useState<string[] | null>(null);
 
   const filterTabs = [
     { id: "all", label: "ALL WORKS" },
@@ -22,12 +24,39 @@ export default function ProjectsDirectoryPage() {
     { id: "Cultural", label: "CULTURAL" },
   ];
 
-  const filtered = projects.filter((p) => {
-    if (activeFilter === "all") return true;
-    if (activeFilter === "completed") return p.status === "completed";
-    if (activeFilter === "ongoing") return p.status === "ongoing";
-    return p.category === activeFilter;
-  });
+  const handleShuffle = () => {
+    const ids = projects.map((p) => p.id);
+    for (let i = ids.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [ids[i], ids[j]] = [ids[j], ids[i]];
+    }
+    setShuffledOrder(ids);
+  };
+
+  const handleResetOrder = () => {
+    setShuffledOrder(null);
+  };
+
+  const displayedProjects = useMemo(() => {
+    const list = projects.filter((p) => {
+      if (activeFilter === "all") return true;
+      if (activeFilter === "completed") return p.status === "completed";
+      if (activeFilter === "ongoing") return p.status === "ongoing";
+      return p.category === activeFilter;
+    });
+
+    if (shuffledOrder && shuffledOrder.length > 0) {
+      return [...list].sort((a, b) => {
+        const idxA = shuffledOrder.indexOf(a.id);
+        const idxB = shuffledOrder.indexOf(b.id);
+        if (idxA === -1) return 1;
+        if (idxB === -1) return -1;
+        return idxA - idxB;
+      });
+    }
+
+    return list;
+  }, [projects, activeFilter, shuffledOrder]);
 
   return (
     <div className="w-full py-10 md:py-14 px-4 md:px-8 max-w-[1720px] mx-auto space-y-16">
@@ -66,20 +95,50 @@ export default function ProjectsDirectoryPage() {
           </div>
         </div>
 
-        {/* Dedicated Views Sublinks */}
-        <div className="flex flex-wrap items-center gap-6 text-[10px] tracking-[0.2em] uppercase text-neutral-400 px-1 mb-8">
-          <span className="font-medium">Direct Views:</span>
-          <Link href="/projects/completed" className="hover:text-black transition-colors font-medium text-neutral-700">
-            COMPLETED PROJECTS →
-          </Link>
-          <Link href="/projects/ongoing" className="hover:text-black transition-colors font-medium text-neutral-700">
-            ONGOING PROJECTS →
-          </Link>
+        {/* Dedicated Views Sublinks & Shuffle Controls */}
+        <div className="flex flex-wrap items-center justify-between gap-4 text-[10px] tracking-[0.2em] uppercase text-neutral-400 px-1 mb-8">
+          <div className="flex flex-wrap items-center gap-6">
+            <span className="font-medium">Direct Views:</span>
+            <Link href="/projects/completed" className="hover:text-black transition-colors font-medium text-neutral-700">
+              COMPLETED PROJECTS →
+            </Link>
+            <Link href="/projects/ongoing" className="hover:text-black transition-colors font-medium text-neutral-700">
+              ONGOING PROJECTS →
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleShuffle}
+              className={cn(
+                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xs border text-[10px] tracking-[0.2em] uppercase font-medium transition-all duration-200 cursor-pointer",
+                shuffledOrder
+                  ? "bg-black text-white border-black shadow-xs hover:bg-neutral-800"
+                  : "bg-white text-neutral-700 border-neutral-300 hover:text-black hover:border-black"
+              )}
+              title="Shuffle / randomize projects order"
+            >
+              <Shuffle size={12} />
+              <span>{shuffledOrder ? "Shuffle Again" : "Shuffle Projects"}</span>
+            </button>
+            {shuffledOrder && (
+              <button
+                type="button"
+                onClick={handleResetOrder}
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 text-neutral-500 hover:text-black transition-colors text-[10px] tracking-[0.18em] uppercase cursor-pointer"
+                title="Reset to default order"
+              >
+                <RotateCcw size={11} />
+                <span>Reset</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* 3-Column Reference-Style Architectural Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-          {filtered.map((project: Project) => (
+          {displayedProjects.map((project: Project) => (
             <div
               key={project.id}
               className="group relative aspect-[4/3] w-full overflow-hidden bg-neutral-100"
