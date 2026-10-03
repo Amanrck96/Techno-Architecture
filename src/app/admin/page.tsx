@@ -187,13 +187,14 @@ export default function AdminCMSPage() {
     checkAuthSession();
   }, []);
 
-  // 2. Handle Login Submission to Secure API
+  // 2. Handle Login Submission (Password & Firebase Email)
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError("");
     setIsSubmittingAuth(true);
 
     try {
+      // First attempt: Server API login
       const res = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -206,12 +207,91 @@ export default function AdminCMSPage() {
 
       const data = await res.json();
 
+      if (res.ok) {
+        setIsAuthenticated(true);
+        setCurrentAdminUser(data.username || usernameInput);
+        if (data.token) {
+          try {
+            localStorage.setItem("techno_admin_token", data.token);
+            sessionStorage.setItem("techno_admin_token", data.token);
+          } catch (_) {}
+        }
+        setPasswordInput("");
+        setAuthError("");
+        showToast("Access granted. Welcome to Techno Architecture Admin Studio.");
+        return;
+      }
+
+      // Second attempt: If username looks like an email, attempt Firebase Email/Password
+      if (usernameInput.includes("@")) {
+        try {
+          const userCred = await loginWithEmail(usernameInput.trim(), passwordInput.trim());
+          const user = userCred.user;
+          const idToken = await user.getIdToken();
+
+          const syncRes = await fetch("/api/admin/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({
+              firebaseIdToken: idToken,
+              firebaseEmail: user.email,
+            }),
+          });
+          const syncData = await syncRes.json();
+          if (syncRes.ok) {
+            setIsAuthenticated(true);
+            setCurrentAdminUser(user.email || usernameInput);
+            if (syncData.token) {
+              try {
+                localStorage.setItem("techno_admin_token", syncData.token);
+                sessionStorage.setItem("techno_admin_token", syncData.token);
+              } catch (_) {}
+            }
+            setPasswordInput("");
+            setAuthError("");
+            showToast(`Welcome, ${user.email}! Authenticated via Firebase.`);
+            return;
+          }
+        } catch (fbErr: any) {
+          console.warn("Firebase Email Login attempt:", fbErr);
+        }
+      }
+
+      throw new Error(data.error || "Invalid credentials. Please verify and try again.");
+    } catch (err: any) {
+      setAuthError(err.message || "Invalid credentials. Please verify and try again.");
+    } finally {
+      setIsSubmittingAuth(false);
+    }
+  };
+
+  // 2b. Handle Google Sign-In Submission
+  const handleGoogleLogin = async () => {
+    setAuthError("");
+    setIsSubmittingAuth(true);
+    try {
+      const userCred = await loginWithGoogle();
+      const user = userCred.user;
+      const idToken = await user.getIdToken();
+
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          firebaseIdToken: idToken,
+          firebaseEmail: user.email,
+        }),
+      });
+
+      const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "Authentication failed.");
+        throw new Error(data.error || "Google authentication not approved by server.");
       }
 
       setIsAuthenticated(true);
-      setCurrentAdminUser(data.username || usernameInput);
+      setCurrentAdminUser(user.email || user.displayName || "Google Admin");
       if (data.token) {
         try {
           localStorage.setItem("techno_admin_token", data.token);
@@ -220,9 +300,15 @@ export default function AdminCMSPage() {
       }
       setPasswordInput("");
       setAuthError("");
-      showToast("Access granted. Welcome to Techno Architecture Admin Studio.");
+      showToast(`Welcome, ${user.displayName || user.email}! Signed in via Google.`);
     } catch (err: any) {
-      setAuthError(err.message || "Invalid credentials. Please verify and try again.");
+      if (err.code === "auth/popup-closed-by-user") {
+        setAuthError("Google Sign-In popup was closed before completion.");
+      } else if (err.code === "auth/unauthorized-domain") {
+        setAuthError("Unauthorized Domain: Please add 'localhost' to Firebase Console > Authentication > Settings > Authorized Domains.");
+      } else {
+        setAuthError(err.message || "Google Sign-In failed.");
+      }
     } finally {
       setIsSubmittingAuth(false);
     }
@@ -230,6 +316,9 @@ export default function AdminCMSPage() {
 
   // 3. Handle Logout
   const handleLogout = async () => {
+    try {
+      await firebaseLogout();
+    } catch (_) {}
     try {
       await fetch("/api/admin/logout", { method: "POST", credentials: "include" });
     } catch (_) {}
@@ -580,6 +669,44 @@ export default function AdminCMSPage() {
                   <span>Secure Sign In</span>
                 </>
               )}
+            </button>
+
+            {/* Divider */}
+            <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-neutral-200" />
+              </div>
+              <div className="relative flex justify-center text-[10px] uppercase font-mono tracking-widest text-neutral-400">
+                <span className="bg-white px-2">or continue with</span>
+              </div>
+            </div>
+
+            {/* Google Sign In Button */}
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              disabled={isSubmittingAuth}
+              className="w-full py-2.5 px-4 bg-white border border-neutral-300 hover:border-neutral-400 text-neutral-800 text-xs font-medium rounded transition-colors flex items-center justify-center gap-2.5 shadow-sm hover:bg-neutral-50 disabled:bg-neutral-100 disabled:text-neutral-400"
+            >
+              <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24">
+                <path
+                  fill="#4285F4"
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                />
+                <path
+                  fill="#EA4335"
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                />
+              </svg>
+              <span>Sign in with Google</span>
             </button>
           </form>
 
