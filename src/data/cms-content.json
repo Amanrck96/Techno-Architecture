@@ -11,7 +11,7 @@
       "client": "Private Client",
       "area": "6,200 sq.ft",
       "description": "A contemporary tropical sanctuary defined by interlocking geometric volumes, warm timber louvers, and a serene internal courtyard woven with water bodies and lush foliage.",
-      "processNarrative": "Aikya — embodying unity, harmony, and connection — dissolves the boundary between architecture and nature. Designed around climate-responsive passive physics, the residence features cantilevered deep overhangs, a double-height living pavilion with mezzanine study, an internal courtyard with reflecting koi pond, and tactile timber screening that filters Bengaluru's tropical light into poetic shadow play.",
+      "processNarrative": "Aikya \u2014 embodying unity, harmony, and connection \u2014 dissolves the boundary between architecture and nature. Designed around climate-responsive passive physics, the residence features cantilevered deep overhangs, a double-height living pavilion with mezzanine study, an internal courtyard with reflecting koi pond, and tactile timber screening that filters Bengaluru's tropical light into poetic shadow play.",
       "mainImage": "/projects/aikya/elevation-east.jpg",
       "gallery": [
         {
@@ -103,7 +103,7 @@
       "client": "Private Residence",
       "area": "6,200 sq.ft",
       "description": "A striking multi-tier private residence defined by bold cantilevered volumes, weathered corten steel cladding, rhythmic timber screening, and cascading tropical planters.",
-      "processNarrative": "Named 'Belaku'—the Kannada word for light—the residence is sculpted around the choreography of daylight and natural ventilation. An expressive spiral staircase anchors the arrival portal beneath parametric vertical louvers, while weathered corten panels and rich timber slats create a dialogue between industrial permanence and biophilic warmth.",
+      "processNarrative": "Named 'Belaku'\u2014the Kannada word for light\u2014the residence is sculpted around the choreography of daylight and natural ventilation. An expressive spiral staircase anchors the arrival portal beneath parametric vertical louvers, while weathered corten panels and rich timber slats create a dialogue between industrial permanence and biophilic warmth.",
       "mainImage": "/projects/belaku/belaku-central-courtyard-entrance-vista.jpg",
       "gallery": [
         {
@@ -478,7 +478,7 @@
       "client": "Private Client",
       "area": "4,500 sq.ft",
       "description": "An expressive vertical urban residence in Bengaluru defined by textural buff brick cladding, sage green cantilevered balconies with cascading biophilic planters, and a sculptural spiral staircase leading to the entrance portal.",
-      "processNarrative": "Conceived as 'Brindavan'—a verdant garden sanctuary within the dense urban fabric—the residence layers vertical buff-brick tilework with tactile sage green stucco terraces. Cantilevered balconies burst with indigenous flora, creating a living microclimate that shields interior living quarters from street bustle while dappling tropical sunlight into double-height timber volumes. A floating external spiral stair ascends directly from street level to the arrival balcony, announcing the home with sculpted Kannada brass typography.",
+      "processNarrative": "Conceived as 'Brindavan'\u2014a verdant garden sanctuary within the dense urban fabric\u2014the residence layers vertical buff-brick tilework with tactile sage green stucco terraces. Cantilevered balconies burst with indigenous flora, creating a living microclimate that shields interior living quarters from street bustle while dappling tropical sunlight into double-height timber volumes. A floating external spiral stair ascends directly from street level to the arrival balcony, announcing the home with sculpted Kannada brass typography.",
       "mainImage": "/projects/brindavan/brindavan-suspended-granite-staircase-motion.jpg",
       "gallery": [
         {
@@ -1735,6 +1735,429 @@
         "designation": "Patrons",
         "company": "The Mantle Residence"
       }
+    },
+    {
+      "id": "proj-ongoing-1",
+      "slug": "jagan-residence",
+      "title": "JAGAN RESIDENCE",
+      "category": "Residential",
+      "status": "ongoing",
+      "location": "Bengaluru, India",
+      "year": 2026,
+      "client": "Jagan & Family",
+      "area": "5,800 sq.ft",
+      "description": "A bold residential composition characterized by dramatic cantilevers, textured concrete, and warm timber screening designed for seamless indoor-outdoor living.",
+      "processNarrative": "Currently under construction in Bengaluru, the Jagan Residence explores interlocking geometric forms that balance privacy from the streetscape with open, light-filled internal courtyards and terrace gardens.",
+      "mainImage": "/projects/jagan-residence/elevation-front.jpg",
+      "gallery": [
+        {
+          "url": "/projects/jagan-residence/elevation-front.jpg",
+          "caption": "Front elevation contemporary facade render",
+          "aspect": "full"
+        },
+        {
+          "url": "/projects/jagan-residence/perspective-view.jpg",
+          "caption": "Perspective architectural view",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/jagan-residence/detail-view.jpg",
+          "caption": "Architectural detail and fenestration render",
+          "aspect": "portrait"
+        }
+      ],
+      "servicesInvolved": [
+        "Architectural Design",
+        "Structural Engineering",
+        "Landscape Architecture"
+      ],
+      "teamMembers": [
+        "Ar. Rajesh Shivaram",
+        "Technoarchitecture Design Studio"
+      ],
+      "credits": {
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Technoarchitecture Studio",
+        "team": "Ar. Rajesh Shivaram & Studio Team",
+        "landscapeArchitect": "Verdant Studio",
+        "lightingConsultant": "Lumen Praxis",
+        "generalContractor": "Apex Buildtech Projects"
+      },
+      "featured": true,
+      "relatedSlugs": [
+        "anandam-residence",
+        "suhas-residence",
+        "aikya"
+      ]
+    },
+    {
+      "id": "proj-ongoing-2",
+      "slug": "anandam-residence",
+      "title": "ANANDAM RESIDENCE",
+      "category": "Residential",
+      "status": "ongoing",
+      "location": "RR Nagar, Bengaluru, India",
+      "year": 2026,
+      "client": "Private Client",
+      "area": "6,500 sq.ft",
+      "description": "An evocative contemporary home featuring deep roof overhangs, rhythmic vertical louvers, and atmospheric ambient lighting in Rajarajeshwari Nagar.",
+      "processNarrative": "Designed with climate-responsive tropical modernist sensibilities, Anandam integrates natural cross-ventilation, shaded verandas, and panoramic fenestrations that capture shifting daytime light and dramatic dusk illumination.",
+      "mainImage": "/projects/anandam-residence/exterior-day.jpg",
+      "gallery": [
+        {
+          "url": "/projects/anandam-residence/exterior-day.jpg",
+          "caption": "Daytime exterior facade view in RR Nagar",
+          "aspect": "full"
+        },
+        {
+          "url": "/projects/anandam-residence/exterior-dusk.jpg",
+          "caption": "Dusk illumination architectural render",
+          "aspect": "full"
+        },
+        {
+          "url": "/projects/anandam-residence/dusk-angle-view.jpg",
+          "caption": "Angled dusk perspective showing volumetric balance",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/anandam-residence/dusk-palette-view.jpg",
+          "caption": "Natural ambient dusk view",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/anandam-residence/dusk-composition.jpg",
+          "caption": "Volumetric dusk composition and warm interior glow",
+          "aspect": "full"
+        }
+      ],
+      "servicesInvolved": [
+        "Architectural Design",
+        "Interior Architecture",
+        "Lighting Design"
+      ],
+      "teamMembers": [
+        "Ar. Rajesh Shivaram",
+        "Technoarchitecture Design Studio"
+      ],
+      "credits": {
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Technoarchitecture Studio",
+        "team": "Ar. Rajesh Shivaram & Studio Team",
+        "landscapeArchitect": "Technoarchitecture Landscape",
+        "lightingConsultant": "Lumen Praxis",
+        "generalContractor": "Techno Construction"
+      },
+      "featured": true,
+      "relatedSlugs": [
+        "jagan-residence",
+        "sneha-residence",
+        "belaku"
+      ]
+    },
+    {
+      "id": "proj-ongoing-3",
+      "slug": "suhas-residence",
+      "title": "SUHAS RESIDENCE",
+      "category": "Residential",
+      "status": "ongoing",
+      "location": "Bengaluru, India",
+      "year": 2026,
+      "client": "Suhas & Family",
+      "area": "4,600 sq.ft",
+      "description": "A sculptural urban residence balancing monolithic masonry planes with delicate timber lattice work and curated garden portals.",
+      "processNarrative": "Suhas Residence addresses dense urban context with an introverted layout focused around private internal daylight shafts, double-height volumes, and lush vertical vegetation.",
+      "mainImage": "/projects/suhas-residence/day-elevation.jpg",
+      "gallery": [
+        {
+          "url": "/projects/suhas-residence/day-elevation.jpg",
+          "caption": "Daylight facade render showing geometric volumes",
+          "aspect": "full"
+        },
+        {
+          "url": "/projects/suhas-residence/night-elevation.jpg",
+          "caption": "Night illumination highlighting textural facade",
+          "aspect": "full"
+        }
+      ],
+      "servicesInvolved": [
+        "Architectural Design",
+        "Interior Architecture",
+        "Landscape Integration"
+      ],
+      "teamMembers": [
+        "Ar. Rajesh Shivaram",
+        "Technoarchitecture Design Studio"
+      ],
+      "credits": {
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Technoarchitecture Studio",
+        "team": "Ar. Rajesh Shivaram & Studio Team",
+        "landscapeArchitect": "Verdant Studio",
+        "lightingConsultant": "Lumen Praxis",
+        "generalContractor": "Apex Buildtech Projects"
+      },
+      "featured": true,
+      "relatedSlugs": [
+        "jagan-residence",
+        "smrithi-residence",
+        "kanasu"
+      ]
+    },
+    {
+      "id": "proj-ongoing-4",
+      "slug": "sneha-residence",
+      "title": "SNEHA RESIDENCE",
+      "category": "Residential",
+      "status": "ongoing",
+      "location": "Bengaluru, India",
+      "year": 2026,
+      "client": "Sneha & Family",
+      "area": "7,200 sq.ft",
+      "description": "An expansive multi-level luxury residence sculpted with floating slabs, extensive glazing, and sheltered garden terraces.",
+      "processNarrative": "Featuring interconnected spatial zones, Sneha Residence orchestrates fluid movement between entertainment pavilions, private suites, and landscaped open courts with meticulous material craft.",
+      "mainImage": "/projects/sneha-residence/elevation-b.jpg",
+      "gallery": [
+        {
+          "url": "/projects/sneha-residence/elevation-b.jpg",
+          "caption": "Volumetric residential elevation render",
+          "aspect": "full"
+        },
+        {
+          "url": "/projects/sneha-residence/elevation-c.jpg",
+          "caption": "Facade articulation and screening",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/sneha-residence/elevation-d.jpg",
+          "caption": "Garden and entrance portal view",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/sneha-residence/elevation-04.jpg",
+          "caption": "Contemporary modern facade detailing",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/sneha-residence/exterior-i.jpg",
+          "caption": "Balcony overhangs and outdoor connectivity",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/sneha-residence/exterior-k.jpg",
+          "caption": "Vertical circulation and fenestration render",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/sneha-residence/exterior-m.jpg",
+          "caption": "Courtyard and ambient lighting perspective",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/sneha-residence/exterior-n.jpg",
+          "caption": "Streetscape architectural perspective",
+          "aspect": "landscape"
+        }
+      ],
+      "servicesInvolved": [
+        "Architectural Design",
+        "Interior Architecture",
+        "Landscape Architecture"
+      ],
+      "teamMembers": [
+        "Ar. Rajesh Shivaram",
+        "Technoarchitecture Design Studio"
+      ],
+      "credits": {
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Technoarchitecture Studio",
+        "team": "Ar. Rajesh Shivaram & Studio Team",
+        "landscapeArchitect": "Verdant Studio",
+        "lightingConsultant": "Lumen Praxis",
+        "generalContractor": "Techno Construction"
+      },
+      "featured": true,
+      "relatedSlugs": [
+        "anandam-residence",
+        "praana-villas",
+        "between-two-trees"
+      ]
+    },
+    {
+      "id": "proj-ongoing-5",
+      "slug": "smrithi-residence",
+      "title": "SMRITHI RESIDENCE",
+      "category": "Residential",
+      "status": "ongoing",
+      "location": "Bengaluru, India",
+      "year": 2026,
+      "client": "Private Client",
+      "area": "5,400 sq.ft",
+      "description": "A refined dwelling celebrating tactile material contrasts \u2014 raw stone plinths, floating timber eaves, and expansive garden apertures.",
+      "processNarrative": "Smrithi Residence reinterprets the traditional veranda house through contemporary architectural grammar, featuring cantilevered canopy terraces and climate-moderating passive shading.",
+      "mainImage": "/projects/smrithi-residence/elevation-main.jpg",
+      "gallery": [
+        {
+          "url": "/projects/smrithi-residence/elevation-main.jpg",
+          "caption": "Main frontal elevation render",
+          "aspect": "full"
+        },
+        {
+          "url": "/projects/smrithi-residence/perspective-corner.jpg",
+          "caption": "Corner volumetric perspective",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/smrithi-residence/terrace-overhang.jpg",
+          "caption": "Cantilevered roof and terrace view",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/smrithi-residence/entry-approach.jpg",
+          "caption": "Entry approach and landscape integration",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/smrithi-residence/side-elevation.jpg",
+          "caption": "Lateral facade articulation",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/smrithi-residence/rear-terrace.jpg",
+          "caption": "Rear elevation and private garden court",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/smrithi-residence/dusk-render.jpg",
+          "caption": "Atmospheric dusk lighting render",
+          "aspect": "full"
+        }
+      ],
+      "servicesInvolved": [
+        "Architectural Design",
+        "Interior Architecture",
+        "Landscape Architecture"
+      ],
+      "teamMembers": [
+        "Ar. Rajesh Shivaram",
+        "Technoarchitecture Design Studio"
+      ],
+      "credits": {
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Technoarchitecture Studio",
+        "team": "Ar. Rajesh Shivaram & Studio Team",
+        "landscapeArchitect": "Verdant Studio",
+        "lightingConsultant": "Lumen Praxis",
+        "generalContractor": "Apex Buildtech Projects"
+      },
+      "featured": true,
+      "relatedSlugs": [
+        "suhas-residence",
+        "ruchi-sharma-residence",
+        "aikya"
+      ]
+    },
+    {
+      "id": "proj-ongoing-6",
+      "slug": "ruchi-sharma-residence",
+      "title": "RUCHI SHARMA RESIDENCE",
+      "category": "Residential",
+      "status": "ongoing",
+      "location": "Bengaluru, India",
+      "year": 2026,
+      "client": "Ruchi Sharma",
+      "area": "4,200 sq.ft",
+      "description": "An elegant, bespoke residence defined by earthy tonal palettes, clean rectilinear geometry, and rhythmic exterior screening.",
+      "processNarrative": "Designed for a creative client, this residence emphasizes visual connection with nature, crafted brickwork accents, and tranquil micro-courtyards that filter tropical sunlight.",
+      "mainImage": "/projects/ruchi-sharma-residence/elevation-render-01.jpg",
+      "gallery": [
+        {
+          "url": "/projects/ruchi-sharma-residence/elevation-render-01.jpg",
+          "caption": "Primary elevation render with earthy material textures",
+          "aspect": "full"
+        },
+        {
+          "url": "/projects/ruchi-sharma-residence/elevation-render-02.jpg",
+          "caption": "Secondary angle showcasing vertical screening",
+          "aspect": "landscape"
+        }
+      ],
+      "servicesInvolved": [
+        "Architectural Design",
+        "Interior Architecture",
+        "Lighting Design"
+      ],
+      "teamMembers": [
+        "Ar. Rajesh Shivaram",
+        "Technoarchitecture Design Studio"
+      ],
+      "credits": {
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Technoarchitecture Studio",
+        "team": "Ar. Rajesh Shivaram & Studio Team",
+        "landscapeArchitect": "Verdant Studio",
+        "lightingConsultant": "Lumen Praxis",
+        "generalContractor": "Techno Construction"
+      },
+      "featured": true,
+      "relatedSlugs": [
+        "smrithi-residence",
+        "jagan-residence",
+        "kripa"
+      ]
+    },
+    {
+      "id": "proj-ongoing-7",
+      "slug": "praana-villas",
+      "title": "PRAANA VILLAS",
+      "category": "Residential",
+      "status": "ongoing",
+      "location": "Bengaluru, India",
+      "year": 2026,
+      "client": "Praana Living",
+      "area": "18,500 sq.ft",
+      "description": "An exclusive enclave of luxury tropical villas centered around shared botanical commons, water pavilions, and private landscaped enclaves.",
+      "processNarrative": "Praana Villas creates an integrated community masterplan where each villa orientation maximizes prevailing breezes and solar orientation while looking out onto landscaped community promenades.",
+      "mainImage": "/projects/praana-villas/east-villa-elevation.jpg",
+      "gallery": [
+        {
+          "url": "/projects/praana-villas/east-villa-elevation.jpg",
+          "caption": "East villa elevation with contemporary tropical volumes",
+          "aspect": "full"
+        },
+        {
+          "url": "/projects/praana-villas/west-villa-elevation.jpg",
+          "caption": "West villa elevation featuring climate-responsive overhangs",
+          "aspect": "full"
+        },
+        {
+          "url": "/projects/praana-villas/common-space.jpg",
+          "caption": "Central landscaped common space and communal pavilions",
+          "aspect": "landscape"
+        }
+      ],
+      "servicesInvolved": [
+        "Master Planning",
+        "Architectural Design",
+        "Landscape Architecture"
+      ],
+      "teamMembers": [
+        "Ar. Rajesh Shivaram",
+        "Technoarchitecture Design Studio"
+      ],
+      "credits": {
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Technoarchitecture Studio",
+        "team": "Ar. Rajesh Shivaram & Studio Team",
+        "landscapeArchitect": "Verdant Studio",
+        "lightingConsultant": "Lumen Praxis",
+        "generalContractor": "Apex Buildtech Projects"
+      },
+      "featured": true,
+      "relatedSlugs": [
+        "sneha-residence",
+        "anandam-residence",
+        "brindavan"
+      ]
     }
   ],
   "services": [
@@ -1955,18 +2378,68 @@
   "team": [
     {
       "id": "team-1",
-      "name": "Rajesh Shivaram",
-      "role": "Principal Architect",
+      "name": "Ar. Rajesh Shivaram",
+      "role": "Principal Architect & Founder",
       "discipline": "Leadership",
       "credentials": "B.Arch (Bangalore Institute of Technology)",
       "bio": "A graduate of Bangalore Institute of Technology, Rajesh Shivaram is the Principal Architect of Techno Architecture and brings 20 years of professional experience to the practice. He leads the studio with a focus on design excellence, innovation and careful execution, combining creativity with comfort, practicality and environmental responsibility.",
-      "image": "",
+      "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=85",
       "socials": [
         {
           "platform": "Instagram",
           "url": "https://www.instagram.com/technoarchitecture_rajesh/"
         }
       ]
+    },
+    {
+      "id": "team-2",
+      "name": "Ar. Vikramaditya Shenoy",
+      "role": "Senior Project Architect",
+      "discipline": "Architecture",
+      "credentials": "M.Arch, B.Arch (SPA)",
+      "bio": "Specializing in large-scale residential and commercial envelopes with precise structural coordination and passive climate strategies.",
+      "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=85",
+      "socials": []
+    },
+    {
+      "id": "team-3",
+      "name": "Ar. Divya Raghavan",
+      "role": "Lead Interior Architect",
+      "discipline": "Interiors",
+      "credentials": "B.Arch, IIID Member",
+      "bio": "Directing spatial curation, bespoke joinery, acoustic textures, artisanal lighting schemes, and luxury residential interior fit-outs.",
+      "image": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=85",
+      "socials": []
+    },
+    {
+      "id": "team-4",
+      "name": "Karthik Sundaram",
+      "role": "Project Architect & Computational Lead",
+      "discipline": "Architecture",
+      "credentials": "B.Arch (BMSCE)",
+      "bio": "Focusing on parametric solar shading facades, environmental simulation, mass timber detailing, and architectural working drawings.",
+      "image": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=800&q=85",
+      "socials": []
+    },
+    {
+      "id": "team-5",
+      "name": "Naveen Prasad",
+      "role": "BIM & Technical Delivery Lead",
+      "discipline": "BIM & Technical",
+      "credentials": "B.E. Civil, BIM Certified",
+      "bio": "Bridging architectural design with on-site structural precision, MEP coordination, vendor fabrication reviews, and strict quality assurance.",
+      "image": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=800&q=85",
+      "socials": []
+    },
+    {
+      "id": "team-6",
+      "name": "Aditya Joshi",
+      "role": "Junior Architect & Visualisation Specialist",
+      "discipline": "Research & Sustainability",
+      "credentials": "B.Arch",
+      "bio": "Developing conceptual explorations, physical model making, 3D daylight rendering, and sustainable passive envelope studies.",
+      "image": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=85",
+      "socials": []
     }
   ],
   "blog": [
@@ -1992,7 +2465,7 @@
             "heading": "The Dialogue Between Formwork and Finish",
             "body": [
               "At Monolith House, our primary challenge was giving emotional warmth to cast walls without applying superficial cladding. We collaborated with regional timber yards to reclaim untreated pine boards with pronounced grain patterns. As the slurry settled, the wood sap and knots imparted an organic, tactile grain that softens the massive planes.",
-              "The concrete mix itself integrated 35% fly ash—an industrial by-product that not only reduces the carbon footprint of cement clinker but produces a denser matrix resistant to tropical water ingress during torrential monsoon seasons."
+              "The concrete mix itself integrated 35% fly ash\u2014an industrial by-product that not only reduces the carbon footprint of cement clinker but produces a denser matrix resistant to tropical water ingress during torrential monsoon seasons."
             ],
             "quote": "Architecture is not merely the envelope that contains space; it is the atmospheric medium that filters light, breeze, and the memory of time."
           },
@@ -2000,11 +2473,11 @@
             "heading": "Courtyards as Thermodynamic Engines",
             "body": [
               "A monolithic structure without intentional voids risks becoming an impenetrable heat trap. By hollowing the core with a deep basalt-lined sunken courtyard, we activated natural stack ventilation. Warmer air rises along the inner concrete clerestory and exhausts through continuous shadow-line vents, pulling cooler air across the ground-floor water body.",
-              "This simple physical mechanism maintains indoor ambient temperatures at 24°C to 26°C even when outdoor temperatures climb above 35°C in mid-April."
+              "This simple physical mechanism maintains indoor ambient temperatures at 24\u00b0C to 26\u00b0C even when outdoor temperatures climb above 35\u00b0C in mid-April."
             ]
           }
         ],
-        "conclusion": "When we treat concrete not as an industrial default but as liquid stone carved by timber and sun, architecture ceases to be an imposition on landscape—it becomes an organic extension of regional geology."
+        "conclusion": "When we treat concrete not as an industrial default but as liquid stone carved by timber and sun, architecture ceases to be an imposition on landscape\u2014it becomes an organic extension of regional geology."
       },
       "tags": [
         "Concrete",
@@ -4045,7 +4518,7 @@
     {
       "id": "rec-1",
       "year": 2024,
-      "title": "National Architectural Excellence Award — Residential",
+      "title": "National Architectural Excellence Award \u2014 Residential",
       "category": "Award",
       "organization": "Indian Institute of Architects (IIA)",
       "projectAssociated": "AIKYA",
@@ -4056,7 +4529,7 @@
     {
       "id": "rec-2",
       "year": 2024,
-      "title": "AD100 — Most Influential Architectural Studios",
+      "title": "AD100 \u2014 Most Influential Architectural Studios",
       "category": "Publication",
       "organization": "Architectural Digest South Asia",
       "description": "Selected in the annual AD100 definitive index of leading visionary architecture practices defining the subcontinent's built landscape.",
@@ -4065,7 +4538,7 @@
     {
       "id": "rec-3",
       "year": 2024,
-      "title": "Dezeen Awards Longlist — Sustainable Residential Architecture",
+      "title": "Dezeen Awards Longlist \u2014 Sustainable Residential Architecture",
       "category": "Award",
       "organization": "Dezeen International Awards (London)",
       "projectAssociated": "BETWEEN TWO TREES",
@@ -4076,7 +4549,7 @@
     {
       "id": "rec-4",
       "year": 2024,
-      "title": "IIA National Citation — Biophilic Residential Architecture",
+      "title": "IIA National Citation \u2014 Biophilic Residential Architecture",
       "category": "Award",
       "organization": "Indian Institute of Architects (IIA)",
       "projectAssociated": "KRIPA",
@@ -4087,7 +4560,7 @@
     {
       "id": "rec-5",
       "year": 2022,
-      "title": "Venice Architecture Biennale — Collaborative Pavilion Showcase",
+      "title": "Venice Architecture Biennale \u2014 Collaborative Pavilion Showcase",
       "category": "Biennale / Exhibition",
       "organization": "La Biennale di Venezia (18th International Exhibition)",
       "description": "Invited installation titled 'Tropical Tectonics & Thermodynamic Voids' examining subterranean courtyards as climate resilience prototypes.",
@@ -4107,7 +4580,7 @@
     {
       "id": "rec-8",
       "year": 2020,
-      "title": "Council of Architecture — Best Conservation & Heritage Practice",
+      "title": "Council of Architecture \u2014 Best Conservation & Heritage Practice",
       "category": "Award",
       "organization": "Council of Architecture (COA)",
       "projectAssociated": "BRINDAVAN",
@@ -4152,70 +4625,6 @@
     "operatingHours": "Monday to Friday, 10:00 AM to 6:30 PM; Saturday closed",
     "copyrightNotice": "TECHNO ARCHITECTURE. ALL RIGHTS RESERVED."
   },
-  "team": [
-    {
-      "id": "team-1",
-      "name": "Ar. Rajesh Shivaram",
-      "role": "Principal Architect & Founder",
-      "discipline": "Leadership",
-      "credentials": "B.Arch (Bangalore Institute of Technology)",
-      "bio": "A graduate of Bangalore Institute of Technology, Rajesh Shivaram is the Principal Architect of Techno Architecture and brings 20 years of professional experience to the practice. He leads the studio with a focus on design excellence, innovation and careful execution, combining creativity with comfort, practicality and environmental responsibility.",
-      "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=85",
-      "socials": [
-        { "platform": "Instagram", "url": "https://www.instagram.com/technoarchitecture_rajesh/" }
-      ]
-    },
-    {
-      "id": "team-2",
-      "name": "Ar. Vikramaditya Shenoy",
-      "role": "Senior Project Architect",
-      "discipline": "Architecture",
-      "credentials": "M.Arch, B.Arch (SPA)",
-      "bio": "Specializing in large-scale residential and commercial envelopes with precise structural coordination and passive climate strategies.",
-      "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=85",
-      "socials": []
-    },
-    {
-      "id": "team-3",
-      "name": "Ar. Divya Raghavan",
-      "role": "Lead Interior Architect",
-      "discipline": "Interiors",
-      "credentials": "B.Arch, IIID Member",
-      "bio": "Directing spatial curation, bespoke joinery, acoustic textures, artisanal lighting schemes, and luxury residential interior fit-outs.",
-      "image": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=85",
-      "socials": []
-    },
-    {
-      "id": "team-4",
-      "name": "Karthik Sundaram",
-      "role": "Project Architect & Computational Lead",
-      "discipline": "Architecture",
-      "credentials": "B.Arch (BMSCE)",
-      "bio": "Focusing on parametric solar shading facades, environmental simulation, mass timber detailing, and architectural working drawings.",
-      "image": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=800&q=85",
-      "socials": []
-    },
-    {
-      "id": "team-5",
-      "name": "Naveen Prasad",
-      "role": "BIM & Technical Delivery Lead",
-      "discipline": "BIM & Technical",
-      "credentials": "B.E. Civil, BIM Certified",
-      "bio": "Bridging architectural design with on-site structural precision, MEP coordination, vendor fabrication reviews, and strict quality assurance.",
-      "image": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=800&q=85",
-      "socials": []
-    },
-    {
-      "id": "team-6",
-      "name": "Aditya Joshi",
-      "role": "Junior Architect & Visualisation Specialist",
-      "discipline": "Research & Sustainability",
-      "credentials": "B.Arch",
-      "bio": "Developing conceptual explorations, physical model making, 3D daylight rendering, and sustainable passive envelope studies.",
-      "image": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=85",
-      "socials": []
-    }
-  ],
   "testimonials": [
     {
       "id": "test-1",
@@ -4254,5 +4663,5 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-03T08:20:00.000Z"
+  "updatedAt": "2026-10-04T14:12:48.309763+00:00"
 }

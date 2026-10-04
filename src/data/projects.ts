@@ -668,4 +668,427 @@ export const initialProjects: Project[] = [
       company: "The Mantle Residence",
     },
   },
+{
+  "id": "proj-ongoing-1",
+  "slug": "jagan-residence",
+  "title": "JAGAN RESIDENCE",
+  "category": "Residential",
+  "status": "ongoing",
+  "location": "Bengaluru, India",
+  "year": 2026,
+  "client": "Jagan & Family",
+  "area": "5,800 sq.ft",
+  "description": "A bold residential composition characterized by dramatic cantilevers, textured concrete, and warm timber screening designed for seamless indoor-outdoor living.",
+  "processNarrative": "Currently under construction in Bengaluru, the Jagan Residence explores interlocking geometric forms that balance privacy from the streetscape with open, light-filled internal courtyards and terrace gardens.",
+  "mainImage": "/projects/jagan-residence/elevation-front.jpg",
+  "gallery": [
+    {
+      "url": "/projects/jagan-residence/elevation-front.jpg",
+      "caption": "Front elevation contemporary facade render",
+      "aspect": "full"
+    },
+    {
+      "url": "/projects/jagan-residence/perspective-view.jpg",
+      "caption": "Perspective architectural view",
+      "aspect": "landscape"
+    },
+    {
+      "url": "/projects/jagan-residence/detail-view.jpg",
+      "caption": "Architectural detail and fenestration render",
+      "aspect": "portrait"
+    }
+  ],
+  "servicesInvolved": [
+    "Architectural Design",
+    "Structural Engineering",
+    "Landscape Architecture"
+  ],
+  "teamMembers": [
+    "Ar. Rajesh Shivaram",
+    "Technoarchitecture Design Studio"
+  ],
+  "credits": {
+    "principalArchitect": "Ar. Rajesh Shivaram",
+    "projectArchitect": "Technoarchitecture Studio",
+    "team": "Ar. Rajesh Shivaram & Studio Team",
+    "landscapeArchitect": "Verdant Studio",
+    "lightingConsultant": "Lumen Praxis",
+    "generalContractor": "Apex Buildtech Projects"
+  },
+  "featured": true,
+  "relatedSlugs": [
+    "anandam-residence",
+    "suhas-residence",
+    "aikya"
+  ]
+},
+{
+  "id": "proj-ongoing-2",
+  "slug": "anandam-residence",
+  "title": "ANANDAM RESIDENCE",
+  "category": "Residential",
+  "status": "ongoing",
+  "location": "RR Nagar, Bengaluru, India",
+  "year": 2026,
+  "client": "Private Client",
+  "area": "6,500 sq.ft",
+  "description": "An evocative contemporary home featuring deep roof overhangs, rhythmic vertical louvers, and atmospheric ambient lighting in Rajarajeshwari Nagar.",
+  "processNarrative": "Designed with climate-responsive tropical modernist sensibilities, Anandam integrates natural cross-ventilation, shaded verandas, and panoramic fenestrations that capture shifting daytime light and dramatic dusk illumination.",
+  "mainImage": "/projects/anandam-residence/exterior-day.jpg",
+  "gallery": [
+    {
+      "url": "/projects/anandam-residence/exterior-day.jpg",
+      "caption": "Daytime exterior facade view in RR Nagar",
+      "aspect": "full"
+    },
+    {
+      "url": "/projects/anandam-residence/exterior-dusk.jpg",
+      "caption": "Dusk illumination architectural render",
+      "aspect": "full"
+    },
+    {
+      "url": "/projects/anandam-residence/dusk-angle-view.jpg",
+      "caption": "Angled dusk perspective showing volumetric balance",
+      "aspect": "landscape"
+    },
+    {
+      "url": "/projects/anandam-residence/dusk-palette-view.jpg",
+      "caption": "Natural ambient dusk view",
+      "aspect": "landscape"
+    },
+    {
+      "url": "/projects/anandam-residence/dusk-composition.jpg",
+      "caption": "Volumetric dusk composition and warm interior glow",
+      "aspect": "full"
+    }
+  ],
+  "servicesInvolved": [
+    "Architectural Design",
+    "Interior Architecture",
+    "Lighting Design"
+  ],
+  "teamMembers": [
+    "Ar. Rajesh Shivaram",
+    "Technoarchitecture Design Studio"
+  ],
+  "credits": {
+    "principalArchitect": "Ar. Rajesh Shivaram",
+    "projectArchitect": "Technoarchitecture Studio",
+    "team": "Ar. Rajesh Shivaram & Studio Team",
+    "landscapeArchitect": "Technoarchitecture Landscape",
+    "lightingConsultant": "Lumen Praxis",
+    "generalContractor": "Techno Construction"
+  },
+  "featured": true,
+  "relatedSlugs": [
+    "jagan-residence",
+    "sneha-residence",
+    "belaku"
+  ]
+},
+{
+  "id": "proj-ongoing-3",
+  "slug": "suhas-residence",
+  "title": "SUHAS RESIDENCE",
+  "category": "Residential",
+  "status": "ongoing",
+  "location": "Bengaluru, India",
+  "year": 2026,
+  "client": "Suhas & Family",
+  "area": "4,600 sq.ft",
+  "description": "A sculptural urban residence balancing monolithic masonry planes with delicate timber lattice work and curated garden portals.",
+  "processNarrative": "Suhas Residence addresses dense urban context with an introverted layout focused around private internal daylight shafts, double-height volumes, and lush vertical vegetation.",
+  "mainImage": "/projects/suhas-residence/day-elevation.jpg",
+  "gallery": [
+    {
+      "url": "/projects/suhas-residence/day-elevation.jpg",
+      "caption": "Daylight facade render showing geometric volumes",
+      "aspect": "full"
+    },
+    {
+      "url": "/projects/suhas-residence/night-elevation.jpg",
+      "caption": "Night illumination highlighting textural facade",
+      "aspect": "full"
+    }
+  ],
+  "servicesInvolved": [
+    "Architectural Design",
+    "Interior Architecture",
+    "Landscape Integration"
+  ],
+  "teamMembers": [
+    "Ar. Rajesh Shivaram",
+    "Technoarchitecture Design Studio"
+  ],
+  "credits": {
+    "principalArchitect": "Ar. Rajesh Shivaram",
+    "projectArchitect": "Technoarchitecture Studio",
+    "team": "Ar. Rajesh Shivaram & Studio Team",
+    "landscapeArchitect": "Verdant Studio",
+    "lightingConsultant": "Lumen Praxis",
+    "generalContractor": "Apex Buildtech Projects"
+  },
+  "featured": true,
+  "relatedSlugs": [
+    "jagan-residence",
+    "smrithi-residence",
+    "kanasu"
+  ]
+},
+{
+  "id": "proj-ongoing-4",
+  "slug": "sneha-residence",
+  "title": "SNEHA RESIDENCE",
+  "category": "Residential",
+  "status": "ongoing",
+  "location": "Bengaluru, India",
+  "year": 2026,
+  "client": "Sneha & Family",
+  "area": "7,200 sq.ft",
+  "description": "An expansive multi-level luxury residence sculpted with floating slabs, extensive glazing, and sheltered garden terraces.",
+  "processNarrative": "Featuring interconnected spatial zones, Sneha Residence orchestrates fluid movement between entertainment pavilions, private suites, and landscaped open courts with meticulous material craft.",
+  "mainImage": "/projects/sneha-residence/elevation-b.jpg",
+  "gallery": [
+    {
+      "url": "/projects/sneha-residence/elevation-b.jpg",
+      "caption": "Volumetric residential elevation render",
+      "aspect": "full"
+    },
+    {
+      "url": "/projects/sneha-residence/elevation-c.jpg",
+      "caption": "Facade articulation and screening",
+      "aspect": "landscape"
+    },
+    {
+      "url": "/projects/sneha-residence/elevation-d.jpg",
+      "caption": "Garden and entrance portal view",
+      "aspect": "landscape"
+    },
+    {
+      "url": "/projects/sneha-residence/elevation-04.jpg",
+      "caption": "Contemporary modern facade detailing",
+      "aspect": "portrait"
+    },
+    {
+      "url": "/projects/sneha-residence/exterior-i.jpg",
+      "caption": "Balcony overhangs and outdoor connectivity",
+      "aspect": "landscape"
+    },
+    {
+      "url": "/projects/sneha-residence/exterior-k.jpg",
+      "caption": "Vertical circulation and fenestration render",
+      "aspect": "portrait"
+    },
+    {
+      "url": "/projects/sneha-residence/exterior-m.jpg",
+      "caption": "Courtyard and ambient lighting perspective",
+      "aspect": "landscape"
+    },
+    {
+      "url": "/projects/sneha-residence/exterior-n.jpg",
+      "caption": "Streetscape architectural perspective",
+      "aspect": "landscape"
+    }
+  ],
+  "servicesInvolved": [
+    "Architectural Design",
+    "Interior Architecture",
+    "Landscape Architecture"
+  ],
+  "teamMembers": [
+    "Ar. Rajesh Shivaram",
+    "Technoarchitecture Design Studio"
+  ],
+  "credits": {
+    "principalArchitect": "Ar. Rajesh Shivaram",
+    "projectArchitect": "Technoarchitecture Studio",
+    "team": "Ar. Rajesh Shivaram & Studio Team",
+    "landscapeArchitect": "Verdant Studio",
+    "lightingConsultant": "Lumen Praxis",
+    "generalContractor": "Techno Construction"
+  },
+  "featured": true,
+  "relatedSlugs": [
+    "anandam-residence",
+    "praana-villas",
+    "between-two-trees"
+  ]
+},
+{
+  "id": "proj-ongoing-5",
+  "slug": "smrithi-residence",
+  "title": "SMRITHI RESIDENCE",
+  "category": "Residential",
+  "status": "ongoing",
+  "location": "Bengaluru, India",
+  "year": 2026,
+  "client": "Private Client",
+  "area": "5,400 sq.ft",
+  "description": "A refined dwelling celebrating tactile material contrasts \u2014 raw stone plinths, floating timber eaves, and expansive garden apertures.",
+  "processNarrative": "Smrithi Residence reinterprets the traditional veranda house through contemporary architectural grammar, featuring cantilevered canopy terraces and climate-moderating passive shading.",
+  "mainImage": "/projects/smrithi-residence/elevation-main.jpg",
+  "gallery": [
+    {
+      "url": "/projects/smrithi-residence/elevation-main.jpg",
+      "caption": "Main frontal elevation render",
+      "aspect": "full"
+    },
+    {
+      "url": "/projects/smrithi-residence/perspective-corner.jpg",
+      "caption": "Corner volumetric perspective",
+      "aspect": "landscape"
+    },
+    {
+      "url": "/projects/smrithi-residence/terrace-overhang.jpg",
+      "caption": "Cantilevered roof and terrace view",
+      "aspect": "landscape"
+    },
+    {
+      "url": "/projects/smrithi-residence/entry-approach.jpg",
+      "caption": "Entry approach and landscape integration",
+      "aspect": "landscape"
+    },
+    {
+      "url": "/projects/smrithi-residence/side-elevation.jpg",
+      "caption": "Lateral facade articulation",
+      "aspect": "portrait"
+    },
+    {
+      "url": "/projects/smrithi-residence/rear-terrace.jpg",
+      "caption": "Rear elevation and private garden court",
+      "aspect": "landscape"
+    },
+    {
+      "url": "/projects/smrithi-residence/dusk-render.jpg",
+      "caption": "Atmospheric dusk lighting render",
+      "aspect": "full"
+    }
+  ],
+  "servicesInvolved": [
+    "Architectural Design",
+    "Interior Architecture",
+    "Landscape Architecture"
+  ],
+  "teamMembers": [
+    "Ar. Rajesh Shivaram",
+    "Technoarchitecture Design Studio"
+  ],
+  "credits": {
+    "principalArchitect": "Ar. Rajesh Shivaram",
+    "projectArchitect": "Technoarchitecture Studio",
+    "team": "Ar. Rajesh Shivaram & Studio Team",
+    "landscapeArchitect": "Verdant Studio",
+    "lightingConsultant": "Lumen Praxis",
+    "generalContractor": "Apex Buildtech Projects"
+  },
+  "featured": true,
+  "relatedSlugs": [
+    "suhas-residence",
+    "ruchi-sharma-residence",
+    "aikya"
+  ]
+},
+{
+  "id": "proj-ongoing-6",
+  "slug": "ruchi-sharma-residence",
+  "title": "RUCHI SHARMA RESIDENCE",
+  "category": "Residential",
+  "status": "ongoing",
+  "location": "Bengaluru, India",
+  "year": 2026,
+  "client": "Ruchi Sharma",
+  "area": "4,200 sq.ft",
+  "description": "An elegant, bespoke residence defined by earthy tonal palettes, clean rectilinear geometry, and rhythmic exterior screening.",
+  "processNarrative": "Designed for a creative client, this residence emphasizes visual connection with nature, crafted brickwork accents, and tranquil micro-courtyards that filter tropical sunlight.",
+  "mainImage": "/projects/ruchi-sharma-residence/elevation-render-01.jpg",
+  "gallery": [
+    {
+      "url": "/projects/ruchi-sharma-residence/elevation-render-01.jpg",
+      "caption": "Primary elevation render with earthy material textures",
+      "aspect": "full"
+    },
+    {
+      "url": "/projects/ruchi-sharma-residence/elevation-render-02.jpg",
+      "caption": "Secondary angle showcasing vertical screening",
+      "aspect": "landscape"
+    }
+  ],
+  "servicesInvolved": [
+    "Architectural Design",
+    "Interior Architecture",
+    "Lighting Design"
+  ],
+  "teamMembers": [
+    "Ar. Rajesh Shivaram",
+    "Technoarchitecture Design Studio"
+  ],
+  "credits": {
+    "principalArchitect": "Ar. Rajesh Shivaram",
+    "projectArchitect": "Technoarchitecture Studio",
+    "team": "Ar. Rajesh Shivaram & Studio Team",
+    "landscapeArchitect": "Verdant Studio",
+    "lightingConsultant": "Lumen Praxis",
+    "generalContractor": "Techno Construction"
+  },
+  "featured": true,
+  "relatedSlugs": [
+    "smrithi-residence",
+    "jagan-residence",
+    "kripa"
+  ]
+},
+{
+  "id": "proj-ongoing-7",
+  "slug": "praana-villas",
+  "title": "PRAANA VILLAS",
+  "category": "Residential",
+  "status": "ongoing",
+  "location": "Bengaluru, India",
+  "year": 2026,
+  "client": "Praana Living",
+  "area": "18,500 sq.ft",
+  "description": "An exclusive enclave of luxury tropical villas centered around shared botanical commons, water pavilions, and private landscaped enclaves.",
+  "processNarrative": "Praana Villas creates an integrated community masterplan where each villa orientation maximizes prevailing breezes and solar orientation while looking out onto landscaped community promenades.",
+  "mainImage": "/projects/praana-villas/east-villa-elevation.jpg",
+  "gallery": [
+    {
+      "url": "/projects/praana-villas/east-villa-elevation.jpg",
+      "caption": "East villa elevation with contemporary tropical volumes",
+      "aspect": "full"
+    },
+    {
+      "url": "/projects/praana-villas/west-villa-elevation.jpg",
+      "caption": "West villa elevation featuring climate-responsive overhangs",
+      "aspect": "full"
+    },
+    {
+      "url": "/projects/praana-villas/common-space.jpg",
+      "caption": "Central landscaped common space and communal pavilions",
+      "aspect": "landscape"
+    }
+  ],
+  "servicesInvolved": [
+    "Master Planning",
+    "Architectural Design",
+    "Landscape Architecture"
+  ],
+  "teamMembers": [
+    "Ar. Rajesh Shivaram",
+    "Technoarchitecture Design Studio"
+  ],
+  "credits": {
+    "principalArchitect": "Ar. Rajesh Shivaram",
+    "projectArchitect": "Technoarchitecture Studio",
+    "team": "Ar. Rajesh Shivaram & Studio Team",
+    "landscapeArchitect": "Verdant Studio",
+    "lightingConsultant": "Lumen Praxis",
+    "generalContractor": "Apex Buildtech Projects"
+  },
+  "featured": true,
+  "relatedSlugs": [
+    "sneha-residence",
+    "anandam-residence",
+    "brindavan"
+  ]
+}
 ];

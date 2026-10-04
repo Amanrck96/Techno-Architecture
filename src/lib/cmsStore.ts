@@ -28,7 +28,7 @@ export function sanitizeProjectsList(list: any[]): Project[] {
 }
 
 export const STORAGE_KEYS = {
-  PROJECTS: "techno_cms_projects_v8",
+  PROJECTS: "techno_cms_projects_v9",
   SERVICES: "techno_cms_services_v5",
   TEAM: "techno_cms_team_v5",
   BLOG: "techno_cms_blog_v5",
