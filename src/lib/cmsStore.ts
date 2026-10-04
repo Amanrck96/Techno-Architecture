@@ -15,7 +15,7 @@ export const VALID_PROJECT_CATEGORIES = ["Residential", "Commercial", "Hospitali
 export type ValidProjectCategory = (typeof VALID_PROJECT_CATEGORIES)[number];
 
 export function sanitizeProjectCategory(cat: any): ValidProjectCategory {
-  if (cat === "Commercial" || cat === "Hospitality" || cat === "Interior") return cat;
+  if ((VALID_PROJECT_CATEGORIES as readonly string[]).includes(cat)) return cat as ValidProjectCategory;
   return "Residential";
 }
 
@@ -28,7 +28,7 @@ export function sanitizeProjectsList(list: any[]): Project[] {
 }
 
 export const STORAGE_KEYS = {
-  PROJECTS: "techno_cms_projects_v7",
+  PROJECTS: "techno_cms_projects_v8",
   SERVICES: "techno_cms_services_v5",
   TEAM: "techno_cms_team_v5",
   BLOG: "techno_cms_blog_v5",
@@ -334,8 +334,9 @@ export function useCMSStore() {
   useEffect(() => {
     setIsClient(true);
 
-    // 1. Quick initial hydration from local cache if present (purging legacy v6/v5 caches)
+    // 1. Quick initial hydration from local cache if present (purging legacy caches)
     try {
+      localStorage.removeItem("techno_cms_projects_v7");
       localStorage.removeItem("techno_cms_projects_v6");
       localStorage.removeItem("techno_cms_projects_v5");
       const sp = localStorage.getItem(STORAGE_KEYS.PROJECTS);
@@ -372,7 +373,8 @@ export function useCMSStore() {
         channel.onmessage = (event) => {
           if (event.data?.type === "CMS_UPDATE") {
             const { entity, data } = event.data;
-            if (entity === "projects") setProjects(data);
+            if (entity === "projects") setProjects(sanitizeProjectsList(data));
+
             else if (entity === "services") setServices(data);
             else if (entity === "team") setTeam(data);
             else if (entity === "blog") setBlog(data);
@@ -392,7 +394,7 @@ export function useCMSStore() {
       const customEvent = e as CustomEvent;
       if (customEvent.detail) {
         const { entity, data } = customEvent.detail;
-        if (entity === "projects") setProjects(data);
+        if (entity === "projects") setProjects(sanitizeProjectsList(data));
         else if (entity === "services") setServices(data);
         else if (entity === "team") setTeam(data);
         else if (entity === "blog") setBlog(data);
