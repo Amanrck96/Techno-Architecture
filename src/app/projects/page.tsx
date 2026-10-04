@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Shuffle, RotateCcw } from "lucide-react";
@@ -9,9 +9,20 @@ import { Project } from "@/data/projects";
 import { cn } from "@/lib/utils";
 
 export default function ProjectsDirectoryPage() {
-  const { projects } = useCMSStore();
+  const { projects, saveProjects } = useCMSStore();
   const [activeFilter, setActiveFilter] = useState<string>("all");
   const [shuffledOrder, setShuffledOrder] = useState<string[] | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const token =
+        localStorage.getItem("techno_admin_token") ||
+        sessionStorage.getItem("techno_admin_token");
+      setIsAdmin(!!token);
+    }
+  }, []);
 
   const filterTabs = [
     { id: "all", label: "ALL WORKS" },
@@ -94,7 +105,7 @@ export default function ProjectsDirectoryPage() {
           </div>
         </div>
 
-        {/* Dedicated Views Sublinks & Shuffle Controls */}
+        {/* Dedicated Views Sublinks & Admin Shuffle Controls */}
         <div className="flex flex-wrap items-center justify-between gap-4 text-[10px] tracking-[0.2em] uppercase text-neutral-400 px-1 mb-8">
           <div className="flex flex-wrap items-center gap-6">
             <span className="font-medium">Direct Views:</span>
@@ -106,33 +117,53 @@ export default function ProjectsDirectoryPage() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleShuffle}
-              className={cn(
-                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xs border text-[10px] tracking-[0.2em] uppercase font-medium transition-all duration-200 cursor-pointer",
-                shuffledOrder
-                  ? "bg-black text-white border-black shadow-xs hover:bg-neutral-800"
-                  : "bg-white text-neutral-700 border-neutral-300 hover:text-black hover:border-black"
-              )}
-              title="Shuffle / randomize projects order"
-            >
-              <Shuffle size={12} />
-              <span>{shuffledOrder ? "Shuffle Again" : "Shuffle Projects"}</span>
-            </button>
-            {shuffledOrder && (
+          {isAdmin && (
+            <div className="flex items-center gap-2 bg-neutral-50 px-2.5 py-1.5 border border-neutral-200 rounded">
+              <span className="text-[9px] font-mono text-amber-700 font-semibold px-1">ADMIN ONLY</span>
               <button
                 type="button"
-                onClick={handleResetOrder}
-                className="inline-flex items-center gap-1 px-2.5 py-1.5 text-neutral-500 hover:text-black transition-colors text-[10px] tracking-[0.18em] uppercase cursor-pointer"
-                title="Reset to default order"
+                onClick={handleShuffle}
+                className={cn(
+                  "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xs border text-[10px] tracking-[0.2em] uppercase font-medium transition-all duration-200 cursor-pointer",
+                  shuffledOrder
+                    ? "bg-black text-white border-black shadow-xs hover:bg-neutral-800"
+                    : "bg-white text-neutral-700 border-neutral-300 hover:text-black hover:border-black"
+                )}
+                title="Shuffle / randomize projects order (Admin only)"
               >
-                <RotateCcw size={11} />
-                <span>Reset</span>
+                <Shuffle size={12} />
+                <span>{shuffledOrder ? "Shuffle Again" : "Shuffle Projects"}</span>
               </button>
-            )}
-          </div>
+              {shuffledOrder && (
+                <>
+                  <button
+                    type="button"
+                    onClick={handleResetOrder}
+                    className="inline-flex items-center gap-1 px-2.5 py-1.5 text-neutral-500 hover:text-black transition-colors text-[10px] tracking-[0.18em] uppercase cursor-pointer"
+                    title="Reset to default order"
+                  >
+                    <RotateCcw size={11} />
+                    <span>Reset</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (confirm("Save this shuffled order permanently to portfolio and live website?")) {
+                        const newPortfolioOrder = [...displayedProjects];
+                        saveProjects(newPortfolioOrder);
+                        setSaveSuccess(true);
+                        setTimeout(() => setSaveSuccess(false), 3000);
+                      }
+                    }}
+                    className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-neutral-900 text-white hover:bg-neutral-800 transition-colors text-[10px] tracking-[0.18em] uppercase font-medium rounded-xs cursor-pointer"
+                    title="Save current order permanently to CMS and cloud"
+                  >
+                    {saveSuccess ? "Saved!" : "Save Order"}
+                  </button>
+                </>
+              )}
+            </div>
+          )}
         </div>
 
         {/* 3-Column Reference-Style Architectural Grid */}
