@@ -9,7 +9,7 @@
       "location": "Bengaluru, India",
       "year": 2021,
       "client": "Private Client",
-      "area": "6500 sq.ft",
+      "area": "6500 sq.ft.",
       "description": "A contemporary tropical sanctuary defined by interlocking geometric volumes, warm timber louvers, and a serene internal courtyard woven with water bodies and lush foliage.",
       "processNarrative": "Aikya — embodying unity, harmony, and connection — dissolves the boundary between architecture and nature. Designed around climate-responsive passive physics, the residence features cantilevered deep overhangs, a double-height living pavilion with mezzanine study, an internal courtyard with reflecting koi pond, and tactile timber screening that filters Bengaluru's tropical light into poetic shadow play.",
       "mainImage": "/projects/aikya/elevation-east.jpg",
@@ -4663,5 +4663,5 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-05T05:44:06.961Z"
+  "updatedAt": "2026-10-05T05:44:08.356Z"
 }
