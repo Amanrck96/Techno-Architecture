@@ -11,9 +11,10 @@ import { useCMSStore } from "@/lib/cmsStore";
 export default function LandingGallery() {
   const router = useRouter();
   const { projects } = useCMSStore();
-  const showcaseProjects = projects.filter(
-    (p) => (p.featured || p.status === "completed") && !p.mainImage.startsWith("http")
-  );
+  // On main landing page (https://www.technoarchitecture.co.in/), strictly show ONLY 10 completed projects
+  const showcaseProjects = projects
+    .filter((p) => p.status === "completed")
+    .slice(0, 10);
 
   const [currentIndex, setCurrentIndex] = useState(0);
 

@@ -102,10 +102,10 @@ export default function HomeProjectsGrid() {
       {/* View All Projects link */}
       <div className="mt-10 text-center">
         <Link
-          href="/projects"
+          href="/projects?filter=completed"
           className="inline-block text-[10px] tracking-[0.25em] uppercase font-semibold text-neutral-900 hover:text-neutral-600 border-b border-black pb-1 hover:border-neutral-400 transition-colors"
         >
-          VIEW COMPLETE PROJECT REPERTOIRE ({projects.length}) →
+          VIEW ALL COMPLETED ARCHITECTURAL WORKS ({completedProjects.length}) →
         </Link>
       </div>
     </section>
