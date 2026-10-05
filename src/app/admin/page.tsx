@@ -71,6 +71,12 @@ import {
   Key,
   Check,
   Camera,
+  Inbox,
+  RefreshCw,
+  Clock,
+  CheckCheck,
+  Archive,
+  ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ImageMouseAdjuster } from "@/components/admin/ImageMouseAdjuster";
@@ -84,7 +90,21 @@ type AdminTab =
   | "gallery"
   | "recognitions"
   | "testimonials"
-  | "settings";
+  | "settings"
+  | "leads";
+
+interface EnquiryLead {
+  id: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  company: string;
+  service: string;
+  budget: string;
+  message: string;
+  status: "new" | "reviewed" | "archived";
+  createdAt: string;
+}
 
 export default function AdminCMSPage() {
   const {
@@ -147,6 +167,13 @@ export default function AdminCMSPage() {
   const [expandedProjectId, setExpandedProjectId] = useState<string | null>(null);
   const [expandedBlogId, setExpandedBlogId] = useState<string | null>(null);
 
+  // Leads state
+  const [leads, setLeads] = useState<EnquiryLead[]>([]);
+  const [leadsLoading, setLeadsLoading] = useState(false);
+  const [leadsError, setLeadsError] = useState<string | null>(null);
+  const [expandedLeadId, setExpandedLeadId] = useState<string | null>(null);
+  const [leadsFilter, setLeadsFilter] = useState<"all" | "new" | "reviewed" | "archived">("all");
+
   // File import ref
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -191,6 +218,58 @@ export default function AdminCMSPage() {
     }
     checkAuthSession();
   }, []);
+
+  // Fetch leads from Firestore whenever the leads tab is activated
+  const fetchLeads = async () => {
+    setLeadsLoading(true);
+    setLeadsError(null);
+    try {
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("techno_admin_token") ||
+            sessionStorage.getItem("techno_admin_token")
+          : null;
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+        headers["x-admin-token"] = token;
+      }
+      const res = await fetch("/api/admin/leads", { headers, cache: "no-store" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to fetch leads");
+      setLeads(data.leads || []);
+    } catch (err: any) {
+      setLeadsError(err.message || "Failed to load enquiry leads.");
+    } finally {
+      setLeadsLoading(false);
+    }
+  };
+
+  const updateLeadStatus = async (id: string, status: string) => {
+    try {
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("techno_admin_token") ||
+            sessionStorage.getItem("techno_admin_token")
+          : null;
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+        headers["x-admin-token"] = token;
+      }
+      await fetch("/api/admin/leads", {
+        method: "PATCH",
+        headers,
+        body: JSON.stringify({ id, status }),
+      });
+      setLeads((prev) =>
+        prev.map((l) => (l.id === id ? { ...l, status: status as any } : l))
+      );
+      showToast(`Lead marked as ${status}.`);
+    } catch (err: any) {
+      showToast("Failed to update lead status.");
+    }
+  };
 
   // 2. Handle Login Submission (Password & Firebase Email)
   const handleLogin = async (e: React.FormEvent) => {
@@ -1084,6 +1163,22 @@ export default function AdminCMSPage() {
         >
           <Settings size={14} />
           <span>Settings</span>
+        </button>
+
+        <button
+          onClick={() => {
+            setActiveTab("leads");
+            fetchLeads();
+          }}
+          className={cn(
+            "flex items-center gap-1.5 px-3.5 py-2 text-xs uppercase tracking-wider font-medium transition-colors",
+            activeTab === "leads"
+              ? "border-b-2 border-emerald-600 text-emerald-700 font-semibold"
+              : "text-neutral-500 hover:text-black"
+          )}
+        >
+          <Inbox size={14} />
+          <span>Leads {leads.length > 0 ? `(${leads.filter(l => l.status === "new").length} new)` : ""}</span>
         </button>
       </div>
 
@@ -4558,6 +4653,234 @@ export default function AdminCMSPage() {
               <span>Save & Publish All Settings</span>
             </button>
           </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* LEADS / ENQUIRIES TAB                                     */}
+      {/* ========================================================= */}
+      {activeTab === "leads" && (
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+            <div>
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
+                <Inbox size={16} className="text-emerald-600" />
+                Enquiry Leads & Contact Submissions
+              </h2>
+              <p className="text-xs text-neutral-500 mt-1">
+                All enquiries submitted via the contact form — stored permanently in Firestore.
+              </p>
+            </div>
+            <button
+              onClick={fetchLeads}
+              disabled={leadsLoading}
+              className="flex items-center gap-1.5 px-4 py-2 bg-neutral-900 text-white text-xs uppercase tracking-wider rounded hover:bg-neutral-700 disabled:opacity-50 transition-colors"
+            >
+              <RefreshCw size={12} className={leadsLoading ? "animate-spin" : ""} />
+              <span>{leadsLoading ? "Loading..." : "Refresh Leads"}</span>
+            </button>
+          </div>
+
+          {/* Filter Tabs */}
+          <div className="flex gap-2 flex-wrap">
+            {(["all", "new", "reviewed", "archived"] as const).map((f) => (
+              <button
+                key={f}
+                onClick={() => setLeadsFilter(f)}
+                className={cn(
+                  "px-3 py-1.5 text-[10px] uppercase tracking-widest rounded transition-colors font-medium",
+                  leadsFilter === f
+                    ? f === "new"
+                      ? "bg-emerald-600 text-white"
+                      : f === "archived"
+                      ? "bg-neutral-400 text-white"
+                      : "bg-black text-white"
+                    : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
+                )}
+              >
+                {f === "all" ? `All (${leads.length})` : `${f} (${leads.filter((l) => l.status === f).length})`}
+              </button>
+            ))}
+          </div>
+
+          {/* Error state */}
+          {leadsError && (
+            <div className="p-4 bg-red-50 border border-red-200 rounded flex items-start gap-2 text-xs text-red-700">
+              <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
+              <span>{leadsError}</span>
+            </div>
+          )}
+
+          {/* Empty / Loading state */}
+          {leadsLoading && (
+            <div className="flex flex-col items-center justify-center py-16 gap-3 text-neutral-400">
+              <RefreshCw size={24} className="animate-spin" />
+              <span className="text-xs uppercase tracking-widest">Fetching leads from Firestore...</span>
+            </div>
+          )}
+
+          {!leadsLoading && !leadsError && leads.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-16 gap-3 text-neutral-400 border border-dashed border-neutral-200 rounded">
+              <Inbox size={32} strokeWidth={1} />
+              <span className="text-xs uppercase tracking-widest">No enquiry leads yet</span>
+              <span className="text-[11px] text-neutral-400">Submissions from the contact form will appear here.</span>
+            </div>
+          )}
+
+          {/* Leads Table */}
+          {!leadsLoading && leads.filter((l) => leadsFilter === "all" || l.status === leadsFilter).length > 0 && (
+            <div className="space-y-3">
+              {leads
+                .filter((l) => leadsFilter === "all" || l.status === leadsFilter)
+                .map((lead) => {
+                  const isExpanded = expandedLeadId === lead.id;
+                  const statusColors: Record<string, string> = {
+                    new: "bg-emerald-50 text-emerald-700 border-emerald-200",
+                    reviewed: "bg-blue-50 text-blue-700 border-blue-200",
+                    archived: "bg-neutral-100 text-neutral-500 border-neutral-200",
+                  };
+                  const statusIcons: Record<string, React.ReactNode> = {
+                    new: <Clock size={10} />,
+                    reviewed: <CheckCheck size={10} />,
+                    archived: <Archive size={10} />,
+                  };
+
+                  return (
+                    <div
+                      key={lead.id}
+                      className={cn(
+                        "border rounded-lg overflow-hidden transition-all duration-200",
+                        lead.status === "new" ? "border-emerald-200 bg-emerald-50/30" : "border-neutral-200 bg-white"
+                      )}
+                    >
+                      {/* Lead Row Header */}
+                      <div
+                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 cursor-pointer hover:bg-neutral-50 transition-colors"
+                        onClick={() => setExpandedLeadId(isExpanded ? null : lead.id)}
+                      >
+                        <div className="flex items-start gap-3 min-w-0">
+                          {/* Status Badge */}
+                          <span
+                            className={cn(
+                              "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] uppercase font-semibold tracking-wider border flex-shrink-0 mt-0.5",
+                              statusColors[lead.status] || statusColors.new
+                            )}
+                          >
+                            {statusIcons[lead.status]}
+                            {lead.status}
+                          </span>
+
+                          <div className="min-w-0">
+                            <div className="font-semibold text-xs text-neutral-900 truncate">
+                              {lead.fullName || "—"}
+                            </div>
+                            <div className="text-[11px] text-neutral-500 mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5">
+                              <span className="flex items-center gap-1">
+                                <Mail size={9} /> {lead.email}
+                              </span>
+                              {lead.phone && lead.phone !== "Not provided" && (
+                                <span className="flex items-center gap-1">
+                                  <Phone size={9} /> {lead.phone}
+                                </span>
+                              )}
+                              {lead.service && lead.service !== "General Architecture & Design Enquiry" && (
+                                <span className="text-neutral-400">{lead.service}</span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          {lead.createdAt && (
+                            <span className="text-[10px] text-neutral-400 font-mono hidden md:block">
+                              {new Date(lead.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
+                            </span>
+                          )}
+                          <ChevronRight
+                            size={14}
+                            className={cn(
+                              "text-neutral-400 transition-transform duration-200",
+                              isExpanded ? "rotate-90" : ""
+                            )}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Expanded Detail Panel */}
+                      {isExpanded && (
+                        <div className="px-4 pb-4 border-t border-neutral-100 space-y-4 pt-4">
+                          {/* Meta Grid */}
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                            <div>
+                              <span className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">Company</span>
+                              <span className="text-neutral-700">{lead.company || "—"}</span>
+                            </div>
+                            <div>
+                              <span className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">Budget</span>
+                              <span className="text-neutral-700">{lead.budget || "Not specified"}</span>
+                            </div>
+                            <div>
+                              <span className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">Service Interest</span>
+                              <span className="text-neutral-700">{lead.service || "—"}</span>
+                            </div>
+                            <div>
+                              <span className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">Received</span>
+                              <span className="text-neutral-700 font-mono">
+                                {lead.createdAt ? new Date(lead.createdAt).toLocaleString("en-IN") : "—"}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Message */}
+                          <div>
+                            <span className="text-[9px] uppercase font-mono text-neutral-400 block mb-1.5">Message</span>
+                            <div className="p-3 bg-neutral-50 border border-neutral-200 rounded text-xs text-neutral-700 leading-relaxed whitespace-pre-wrap">
+                              {lead.message}
+                            </div>
+                          </div>
+
+                          {/* Actions */}
+                          <div className="flex flex-wrap items-center gap-2 pt-1">
+                            <span className="text-[10px] uppercase font-mono text-neutral-400">Mark as:</span>
+                            {lead.status !== "new" && (
+                              <button
+                                onClick={() => updateLeadStatus(lead.id, "new")}
+                                className="flex items-center gap-1 px-3 py-1 text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 rounded hover:bg-emerald-100 transition-colors uppercase tracking-wider"
+                              >
+                                <Clock size={10} /> New
+                              </button>
+                            )}
+                            {lead.status !== "reviewed" && (
+                              <button
+                                onClick={() => updateLeadStatus(lead.id, "reviewed")}
+                                className="flex items-center gap-1 px-3 py-1 text-[10px] bg-blue-50 text-blue-700 border border-blue-200 rounded hover:bg-blue-100 transition-colors uppercase tracking-wider"
+                              >
+                                <CheckCheck size={10} /> Reviewed
+                              </button>
+                            )}
+                            {lead.status !== "archived" && (
+                              <button
+                                onClick={() => updateLeadStatus(lead.id, "archived")}
+                                className="flex items-center gap-1 px-3 py-1 text-[10px] bg-neutral-100 text-neutral-600 border border-neutral-200 rounded hover:bg-neutral-200 transition-colors uppercase tracking-wider"
+                              >
+                                <Archive size={10} /> Archive
+                              </button>
+                            )}
+                            <a
+                              href={`mailto:${lead.email}?subject=Re: Your Architectural Enquiry — Techno Architecture&body=Dear ${lead.fullName},%0A%0AThank you for reaching out to Techno Architecture.`}
+                              className="flex items-center gap-1 px-3 py-1 text-[10px] bg-black text-white rounded hover:bg-neutral-800 transition-colors uppercase tracking-wider ml-auto"
+                            >
+                              <Mail size={10} /> Reply via Email
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+            </div>
+          )}
         </div>
       )}
       </div>

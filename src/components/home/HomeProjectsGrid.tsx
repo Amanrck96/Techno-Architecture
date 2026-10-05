@@ -1,69 +1,47 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCMSStore } from "@/lib/cmsStore";
 import { Project } from "@/data/projects";
-import { cn } from "@/lib/utils";
+
+const HOME_COMPLETED_LIMIT = 10;
 
 export default function HomeProjectsGrid() {
   const { projects } = useCMSStore();
-  const [filter, setFilter] = useState<string>("all");
 
-  const categories = [
-    { id: "all", label: "ALL WORKS" },
-    { id: "completed", label: "COMPLETED" },
-    { id: "ongoing", label: "ONGOING" },
-    { id: "Residential", label: "RESIDENTIAL" },
-    { id: "Commercial", label: "COMMERCIAL" },
-    { id: "Hospitality", label: "HOSPITALITY" },
-    { id: "Interior", label: "INTERIOR" },
-  ];
+  // Show ONLY completed projects, capped at 10
+  const completedProjects = projects
+    .filter((p) => p.status === "completed")
+    .slice(0, HOME_COMPLETED_LIMIT);
 
-  const filteredProjects = projects.filter((p) => {
-    if (filter === "all") return true;
-    if (filter === "completed") return p.status === "completed";
-    if (filter === "ongoing") return p.status === "ongoing";
-    return p.category === filter;
-  });
+  const totalCompleted = projects.filter((p) => p.status === "completed").length;
 
   return (
     <section id="projects" className="w-full py-12 md:py-16 px-4 md:px-8 scroll-mt-20">
-      {/* Section Header & Architectural Filter Bar */}
+      {/* Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-4 border-b border-neutral-200 gap-4">
         <div>
           <h2 className="text-[11px] uppercase tracking-[0.3em] font-semibold text-neutral-900">
-            FEATURED PROJECTS
+            COMPLETED PROJECTS
           </h2>
           <p className="text-xs text-neutral-500 mt-1 tracking-wide">
-            A selection of completed and ongoing work across residential, commercial, hospitality and interior design.
+            A curated selection of {HOME_COMPLETED_LIMIT} completed works across residential, commercial, hospitality and interior design.
           </p>
         </div>
 
-        {/* Filter Pills */}
-        <div className="flex flex-wrap items-center gap-2.5 md:gap-3.5">
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setFilter(cat.id)}
-              type="button"
-              className={cn(
-                "text-[10px] tracking-[0.2em] uppercase py-1.5 px-3 transition-all duration-300 rounded-xs",
-                filter === cat.id
-                  ? "bg-black text-white font-medium shadow-xs"
-                  : "text-neutral-500 hover:text-black hover:bg-neutral-100"
-              )}
-            >
-              {cat.label}
-            </button>
-          ))}
-        </div>
+        <Link
+          href="/projects?filter=completed"
+          className="text-[10px] tracking-[0.2em] uppercase text-neutral-500 hover:text-black transition-colors border-b border-neutral-300 hover:border-black pb-0.5 whitespace-nowrap self-end"
+        >
+          View All {totalCompleted} Completed →
+        </Link>
       </div>
 
-      {/* 3-Column Reference-Style Architectural Grid (0.5% margin rhythm) */}
+      {/* 3-Column Reference-Style Architectural Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-2.5">
-        {filteredProjects.map((project: Project) => (
+        {completedProjects.map((project: Project) => (
           <div
             key={project.id}
             className="group relative aspect-[4/3] w-full overflow-hidden bg-neutral-100"
@@ -81,7 +59,7 @@ export default function HomeProjectsGrid() {
                 className="object-cover transition-transform duration-700 ease-editorial group-hover:scale-105"
               />
 
-              {/* Reference Hover Overlay with Center 5px Letterspaced Title & Bottom Category */}
+              {/* Reference Hover Overlay */}
               <div className="absolute inset-0 bg-neutral-900/80 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-between p-6 text-center text-white pointer-events-none">
                 <div className="text-[9px] tracking-[0.25em] text-neutral-400 uppercase">
                   {project.location} · {project.year}
@@ -97,7 +75,7 @@ export default function HomeProjectsGrid() {
                 </div>
 
                 <div className="flex items-center justify-between text-[9px] tracking-[0.2em] text-neutral-300 uppercase font-light">
-                  <span>{project.category} · {project.status.toUpperCase()}</span>
+                  <span>{project.category} · COMPLETED</span>
                   <span className="text-white/80 underline underline-offset-4">VIEW DOSSIER →</span>
                 </div>
               </div>
