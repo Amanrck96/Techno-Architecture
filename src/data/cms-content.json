@@ -67,11 +67,12 @@
       ],
       "credits": {
         "principalArchitect": "Ar. Rajesh Shivaram",
-        "projectArchitect": "Vikramaditya Shenoy",
+        "projectArchitect": "de",
         "team": "Ar. Rajesh Shivaram, Karthik Sundaram, Divya Raghavan",
         "landscapeArchitect": "Verdant Studio",
         "lightingConsultant": "Lumen Praxis",
-        "generalContractor": "Apex Buildtech Projects"
+        "generalContractor": "Apex Buildtech Projects",
+        "projectLead": "de"
       },
       "featured": true,
       "relatedSlugs": [
@@ -4663,5 +4664,5 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-05T05:46:12.097Z"
+  "updatedAt": "2026-10-05T05:46:15.837Z"
 }
