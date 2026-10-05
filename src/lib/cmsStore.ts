@@ -30,7 +30,7 @@ export function sanitizeProjectsList(list: any[]): Project[] {
 export const STORAGE_KEYS = {
   PROJECTS: "techno_cms_projects_v9",
   SERVICES: "techno_cms_services_v5",
-  TEAM: "techno_cms_team_v5",
+  TEAM: "techno_cms_team_v8",
   BLOG: "techno_cms_blog_v5",
   FAQ: "techno_cms_faq_v5",
   GALLERY: "techno_cms_gallery_v5",
@@ -230,9 +230,16 @@ export function useCMSStore() {
       setServices(data.services);
       try { localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(data.services)); } catch (_) {}
     }
-    if (Array.isArray(data.team)) {
-      setTeam(data.team);
-      try { localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(data.team)); } catch (_) {}
+    if (Array.isArray(data.team) && data.team.length > 0) {
+      const sanitizedTeam = data.team.map((m: any) => {
+        if (!m.image) {
+          const fallback = initialTeam.find((it) => it.id === m.id || it.name === m.name);
+          if (fallback?.image) return { ...m, image: fallback.image };
+        }
+        return m;
+      });
+      setTeam(sanitizedTeam);
+      try { localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(sanitizedTeam)); } catch (_) {}
     }
     if (Array.isArray(data.blog)) {
       setBlog(data.blog);
@@ -339,6 +346,9 @@ export function useCMSStore() {
       localStorage.removeItem("techno_cms_projects_v7");
       localStorage.removeItem("techno_cms_projects_v6");
       localStorage.removeItem("techno_cms_projects_v5");
+      localStorage.removeItem("techno_cms_team_v7");
+      localStorage.removeItem("techno_cms_team_v6");
+      localStorage.removeItem("techno_cms_team_v5");
       const sp = localStorage.getItem(STORAGE_KEYS.PROJECTS);
       if (sp) {
         const parsed = JSON.parse(sp);
@@ -347,7 +357,21 @@ export function useCMSStore() {
       const ss = localStorage.getItem(STORAGE_KEYS.SERVICES);
       if (ss) setServices(JSON.parse(ss));
       const st = localStorage.getItem(STORAGE_KEYS.TEAM);
-      if (st) setTeam(JSON.parse(st));
+      if (st) {
+        try {
+          const parsedTeam = JSON.parse(st);
+          if (Array.isArray(parsedTeam) && parsedTeam.length > 0) {
+            const sanitizedTeam = parsedTeam.map((m: any) => {
+              if (!m.image) {
+                const fallback = initialTeam.find((it) => it.id === m.id || it.name === m.name);
+                if (fallback?.image) return { ...m, image: fallback.image };
+              }
+              return m;
+            });
+            setTeam(sanitizedTeam);
+          }
+        } catch (_) {}
+      }
       const sb = localStorage.getItem(STORAGE_KEYS.BLOG);
       if (sb) setBlog(JSON.parse(sb));
       const sf = localStorage.getItem(STORAGE_KEYS.FAQ);
