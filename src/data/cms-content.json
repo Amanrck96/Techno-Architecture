@@ -67,12 +67,12 @@
       ],
       "credits": {
         "principalArchitect": "Ar. Rajesh Shivaram",
-        "projectArchitect": "de",
+        "projectArchitect": "",
         "team": "Ar. Rajesh Shivaram, Karthik Sundaram, Divya Raghavan",
         "landscapeArchitect": "Verdant Studio",
         "lightingConsultant": "Lumen Praxis",
         "generalContractor": "Apex Buildtech Projects",
-        "projectLead": "de"
+        "projectLead": ""
       },
       "featured": true,
       "relatedSlugs": [
@@ -4664,5 +4664,5 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-05T05:46:15.837Z"
+  "updatedAt": "2026-10-05T05:46:18.250Z"
 }
