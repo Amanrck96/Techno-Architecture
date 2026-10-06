@@ -629,6 +629,12 @@
         "clientName": "K. S. Balasubramanian & Family",
         "designation": "Homeowners",
         "company": "Brindavan Villa"
+      },
+      "videoTour": {
+        "title": "Brindavan Villa Architectural Film Walkthrough | Techno Architecture",
+        "url": "/projects/brindavan/brindavan.mp4",
+        "platform": "Film",
+        "actionText": "Watch Architectural Film"
       }
     },
     {

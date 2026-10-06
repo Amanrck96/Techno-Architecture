@@ -1,60 +1,73 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useCMSStore } from "@/lib/cmsStore";
+import { Volume2, VolumeX, Play, Pause, ArrowRight } from "lucide-react";
 
 export default function LandingGallery() {
-  const router = useRouter();
-  const { projects } = useCMSStore();
-  // On main landing page (https://www.technoarchitecture.co.in/), strictly show ONLY 10 completed projects
-  const showcaseProjects = projects
-    .filter((p) => p.status === "completed")
-    .slice(0, 10);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
+  const [progress, setProgress] = useState(0);
+  const [showPlayOverlay, setShowPlayOverlay] = useState(false);
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const nextSlide = useCallback(() => {
-    if (showcaseProjects.length === 0) return;
-    setCurrentIndex((prev) => (prev + 1) % showcaseProjects.length);
-  }, [showcaseProjects.length]);
-
-  const prevSlide = useCallback(() => {
-    if (showcaseProjects.length === 0) return;
-    setCurrentIndex((prev) => (prev - 1 + showcaseProjects.length) % showcaseProjects.length);
-  }, [showcaseProjects.length]);
-
-  // Autoplay gallery animation every 5.5 seconds
+  // Guarantee autoplay on mount with standard browser policy compliance (muted)
   useEffect(() => {
-    if (showcaseProjects.length === 0) return;
-    const interval = setInterval(nextSlide, 5500);
-    return () => clearInterval(interval);
-  }, [nextSlide, showcaseProjects.length]);
+    const video = videoRef.current;
+    if (!video) return;
 
-  if (showcaseProjects.length === 0) return null;
+    video.muted = true;
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => setIsPlaying(true))
+        .catch(() => {
+          // Autoplay was prevented by browser policy
+          setIsPlaying(false);
+        });
+    }
+  }, []);
 
-  const currentProject = showcaseProjects[currentIndex];
-  // Select premier high-res landscape photograph from project or fallback to mainImage
-  const heroImage =
-    currentProject.gallery?.find((g) => g.aspect === "full" || g.aspect === "landscape")?.url ||
-    currentProject.mainImage;
-
-  const handleImageClick = () => {
-    nextSlide();
+  // Update progress bar
+  const handleTimeUpdate = () => {
+    const video = videoRef.current;
+    if (!video || !video.duration) return;
+    setProgress((video.currentTime / video.duration) * 100);
   };
+
+  // Toggle Play / Pause
+  const togglePlay = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (video.paused) {
+      video.play().then(() => setIsPlaying(true)).catch(() => {});
+      setShowPlayOverlay(false);
+    } else {
+      video.pause();
+      setIsPlaying(false);
+      setShowPlayOverlay(true);
+    }
+  }, []);
+
+  // Toggle Mute / Unmute
+  const toggleMute = useCallback((e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    const video = videoRef.current;
+    if (!video) return;
+
+    const nextMuted = !video.muted;
+    video.muted = nextMuted;
+    setIsMuted(nextMuted);
+  }, []);
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-neutral-950 flex flex-col select-none">
-      {/* 1. TOP FULL BOX — ONLY LOGO & BENGALURU · INDIA (Landing Page) */}
+      {/* 1. TOP HEADER — Official Brand Identity linking into studio */}
       <header className="relative z-30 w-full bg-white border-b border-neutral-200 px-6 sm:px-10 lg:px-16 py-3 sm:py-3.5 md:py-4 flex items-center justify-between shrink-0 shadow-xs">
-        {/* Official Brand Logo + Bengaluru · India centralized below logo */}
         <Link
           href="/home"
-          onClick={(e) => e.stopPropagation()}
           className="inline-flex flex-col items-center group focus:outline-none transition-opacity hover:opacity-90 w-48 sm:w-60 md:w-72 lg:w-80"
           aria-label="Techno Architecture — Enter Studio"
         >
@@ -73,107 +86,128 @@ export default function LandingGallery() {
             {"BENGALURU \u00B7 INDIA"}
           </div>
         </Link>
+
+        {/* Quick Direct Link to Enter Studio */}
+        <Link
+          href="/home"
+          className="hidden sm:inline-flex items-center gap-2 text-[10px] tracking-[0.2em] uppercase font-semibold text-neutral-900 hover:text-black border border-neutral-300 hover:border-black px-4 py-2 transition-colors"
+        >
+          <span>ENTER STUDIO</span>
+          <ArrowRight size={13} />
+        </Link>
       </header>
 
-      {/* 2. HERO IMAGE SLIDER AREA — Unobstructed Full Architectural Visual */}
+      {/* 2. EXCLUSIVE FULLSCREEN VIDEO HERO (Landing Page Only) */}
       <div
-        onClick={handleImageClick}
-        className="relative flex-1 w-full overflow-hidden bg-neutral-950 text-white cursor-pointer"
-        aria-label="Click to advance to next project"
+        onClick={togglePlay}
+        className="relative flex-1 w-full overflow-hidden bg-neutral-950 text-white cursor-pointer group"
+        aria-label="Click to play or pause video"
       >
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentProject.id}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute inset-0 z-0"
-          >
-            <Image
-              src={heroImage}
-              alt={`Techno Architecture — ${currentProject.title}`}
-              fill
-              priority
-              unoptimized
-              quality={100}
-              sizes="100vw"
-              className="object-cover object-center select-none"
-              style={{ imageRendering: "auto" }}
-            />
-            {/* Subtle Legibility Vignette at bottom */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/10 pointer-events-none" />
-          </motion.div>
-        </AnimatePresence>
+        <video
+          ref={videoRef}
+          src="/brindavan.mp4"
+          autoPlay
+          loop
+          muted={isMuted}
+          playsInline
+          preload="auto"
+          onTimeUpdate={handleTimeUpdate}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
 
-        {/* 3. BOTTOM CAPTION & INTERACTIVE NAVIGATION */}
+        {/* Ambient Vignette & Contrast Gradients for visual elegance & readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/30 pointer-events-none" />
+
+        {/* Play/Pause Overlay Indicator when paused */}
+        {!isPlaying && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/35 backdrop-blur-[2px] transition-all pointer-events-none">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/20 border border-white/40 backdrop-blur-md flex items-center justify-center text-white shadow-2xl pl-1">
+              <Play size={28} className="fill-white" />
+            </div>
+          </div>
+        )}
+
+        {/* 3. BOTTOM CAPTION & INTERACTIVE CONTROLS */}
         <div className="absolute bottom-0 left-0 right-0 z-20 p-4 sm:p-6 md:p-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4 pointer-events-none">
-          <div className="space-y-1 bg-black/60 backdrop-blur-md p-3.5 sm:p-4 border border-white/15 max-w-lg pointer-events-auto">
+          {/* Architectural Statement / Brand Info */}
+          <div className="space-y-1.5 bg-black/60 backdrop-blur-md p-4 sm:p-5 border border-white/15 max-w-xl pointer-events-auto">
             <span className="block text-[9px] md:text-[10px] tracking-[0.3em] text-neutral-300 uppercase font-mono">
-              {currentProject.category} · {currentProject.location}
+              CINEMATIC ARCHITECTURE · BENGALURU, INDIA
             </span>
-            <h2 className="font-display text-base sm:text-xl md:text-2xl tracking-[0.18em] uppercase font-light text-white">
-              {currentProject.title}
-            </h2>
+            <h1 className="font-display text-lg sm:text-2xl md:text-3xl tracking-[0.16em] uppercase font-light text-white leading-tight">
+              TECHNO ARCHITECTURE
+            </h1>
+            <p className="text-[11px] sm:text-xs text-neutral-300 tracking-wide font-light line-clamp-2 pt-0.5">
+              Architecture shaped around people, place and purpose. Thoughtful spaces balancing creativity, comfort, luxury and practical living.
+            </p>
           </div>
 
+          {/* Interactive Player Controls & CTAs */}
           <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 pointer-events-auto">
-            {/* Slide Index Counter */}
-            <div className="text-[10px] sm:text-[11px] font-mono tracking-[0.2em] text-neutral-300 bg-black/60 backdrop-blur-md px-3 py-2 border border-white/20">
-              <span className="text-white font-semibold">
-                {String(currentIndex + 1).padStart(2, "0")}
-              </span>
-              <span className="text-neutral-500 mx-1">/</span>
-              <span className="text-neutral-400">
-                {String(showcaseProjects.length).padStart(2, "0")}
-              </span>
-            </div>
-
-            {/* Previous slide */}
+            {/* Play / Pause Toggle Button */}
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                prevSlide();
+                togglePlay();
               }}
-              aria-label="Previous Project"
-              className="p-2 sm:p-2.5 bg-black/60 hover:bg-black text-white backdrop-blur-md border border-white/20 transition-colors"
+              title={isPlaying ? "Pause Video" : "Play Video"}
+              aria-label={isPlaying ? "Pause Video" : "Play Video"}
+              className="p-2.5 sm:p-3 bg-black/60 hover:bg-black text-white backdrop-blur-md border border-white/20 hover:border-white/40 transition-colors flex items-center justify-center"
             >
-              <ChevronLeft size={16} />
+              {isPlaying ? <Pause size={15} /> : <Play size={15} className="fill-white" />}
             </button>
 
-            {/* Next slide */}
+            {/* Mute / Unmute Audio Toggle Button */}
             <button
               type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                nextSlide();
-              }}
-              aria-label="Next Project"
-              className="p-2 sm:p-2.5 bg-black/60 hover:bg-black text-white backdrop-blur-md border border-white/20 transition-colors"
+              onClick={toggleMute}
+              title={isMuted ? "Unmute Audio" : "Mute Audio"}
+              aria-label={isMuted ? "Unmute Audio" : "Mute Audio"}
+              className="inline-flex items-center gap-1.5 px-3 py-2.5 sm:py-3 bg-black/60 hover:bg-black text-white backdrop-blur-md border border-white/20 hover:border-white/40 transition-colors text-[10px] font-mono tracking-wider"
             >
-              <ChevronRight size={16} />
+              {isMuted ? (
+                <>
+                  <VolumeX size={15} />
+                  <span className="hidden md:inline">UNMUTE</span>
+                </>
+              ) : (
+                <>
+                  <Volume2 size={15} />
+                  <span className="hidden md:inline">SOUND ON</span>
+                </>
+              )}
             </button>
 
-            {/* Direct Project Dossier Link */}
+            {/* Explore Projects Button */}
             <Link
-              href={`/projects/${currentProject.slug}`}
+              href="/projects"
               onClick={(e) => e.stopPropagation()}
-              className="text-[9px] sm:text-[10px] tracking-[0.25em] uppercase font-medium text-neutral-200 hover:text-white transition-colors py-2 px-3.5 bg-black/60 hover:bg-black backdrop-blur-md border border-white/20"
+              className="text-[9px] sm:text-[10px] tracking-[0.25em] uppercase font-medium text-neutral-200 hover:text-white transition-colors py-2.5 sm:py-3 px-3.5 sm:px-4 bg-black/60 hover:bg-black backdrop-blur-md border border-white/20 hover:border-white/40"
             >
-              VIEW DOSSIER →
+              PROJECTS
             </Link>
 
-            {/* Enter Studio CTA Button */}
+            {/* Enter Studio Primary CTA */}
             <Link
               href="/home"
               onClick={(e) => e.stopPropagation()}
-              className="inline-flex items-center gap-1.5 text-[9px] sm:text-[10px] tracking-[0.2em] uppercase font-medium text-black bg-white hover:bg-neutral-200 transition-colors py-2 px-4 shadow-sm"
+              className="inline-flex items-center gap-2 text-[9px] sm:text-[10px] tracking-[0.22em] uppercase font-semibold text-black bg-white hover:bg-neutral-200 transition-colors py-2.5 sm:py-3 px-4 sm:px-5 shadow-lg"
             >
               <span>ENTER STUDIO</span>
-              <span aria-hidden="true">→</span>
+              <ArrowRight size={13} />
             </Link>
           </div>
+        </div>
+
+        {/* 4. SLEEK VIDEO PLAYBACK PROGRESS BAR (Bottom Line) */}
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10 z-30 pointer-events-none">
+          <div
+            className="h-full bg-white transition-all duration-200 ease-out"
+            style={{ width: `${progress}%` }}
+          />
         </div>
       </div>
     </div>
