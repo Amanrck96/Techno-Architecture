@@ -36,6 +36,7 @@ export interface Project {
     landscapeArchitect?: string;
     lightingConsultant?: string;
     generalContractor?: string;
+    photography?: string;
   };
   featured: boolean;
   relatedSlugs: string[];
@@ -80,6 +81,7 @@ export const initialProjects: Project[] = [
       projectLead: "Vikramaditya Shenoy",
       team: "Techno Architecture Studio Team",
       landscapeArchitect: "Verdant Studio",
+      photography: "Shamanth Patil Photography",
       lightingConsultant: "Lumen Praxis",
       generalContractor: "Apex Buildtech Projects",
     },
@@ -145,6 +147,7 @@ export const initialProjects: Project[] = [
       projectArchitect: "Vikramaditya Shenoy",
       projectLead: "Vikramaditya Shenoy",
       team: "Techno Architecture Studio Team",
+      photography: "Shamanth Patil Photography",
       lightingConsultant: "Studio Illumine",
     },
     featured: true,
@@ -215,6 +218,7 @@ export const initialProjects: Project[] = [
       projectLead: "Vikramaditya Shenoy",
       team: "Techno Architecture Studio Team",
       landscapeArchitect: "Verdant Studio",
+      photography: "Anand Jaju",
     },
     featured: true,
     relatedSlugs: ["aikya", "belaku", "far-site-buildofy"],
@@ -277,6 +281,7 @@ export const initialProjects: Project[] = [
       projectArchitect: "Vikramaditya Shenoy",
       projectLead: "Vikramaditya Shenoy",
       team: "Techno Architecture Studio Team",
+      photography: "Shamanth Patil Photography",
     },
     featured: true,
     relatedSlugs: ["belaku", "between-two-trees", "aikya"],
@@ -339,6 +344,7 @@ export const initialProjects: Project[] = [
       projectArchitect: "Vikramaditya Shenoy",
       projectLead: "Vikramaditya Shenoy",
       team: "Techno Architecture Studio Team",
+      photography: "Shamanth Patil Photography",
     },
     featured: true,
     relatedSlugs: ["aikya", "belaku", "brindavan"],
@@ -395,6 +401,7 @@ export const initialProjects: Project[] = [
       projectArchitect: "Vikramaditya Shenoy",
       projectLead: "Vikramaditya Shenoy",
       team: "Techno Architecture Studio Team",
+      photography: "Technoarchitecture Studio",
     },
     featured: true,
     relatedSlugs: ["far-site-buildofy", "brindavan", "belaku"],
@@ -452,6 +459,7 @@ export const initialProjects: Project[] = [
       projectArchitect: "Aditya Joshi",
       projectLead: "Aditya Joshi",
       team: "Techno Architecture Studio Team",
+      photography: "Shamanth Patil Photography",
     },
     featured: true,
     relatedSlugs: ["house-in-the-air", "far-site-buildofy", "between-two-trees"],
@@ -517,6 +525,7 @@ export const initialProjects: Project[] = [
       projectArchitect: "Divya Raghavan",
       projectLead: "Divya Raghavan",
       team: "Techno Architecture Studio Team",
+      photography: "Shamanth Patil Photography",
     },
     featured: true,
     relatedSlugs: ["kanasu", "house-in-the-air", "brindavan"],
@@ -590,6 +599,7 @@ export const initialProjects: Project[] = [
       projectArchitect: "Divya Raghavan",
       projectLead: "Divya Raghavan",
       team: "Techno Architecture Studio Team",
+      photography: "Technoarchitecture Studio",
     },
     featured: false,
     relatedSlugs: ["kripa", "between-two-trees", "far-site-buildofy"],
@@ -652,6 +662,7 @@ export const initialProjects: Project[] = [
       projectArchitect: "Techno Architecture",
       projectLead: "Techno Architecture",
       team: "Techno Architecture Studio Team",
+      photography: "Shamanth Patil Photography",
     },
     featured: false,
     relatedSlugs: ["aikya", "between-two-trees", "far-site-buildofy"],

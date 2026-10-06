@@ -1,11 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 import { useCMSStore } from "@/lib/cmsStore";
-import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, ArrowUp, Maximize2 } from "lucide-react";
+import ProjectImageLightbox from "@/components/projects/ProjectImageLightbox";
 
 export default function ProjectDetailPage() {
   const params = useParams();
@@ -314,6 +315,38 @@ export default function ProjectDetailPage() {
     })
     .map(sanitizeProject);
 
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [showBackToTop, setShowBackToTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 400);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const photographyCredit =
+    project.credits?.photography ||
+    (project.slug === "between-two-trees"
+      ? "Anand Jaju"
+      : project.slug === "house-in-the-air" || project.slug === "salut"
+      ? "Technoarchitecture Studio"
+      : "Shamanth Patil Photography");
+
+  const allLightboxImages = [
+    {
+      url: project.mainImage,
+      caption: `${project.title} — Main Architectural Vista (${project.location})`,
+      aspect: "full" as const,
+    },
+    ...(project.gallery || []).map((img) => ({
+      url: img.url,
+      caption: img.caption,
+      aspect: img.aspect,
+    })),
+  ];
+
   return (
     <article className="w-full py-6 md:py-10 px-4 md:px-12 lg:px-16 max-w-7xl mx-auto space-y-12 md:space-y-16">
       {/* Breadcrumb Navigation & Back Link */}
@@ -341,17 +374,25 @@ export default function ProjectDetailPage() {
       </div>
 
       {/* 2. Full-Screen / Large Opening Visual */}
-      <div className="relative w-full aspect-[16/9] sm:aspect-[21/10] bg-neutral-100 overflow-hidden">
+      <div
+        onClick={() => setLightboxIndex(0)}
+        className="relative w-full aspect-[16/9] sm:aspect-[21/10] bg-neutral-100 overflow-hidden cursor-zoom-in group"
+        title="Click to view full screen"
+      >
         <Image
           src={project.mainImage}
           alt={`${project.title} - Main Exterior Architecture`}
           fill
           priority
           sizes="100vw"
-          className="object-cover"
+          className="object-cover group-hover:scale-[1.01] transition-transform duration-500"
         />
         <div className="absolute bottom-4 left-4 bg-black/75 backdrop-blur-sm text-white text-[9px] uppercase tracking-[0.2em] px-3 py-1">
           {project.title} — {project.location}
+        </div>
+        <div className="absolute top-4 right-4 bg-black/60 hover:bg-black/90 text-white px-2.5 py-1.5 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-1.5 text-[9px] uppercase tracking-widest font-mono rounded-sm">
+          <Maximize2 size={12} />
+          <span className="hidden sm:inline">VIEW FULLSCREEN</span>
         </div>
       </div>
 
@@ -449,8 +490,12 @@ export default function ProjectDetailPage() {
                 <p><strong className="text-neutral-900 font-medium">Team:</strong> {project.credits?.team || project.teamMembers?.join(", ")}</p>
               )}
               {project.credits?.landscapeArchitect && (
-                <p><strong className="text-neutral-900 font-medium">Landscape:</strong> {project.credits.landscapeArchitect}</p>
+                <p><strong className="text-neutral-900 font-medium">Landscape Architect:</strong> {project.credits.landscapeArchitect}</p>
               )}
+              <p>
+                <strong className="text-neutral-900 font-medium">Photography:</strong>{" "}
+                {photographyCredit}
+              </p>
             </div>
           </div>
         </div>
@@ -527,47 +572,67 @@ export default function ProjectDetailPage() {
 
       {/* 4. Curated Image Sequence & Gallery Flow (Alternating Full-Bleed and Split Portraits) */}
       <section className="space-y-6">
-        <div className="border-b border-neutral-200 pb-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-neutral-200 pb-3">
           <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400">
             IMAGE SEQUENCE & MATERIAL EVIDENCE
+          </span>
+          <span className="text-[10px] uppercase tracking-[0.18em] text-neutral-500 font-mono">
+            Photography: {photographyCredit}
           </span>
         </div>
 
         <div className="space-y-6">
           {project.gallery.map((img, idx) => {
+            const galleryIndex = idx + 1;
             if (img.aspect === "portrait") {
               return (
-                <div key={idx} className="relative w-full md:w-3/4 mx-auto aspect-[3/4] bg-neutral-100 overflow-hidden">
+                <div
+                  key={idx}
+                  onClick={() => setLightboxIndex(galleryIndex)}
+                  className="relative w-full md:w-3/4 mx-auto aspect-[3/4] bg-neutral-100 overflow-hidden cursor-zoom-in group"
+                  title="Click to view full screen"
+                >
                   <Image
                     src={img.url}
                     alt={img.caption || `${project.title} gallery frame ${idx + 1}`}
                     fill
                     sizes="(max-width: 768px) 100vw, 75vw"
-                    className="object-cover"
+                    className="object-cover group-hover:scale-[1.01] transition-transform duration-500"
                   />
                   {img.caption && (
                     <div className="absolute bottom-3 right-3 bg-black/75 text-white text-[9px] tracking-wider px-3 py-1 backdrop-blur-sm">
                       {img.caption}
                     </div>
                   )}
+                  <div className="absolute top-3 right-3 bg-black/60 hover:bg-black/90 text-white p-1.5 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-sm">
+                    <Maximize2 size={13} />
+                  </div>
                 </div>
               );
             }
 
             return (
-              <div key={idx} className="relative w-full aspect-[16/9] sm:aspect-[21/10] bg-neutral-100 overflow-hidden">
+              <div
+                key={idx}
+                onClick={() => setLightboxIndex(galleryIndex)}
+                className="relative w-full aspect-[16/9] sm:aspect-[21/10] bg-neutral-100 overflow-hidden cursor-zoom-in group"
+                title="Click to view full screen"
+              >
                 <Image
                   src={img.url}
                   alt={img.caption || `${project.title} gallery frame ${idx + 1}`}
                   fill
                   sizes="100vw"
-                  className="object-cover"
+                  className="object-cover group-hover:scale-[1.01] transition-transform duration-500"
                 />
                 {img.caption && (
                   <div className="absolute bottom-3 right-3 bg-black/75 text-white text-[9px] tracking-wider px-3 py-1 backdrop-blur-sm">
                     {img.caption}
                   </div>
                 )}
+                <div className="absolute top-3 right-3 bg-black/60 hover:bg-black/90 text-white p-1.5 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-sm">
+                  <Maximize2 size={13} />
+                </div>
               </div>
             );
           })}
@@ -640,6 +705,43 @@ export default function ProjectDetailPage() {
           <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
         </Link>
       </nav>
+
+      {/* 7. Bottom Direct "Back to Top" Button */}
+      <div className="pt-8 pb-4 flex flex-col items-center justify-center gap-2 border-t border-neutral-200">
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="inline-flex items-center gap-2.5 px-7 py-3.5 border border-neutral-300 bg-white hover:bg-neutral-900 hover:text-white hover:border-neutral-900 transition-all duration-300 text-[10px] uppercase tracking-[0.25em] font-medium shadow-sm group cursor-pointer"
+          aria-label="Back to top of project page"
+        >
+          <ArrowUp size={14} className="group-hover:-translate-y-1 transition-transform duration-300" />
+          <span>BACK TO TOP</span>
+        </button>
+        <span className="text-[9px] uppercase tracking-widest text-neutral-400 font-mono">
+          Return to top of page
+        </span>
+      </div>
+
+      {/* Floating Back to Top Button */}
+      {showBackToTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label="Scroll back to top"
+          className="fixed bottom-6 right-6 z-40 p-3.5 bg-neutral-900/90 hover:bg-black text-white shadow-2xl backdrop-blur-md border border-neutral-700/60 rounded-full transition-all duration-300 hover:scale-110 group cursor-pointer"
+          title="Back to top"
+        >
+          <ArrowUp size={16} className="group-hover:-translate-y-0.5 transition-transform" />
+        </button>
+      )}
+
+      {/* Fullscreen Lightbox Modal */}
+      <ProjectImageLightbox
+        images={allLightboxImages}
+        currentIndex={lightboxIndex}
+        onClose={() => setLightboxIndex(null)}
+        onNavigate={(idx) => setLightboxIndex(idx)}
+        projectTitle={project.title}
+        photographyCredit={photographyCredit}
+      />
     </article>
   );
 }

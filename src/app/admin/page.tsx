@@ -1243,6 +1243,8 @@ export default function AdminCMSPage() {
                     credits: {
                       principalArchitect: "Ar. Rajesh Shivaram",
                       projectArchitect: "",
+                      landscapeArchitect: "",
+                      photography: "Shamanth Patil Photography",
                       projectLead: "",
                       team: "Techno Architecture Studio Team",
                     },
@@ -1740,7 +1742,7 @@ export default function AdminCMSPage() {
                       </div>
 
                       {/* Project Credits */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
                         <div>
                           <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                             Principal Architect
@@ -1774,6 +1776,44 @@ export default function AdminCMSPage() {
                                 ...updated[idx].credits,
                                 projectArchitect: e.target.value,
                                 projectLead: e.target.value,
+                              };
+                              saveProjects(updated);
+                            }}
+                            className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                            Landscape Architect
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="e.g. Verdant Studio"
+                            value={p.credits?.landscapeArchitect || ""}
+                            onChange={(e) => {
+                              const updated = [...projects];
+                              updated[idx].credits = {
+                                ...updated[idx].credits,
+                                landscapeArchitect: e.target.value,
+                              };
+                              saveProjects(updated);
+                            }}
+                            className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                            Photography Credit
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="e.g. Shamanth Patil Photography"
+                            value={p.credits?.photography || ""}
+                            onChange={(e) => {
+                              const updated = [...projects];
+                              updated[idx].credits = {
+                                ...updated[idx].credits,
+                                photography: e.target.value,
                               };
                               saveProjects(updated);
                             }}
