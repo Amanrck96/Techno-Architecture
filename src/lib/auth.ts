@@ -22,7 +22,16 @@ export function createSessionToken(username: string): string {
 export function verifySessionToken(token: string | undefined | null): { valid: boolean; username?: string } {
   if (!token) return { valid: false };
 
-  const parts = token.split(":");
+  let cleanToken = token;
+  try {
+    if (cleanToken.includes("%")) {
+      cleanToken = decodeURIComponent(cleanToken);
+    }
+  } catch {
+    // ignore decoding errors
+  }
+
+  const parts = cleanToken.split(":");
   if (parts.length !== 3) return { valid: false };
 
   const [username, timestampStr, signature] = parts;
