@@ -9,9 +9,9 @@ export const primaryNavigation: NavItem[] = [
   { label: "ABOUT US", href: "/about" },
   { label: "SERVICES", href: "/services" },
   { label: "PROJECTS", href: "/projects" },
+  { label: "GALLERY", href: "/gallery" },
   { label: "CAREERS", href: "/careers" },
   { label: "CONTACT", href: "/contact" },
   { label: "FAQ", href: "/faq" },
-  { label: "GALLERY", href: "/gallery" },
   { label: "RECOGNITIONS", href: "/recognitions" },
 ];
