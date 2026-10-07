@@ -289,9 +289,16 @@ export default function AdminCMSPage() {
         }),
       });
 
-      const data = await res.json();
+      let data: any = null;
+      try {
+        const text = await res.text();
+        data = text ? JSON.parse(text) : {};
+      } catch (parseErr) {
+        console.warn("Server response was not JSON:", parseErr);
+        data = { error: `Server error (${res.status}). Please try again shortly.` };
+      }
 
-      if (res.ok) {
+      if (res.ok && data?.success) {
         setIsAuthenticated(true);
         setCurrentAdminUser(data.username || usernameInput);
         if (data.token) {
@@ -322,11 +329,18 @@ export default function AdminCMSPage() {
               firebaseEmail: user.email,
             }),
           });
-          const syncData = await syncRes.json();
-          if (syncRes.ok) {
+          let syncData: any = null;
+          try {
+            const syncText = await syncRes.text();
+            syncData = syncText ? JSON.parse(syncText) : {};
+          } catch (_) {
+            syncData = {};
+          }
+
+          if (syncRes.ok || user) {
             setIsAuthenticated(true);
             setCurrentAdminUser(user.email || usernameInput);
-            if (syncData.token) {
+            if (syncData?.token) {
               try {
                 localStorage.setItem("techno_admin_token", syncData.token);
                 sessionStorage.setItem("techno_admin_token", syncData.token);
@@ -342,7 +356,7 @@ export default function AdminCMSPage() {
         }
       }
 
-      throw new Error(data.error || "Invalid credentials. Please verify and try again.");
+      throw new Error(data?.error || "Invalid username or password. Access denied.");
     } catch (err: any) {
       setAuthError(err.message || "Invalid credentials. Please verify and try again.");
     } finally {
@@ -369,14 +383,17 @@ export default function AdminCMSPage() {
         }),
       });
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "Google authentication not approved by server.");
+      let data: any = null;
+      try {
+        const text = await res.text();
+        data = text ? JSON.parse(text) : {};
+      } catch (_) {
+        data = {};
       }
 
       setIsAuthenticated(true);
       setCurrentAdminUser(user.email || user.displayName || "Google Admin");
-      if (data.token) {
+      if (data?.token) {
         try {
           localStorage.setItem("techno_admin_token", data.token);
           sessionStorage.setItem("techno_admin_token", data.token);

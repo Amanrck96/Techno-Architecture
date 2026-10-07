@@ -1,12 +1,31 @@
 import { NextResponse } from "next/server";
 import { createSessionToken, SESSION_COOKIE_NAME } from "@/lib/auth";
-import { initFirebaseAdmin } from "@/lib/firebaseAdmin";
-import { getAuth } from "firebase-admin/auth";
+
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
+// GET endpoint to verify route health and prevent 405/500 errors
+export async function GET() {
+  return NextResponse.json({
+    status: "ok",
+    endpoint: "/api/admin/login",
+    active: true,
+  });
+}
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { username, password, firebaseIdToken, firebaseEmail } = body;
+    let body: any = {};
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json(
+        { error: "Invalid JSON request payload." },
+        { status: 400 }
+      );
+    }
+
+    const { username, password, firebaseIdToken, firebaseEmail } = body || {};
 
     // 1. Handle Firebase Authentication (Google Sign-In or Firebase Email/Password)
     if (firebaseIdToken || firebaseEmail) {
@@ -14,11 +33,30 @@ export async function POST(request: Request) {
 
       if (firebaseIdToken) {
         try {
+          // Dynamic import of firebase-admin to prevent top-level bundling crashes on Vercel
+          const { initFirebaseAdmin } = await import("@/lib/firebaseAdmin");
           const adminApp = initFirebaseAdmin();
           if (adminApp) {
+            const { getAuth } = await import("firebase-admin/auth");
             const decoded = await getAuth(adminApp).verifyIdToken(firebaseIdToken);
             if (decoded && decoded.email) {
               verifiedEmail = decoded.email;
+            }
+          } else {
+            // Fallback: Verify ID token via Google TokenInfo REST API (works without service account)
+            try {
+              const tokenInfoRes = await fetch(
+                `https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(firebaseIdToken)}`,
+                { method: "GET" }
+              );
+              if (tokenInfoRes.ok) {
+                const tokenData = await tokenInfoRes.json();
+                if (tokenData.email) {
+                  verifiedEmail = tokenData.email;
+                }
+              }
+            } catch (fetchErr) {
+              console.warn("Google tokeninfo fallback verification failed:", fetchErr);
             }
           }
         } catch (tokenErr) {
@@ -100,10 +138,10 @@ export async function POST(request: Request) {
     });
 
     return response;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Admin login API error:", error);
     return NextResponse.json(
-      { error: "Server authentication error. Please try again." },
+      { error: error?.message || "Server authentication error. Please try again." },
       { status: 500 }
     );
   }
