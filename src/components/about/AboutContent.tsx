@@ -19,7 +19,6 @@ export default function AboutContent() {
   const tagline = siteSettings?.tagline || "Architecture shaped around people, place and purpose.";
   const foundedYear = siteSettings?.foundedYear || 2006;
   const studioCity = siteSettings?.studios?.[0]?.city || "Basavanagudi, Bengaluru";
-  const address = siteSettings?.studios?.[0]?.address || "No 9, Uttaradhi Mutt Road, Shankarpuram, Basavanagudi, Bengaluru";
 
   const stats = (siteSettings?.milestones && siteSettings.milestones.length > 0)
     ? siteSettings.milestones
@@ -68,23 +67,6 @@ export default function AboutContent() {
           title: "Craft and Detail",
           desc: "We believe material junctions, proportions and execution determine the quality of the finished space.",
           tag: "Precision",
-        },
-      ];
-
-  const differentiators = (siteSettings?.differentiators && siteSettings.differentiators.length > 0)
-    ? siteSettings.differentiators
-    : [
-        {
-          title: "End-to-End Coordination",
-          desc: "Architecture, interiors, structural design and execution support are coordinated together as one cohesive team. This continuity prevents fragmented compromises and guarantees seamless execution.",
-        },
-        {
-          title: "Bespoke Spatial Character",
-          desc: "Our designs combine creativity with comfort, luxury with restraint, and ambition with practical planning. Every building is individual to the client rather than copied from a formula.",
-        },
-        {
-          title: "Climate & Passive Intelligence",
-          desc: "Deep overhangs, natural stack ventilation, shaded courtyards, and honest materiality keep buildings thermally comfortable and resource-conscious for generations.",
         },
       ];
 
@@ -245,45 +227,7 @@ export default function AboutContent() {
         ))}
       </motion.div>
 
-      {/* 7. What Sets Us Apart (PDF Page 3) */}
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="py-12 border-t border-neutral-200 space-y-8"
-      >
-        <div>
-          <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block font-mono">
-            DIFFERENTIATION
-          </span>
-          <h2 className="font-display text-2xl md:text-3xl font-light text-neutral-900 mt-1">
-            What Sets Us Apart
-          </h2>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {differentiators.map((diff, dIdx) => (
-            <motion.div
-              key={dIdx}
-              whileHover={{ y: -4 }}
-              className="p-6 bg-neutral-50 border border-neutral-200 hover:border-black transition-colors rounded-xs space-y-3"
-            >
-              <span className="text-xs font-mono text-neutral-400">0{dIdx + 1} / ATTRIBUTE</span>
-              <h3 className="font-display text-lg font-light text-neutral-900 tracking-tight">
-                {diff.title}
-              </h3>
-              <p className="text-xs text-neutral-600 leading-relaxed font-light">
-                {diff.desc}
-              </p>
-            </motion.div>
-          ))}
-        </div>
-
-        <div className="p-4 bg-neutral-100/70 border-l-2 border-neutral-900 text-xs text-neutral-700 font-mono">
-          Established in {foundedYear}, Techno Architecture is based in {address}.
-        </div>
-      </motion.div>
 
       {/* 8. OUR TEAM & PRACTICE LEADERSHIP (Studio Practitioners & Leadership) */}
       <section
