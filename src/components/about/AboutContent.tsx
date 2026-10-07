@@ -136,68 +136,23 @@ export default function AboutContent() {
         </motion.div>
       </motion.div>
 
-      {/* 4. Editorial Dual-Column Spatial Narrative */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16 pb-16 border-b border-neutral-200">
-        {/* Left Column: Leadership & Studio Information */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="md:col-span-5 space-y-6 text-xs text-neutral-800"
-        >
-          <div className="p-6 bg-neutral-50 border border-neutral-200 space-y-3 relative overflow-hidden group hover:border-black transition-colors duration-300">
-            <span className="text-[9.5px] uppercase tracking-[0.25em] text-neutral-400 block font-mono font-semibold">
-              01 / PRACTICE LEADERSHIP
-            </span>
-            <div>
-              <p className="font-medium text-base text-black tracking-wide">Ar. Rajesh Shivaram</p>
-              <p className="text-neutral-500 text-xs mt-1">Graduate of Bangalore Institute of Technology</p>
-              <p className="text-neutral-500 text-xs">20 Years of Professional Architectural Practice</p>
-            </div>
-            <div className="pt-2 text-[11px] text-neutral-600 leading-relaxed font-light">
-              Leading the firm since inception, shaping a portfolio of notable private villas, commercial hubs, bespoke interiors, and hospitality environments across South India.
-            </div>
-          </div>
-
-          <div className="p-6 bg-neutral-50 border border-neutral-200 space-y-3 hover:border-black transition-colors duration-300">
-            <span className="text-[9.5px] uppercase tracking-[0.25em] text-neutral-400 block font-mono font-semibold">
-              02 / STUDIO HEADQUARTERS
-            </span>
-            <p className="text-neutral-900 font-medium text-sm">Established in {foundedYear}</p>
-            <p className="text-neutral-600 leading-relaxed">{address}</p>
-            <p className="text-neutral-500 text-[11px] font-mono">Bengaluru, Karnataka, India</p>
-          </div>
-
-          <div className="pt-2">
-            <a
-              href="#team"
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] font-semibold text-black hover:translate-x-1 transition-transform"
-            >
-              <span>Explore Studio Practitioners & Team</span>
-              <ArrowUpRight size={14} />
-            </a>
-          </div>
-        </motion.div>
-
-        {/* Right Column: Design Philosophy Narrative */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="md:col-span-7 flex flex-col justify-start"
-        >
-          <div className="border-l-2 border-black pl-6 sm:pl-8 space-y-3">
-            <span className="text-[10px] uppercase font-mono tracking-[0.3em] text-neutral-400 font-semibold block">
-              DESIGN PHILOSOPHY
-            </span>
-            <p className="text-base sm:text-lg text-neutral-900 leading-relaxed font-normal">
-              Techno Architecture is an architecture and design practice led by Rajesh Shivaram, a graduate of Bangalore Institute of Technology. The studio combines design exploration with practical problem-solving to create buildings and interiors that are clear in concept, comfortable to use and responsive to their environment.
-            </p>
-          </div>
-        </motion.div>
-      </div>
+      {/* 4. Editorial Design Philosophy Statement */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="pb-16 border-b border-neutral-200"
+      >
+        <div className="max-w-4xl border-l-2 border-black pl-6 sm:pl-8 space-y-3">
+          <span className="text-[10px] uppercase font-mono tracking-[0.3em] text-neutral-400 font-semibold block">
+            DESIGN PHILOSOPHY
+          </span>
+          <p className="text-base sm:text-lg md:text-xl text-neutral-900 leading-relaxed font-normal">
+            Techno Architecture is an architecture and design practice led by Rajesh Shivaram, a graduate of Bangalore Institute of Technology. The studio combines design exploration with practical problem-solving to create buildings and interiors that are clear in concept, comfortable to use and responsive to their environment.
+          </p>
+        </div>
+      </motion.div>
 
       {/* 5. Animated Vision & Mission Cards with Hover Elevation */}
       <div className="py-8">
