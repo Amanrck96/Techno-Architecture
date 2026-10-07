@@ -180,15 +180,15 @@ export default function AboutContent() {
           </div>
         </motion.div>
 
-        {/* Right Column: Narrative from PDF Page 3 */}
+        {/* Right Column: Design Philosophy Narrative */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="md:col-span-7 space-y-6 text-sm md:text-base leading-relaxed text-neutral-700 font-light"
+          className="md:col-span-7 flex flex-col justify-start"
         >
-          <div className="border-l-2 border-black pl-6 sm:pl-8 space-y-4">
+          <div className="border-l-2 border-black pl-6 sm:pl-8 space-y-3">
             <span className="text-[10px] uppercase font-mono tracking-[0.3em] text-neutral-400 font-semibold block">
               DESIGN PHILOSOPHY
             </span>
@@ -196,14 +196,6 @@ export default function AboutContent() {
               Techno Architecture is an architecture and design practice led by Rajesh Shivaram, a graduate of Bangalore Institute of Technology. The studio combines design exploration with practical problem-solving to create buildings and interiors that are clear in concept, comfortable to use and responsive to their environment.
             </p>
           </div>
-
-          <p className="text-neutral-600 leading-relaxed pl-6 sm:pl-8">
-            Our work is shaped through dialogue. We listen carefully, study the site and translate each client&apos;s priorities into a design that feels personal while remaining technically sound and buildable.
-          </p>
-
-          <p className="text-neutral-600 leading-relaxed pl-6 sm:pl-8">
-            By keeping planning, materiality, daylight and climatic responsiveness tightly integrated, every project delivers durable spatial harmony and enduring human value.
-          </p>
         </motion.div>
       </div>
 
