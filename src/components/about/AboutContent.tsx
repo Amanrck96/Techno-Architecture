@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Award, Compass, Eye, ShieldCheck, Sparkles, Building2, CheckCircle2, GraduationCap, Instagram } from "lucide-react";
+import { ArrowUpRight, Award, Compass, Eye, ShieldCheck, Building2, CheckCircle2, GraduationCap, Instagram } from "lucide-react";
 import { useCMSStore } from "@/lib/cmsStore";
 import { initialTeam } from "@/data/team";
 
@@ -88,9 +88,6 @@ export default function AboutContent() {
         },
       ];
 
-  const visionText = siteSettings?.vision || "To create architecture that improves everyday life, responds responsibly to its environment and remains meaningful over time.";
-  const missionText = siteSettings?.mission || "To guide every project through a clear and collaborative design process, bringing together creativity, technical rigour, environmental awareness and careful execution. We aim to deliver spaces that reflect each client's needs while contributing positively to their setting.";
-
   return (
     <div className="w-full py-10 md:py-16 px-6 md:px-12 lg:px-16 max-w-7xl mx-auto space-y-16 sm:space-y-20">
       {/* 1. Header with Staggered Fade-Up */}
@@ -154,78 +151,8 @@ export default function AboutContent() {
         </div>
       </motion.div>
 
-      {/* 5. Animated Vision & Mission Cards with Hover Elevation */}
-      <div className="py-8">
-        <div className="mb-8">
-          <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block font-mono">
-            CORE ORIENTATION
-          </span>
-          <h2 className="font-display text-2xl sm:text-3xl font-light text-neutral-900 mt-1">
-            Vision & Mission
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Vision Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            whileHover={{ y: -6 }}
-            transition={{ duration: 0.4 }}
-            className="p-8 sm:p-10 bg-gradient-to-br from-neutral-50 via-white to-neutral-100 border border-neutral-200 hover:border-black rounded-xs shadow-xs hover:shadow-xl transition-all duration-300 relative overflow-hidden group"
-          >
-            <div className="flex items-center justify-between mb-6">
-              <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-widest font-semibold">
-                01 / VISION
-              </span>
-              <div className="w-9 h-9 rounded-full bg-neutral-900 text-white flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Compass size={18} />
-              </div>
-            </div>
-            <h3 className="font-display text-2xl sm:text-3xl font-light text-neutral-900 mb-4 tracking-tight">
-              Vision
-            </h3>
-            <p className="text-sm md:text-base text-neutral-700 leading-relaxed font-light">
-              {visionText}
-            </p>
-            <div className="mt-6 pt-4 border-t border-neutral-200/70 text-[11px] font-mono text-neutral-400">
-              PURPOSE-DRIVEN ARCHITECTURE
-            </div>
-          </motion.div>
-
-          {/* Mission Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            whileHover={{ y: -6 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-            className="p-8 sm:p-10 bg-gradient-to-br from-neutral-50 via-white to-neutral-100 border border-neutral-200 hover:border-black rounded-xs shadow-xs hover:shadow-xl transition-all duration-300 relative overflow-hidden group"
-          >
-            <div className="flex items-center justify-between mb-6">
-              <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-widest font-semibold">
-                02 / MISSION
-              </span>
-              <div className="w-9 h-9 rounded-full bg-neutral-900 text-white flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Sparkles size={18} />
-              </div>
-            </div>
-            <h3 className="font-display text-2xl sm:text-3xl font-light text-neutral-900 mb-4 tracking-tight">
-              Mission
-            </h3>
-            <p className="text-sm md:text-base text-neutral-700 leading-relaxed font-light">
-              {missionText}
-            </p>
-            <div className="mt-6 pt-4 border-t border-neutral-200/70 text-[11px] font-mono text-neutral-400">
-              COLLABORATIVE PROCESS & RIGOUR
-            </div>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* 6. Core Values (All 6 from PDF Page 3) with Animated Cards */}
-      <div className="py-12 border-t border-neutral-200 space-y-8">
+      {/* 5. Core Values (All 6 from PDF Page 3) with Animated Cards */}
+      <div className="pt-4 sm:pt-8 pb-12 space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
             <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block font-mono">
