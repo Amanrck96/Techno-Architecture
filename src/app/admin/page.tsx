@@ -2375,7 +2375,7 @@ export default function AdminCMSPage() {
                   </div>
                   <div className="flex items-center space-x-2">
                     <Link
-                      href={`/services/${s.slug}`}
+                      href={`/services#${s.slug}`}
                       target="_blank"
                       className="text-neutral-500 hover:text-black text-xs font-mono px-2 py-1 border border-neutral-200 rounded"
                     >

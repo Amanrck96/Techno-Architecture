@@ -92,22 +92,13 @@ export default function ServicesPage() {
           className="scroll-mt-24 pt-4 border-t-2 border-neutral-900 space-y-10"
         >
           {/* Category Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <span className="text-xs font-mono text-neutral-400 uppercase tracking-widest block font-semibold">
-                01 / CORE DISCIPLINE
-              </span>
-              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light uppercase tracking-tight text-neutral-900 mt-1">
-                {archService.title}
-              </h2>
-            </div>
-            <Link
-              href={`/services/${archService.slug}`}
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.22em] font-semibold text-black hover:translate-x-1 transition-transform"
-            >
-              <span>View Dedicated Protocol</span>
-              <ArrowUpRight size={14} />
-            </Link>
+          <div>
+            <span className="text-xs font-mono text-neutral-400 uppercase tracking-widest block font-semibold">
+              01 / CORE DISCIPLINE
+            </span>
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light uppercase tracking-tight text-neutral-900 mt-1">
+              {archService.title}
+            </h2>
           </div>
 
           {/* Top Row: Hero Image Left + Scope & Philosophy Right */}
@@ -204,22 +195,13 @@ export default function ServicesPage() {
           className="scroll-mt-24 pt-12 border-t border-neutral-200 space-y-10"
         >
           {/* Category Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <span className="text-xs font-mono text-neutral-400 uppercase tracking-widest block font-semibold">
-                02 / INTERIOR ENVIRONMENTS
-              </span>
-              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light uppercase tracking-tight text-neutral-900 mt-1">
-                {interiorService.title}
-              </h2>
-            </div>
-            <Link
-              href={`/services/${interiorService.slug}`}
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.22em] font-semibold text-black hover:translate-x-1 transition-transform"
-            >
-              <span>View Dedicated Protocol</span>
-              <ArrowUpRight size={14} />
-            </Link>
+          <div>
+            <span className="text-xs font-mono text-neutral-400 uppercase tracking-widest block font-semibold">
+              02 / INTERIOR ENVIRONMENTS
+            </span>
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light uppercase tracking-tight text-neutral-900 mt-1">
+              {interiorService.title}
+            </h2>
           </div>
 
           {/* Inverted Row: Content Left + Large Tactile Imagery Right */}
@@ -319,22 +301,13 @@ export default function ServicesPage() {
           className="scroll-mt-24 pt-12 border-t border-neutral-200 space-y-10"
         >
           {/* Category Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <span className="text-xs font-mono text-neutral-400 uppercase tracking-widest block font-semibold">
-                03 / STRUCTURAL INTEGRITY
-              </span>
-              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light uppercase tracking-tight text-neutral-900 mt-1">
-                {structuralService.title}
-              </h2>
-            </div>
-            <Link
-              href={`/services/${structuralService.slug}`}
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.22em] font-semibold text-black hover:translate-x-1 transition-transform"
-            >
-              <span>View Dedicated Protocol</span>
-              <ArrowUpRight size={14} />
-            </Link>
+          <div>
+            <span className="text-xs font-mono text-neutral-400 uppercase tracking-widest block font-semibold">
+              03 / STRUCTURAL INTEGRITY
+            </span>
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light uppercase tracking-tight text-neutral-900 mt-1">
+              {structuralService.title}
+            </h2>
           </div>
 
           {/* Technical Engineering Overview Bar */}
@@ -407,22 +380,13 @@ export default function ServicesPage() {
           className="scroll-mt-24 pt-12 border-t border-neutral-200 space-y-10"
         >
           {/* Category Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <span className="text-xs font-mono text-neutral-400 uppercase tracking-widest block font-semibold">
-                04 / MULTI-DISCIPLINARY COLLABORATION
-              </span>
-              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light uppercase tracking-tight text-neutral-900 mt-1">
-                {specialistService.title}
-              </h2>
-            </div>
-            <Link
-              href={`/services/${specialistService.slug}`}
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.22em] font-semibold text-black hover:translate-x-1 transition-transform"
-            >
-              <span>View Dedicated Protocol</span>
-              <ArrowUpRight size={14} />
-            </Link>
+          <div>
+            <span className="text-xs font-mono text-neutral-400 uppercase tracking-widest block font-semibold">
+              04 / MULTI-DISCIPLINARY COLLABORATION
+            </span>
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light uppercase tracking-tight text-neutral-900 mt-1">
+              {specialistService.title}
+            </h2>
           </div>
 
           {/* Two-Column Advisory Banner */}

@@ -1,6 +1,5 @@
 import { MetadataRoute } from "next";
 import { initialProjects } from "@/data/projects";
-import { initialServices } from "@/data/services";
 import { initialBlogPosts } from "@/data/blog";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -33,13 +32,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }));
 
-  const serviceRoutes = initialServices.map((s) => ({
-    url: `${baseUrl}/services/${s.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.85,
-  }));
-
   const blogRoutes = initialBlogPosts.map((b) => ({
     url: `${baseUrl}/blog/${b.slug}`,
     lastModified: new Date(b.publishedAt),
@@ -47,5 +39,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.75,
   }));
 
-  return [...staticRoutes, ...projectRoutes, ...serviceRoutes, ...blogRoutes];
+  return [...staticRoutes, ...projectRoutes, ...blogRoutes];
 }
