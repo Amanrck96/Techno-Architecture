@@ -30,12 +30,12 @@ export default function HomeIntro() {
         <div className="w-full border-t border-neutral-200 mb-10 sm:mb-14" />
 
         {/* Top 2-Column Grid: Left Brand Logo, Right Hero Editorial Statement & CTAs */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-start">
           {/* Left Column: Official Techno Architecture Brand Logo + Centralized Location Subtext */}
-          <div className="lg:col-span-5 flex flex-col items-start">
+          <div className="flex flex-col items-start pt-0.5 sm:pt-1">
             <Link
               href="/home"
-              className="inline-flex flex-col items-center group focus:outline-none transition-opacity hover:opacity-90 w-72 sm:w-80 md:w-96 lg:w-[400px] xl:w-[420px]"
+              className="inline-flex flex-col items-center group focus:outline-none transition-opacity hover:opacity-90 w-full max-w-[380px] sm:max-w-[400px] lg:max-w-[420px]"
               aria-label="Techno Architecture"
             >
               <div className="relative w-full aspect-[1024/290]">
@@ -46,29 +46,29 @@ export default function HomeIntro() {
                   priority
                   unoptimized
                   sizes="(max-width: 768px) 320px, 420px"
-                  className="object-contain object-center"
+                  className="object-contain object-left"
                 />
               </div>
 
               {/* Bengaluru · India centralized below logo */}
-              <div className="mt-3 sm:mt-3.5 w-full text-center text-[11px] sm:text-xs md:text-[13px] font-semibold tracking-[0.28em] pl-[0.28em] text-neutral-900 uppercase font-heading select-none">
+              <div className="mt-2.5 sm:mt-3 w-full text-center text-[10px] sm:text-[11px] md:text-xs font-semibold tracking-[0.28em] pl-[0.28em] text-neutral-900 uppercase font-heading select-none">
                 {"BENGALURU \u00B7 INDIA"}
               </div>
             </Link>
           </div>
 
           {/* Right Column: Editorial Title, Description, and Stacked Action Buttons */}
-          <div className="lg:col-span-7 space-y-4 sm:space-y-5 lg:pl-2">
-            <h1 className="font-heading text-2xl sm:text-3xl lg:text-[34px] font-medium text-neutral-900 leading-[1.2] tracking-tight max-w-xl">
+          <div className="space-y-3.5 sm:space-y-4">
+            <h1 className="font-heading text-2xl sm:text-3xl lg:text-[32px] font-medium text-neutral-900 leading-[1.22] tracking-tight">
               {tagline}
             </h1>
 
-            <p className="text-[15px] sm:text-base text-neutral-600 leading-relaxed font-light max-w-xl">
+            <p className="text-[14.5px] sm:text-[15.5px] text-neutral-600 leading-relaxed font-light">
               {shortDesc}
             </p>
 
-            {/* Stacked Action Buttons */}
-            <div className="pt-2 sm:pt-3 flex flex-col items-start gap-2.5">
+            {/* Action Buttons */}
+            <div className="pt-2 sm:pt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
               <Link
                 href="/projects"
                 className="inline-flex items-center justify-between gap-5 px-5 py-2.5 sm:px-6 sm:py-3 bg-neutral-950 text-white hover:bg-neutral-800 transition-colors text-[10px] sm:text-[10.5px] tracking-[0.2em] uppercase font-sans font-medium"
@@ -79,7 +79,7 @@ export default function HomeIntro() {
 
               <Link
                 href="/contact"
-                className="inline-flex items-center px-5 py-2.5 sm:px-6 sm:py-3 bg-white border border-neutral-300 hover:border-black text-neutral-700 hover:text-black transition-colors text-[10px] sm:text-[10.5px] tracking-[0.2em] uppercase font-sans font-medium"
+                className="inline-flex items-center justify-center px-5 py-2.5 sm:px-6 sm:py-3 bg-white border border-neutral-300 hover:border-black text-neutral-700 hover:text-black transition-colors text-[10px] sm:text-[10.5px] tracking-[0.2em] uppercase font-sans font-medium"
               >
                 <span>START A CONVERSATION</span>
               </Link>
