@@ -3,16 +3,13 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Volume2, VolumeX, Play, Pause, ArrowRight } from "lucide-react";
+import { Volume2, VolumeX, ArrowRight } from "lucide-react";
 
 export default function LandingGallery() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
-  const [progress, setProgress] = useState(0);
-  const [showPlayOverlay, setShowPlayOverlay] = useState(false);
 
-  // Guarantee autoplay on mount with standard browser policy compliance (muted)
+  // Guarantee continuous autoplay loop on mount with standard browser policy compliance (muted)
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -20,34 +17,9 @@ export default function LandingGallery() {
     video.muted = true;
     const playPromise = video.play();
     if (playPromise !== undefined) {
-      playPromise
-        .then(() => setIsPlaying(true))
-        .catch(() => {
-          // Autoplay was prevented by browser policy
-          setIsPlaying(false);
-        });
-    }
-  }, []);
-
-  // Update progress bar
-  const handleTimeUpdate = () => {
-    const video = videoRef.current;
-    if (!video || !video.duration) return;
-    setProgress((video.currentTime / video.duration) * 100);
-  };
-
-  // Toggle Play / Pause
-  const togglePlay = useCallback(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    if (video.paused) {
-      video.play().then(() => setIsPlaying(true)).catch(() => {});
-      setShowPlayOverlay(false);
-    } else {
-      video.pause();
-      setIsPlaying(false);
-      setShowPlayOverlay(true);
+      playPromise.catch(() => {
+        // Autoplay policy fallback
+      });
     }
   }, []);
 
@@ -64,12 +36,12 @@ export default function LandingGallery() {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-neutral-950 flex flex-col select-none">
-      {/* 1. TOP HEADER — Official Brand Identity linking into studio */}
+      {/* 1. TOP HEADER — Official Brand Identity */}
       <header className="relative z-30 w-full bg-white border-b border-neutral-200 px-6 sm:px-10 lg:px-16 py-3 sm:py-3.5 md:py-4 flex items-center justify-between shrink-0 shadow-xs">
         <Link
           href="/home"
           className="inline-flex flex-col items-center group focus:outline-none transition-opacity hover:opacity-90 w-48 sm:w-60 md:w-72 lg:w-80"
-          aria-label="Techno Architecture — Enter Studio"
+          aria-label="Techno Architecture"
         >
           <div className="relative w-full h-9 sm:h-11 md:h-12">
             <Image
@@ -86,23 +58,10 @@ export default function LandingGallery() {
             {"BENGALURU \u00B7 INDIA"}
           </div>
         </Link>
-
-        {/* Quick Direct Link to Enter Studio */}
-        <Link
-          href="/home"
-          className="hidden sm:inline-flex items-center gap-2 text-[10px] tracking-[0.2em] uppercase font-semibold text-neutral-900 hover:text-black border border-neutral-300 hover:border-black px-4 py-2 transition-colors"
-        >
-          <span>ENTER STUDIO</span>
-          <ArrowRight size={13} />
-        </Link>
       </header>
 
-      {/* 2. EXCLUSIVE FULLSCREEN VIDEO HERO (Landing Page Only) */}
-      <div
-        onClick={togglePlay}
-        className="relative flex-1 w-full overflow-hidden bg-neutral-950 text-white cursor-pointer group"
-        aria-label="Click to play or pause video"
-      >
+      {/* 2. EXCLUSIVE FULLSCREEN VIDEO HERO (Continuous Ambient Background Loop) */}
+      <div className="relative flex-1 w-full overflow-hidden bg-neutral-950 text-white select-none">
         <video
           ref={videoRef}
           src="/brindavan.mp4"
@@ -111,23 +70,11 @@ export default function LandingGallery() {
           muted={isMuted}
           playsInline
           preload="auto"
-          onTimeUpdate={handleTimeUpdate}
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
-          className="absolute inset-0 w-full h-full object-cover object-center"
+          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
         />
 
         {/* Ambient Vignette & Contrast Gradients for visual elegance & readability */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/30 pointer-events-none" />
-
-        {/* Play/Pause Overlay Indicator when paused */}
-        {!isPlaying && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/35 backdrop-blur-[2px] transition-all pointer-events-none">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/20 border border-white/40 backdrop-blur-md flex items-center justify-center text-white shadow-2xl pl-1">
-              <Play size={28} className="fill-white" />
-            </div>
-          </div>
-        )}
 
         {/* 3. BOTTOM CAPTION & INTERACTIVE CONTROLS */}
         <div className="absolute bottom-0 left-0 right-0 z-20 p-4 sm:p-6 md:p-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4 pointer-events-none">
@@ -146,45 +93,20 @@ export default function LandingGallery() {
 
           {/* Interactive Player Controls & CTAs */}
           <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 pointer-events-auto">
-            {/* Play / Pause Toggle Button */}
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                togglePlay();
-              }}
-              title={isPlaying ? "Pause Video" : "Play Video"}
-              aria-label={isPlaying ? "Pause Video" : "Play Video"}
-              className="p-2.5 sm:p-3 bg-black/60 hover:bg-black text-white backdrop-blur-md border border-white/20 hover:border-white/40 transition-colors flex items-center justify-center"
-            >
-              {isPlaying ? <Pause size={15} /> : <Play size={15} className="fill-white" />}
-            </button>
-
-            {/* Mute / Unmute Audio Toggle Button */}
+            {/* Audio Toggle Button (Symbol Only) */}
             <button
               type="button"
               onClick={toggleMute}
               title={isMuted ? "Unmute Audio" : "Mute Audio"}
               aria-label={isMuted ? "Unmute Audio" : "Mute Audio"}
-              className="inline-flex items-center gap-1.5 px-3 py-2.5 sm:py-3 bg-black/60 hover:bg-black text-white backdrop-blur-md border border-white/20 hover:border-white/40 transition-colors text-[10px] font-mono tracking-wider"
+              className="p-2.5 sm:p-3 bg-black/60 hover:bg-black text-white backdrop-blur-md border border-white/20 hover:border-white/40 transition-colors flex items-center justify-center cursor-pointer"
             >
-              {isMuted ? (
-                <>
-                  <VolumeX size={15} />
-                  <span className="hidden md:inline">UNMUTE</span>
-                </>
-              ) : (
-                <>
-                  <Volume2 size={15} />
-                  <span className="hidden md:inline">SOUND ON</span>
-                </>
-              )}
+              {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
             </button>
 
             {/* Explore Projects Button */}
             <Link
               href="/projects"
-              onClick={(e) => e.stopPropagation()}
               className="text-[9px] sm:text-[10px] tracking-[0.25em] uppercase font-medium text-neutral-200 hover:text-white transition-colors py-2.5 sm:py-3 px-3.5 sm:px-4 bg-black/60 hover:bg-black backdrop-blur-md border border-white/20 hover:border-white/40"
             >
               PROJECTS
@@ -193,21 +115,12 @@ export default function LandingGallery() {
             {/* Enter Studio Primary CTA */}
             <Link
               href="/home"
-              onClick={(e) => e.stopPropagation()}
               className="inline-flex items-center gap-2 text-[9px] sm:text-[10px] tracking-[0.22em] uppercase font-semibold text-black bg-white hover:bg-neutral-200 transition-colors py-2.5 sm:py-3 px-4 sm:px-5 shadow-lg"
             >
               <span>ENTER STUDIO</span>
               <ArrowRight size={13} />
             </Link>
           </div>
-        </div>
-
-        {/* 4. SLEEK VIDEO PLAYBACK PROGRESS BAR (Bottom Line) */}
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10 z-30 pointer-events-none">
-          <div
-            className="h-full bg-white transition-all duration-200 ease-out"
-            style={{ width: `${progress}%` }}
-          />
         </div>
       </div>
     </div>

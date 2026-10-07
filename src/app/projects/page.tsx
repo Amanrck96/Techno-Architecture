@@ -1,28 +1,15 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Shuffle, RotateCcw } from "lucide-react";
 import { useCMSStore } from "@/lib/cmsStore";
 import { Project } from "@/data/projects";
 import { cn } from "@/lib/utils";
 
 export default function ProjectsDirectoryPage() {
-  const { projects, saveProjects } = useCMSStore();
+  const { projects } = useCMSStore();
   const [activeFilter, setActiveFilter] = useState<string>("all");
-  const [shuffledOrder, setShuffledOrder] = useState<string[] | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(false);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const token =
-        localStorage.getItem("techno_admin_token") ||
-        sessionStorage.getItem("techno_admin_token");
-      setIsAdmin(!!token);
-    }
-  }, []);
 
   const filterTabs = [
     { id: "all", label: "ALL WORKS" },
@@ -34,39 +21,14 @@ export default function ProjectsDirectoryPage() {
     { id: "Interior", label: "INTERIOR" },
   ];
 
-  const handleShuffle = () => {
-    const ids = projects.map((p) => p.id);
-    for (let i = ids.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [ids[i], ids[j]] = [ids[j], ids[i]];
-    }
-    setShuffledOrder(ids);
-  };
-
-  const handleResetOrder = () => {
-    setShuffledOrder(null);
-  };
-
   const displayedProjects = useMemo(() => {
-    const list = projects.filter((p) => {
+    return projects.filter((p) => {
       if (activeFilter === "all") return true;
       if (activeFilter === "completed") return p.status === "completed";
       if (activeFilter === "ongoing") return p.status === "ongoing";
       return p.category === activeFilter;
     });
-
-    if (shuffledOrder && shuffledOrder.length > 0) {
-      return [...list].sort((a, b) => {
-        const idxA = shuffledOrder.indexOf(a.id);
-        const idxB = shuffledOrder.indexOf(b.id);
-        if (idxA === -1) return 1;
-        if (idxB === -1) return -1;
-        return idxA - idxB;
-      });
-    }
-
-    return list;
-  }, [projects, activeFilter, shuffledOrder]);
+  }, [projects, activeFilter]);
 
   return (
     <div className="w-full py-10 md:py-14 px-4 md:px-8 max-w-[1720px] mx-auto space-y-16">
@@ -105,7 +67,7 @@ export default function ProjectsDirectoryPage() {
           </div>
         </div>
 
-        {/* Dedicated Views Sublinks & Admin Shuffle Controls */}
+        {/* Dedicated Views Sublinks */}
         <div className="flex flex-wrap items-center justify-between gap-4 text-[10px] tracking-[0.2em] uppercase text-neutral-400 px-1 mb-8">
           <div className="flex flex-wrap items-center gap-6">
             <span className="font-medium">Direct Views:</span>
@@ -116,54 +78,6 @@ export default function ProjectsDirectoryPage() {
               ONGOING PROJECTS →
             </Link>
           </div>
-
-          {isAdmin && (
-            <div className="flex items-center gap-2 bg-neutral-50 px-2.5 py-1.5 border border-neutral-200 rounded">
-              <span className="text-[9px] font-mono text-amber-700 font-semibold px-1">ADMIN ONLY</span>
-              <button
-                type="button"
-                onClick={handleShuffle}
-                className={cn(
-                  "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xs border text-[10px] tracking-[0.2em] uppercase font-medium transition-all duration-200 cursor-pointer",
-                  shuffledOrder
-                    ? "bg-black text-white border-black shadow-xs hover:bg-neutral-800"
-                    : "bg-white text-neutral-700 border-neutral-300 hover:text-black hover:border-black"
-                )}
-                title="Shuffle / randomize projects order (Admin only)"
-              >
-                <Shuffle size={12} />
-                <span>{shuffledOrder ? "Shuffle Again" : "Shuffle Projects"}</span>
-              </button>
-              {shuffledOrder && (
-                <>
-                  <button
-                    type="button"
-                    onClick={handleResetOrder}
-                    className="inline-flex items-center gap-1 px-2.5 py-1.5 text-neutral-500 hover:text-black transition-colors text-[10px] tracking-[0.18em] uppercase cursor-pointer"
-                    title="Reset to default order"
-                  >
-                    <RotateCcw size={11} />
-                    <span>Reset</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (confirm("Save this shuffled order permanently to portfolio and live website?")) {
-                        const newPortfolioOrder = [...displayedProjects];
-                        saveProjects(newPortfolioOrder);
-                        setSaveSuccess(true);
-                        setTimeout(() => setSaveSuccess(false), 3000);
-                      }
-                    }}
-                    className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-neutral-900 text-white hover:bg-neutral-800 transition-colors text-[10px] tracking-[0.18em] uppercase font-medium rounded-xs cursor-pointer"
-                    title="Save current order permanently to CMS and cloud"
-                  >
-                    {saveSuccess ? "Saved!" : "Save Order"}
-                  </button>
-                </>
-              )}
-            </div>
-          )}
         </div>
 
         {/* 3-Column Reference-Style Architectural Grid */}
