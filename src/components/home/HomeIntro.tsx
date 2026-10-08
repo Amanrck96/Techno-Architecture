@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { useCMSStore } from "@/lib/cmsStore";
 
 export default function HomeIntro() {
@@ -32,7 +33,12 @@ export default function HomeIntro() {
         {/* Top 2-Column Grid: Left Brand Logo, Right Hero Editorial Statement & CTAs */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-start">
           {/* Left Column: Official Techno Architecture Brand Logo + Location Subtext */}
-          <div className="flex flex-col items-start pt-0.5 sm:pt-1">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+            className="flex flex-col items-start pt-0.5 sm:pt-1"
+          >
             <Link
               href="/home"
               className="inline-flex flex-col items-start group focus:outline-none transition-opacity hover:opacity-90 w-full max-w-[380px] sm:max-w-[400px] lg:max-w-[420px]"
@@ -51,14 +57,24 @@ export default function HomeIntro() {
               </div>
 
               {/* Bengaluru · India aligned with logo & text */}
-              <div className="mt-2.5 sm:mt-3 w-full text-left text-[10px] sm:text-[11px] md:text-xs font-semibold tracking-[0.28em] text-neutral-900 uppercase font-heading select-none">
+              <motion.div
+                initial={{ opacity: 0, letterSpacing: "0.18em" }}
+                animate={{ opacity: 1, letterSpacing: "0.28em" }}
+                transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+                className="mt-2.5 sm:mt-3 w-full text-left text-[10px] sm:text-[11px] md:text-xs font-semibold tracking-[0.28em] text-neutral-900 uppercase font-heading select-none"
+              >
                 {"BENGALURU \u00B7 INDIA"}
-              </div>
+              </motion.div>
             </Link>
-          </div>
+          </motion.div>
 
           {/* Right Column: Editorial Title, Description, and Stacked Action Buttons */}
-          <div className="space-y-3.5 sm:space-y-4">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
+            className="space-y-3.5 sm:space-y-4"
+          >
             <h1 className="font-heading text-2xl sm:text-3xl lg:text-[32px] font-medium text-neutral-900 leading-[1.22] tracking-tight">
               {tagline}
             </h1>
@@ -84,11 +100,16 @@ export default function HomeIntro() {
                 <span>START A CONVERSATION</span>
               </Link>
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* Bottom Section: Introduction Narrative & Blue-Circled Leadership / Location Cards */}
-        <div className="mt-20 sm:mt-28 lg:mt-36 xl:mt-44 w-full space-y-8 sm:space-y-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
+          className="mt-20 sm:mt-28 lg:mt-36 xl:mt-44 w-full space-y-8 sm:space-y-10"
+        >
           <div className="w-full space-y-4 sm:space-y-5">
             <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.28em] text-neutral-400 font-mono block font-semibold">
               INTRODUCTION
@@ -133,7 +154,7 @@ export default function HomeIntro() {
               </p>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

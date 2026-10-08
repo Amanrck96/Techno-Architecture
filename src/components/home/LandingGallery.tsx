@@ -39,7 +39,7 @@ export default function LandingGallery() {
       {/* 1. TOP HEADER — Official Brand Identity */}
       <header className="relative z-30 w-full bg-white border-b border-neutral-200 px-6 sm:px-10 lg:px-16 py-3 sm:py-3.5 md:py-4 flex items-center justify-between shrink-0 shadow-xs">
         <Link
-          href="/home"
+          href="/home?intro=cinematic"
           className="inline-flex flex-col items-center group focus:outline-none transition-opacity hover:opacity-90 w-48 sm:w-60 md:w-72 lg:w-80"
           aria-label="Techno Architecture"
         >
@@ -112,13 +112,13 @@ export default function LandingGallery() {
               PROJECTS
             </Link>
 
-            {/* Enter Studio Primary CTA */}
+            {/* Enter Studio Primary CTA — Triggers Cinematic Studio Entrance */}
             <Link
-              href="/home"
-              className="inline-flex items-center gap-2 text-[9px] sm:text-[10px] tracking-[0.22em] uppercase font-semibold text-black bg-white hover:bg-neutral-200 transition-colors py-2.5 sm:py-3 px-4 sm:px-5 shadow-lg"
+              href="/home?intro=cinematic"
+              className="inline-flex items-center gap-2 text-[9px] sm:text-[10px] tracking-[0.22em] uppercase font-semibold text-black bg-white hover:bg-neutral-200 transition-colors py-2.5 sm:py-3 px-4 sm:px-5 shadow-lg group cursor-pointer"
             >
               <span>ENTER STUDIO</span>
-              <ArrowRight size={13} />
+              <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
         </div>
