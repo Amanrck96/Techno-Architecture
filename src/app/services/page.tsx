@@ -30,8 +30,8 @@ export default function ServicesPage() {
   };
 
   const archService = services.find((s) => s.slug === "architecture") || services[0];
-  const interiorService = services.find((s) => s.slug === "interior-design") || services[1];
-  const structuralService = services.find((s) => s.slug === "structural-design") || services[2];
+  const structuralService = services.find((s) => s.slug === "structural-design") || services[1];
+  const interiorService = services.find((s) => s.slug === "interior-design") || services[2];
   const specialistService =
     services.find((s) => s.slug === "specialist-consultant-introductions") || services[3];
 
@@ -63,8 +63,8 @@ export default function ServicesPage() {
         <div className="flex flex-wrap items-center gap-2 pt-2">
           {[
             { id: "architecture", label: "01 / Architecture" },
-            { id: "interior-design", label: "02 / Interior Design" },
-            { id: "structural-design", label: "03 / Structural Design" },
+            { id: "structural-design", label: "02 / Structural Design" },
+            { id: "interior-design", label: "03 / Interior Design" },
             { id: "specialist-consultant-introductions", label: "04 / Specialist Introductions" },
           ].map((tab) => (
             <button
@@ -169,7 +169,7 @@ export default function ServicesPage() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-mono font-semibold text-neutral-400 group-hover:text-black transition-colors">
-                      {step.step} / PHASE
+                      {step.step} / ARCHITECTURE
                     </span>
                     <span className="w-1.5 h-1.5 rounded-full bg-neutral-300 group-hover:bg-black transition-colors" />
                   </div>
@@ -187,7 +187,86 @@ export default function ServicesPage() {
       )}
 
       {/* ========================================================================= */}
-      {/* CATEGORY 02: INTERIOR DESIGN (Inverted Editorial Warm Materiality Layout)  */}
+      {/* CATEGORY 02: STRUCTURAL DESIGN (Blueprint & Technical Engineering Matrix) */}
+      {/* ========================================================================= */}
+      {structuralService && (
+        <section
+          id="structural-design"
+          className="scroll-mt-24 pt-12 border-t border-neutral-200 space-y-10"
+        >
+          {/* Category Header */}
+          <div>
+            <span className="text-xs font-mono text-neutral-400 uppercase tracking-widest block font-semibold">
+              02 / STRUCTURAL INTEGRITY
+            </span>
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light uppercase tracking-tight text-neutral-900 mt-1">
+              {structuralService.title}
+            </h2>
+          </div>
+
+          {/* Technical Engineering Overview Bar */}
+          <div className="p-8 bg-neutral-900 text-white rounded-xs space-y-6">
+            <div className="max-w-3xl space-y-3">
+              <span className="text-[9.5px] uppercase font-mono tracking-[0.3em] text-neutral-400 font-semibold block">
+                INTEGRATED ENGINEERING LOGIC
+              </span>
+              <p className="text-sm sm:text-base text-neutral-200 font-light leading-relaxed">
+                {structuralService.detailedDescription}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 border-t border-neutral-800 text-xs text-neutral-300">
+              <div className="space-y-1">
+                <span className="text-neutral-400 font-mono text-[10px] block">01 / SAFETY & CODES</span>
+                <p className="text-neutral-200 font-light">Seismic, gravity and wind analysis adhering strictly to national building codes.</p>
+              </div>
+              <div className="space-y-1">
+                <span className="text-neutral-400 font-mono text-[10px] block">02 / SPATIAL FREEDOM</span>
+                <p className="text-neutral-200 font-light">Long spans, column-free living volumes, and cantilevered terraces.</p>
+              </div>
+              <div className="space-y-1">
+                <span className="text-neutral-400 font-mono text-[10px] block">03 / RESOURCE EFFICIENCY</span>
+                <p className="text-neutral-200 font-light">Optimized steel and concrete consumption to minimize embodied carbon.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* 6 Structural Scope Deliverables Matrix */}
+          <div className="space-y-4 pt-4">
+            <div className="flex items-center justify-between border-b border-neutral-200 pb-3">
+              <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-neutral-900 font-semibold">
+                STRUCTURAL SCOPE & TECHNICAL DELIVERABLES (ALL 6 STAGES)
+              </span>
+              <span className="text-[10px] font-mono text-neutral-400">ENGINEERING WORKFLOW</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {structuralService.process.map((step, idx) => (
+                <div
+                  key={idx}
+                  className="p-5 bg-white border border-neutral-200 hover:border-black transition-all duration-200 space-y-2 group shadow-2xs hover:shadow-md"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-mono font-semibold text-neutral-400 group-hover:text-black">
+                      {step.step} / ENGINEERING
+                    </span>
+                    <Hammer size={12} className="text-neutral-400 group-hover:text-black" />
+                  </div>
+                  <h4 className="text-xs sm:text-sm font-semibold text-neutral-900">
+                    {step.title}
+                  </h4>
+                  <p className="text-xs text-neutral-500 font-light leading-relaxed">
+                    {step.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ========================================================================= */}
+      {/* CATEGORY 03: INTERIOR DESIGN (Inverted Editorial Warm Materiality Layout)  */}
       {/* ========================================================================= */}
       {interiorService && (
         <section
@@ -197,7 +276,7 @@ export default function ServicesPage() {
           {/* Category Header */}
           <div>
             <span className="text-xs font-mono text-neutral-400 uppercase tracking-widest block font-semibold">
-              02 / INTERIOR ENVIRONMENTS
+              03 / INTERIOR ENVIRONMENTS
             </span>
             <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light uppercase tracking-tight text-neutral-900 mt-1">
               {interiorService.title}
@@ -278,85 +357,6 @@ export default function ServicesPage() {
                       {step.step} / INTERIOR
                     </span>
                     <span className="text-[9px] font-mono text-neutral-400">STAGE</span>
-                  </div>
-                  <h4 className="text-xs sm:text-sm font-semibold text-neutral-900">
-                    {step.title}
-                  </h4>
-                  <p className="text-xs text-neutral-500 font-light leading-relaxed">
-                    {step.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ========================================================================= */}
-      {/* CATEGORY 03: STRUCTURAL DESIGN (Blueprint & Technical Engineering Matrix) */}
-      {/* ========================================================================= */}
-      {structuralService && (
-        <section
-          id="structural-design"
-          className="scroll-mt-24 pt-12 border-t border-neutral-200 space-y-10"
-        >
-          {/* Category Header */}
-          <div>
-            <span className="text-xs font-mono text-neutral-400 uppercase tracking-widest block font-semibold">
-              03 / STRUCTURAL INTEGRITY
-            </span>
-            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light uppercase tracking-tight text-neutral-900 mt-1">
-              {structuralService.title}
-            </h2>
-          </div>
-
-          {/* Technical Engineering Overview Bar */}
-          <div className="p-8 bg-neutral-900 text-white rounded-xs space-y-6">
-            <div className="max-w-3xl space-y-3">
-              <span className="text-[9.5px] uppercase font-mono tracking-[0.3em] text-neutral-400 font-semibold block">
-                INTEGRATED ENGINEERING LOGIC
-              </span>
-              <p className="text-sm sm:text-base text-neutral-200 font-light leading-relaxed">
-                {structuralService.detailedDescription}
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 border-t border-neutral-800 text-xs text-neutral-300">
-              <div className="space-y-1">
-                <span className="text-neutral-400 font-mono text-[10px] block">01 / SAFETY & CODES</span>
-                <p className="text-neutral-200 font-light">Seismic, gravity and wind analysis adhering strictly to national building codes.</p>
-              </div>
-              <div className="space-y-1">
-                <span className="text-neutral-400 font-mono text-[10px] block">02 / SPATIAL FREEDOM</span>
-                <p className="text-neutral-200 font-light">Long spans, column-free living volumes, and cantilevered terraces.</p>
-              </div>
-              <div className="space-y-1">
-                <span className="text-neutral-400 font-mono text-[10px] block">03 / RESOURCE EFFICIENCY</span>
-                <p className="text-neutral-200 font-light">Optimized steel and concrete consumption to minimize embodied carbon.</p>
-              </div>
-            </div>
-          </div>
-
-          {/* 6 Structural Scope Deliverables Matrix */}
-          <div className="space-y-4 pt-4">
-            <div className="flex items-center justify-between border-b border-neutral-200 pb-3">
-              <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-neutral-900 font-semibold">
-                STRUCTURAL SCOPE & TECHNICAL DELIVERABLES (ALL 6 STAGES)
-              </span>
-              <span className="text-[10px] font-mono text-neutral-400">ENGINEERING WORKFLOW</span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {structuralService.process.map((step, idx) => (
-                <div
-                  key={idx}
-                  className="p-5 bg-white border border-neutral-200 hover:border-black transition-all duration-200 space-y-2 group shadow-2xs hover:shadow-md"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-mono font-semibold text-neutral-400 group-hover:text-black">
-                      {step.step} / ENGINEERING
-                    </span>
-                    <Hammer size={12} className="text-neutral-400 group-hover:text-black" />
                   </div>
                   <h4 className="text-xs sm:text-sm font-semibold text-neutral-900">
                     {step.title}

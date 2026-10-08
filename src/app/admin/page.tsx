@@ -257,11 +257,12 @@ export default function AdminCMSPage() {
         headers["Authorization"] = `Bearer ${token}`;
         headers["x-admin-token"] = token;
       }
-      await fetch("/api/admin/leads", {
+      const res = await fetch("/api/admin/leads", {
         method: "PATCH",
         headers,
         body: JSON.stringify({ id, status }),
       });
+      if (!res.ok) throw new Error("Failed to update status on server.");
       setLeads((prev) =>
         prev.map((l) => (l.id === id ? { ...l, status: status as any } : l))
       );
@@ -4108,6 +4109,40 @@ export default function AdminCMSPage() {
                     saveSiteSettings({
                       ...siteSettings,
                       contact: { ...siteSettings.contact, phone: e.target.value },
+                    });
+                  }}
+                  className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                  Office No BSNL Landline
+                </label>
+                <input
+                  type="text"
+                  value={siteSettings.contact.phoneBsnl || ""}
+                  onChange={(e) => {
+                    saveSiteSettings({
+                      ...siteSettings,
+                      contact: { ...siteSettings.contact, phoneBsnl: e.target.value },
+                    });
+                  }}
+                  className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
+                  WhatsApp Direct Number
+                </label>
+                <input
+                  type="text"
+                  value={siteSettings.contact.whatsapp || ""}
+                  onChange={(e) => {
+                    saveSiteSettings({
+                      ...siteSettings,
+                      contact: { ...siteSettings.contact, whatsapp: e.target.value },
                     });
                   }}
                   className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"

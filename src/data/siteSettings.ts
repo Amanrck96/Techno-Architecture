@@ -31,6 +31,8 @@ export interface SiteSettings {
   contact: {
     email: string;
     phone: string;
+    phoneBsnl?: string;
+    whatsapp?: string;
     pressEmail: string;
     careersEmail: string;
   };
@@ -39,6 +41,8 @@ export interface SiteSettings {
     address: string;
     postalCode: string;
     phone: string;
+    phoneBsnl?: string;
+    whatsapp?: string;
     isHeadquarters: boolean;
   }[];
   socials: {
@@ -64,7 +68,9 @@ export const initialSiteSettings: SiteSettings = {
   foundedYear: 2006,
   contact: {
     email: "technoarchitecture@gmail.com",
-    phone: "080 4210 3764",
+    phone: "+91 80 4210 3764",
+    phoneBsnl: "+91 80 2991 4561",
+    whatsapp: "+91 91800 14561",
     pressEmail: "technoarchitecture@gmail.com",
     careersEmail: "technoarchitecture@gmail.com",
   },
@@ -73,7 +79,9 @@ export const initialSiteSettings: SiteSettings = {
       city: "Bengaluru Studio",
       address: "No 9, Uttaradhi Mutt Road, Shankarpuram, Basavanagudi",
       postalCode: "Karnataka 560004",
-      phone: "080 4210 3764",
+      phone: "+91 80 4210 3764",
+      phoneBsnl: "+91 80 2991 4561",
+      whatsapp: "+91 91800 14561",
       isHeadquarters: true,
     }
   ],

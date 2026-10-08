@@ -104,7 +104,7 @@ export default function RootLayout({
     logo: "https://technoarchitecture.com/logo.png",
     description:
       "Techno Architecture is an architecture and design practice creating thoughtful, practical and environmentally responsive spaces.",
-    telephone: "080 4210 3764",
+    telephone: "+91 80 4210 3764",
     email: "technoarchitecture@gmail.com",
     address: {
       "@type": "PostalAddress",

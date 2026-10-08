@@ -6,6 +6,7 @@ import DesktopRailNav from "@/components/layout/DesktopRailNav";
 import MobileNav from "@/components/layout/MobileNav";
 import Footer from "@/components/layout/Footer";
 import CookieConsent from "@/components/common/CookieConsent";
+import WhatsAppButton from "@/components/layout/WhatsAppButton";
 
 export default function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -57,6 +58,9 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
         </main>
         <Footer />
       </div>
+
+      {/* Floating WhatsApp Bot */}
+      <WhatsAppButton />
 
       {/* Cookie Consent Banner */}
       <CookieConsent />

@@ -13,7 +13,8 @@ export default function Footer() {
     siteSettings?.shortDescription ||
     "Techno Architecture is an architecture and design practice creating thoughtful, practical and environmentally responsive spaces.";
   const email = siteSettings?.contact?.email || "technoarchitecture@gmail.com";
-  const phone = siteSettings?.contact?.phone || "080 4210 3764";
+  const phone = siteSettings?.contact?.phone || "+91 80 4210 3764";
+  const phoneBsnl = siteSettings?.contact?.phoneBsnl || "+91 80 2991 4561";
   const hours = siteSettings?.operatingHours || "Mon - Fri: 10:00 AM - 6:30 PM";
   const address =
     siteSettings?.studios?.[0]?.address
@@ -65,8 +66,19 @@ export default function Footer() {
             <div className="text-xs text-neutral-600 space-y-1 font-light">
               <strong className="text-neutral-900 block font-medium">Techno Architecture</strong>
               <p className="leading-relaxed">{address}</p>
-              <p className="pt-2 text-[11px] font-mono text-neutral-800">{phone}</p>
-              <p className="text-[11px] text-neutral-500">{hours}</p>
+              <div className="pt-2 text-[11px] font-mono text-neutral-800 space-y-0.5">
+                <p>
+                  <span className="text-neutral-400 font-sans text-[10px] uppercase tracking-wider mr-1">Office:</span>
+                  <a href={`tel:${phone.replace(/\s+/g, "")}`} className="hover:underline">{phone}</a>
+                </p>
+                {phoneBsnl && (
+                  <p>
+                    <span className="text-neutral-400 font-sans text-[10px] uppercase tracking-wider mr-1">BSNL:</span>
+                    <a href={`tel:${phoneBsnl.replace(/\s+/g, "")}`} className="hover:underline">{phoneBsnl}</a>
+                  </p>
+                )}
+              </div>
+              <p className="text-[11px] text-neutral-500 pt-1">{hours}</p>
             </div>
             <div className="pt-2">
               <a

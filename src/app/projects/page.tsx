@@ -33,42 +33,41 @@ export default function ProjectsDirectoryPage() {
   return (
     <div className="w-full py-10 md:py-14 px-4 md:px-8 max-w-[1720px] mx-auto space-y-16">
       {/* Directory Header */}
-      <div>
-        <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-neutral-200 pb-6 mb-6 gap-4">
-          <div>
-            <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block font-mono">
-              PORTFOLIO ARCHIVE
-            </span>
-            <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-light text-neutral-900 tracking-tight mt-1">
-              Projects
-            </h1>
-            <p className="text-xs sm:text-sm text-neutral-500 max-w-2xl mt-2 font-light leading-relaxed">
-              Our portfolio brings together projects of different scales and uses, each developed in response to a particular client, site and way of living or working. Explore completed buildings and work currently in development.
-            </p>
-          </div>
+      <div className="space-y-6">
+        {/* Title and Description */}
+        <div className="border-b border-neutral-200 pb-6">
+          <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block font-mono">
+            PORTFOLIO ARCHIVE
+          </span>
+          <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-light text-neutral-900 tracking-tight mt-1">
+            Projects
+          </h1>
+          <p className="text-xs sm:text-sm text-neutral-500 max-w-3xl mt-2 font-light leading-relaxed">
+            Our portfolio brings together projects of different scales and uses, each developed in response to a particular client, site and way of living or working. Explore completed buildings and work currently in development.
+          </p>
+        </div>
 
-          {/* Filter Navigation Tabs */}
-          <div className="flex flex-wrap items-center gap-2 md:gap-2.5">
-            {filterTabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveFilter(tab.id)}
-                type="button"
-                className={cn(
-                  "text-[10px] tracking-[0.2em] uppercase py-1.5 px-3 transition-all duration-300 rounded-xs",
-                  activeFilter === tab.id
-                    ? "bg-black text-white font-medium shadow-xs"
-                    : "text-neutral-500 hover:text-black hover:bg-neutral-100"
-                )}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
+        {/* Filter Navigation Tabs - Guaranteed Single Line */}
+        <div className="flex items-center gap-1.5 sm:gap-2 md:gap-2.5 overflow-x-auto no-scrollbar whitespace-nowrap py-1">
+          {filterTabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveFilter(tab.id)}
+              type="button"
+              className={cn(
+                "text-[10px] tracking-[0.2em] uppercase py-1.5 px-3 transition-all duration-300 rounded-xs flex-shrink-0",
+                activeFilter === tab.id
+                  ? "bg-black text-white font-medium shadow-xs"
+                  : "text-neutral-500 hover:text-black hover:bg-neutral-100"
+              )}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
         {/* Dedicated Views Sublinks */}
-        <div className="flex flex-wrap items-center justify-between gap-4 text-[10px] tracking-[0.2em] uppercase text-neutral-400 px-1 mb-8">
+        <div className="flex flex-wrap items-center justify-between gap-4 text-[10px] tracking-[0.2em] uppercase text-neutral-400 px-1 pb-2 border-b border-neutral-100 mb-8">
           <div className="flex flex-wrap items-center gap-6">
             <span className="font-medium">Direct Views:</span>
             <Link href="/projects/completed" className="hover:text-black transition-colors font-medium text-neutral-700">
@@ -77,6 +76,9 @@ export default function ProjectsDirectoryPage() {
             <Link href="/projects/ongoing" className="hover:text-black transition-colors font-medium text-neutral-700">
               ONGOING PROJECTS →
             </Link>
+          </div>
+          <div className="text-neutral-500 font-mono">
+            {displayedProjects.length} {displayedProjects.length === 1 ? "PROJECT" : "PROJECTS"} EXHIBITED
           </div>
         </div>
 

@@ -237,13 +237,42 @@ export default function ContactPage() {
               </div>
             </div>
 
-            <div className="space-y-1 pt-3 border-t border-neutral-200">
-              <span className="text-[9px] uppercase font-mono tracking-wider text-neutral-400 block">Office Phone</span>
+            {/* Office Landlines */}
+            <div className="space-y-2 pt-3 border-t border-neutral-200">
+              <span className="text-[9px] uppercase font-mono tracking-wider text-neutral-400 block">Office Landlines</span>
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-neutral-500 font-mono text-[10px]">Office Primary</span>
+                  <a
+                    href="tel:+918042103764"
+                    className="text-neutral-900 font-mono text-xs sm:text-sm hover:underline font-medium"
+                  >
+                    +91 80 4210 3764
+                  </a>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-neutral-500 font-mono text-[10px]">Office No BSNL</span>
+                  <a
+                    href="tel:+918029914561"
+                    className="text-neutral-900 font-mono text-xs sm:text-sm hover:underline font-medium"
+                  >
+                    +91 80 2991 4561
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Direct WhatsApp Channel */}
+            <div className="space-y-1.5 pt-3 border-t border-neutral-200">
+              <span className="text-[9px] uppercase font-mono tracking-wider text-neutral-400 block">WhatsApp Direct</span>
               <a
-                href={`tel:${(siteSettings?.contact?.phone || "08042103764").replace(/\s+/g, "")}`}
-                className="text-neutral-900 font-mono text-sm hover:underline block"
+                href="https://wa.me/919180014561?text=Hello%20Techno%20Architecture%2C%20I%20would%20like%20to%20enquire%20about%20architectural%20and%20interior%20design%20services."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-[#25D366] hover:text-[#128C7E] font-mono text-xs sm:text-sm font-medium transition-colors"
               >
-                {siteSettings?.contact?.phone || "080 4210 3764"}
+                <span>+91 91800 14561</span>
+                <span className="text-[10px] px-1.5 py-0.5 bg-[#25D366]/10 text-[#128C7E] rounded-xs font-sans font-semibold">Chat Online</span>
               </a>
             </div>
 

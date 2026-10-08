@@ -23,7 +23,7 @@ export default function HomeIntro() {
   return (
     <section
       id="introduction"
-      className="w-full bg-white pt-8 sm:pt-12 pb-16 sm:pb-24 px-6 sm:px-10 lg:px-16 border-b border-neutral-200 scroll-mt-20 select-text"
+      className="w-full bg-white pt-8 sm:pt-12 pb-8 sm:pb-10 px-6 sm:px-10 lg:px-16 border-b border-neutral-200 scroll-mt-20 select-text"
     >
       <div className="max-w-7xl mx-auto">
         {/* Subtle architectural top divider rule matching reference */}
@@ -88,7 +88,7 @@ export default function HomeIntro() {
         </div>
 
         {/* Bottom Section: Introduction Narrative & Blue-Circled Leadership / Location Cards */}
-        <div className="mt-14 sm:mt-18 lg:mt-22 w-full space-y-8 sm:space-y-10">
+        <div className="mt-20 sm:mt-28 lg:mt-36 xl:mt-44 w-full space-y-8 sm:space-y-10">
           <div className="w-full space-y-4 sm:space-y-5">
             <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.28em] text-neutral-400 font-mono block font-semibold">
               INTRODUCTION

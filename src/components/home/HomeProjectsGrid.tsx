@@ -19,7 +19,7 @@ export default function HomeProjectsGrid() {
   const totalCompleted = projects.filter((p) => p.status === "completed").length;
 
   return (
-    <section id="projects" className="w-full py-12 md:py-16 px-4 md:px-8 scroll-mt-20">
+    <section id="projects" className="w-full pt-8 md:pt-10 pb-12 md:pb-16 px-4 md:px-8 scroll-mt-20">
       {/* Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-4 border-b border-neutral-200 gap-4">
         <div>
