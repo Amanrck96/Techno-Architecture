@@ -58,15 +58,6 @@ export default function LandingGallery() {
             {"BENGALURU \u00B7 INDIA"}
           </div>
         </Link>
-
-        {/* Top-Right Enter Studio Button (laser-aligned with bottom right controls) */}
-        <Link
-          href="/home?intro=cinematic"
-          className="inline-flex items-center gap-2 text-[9px] sm:text-[10px] tracking-[0.22em] uppercase font-semibold text-neutral-900 hover:text-black border border-neutral-300 hover:border-black px-3.5 sm:px-4 py-2 transition-colors group cursor-pointer"
-        >
-          <span>ENTER STUDIO</span>
-          <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
-        </Link>
       </header>
 
       {/* 2. EXCLUSIVE FULLSCREEN VIDEO HERO (Continuous Ambient Background Loop) */}
@@ -87,15 +78,15 @@ export default function LandingGallery() {
 
         {/* 3. BOTTOM CAPTION & INTERACTIVE CONTROLS — Matching px-6 sm:px-10 lg:px-16 Grid Alignment */}
         <div className="absolute bottom-0 left-0 right-0 z-20 px-6 sm:px-10 lg:px-16 pb-6 sm:pb-8 lg:pb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4 pointer-events-none">
-          {/* Architectural Statement / Brand Info */}
-          <div className="space-y-1.5 bg-black/60 backdrop-blur-md p-4 sm:p-5 border border-white/15 max-w-xl pointer-events-auto">
-            <span className="block text-[9px] md:text-[10px] tracking-[0.3em] text-neutral-300 uppercase font-mono">
+          {/* Architectural Statement / Brand Info — Flush Left Aligned with Top Logo (0px offset) */}
+          <div className="space-y-1.5 max-w-xl pointer-events-auto">
+            <span className="block text-[9px] md:text-[10px] tracking-[0.3em] text-neutral-300 uppercase font-mono drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
               CINEMATIC ARCHITECTURE · BENGALURU, INDIA
             </span>
-            <h1 className="font-display text-lg sm:text-2xl md:text-3xl tracking-[0.16em] uppercase font-light text-white leading-tight">
+            <h1 className="font-display text-lg sm:text-2xl md:text-3xl tracking-[0.16em] uppercase font-light text-white leading-tight drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
               TECHNO ARCHITECTURE
             </h1>
-            <p className="text-[11px] sm:text-xs text-neutral-300 tracking-wide font-light line-clamp-2 pt-0.5">
+            <p className="text-[11px] sm:text-xs text-neutral-300 tracking-wide font-light line-clamp-2 pt-0.5 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
               Architecture shaped around people, place and purpose. Thoughtful spaces balancing creativity, comfort, luxury and practical living.
             </p>
           </div>
