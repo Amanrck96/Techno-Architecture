@@ -36,11 +36,11 @@ export default function LandingGallery() {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-neutral-950 flex flex-col select-none">
-      {/* 1. TOP HEADER — Official Brand Identity */}
+      {/* 1. TOP HEADER — Official Brand Identity linking into studio */}
       <header className="relative z-30 w-full bg-white border-b border-neutral-200 px-6 sm:px-10 lg:px-16 py-3 sm:py-3.5 md:py-4 flex items-center justify-between shrink-0 shadow-xs">
         <Link
           href="/home?intro=cinematic"
-          className="inline-flex flex-col items-center group focus:outline-none transition-opacity hover:opacity-90 w-48 sm:w-60 md:w-72 lg:w-80"
+          className="inline-flex flex-col items-start group focus:outline-none transition-opacity hover:opacity-90 w-48 sm:w-60 md:w-72 lg:w-80"
           aria-label="Techno Architecture"
         >
           <div className="relative w-full h-9 sm:h-11 md:h-12">
@@ -51,12 +51,21 @@ export default function LandingGallery() {
               priority
               unoptimized
               sizes="(max-width: 768px) 260px, 380px"
-              className="object-contain object-center"
+              className="object-contain object-left"
             />
           </div>
-          <div className="mt-1.5 sm:mt-2 w-full text-center text-[9px] sm:text-[10px] md:text-[11px] font-semibold tracking-[0.28em] pl-[0.28em] text-neutral-900 uppercase font-heading select-none">
+          <div className="mt-1.5 sm:mt-2 w-full text-left text-[9px] sm:text-[10px] md:text-[11px] font-semibold tracking-[0.28em] text-neutral-900 uppercase font-heading select-none">
             {"BENGALURU \u00B7 INDIA"}
           </div>
+        </Link>
+
+        {/* Top-Right Enter Studio Button (laser-aligned with bottom right controls) */}
+        <Link
+          href="/home?intro=cinematic"
+          className="inline-flex items-center gap-2 text-[9px] sm:text-[10px] tracking-[0.22em] uppercase font-semibold text-neutral-900 hover:text-black border border-neutral-300 hover:border-black px-3.5 sm:px-4 py-2 transition-colors group cursor-pointer"
+        >
+          <span>ENTER STUDIO</span>
+          <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
         </Link>
       </header>
 
@@ -76,8 +85,8 @@ export default function LandingGallery() {
         {/* Ambient Vignette & Contrast Gradients for visual elegance & readability */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/30 pointer-events-none" />
 
-        {/* 3. BOTTOM CAPTION & INTERACTIVE CONTROLS */}
-        <div className="absolute bottom-0 left-0 right-0 z-20 p-4 sm:p-6 md:p-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4 pointer-events-none">
+        {/* 3. BOTTOM CAPTION & INTERACTIVE CONTROLS — Matching px-6 sm:px-10 lg:px-16 Grid Alignment */}
+        <div className="absolute bottom-0 left-0 right-0 z-20 px-6 sm:px-10 lg:px-16 pb-6 sm:pb-8 lg:pb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4 pointer-events-none">
           {/* Architectural Statement / Brand Info */}
           <div className="space-y-1.5 bg-black/60 backdrop-blur-md p-4 sm:p-5 border border-white/15 max-w-xl pointer-events-auto">
             <span className="block text-[9px] md:text-[10px] tracking-[0.3em] text-neutral-300 uppercase font-mono">
