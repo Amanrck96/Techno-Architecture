@@ -31,11 +31,11 @@ export default function HomeIntro() {
 
         {/* Top 2-Column Grid: Left Brand Logo, Right Hero Editorial Statement & CTAs */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-start">
-          {/* Left Column: Official Techno Architecture Brand Logo + Centralized Location Subtext */}
+          {/* Left Column: Official Techno Architecture Brand Logo + Location Subtext */}
           <div className="flex flex-col items-start pt-0.5 sm:pt-1">
             <Link
               href="/home"
-              className="inline-flex flex-col items-center group focus:outline-none transition-opacity hover:opacity-90 w-full max-w-[380px] sm:max-w-[400px] lg:max-w-[420px]"
+              className="inline-flex flex-col items-start group focus:outline-none transition-opacity hover:opacity-90 w-full max-w-[380px] sm:max-w-[400px] lg:max-w-[420px]"
               aria-label="Techno Architecture"
             >
               <div className="relative w-full aspect-[1024/290]">
@@ -50,8 +50,8 @@ export default function HomeIntro() {
                 />
               </div>
 
-              {/* Bengaluru · India centralized below logo */}
-              <div className="mt-2.5 sm:mt-3 w-full text-center text-[10px] sm:text-[11px] md:text-xs font-semibold tracking-[0.28em] pl-[0.28em] text-neutral-900 uppercase font-heading select-none">
+              {/* Bengaluru · India aligned with logo & text */}
+              <div className="mt-2.5 sm:mt-3 w-full text-left text-[10px] sm:text-[11px] md:text-xs font-semibold tracking-[0.28em] text-neutral-900 uppercase font-heading select-none">
                 {"BENGALURU \u00B7 INDIA"}
               </div>
             </Link>
