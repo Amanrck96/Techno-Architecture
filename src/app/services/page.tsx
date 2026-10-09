@@ -44,23 +44,23 @@ export default function ServicesPage() {
   };
 
   return (
-    <div className="w-full py-10 md:py-16 px-6 md:px-12 lg:px-16 max-w-7xl mx-auto space-y-20">
+    <div className="w-full pt-10 sm:pt-12 md:pt-14 pb-16 px-6 sm:px-10 lg:px-16 max-w-7xl mx-auto space-y-16 sm:space-y-20">
       {/* 1. Header with Discipline Jump Navigation */}
-      <div className="border-b border-neutral-200 pb-8 space-y-6">
-        <div>
+      <div className="border-b border-neutral-200 pb-6 sm:pb-8 space-y-6">
+        <div className="max-w-3xl space-y-2">
+          <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block font-mono">
+            {servicesHeader.subtitle}
+          </span>
           <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-neutral-900 tracking-tight">
             {servicesHeader.title}
           </h1>
-          <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block font-mono mt-2">
-            {servicesHeader.subtitle}
-          </span>
-          <p className="text-xs sm:text-sm text-neutral-500 max-w-2xl mt-3 leading-relaxed tracking-wide font-light">
+          <p className="text-xs sm:text-sm text-neutral-500 font-light leading-relaxed tracking-wide pt-1">
             {servicesHeader.description}
           </p>
         </div>
 
         {/* Interactive Discipline Jump Selector */}
-        <div className="flex flex-wrap items-center gap-2 pt-2">
+        <div className="flex flex-wrap items-center gap-2 pt-1">
           {[
             { id: "architecture", label: "01 / Architecture" },
             { id: "structural-design", label: "02 / Structural Design" },

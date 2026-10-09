@@ -19,12 +19,12 @@ export default function BlogArticlePage() {
   const related = blog.filter((p) => post.relatedSlugs?.includes(p.slug));
 
   return (
-    <article className="w-full py-10 md:py-16 px-6 md:px-12 lg:px-16 max-w-4xl mx-auto space-y-12">
+    <article className="w-full pt-10 sm:pt-12 md:pt-14 pb-16 px-6 sm:px-10 lg:px-16 max-w-7xl mx-auto space-y-12">
       {/* Breadcrumbs */}
       <div className="border-b border-neutral-200 pb-4">
         <Link
           href="/blog"
-          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-medium text-neutral-500 hover:text-black transition-colors"
+          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-medium text-neutral-500 hover:text-black transition-colors"
         >
           <ArrowLeft size={13} />
           <span>ALL MONOGRAPHS & ESSAYS</span>

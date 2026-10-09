@@ -11,40 +11,40 @@ export default function CompletedProjectsPage() {
   const completed = projects.filter((p) => p.status === "completed");
 
   return (
-    <div className="w-full py-10 md:py-14 px-4 md:px-8 max-w-[1720px] mx-auto">
+    <div className="w-full pt-10 sm:pt-12 md:pt-14 pb-16 px-6 sm:px-10 lg:px-16 max-w-7xl mx-auto space-y-12">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-neutral-200 pb-6 mb-8 gap-4">
-        <div>
-          <div className="flex items-center space-x-2 text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400">
+      <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-neutral-200 pb-6 sm:pb-8 gap-6">
+        <div className="max-w-3xl space-y-2">
+          <div className="flex items-center space-x-2 text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 font-mono">
             <Link href="/projects" className="hover:text-black transition-colors">
               PROJECTS
             </Link>
             <span>/</span>
             <span className="text-black">COMPLETED</span>
           </div>
-          <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-light text-neutral-900 tracking-tight mt-2">
+          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-neutral-900 tracking-tight">
             Completed Projects ({completed.length})
           </h1>
-          <p className="text-xs text-neutral-500 max-w-2xl mt-1.5 font-light leading-relaxed">
-            Completed work demonstrates how the original design intent has been carried through material selection, detailing and construction. Each project page should explain the client&apos;s brief, site response, key design ideas and completed spatial experience.
+          <p className="text-xs sm:text-sm text-neutral-500 font-light leading-relaxed tracking-wide pt-1">
+            Completed work demonstrates how the original design intent has been carried through material selection, detailing and construction. Each project page explains the client&apos;s brief, site response, key design ideas and completed spatial experience.
           </p>
         </div>
 
         <Link
           href="/projects/ongoing"
-          className="text-[10px] tracking-[0.2em] uppercase font-semibold text-neutral-500 hover:text-black transition-colors"
+          className="text-[10px] tracking-[0.2em] uppercase font-semibold text-neutral-500 hover:text-black transition-colors pb-1 shrink-0"
         >
           SWITCH TO ONGOING WORKS ({projects.filter((p) => p.status === "ongoing").length}) →
         </Link>
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {completed.map((project: Project) => (
           <Link
             key={project.id}
             href={`/projects/${project.slug}`}
-            className="group relative block aspect-[4/3] w-full overflow-hidden bg-neutral-100"
+            className="group relative block aspect-[4/3] w-full overflow-hidden bg-neutral-100 border border-neutral-200 hover:border-black transition-all duration-300 shadow-xs hover:shadow-md"
           >
             <Image
               src={project.mainImage}
@@ -68,8 +68,9 @@ export default function CompletedProjectsPage() {
                 </span>
               </div>
 
-              <div className="text-[9px] tracking-[0.2em] text-neutral-300 uppercase font-light">
-                {project.category} · COMPLETED
+              <div className="flex items-center justify-between text-[9px] tracking-[0.2em] text-neutral-300 uppercase font-light">
+                <span>{project.category} · COMPLETED</span>
+                <span className="text-white/80 underline underline-offset-4">VIEW DOSSIER →</span>
               </div>
             </div>
           </Link>

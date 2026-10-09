@@ -52,18 +52,20 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="w-full py-10 md:py-16 px-6 md:px-12 lg:px-16 max-w-7xl mx-auto space-y-16">
+    <div className="w-full pt-10 sm:pt-12 md:pt-14 pb-16 px-6 sm:px-10 lg:px-16 max-w-7xl mx-auto space-y-12 sm:space-y-16">
       {/* Page Header */}
-      <div className="border-b border-neutral-200 pb-6">
-        <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block font-mono">
-          CONTACT US
-        </span>
-        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-neutral-900 tracking-tight mt-2">
-          Let us discuss your project
-        </h1>
-        <p className="text-xs sm:text-sm text-neutral-500 max-w-2xl mt-2 tracking-wide font-light">
-          Whether you are planning a new building, an interior or an early-stage feasibility study, share a few details with us. Our team will review your enquiry and respond with the most relevant next step.
-        </p>
+      <div className="border-b border-neutral-200 pb-6 sm:pb-8">
+        <div className="max-w-3xl space-y-2">
+          <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block font-mono">
+            CONTACT US
+          </span>
+          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-neutral-900 tracking-tight">
+            Let us discuss your project
+          </h1>
+          <p className="text-xs sm:text-sm text-neutral-500 font-light leading-relaxed tracking-wide pt-1">
+            Whether you are planning a new building, an interior or an early-stage feasibility study, share a few details with us. Our team will review your enquiry and respond with the most relevant next step.
+          </p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">

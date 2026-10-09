@@ -85,29 +85,28 @@ Best regards,
   };
 
   return (
-    <div className="w-full py-10 md:py-16 px-6 md:px-12 lg:px-16 max-w-5xl mx-auto space-y-16">
-      {/* Breadcrumb / Top Link */}
-      <div className="border-b border-neutral-200 pb-4">
+    <div className="w-full pt-10 sm:pt-12 md:pt-14 pb-16 px-6 sm:px-10 lg:px-16 max-w-7xl mx-auto space-y-12 sm:space-y-16">
+      {/* Page Header */}
+      <div className="border-b border-neutral-200 pb-6 sm:pb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="max-w-3xl space-y-2">
+          <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block font-mono">
+            JOIN OUR PRACTICE
+          </span>
+          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-neutral-900 tracking-tight">
+            Careers
+          </h1>
+          <p className="text-xs sm:text-sm text-neutral-500 font-light leading-relaxed tracking-wide pt-1">
+            We welcome applications from architects and architectural interns who value thoughtful design, technical rigour and hands-on involvement from concept through execution.
+          </p>
+        </div>
+
         <Link
           href="/about#team"
-          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-medium text-neutral-500 hover:text-black transition-colors"
+          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] font-mono font-medium text-neutral-500 hover:text-black transition-colors pb-1 shrink-0"
         >
           <ArrowLeft size={13} />
           <span>OUR STUDIO & TEAM</span>
         </Link>
-      </div>
-
-      {/* Page Header */}
-      <div className="border-b border-neutral-200 pb-8 space-y-3">
-        <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block font-mono">
-          JOIN OUR PRACTICE
-        </span>
-        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-neutral-900 tracking-tight">
-          Careers
-        </h1>
-        <p className="text-sm md:text-base text-neutral-700 max-w-2xl font-light leading-relaxed pt-2">
-          We welcome applications from architects and architectural interns who value thoughtful design, technical rigour and hands-on involvement from concept through execution.
-        </p>
       </div>
 
       {/* How to Apply Section */}

@@ -348,9 +348,9 @@ export default function ProjectDetailPage() {
   ];
 
   return (
-    <article className="w-full py-6 md:py-10 px-4 md:px-12 lg:px-16 max-w-7xl mx-auto space-y-12 md:space-y-16">
+    <article className="w-full pt-10 sm:pt-12 md:pt-14 pb-16 px-6 sm:px-10 lg:px-16 max-w-7xl mx-auto space-y-12 sm:space-y-16">
       {/* Breadcrumb Navigation & Back Link */}
-      <div className="flex items-center justify-between border-b border-neutral-200 pb-4 text-[10px] tracking-[0.25em] uppercase text-neutral-400">
+      <div className="flex items-center justify-between border-b border-neutral-200 pb-4 text-[10px] tracking-[0.25em] uppercase text-neutral-400 font-mono">
         <Link
           href="/projects"
           className="flex items-center gap-1.5 text-neutral-600 hover:text-black transition-colors font-medium"
@@ -364,11 +364,14 @@ export default function ProjectDetailPage() {
       </div>
 
       {/* 1. Project Title & Key Metadata Header */}
-      <div className="space-y-4">
-        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-neutral-900 tracking-[0.1em] uppercase">
+      <div className="space-y-2">
+        <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block font-mono">
+          ARCHITECTURAL DOSSIER
+        </span>
+        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-neutral-900 tracking-[0.06em] uppercase">
           {project.title}
         </h1>
-        <p className="text-xs sm:text-sm text-neutral-500 font-mono tracking-wider">
+        <p className="text-xs sm:text-sm text-neutral-500 font-mono tracking-wider pt-1">
           {project.location} · {project.year} · {project.area}
         </p>
       </div>
@@ -726,7 +729,7 @@ export default function ProjectDetailPage() {
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           aria-label="Scroll back to top"
-          className="fixed bottom-6 right-6 z-40 p-3.5 bg-neutral-900/90 hover:bg-black text-white shadow-2xl backdrop-blur-md border border-neutral-700/60 rounded-full transition-all duration-300 hover:scale-110 group cursor-pointer"
+          className="fixed bottom-24 right-6 lg:right-32 xl:right-36 2xl:right-40 z-40 p-3 sm:p-3.5 bg-neutral-900/90 hover:bg-black text-white shadow-2xl backdrop-blur-md border border-neutral-700/60 rounded-full transition-all duration-300 hover:scale-110 group cursor-pointer"
           title="Back to top"
         >
           <ArrowUp size={16} className="group-hover:-translate-y-0.5 transition-transform" />

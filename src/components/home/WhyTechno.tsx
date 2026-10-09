@@ -4,7 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 
 export default function WhyTechno() {
   return (
-    <section id="why-techno" className="w-full py-16 md:py-24 px-6 md:px-12 bg-neutral-950 text-white border-y border-neutral-800 scroll-mt-20">
+    <section id="why-techno" className="w-full py-16 md:py-24 px-6 sm:px-10 lg:px-16 bg-neutral-950 text-white border-y border-neutral-800 scroll-mt-20">
       <div className="max-w-7xl mx-auto">
         {/* Section Label */}
         <div className="mb-12">

@@ -25,7 +25,7 @@ export default function Footer() {
     "https://www.instagram.com/technoarchitecture_rajesh/";
 
   return (
-    <footer className="w-full border-t border-neutral-200 bg-neutral-50 text-neutral-900 pt-16 pb-24 px-6 md:px-12 lg:pr-28">
+    <footer className="w-full border-t border-neutral-200 bg-neutral-50 text-neutral-900 pt-16 pb-24 px-6 sm:px-10 lg:px-16">
       <div className="max-w-7xl mx-auto">
         {/* Main Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">

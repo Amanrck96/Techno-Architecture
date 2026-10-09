@@ -37,17 +37,17 @@ export default function FAQPage() {
   });
 
   return (
-    <div className="w-full py-10 md:py-16 px-6 md:px-12 lg:px-16 max-w-5xl mx-auto space-y-12">
+    <div className="w-full pt-10 sm:pt-12 md:pt-14 pb-16 px-6 sm:px-10 lg:px-16 max-w-7xl mx-auto space-y-12 sm:space-y-16">
       {/* Page Header */}
-      <div className="border-b border-neutral-200 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block">
+      <div className="border-b border-neutral-200 pb-6 sm:pb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="max-w-3xl space-y-2">
+          <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block font-mono">
             ENGAGEMENT CLARITY
           </span>
-          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-neutral-900 tracking-tight mt-2">
+          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-neutral-900 tracking-tight">
             Frequently Asked Questions
           </h1>
-          <p className="text-xs sm:text-sm text-neutral-500 max-w-xl mt-2 tracking-wide font-light">
+          <p className="text-xs sm:text-sm text-neutral-500 font-light leading-relaxed tracking-wide pt-1">
             Answers regarding our architectural services, project appointment, scope of work, fees and design process.
           </p>
         </div>

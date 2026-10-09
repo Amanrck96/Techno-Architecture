@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCMSStore } from "@/lib/cmsStore";
+import BrandLogo from "@/components/common/BrandLogo";
 
 export default function HomeIntro() {
   const { siteSettings } = useCMSStore();
@@ -24,12 +25,9 @@ export default function HomeIntro() {
   return (
     <section
       id="introduction"
-      className="w-full bg-white pt-8 sm:pt-12 pb-8 sm:pb-10 px-6 sm:px-10 lg:px-16 border-b border-neutral-200 scroll-mt-20 select-text"
+      className="w-full bg-white pt-10 sm:pt-12 md:pt-14 pb-12 sm:pb-16 px-6 sm:px-10 lg:px-16 border-b border-neutral-200 scroll-mt-20 select-text"
     >
       <div className="max-w-7xl mx-auto">
-        {/* Subtle architectural top divider rule matching reference */}
-        <div className="w-full border-t border-neutral-200 mb-10 sm:mb-14" />
-
         {/* Top 2-Column Grid: Left Brand Logo, Right Hero Editorial Statement & CTAs */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-start">
           {/* Left Column: Official Techno Architecture Brand Logo + Location Subtext */}
@@ -41,30 +39,10 @@ export default function HomeIntro() {
           >
             <Link
               href="/home"
-              className="inline-flex flex-col items-start group focus:outline-none transition-opacity hover:opacity-90 w-full max-w-[380px] sm:max-w-[400px] lg:max-w-[420px]"
+              className="inline-flex flex-col items-start group focus:outline-none transition-opacity hover:opacity-90 w-full max-w-[340px] sm:max-w-[380px] lg:max-w-[400px]"
               aria-label="Techno Architecture"
             >
-              <div className="relative w-full aspect-[1024/290]">
-                <Image
-                  src="/techno-brand-logo.png"
-                  alt="Techno Architecture"
-                  fill
-                  priority
-                  unoptimized
-                  sizes="(max-width: 768px) 320px, 420px"
-                  className="object-contain object-left"
-                />
-              </div>
-
-              {/* Bengaluru · India aligned with logo & text */}
-              <motion.div
-                initial={{ opacity: 0, letterSpacing: "0.18em" }}
-                animate={{ opacity: 1, letterSpacing: "0.28em" }}
-                transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-                className="mt-2.5 sm:mt-3 w-full text-left text-[10px] sm:text-[11px] md:text-xs font-semibold tracking-[0.28em] text-neutral-900 uppercase font-heading select-none"
-              >
-                {"BENGALURU \u00B7 INDIA"}
-              </motion.div>
+              <BrandLogo priority className="w-full" />
             </Link>
           </motion.div>
 
@@ -108,7 +86,7 @@ export default function HomeIntro() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
-          className="mt-20 sm:mt-28 lg:mt-36 xl:mt-44 w-full space-y-8 sm:space-y-10"
+          className="mt-12 sm:mt-16 lg:mt-20 w-full space-y-8 sm:space-y-10"
         >
           <div className="w-full space-y-4 sm:space-y-5">
             <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.28em] text-neutral-400 font-mono block font-semibold">

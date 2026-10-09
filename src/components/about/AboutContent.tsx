@@ -12,8 +12,9 @@ export default function AboutContent() {
   const { siteSettings, team } = useCMSStore();
   const [activeValueIndex, setActiveValueIndex] = useState<number | null>(null);
 
+  const displayTeam = (team && team.length > 0) ? team : initialTeam;
   const rajesh =
-    team?.find((m) => m.name.toLowerCase().includes("rajesh")) ||
+    displayTeam.find((m) => m.name.toLowerCase().includes("rajesh")) ||
     initialTeam[0];
 
   const tagline = siteSettings?.tagline || "Architecture shaped around people, place and purpose.";
@@ -71,24 +72,19 @@ export default function AboutContent() {
       ];
 
   return (
-    <div className="w-full py-10 md:py-16 px-6 md:px-12 lg:px-16 max-w-7xl mx-auto space-y-16 sm:space-y-20">
-      {/* 1. Header with Staggered Fade-Up */}
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        className="border-b border-neutral-200 pb-8"
-      >
-        <div className="flex items-center gap-2 mb-3">
-          <span className="w-2 h-2 rounded-full bg-neutral-900 animate-pulse" />
-          <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-500 font-mono">
-            PRACTICE ARCHIVE & PROFILE
-          </span>
-        </div>
-        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-neutral-900 tracking-tight max-w-4xl leading-[1.12]">
-          {tagline}
+    <div className="w-full pt-10 sm:pt-12 md:pt-14 pb-16 px-6 sm:px-10 lg:px-16 max-w-7xl mx-auto space-y-16 sm:space-y-20">
+      {/* 1. Standardized Page Header */}
+      <div className="border-b border-neutral-200 pb-6 sm:pb-8 space-y-2">
+        <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block font-mono">
+          PRACTICE PROFILE & PHILOSOPHY
+        </span>
+        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-neutral-900 tracking-tight">
+          About the Practice
         </h1>
-      </motion.div>
+        <p className="text-xs sm:text-sm text-neutral-500 max-w-3xl font-light leading-relaxed tracking-wide pt-1">
+          {tagline} Established in 2006 by Ar. Rajesh Shivaram in Basavanagudi, Bengaluru — committed to architecture that is distinctive, environmentally responsible and grounded in everyday life.
+        </p>
+      </div>
 
       {/* 2. Main Full-Bleed Editorial Visual with Hover Zoom */}
       <motion.div
@@ -238,7 +234,7 @@ export default function AboutContent() {
           <div className="flex flex-col md:flex-row md:items-end justify-between pb-6 border-b border-neutral-200 gap-4">
             <div>
               <span className="text-[10px] uppercase tracking-[0.3em] font-mono font-semibold text-neutral-400 block">
-                08 / PRACTICE LEADERSHIP & STUDIO TEAM
+                05 / PRACTICE LEADERSHIP & STUDIO TEAM
               </span>
               <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-neutral-900 tracking-tight mt-1">
                 Our Team
@@ -380,7 +376,7 @@ export default function AboutContent() {
                 STUDIO PRACTITIONERS
               </span>
               <h3 className="font-display text-2xl font-light text-neutral-900 tracking-tight">
-                Architects & Specialists ({team.length})
+                Architects & Specialists ({displayTeam.length})
               </h3>
             </div>
             <p className="text-xs text-neutral-500 font-light max-w-md">
@@ -389,7 +385,7 @@ export default function AboutContent() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {team.map((member, mIdx) => (
+            {displayTeam.map((member, mIdx) => (
               <div
                 key={member.id || mIdx}
                 className="group border border-neutral-200 bg-white hover:border-black transition-all duration-300 flex flex-col justify-between overflow-hidden shadow-xs hover:shadow-md"

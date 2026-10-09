@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import BrandLogo from "@/components/common/BrandLogo";
 
 interface StudioPreloaderProps {
   forceShow?: boolean;
@@ -162,7 +163,7 @@ export default function StudioPreloader({ forceShow = false, onComplete }: Studi
 
           {/* 2. CENTERPIECE — LOGO REVEAL & PROGRESS ANIMATION */}
           <div className="relative z-10 my-auto flex flex-col items-center justify-center text-center max-w-2xl mx-auto w-full px-4">
-            {/* The 4K White Brand Logo Reveal */}
+            {/* The 4K White Brand Logo Reveal with Mathematically Justified Subtitle */}
             <motion.div
               initial={{ opacity: 0, y: 15, scale: 0.96 }}
               animate={{
@@ -171,30 +172,14 @@ export default function StudioPreloader({ forceShow = false, onComplete }: Studi
                 scale: 0.96 + (progress / 100) * 0.04,
               }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-full max-w-[320px] sm:max-w-[440px] md:max-w-[520px] aspect-[1024/290] mb-4 sm:mb-6"
+              className="w-full max-w-[320px] sm:max-w-[440px] md:max-w-[500px] mb-8 sm:mb-10"
             >
-              <Image
-                src="/techno-logo-white.png"
-                alt="Techno Architecture"
-                fill
+              <BrandLogo
+                theme="dark"
                 priority
-                unoptimized
-                sizes="(max-width: 768px) 320px, 520px"
-                className="object-contain object-center drop-shadow-[0_0_24px_rgba(255,255,255,0.1)]"
+                align="center"
+                className="w-full drop-shadow-[0_0_24px_rgba(255,255,255,0.1)]"
               />
-            </motion.div>
-
-            {/* Bengaluru · India Subtitle Expanding Tracking Reveal */}
-            <motion.div
-              initial={{ opacity: 0, letterSpacing: "0.2em" }}
-              animate={{
-                opacity: progress > 25 ? 1 : 0,
-                letterSpacing: "0.32em",
-              }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-[10px] sm:text-[11px] md:text-xs font-semibold uppercase tracking-[0.32em] text-neutral-300 font-heading mb-8 sm:mb-10 pl-[0.32em]"
-            >
-              {"BENGALURU · INDIA"}
             </motion.div>
 
             {/* Precision 1px Architectural Loading Line */}

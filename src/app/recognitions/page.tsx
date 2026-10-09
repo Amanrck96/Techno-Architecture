@@ -24,17 +24,17 @@ export default function RecognitionsPage() {
   );
 
   return (
-    <div className="w-full py-10 md:py-16 px-6 md:px-12 lg:px-16 max-w-6xl mx-auto space-y-16">
+    <div className="w-full pt-10 sm:pt-12 md:pt-14 pb-16 px-6 sm:px-10 lg:px-16 max-w-7xl mx-auto space-y-12 sm:space-y-16">
       {/* Page Header */}
-      <div className="border-b border-neutral-200 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
+      <div className="border-b border-neutral-200 pb-6 sm:pb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="max-w-3xl space-y-2">
           <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-neutral-400 block font-mono">
             HONORS & COMMENDATIONS
           </span>
-          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-neutral-900 tracking-tight mt-2">
+          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-neutral-900 tracking-tight">
             Awards and Recognitions
           </h1>
-          <p className="text-xs sm:text-sm text-neutral-500 max-w-xl mt-2 tracking-wide font-light">
+          <p className="text-xs sm:text-sm text-neutral-500 font-light leading-relaxed tracking-wide pt-1">
             Selected recognition of Techno Architecture&apos;s work across awards, publications, exhibitions and professional platforms.
           </p>
         </div>
@@ -61,7 +61,20 @@ export default function RecognitionsPage() {
 
       {/* Structured Minimal Timeline List */}
       <div className="space-y-6">
-        {filtered.map((item: Recognition) => (
+        {filtered.length === 0 ? (
+          <div className="py-20 text-center border border-dashed border-neutral-300 p-8 space-y-3">
+            <p className="text-xs font-mono tracking-widest uppercase text-neutral-500">
+              NO RECOGNITIONS FOUND IN THIS CATEGORY
+            </p>
+            <button
+              onClick={() => setSelectedCategory("All")}
+              className="text-xs uppercase tracking-widest text-black underline underline-offset-4 hover:text-neutral-600"
+            >
+              Reset Filter
+            </button>
+          </div>
+        ) : (
+          filtered.map((item: Recognition) => (
           <article
             key={item.id}
             className="p-6 md:p-8 border border-neutral-200 bg-white hover:border-black transition-colors flex flex-col md:flex-row justify-between items-start gap-6"
@@ -110,7 +123,7 @@ export default function RecognitionsPage() {
               </div>
             )}
           </article>
-        ))}
+        )))}
       </div>
     </div>
   );

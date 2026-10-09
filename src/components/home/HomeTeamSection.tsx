@@ -12,7 +12,7 @@ export default function HomeTeamSection() {
   const displayTeam: TeamMember[] = (team && team.length > 0) ? team : initialTeam;
 
   return (
-    <section id="team" className="w-full py-14 md:py-20 px-4 md:px-8 bg-neutral-50/60 border-b border-neutral-200 scroll-mt-20">
+    <section id="team" className="w-full py-14 md:py-20 px-6 sm:px-10 lg:px-16 bg-neutral-50/60 border-b border-neutral-200 scroll-mt-20">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-neutral-200 pb-5">

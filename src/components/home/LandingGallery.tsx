@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Volume2, VolumeX, ArrowRight } from "lucide-react";
+import BrandLogo from "@/components/common/BrandLogo";
 
 export default function LandingGallery() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -40,23 +41,13 @@ export default function LandingGallery() {
       <header className="relative z-30 w-full bg-white border-b border-neutral-200 px-6 sm:px-10 lg:px-16 py-3 sm:py-3.5 md:py-4 flex items-center justify-between shrink-0 shadow-xs">
         <Link
           href="/home?intro=cinematic"
-          className="inline-flex flex-col items-start group focus:outline-none transition-opacity hover:opacity-90 w-48 sm:w-60 md:w-72 lg:w-80"
+          className="inline-flex focus:outline-none transition-opacity hover:opacity-90"
           aria-label="Techno Architecture"
         >
-          <div className="relative w-full h-9 sm:h-11 md:h-12">
-            <Image
-              src="/techno-brand-logo.png"
-              alt="Techno Architecture"
-              fill
-              priority
-              unoptimized
-              sizes="(max-width: 768px) 260px, 380px"
-              className="object-contain object-left"
-            />
-          </div>
-          <div className="mt-1.5 sm:mt-2 w-full text-left text-[9px] sm:text-[10px] md:text-[11px] font-semibold tracking-[0.28em] text-neutral-900 uppercase font-heading select-none">
-            {"BENGALURU \u00B7 INDIA"}
-          </div>
+          <BrandLogo
+            priority
+            className="w-48 sm:w-56 md:w-64 lg:w-72"
+          />
         </Link>
       </header>
 
