@@ -215,7 +215,7 @@ export function useCMSStore() {
   }>({});
 
   const lastServerUpdatedRef = useRef<string>("");
-  const syncTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const syncTimersRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
 
   // Function to apply complete dataset to state & local cache
   const applyDataset = useCallback((data: any) => {
@@ -450,6 +450,8 @@ export function useCMSStore() {
       window.removeEventListener(SYNC_EVENT_NAME, handleLocalUpdate);
       window.removeEventListener("focus", handleFocus);
       clearInterval(intervalId);
+      syncTimersRef.current.forEach((t) => clearTimeout(t));
+      syncTimersRef.current.clear();
     };
   }, [fetchFromServer, applyDataset]);
 
@@ -469,12 +471,15 @@ export function useCMSStore() {
 
   // Debounced server sync queue: guarantees 0ms instant UI and prevents network spam while typing
   const debouncedSyncToServer = useCallback((entity: string, data: any) => {
-    if (syncTimerRef.current) {
-      clearTimeout(syncTimerRef.current);
+    const existing = syncTimersRef.current.get(entity);
+    if (existing) {
+      clearTimeout(existing);
     }
-    syncTimerRef.current = setTimeout(() => {
+    const timer = setTimeout(() => {
+      syncTimersRef.current.delete(entity);
       syncToServer({ entity, data });
     }, 600);
+    syncTimersRef.current.set(entity, timer);
   }, []);
 
   // =========================================================
@@ -574,10 +579,8 @@ export function useCMSStore() {
 
   // Force push all current state to server permanently (immediate, flushes queue)
   const saveAllToCloud = useCallback(async () => {
-    if (syncTimerRef.current) {
-      clearTimeout(syncTimerRef.current);
-      syncTimerRef.current = null;
-    }
+    syncTimersRef.current.forEach((t) => clearTimeout(t));
+    syncTimersRef.current.clear();
     touchClientUpdate();
     const allData = {
       projects,
@@ -598,10 +601,8 @@ export function useCMSStore() {
   }, [projects, services, team, blog, faq, gallery, recognitions, siteSettings, testimonials]);
 
   const resetAllToDefaults = useCallback(() => {
-    if (syncTimerRef.current) {
-      clearTimeout(syncTimerRef.current);
-      syncTimerRef.current = null;
-    }
+    syncTimersRef.current.forEach((t) => clearTimeout(t));
+    syncTimersRef.current.clear();
     setProjects(initialProjects);
     setServices(initialServices);
     setTeam(initialTeam);

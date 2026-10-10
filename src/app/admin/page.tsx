@@ -235,9 +235,15 @@ export default function AdminCMSPage() {
         headers["x-admin-token"] = token;
       }
       const res = await fetch("/api/admin/leads", { headers, cache: "no-store" });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to fetch leads");
-      setLeads(data.leads || []);
+      let data: any = null;
+      try {
+        const text = await res.text();
+        data = text ? JSON.parse(text) : {};
+      } catch (_) {
+        data = { error: `Server response error (HTTP ${res.status}).` };
+      }
+      if (!res.ok) throw new Error(data?.error || `Failed to fetch leads (${res.status})`);
+      setLeads(data?.leads || []);
     } catch (err: any) {
       setLeadsError(err.message || "Failed to load enquiry leads.");
     } finally {
@@ -262,13 +268,20 @@ export default function AdminCMSPage() {
         headers,
         body: JSON.stringify({ id, status }),
       });
-      if (!res.ok) throw new Error("Failed to update status on server.");
+      let data: any = null;
+      try {
+        const text = await res.text();
+        data = text ? JSON.parse(text) : {};
+      } catch (_) {
+        data = { error: `Server error (HTTP ${res.status}).` };
+      }
+      if (!res.ok) throw new Error(data?.error || "Failed to update status on server.");
       setLeads((prev) =>
         prev.map((l) => (l.id === id ? { ...l, status: status as any } : l))
       );
       showToast(`Lead marked as ${status}.`);
     } catch (err: any) {
-      showToast("Failed to update lead status.");
+      showToast("Failed to update lead status: " + (err?.message || "Unknown error"));
     }
   };
 
@@ -581,9 +594,18 @@ export default function AdminCMSPage() {
         headers,
         body: fd,
       });
-      const data = await res.json();
+      let data: any = null;
+      try {
+        const text = await res.text();
+        data = text ? JSON.parse(text) : {};
+      } catch (_) {
+        data = { error: `Server upload response error (HTTP ${res.status}).` };
+      }
       if (!res.ok) {
-        throw new Error(data.error || "Upload failed");
+        throw new Error(data?.error || `Upload failed (HTTP ${res.status}).`);
+      }
+      if (!data?.url) {
+        throw new Error("Server did not return a valid media URL.");
       }
       onSuccess(data.url);
       showToast(
@@ -3267,6 +3289,13 @@ export default function AdminCMSPage() {
                               label={`Section ${sIdx + 1} Image (Optional)`}
                               onChange={({ imageUrl: newSecImg, positionX, positionY }) => {
                                 const updated = [...blog];
+                                if (!updated[idx].content) {
+                                  updated[idx].content = { introduction: "", sections: [], conclusion: "" };
+                                }
+                                if (!updated[idx].content.sections) {
+                                  updated[idx].content.sections = [];
+                                }
+                                if (!updated[idx].content.sections[sIdx]) return;
                                 if (newSecImg !== undefined) {
                                   updated[idx].content.sections[sIdx].image = newSecImg;
                                 }
@@ -4936,7 +4965,14 @@ export default function AdminCMSPage() {
                         <div className="flex items-center gap-2 flex-shrink-0">
                           {lead.createdAt && (
                             <span className="text-[10px] text-neutral-400 font-mono hidden md:block">
-                              {new Date(lead.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
+                              {(() => {
+                                try {
+                                  const d = new Date(lead.createdAt);
+                                  return isNaN(d.getTime()) ? "—" : d.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+                                } catch {
+                                  return "—";
+                                }
+                              })()}
                             </span>
                           )}
                           <ChevronRight
@@ -4969,7 +5005,15 @@ export default function AdminCMSPage() {
                             <div>
                               <span className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">Received</span>
                               <span className="text-neutral-700 font-mono">
-                                {lead.createdAt ? new Date(lead.createdAt).toLocaleString("en-IN") : "—"}
+                                {(() => {
+                                  if (!lead.createdAt) return "—";
+                                  try {
+                                    const d = new Date(lead.createdAt);
+                                    return isNaN(d.getTime()) ? "—" : d.toLocaleString("en-IN");
+                                  } catch {
+                                    return "—";
+                                  }
+                                })()}
                               </span>
                             </div>
                           </div>
