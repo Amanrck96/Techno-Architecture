@@ -5,6 +5,7 @@ import {
   signInWithPopup,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  signInAnonymously,
   signOut as firebaseSignOut,
   onAuthStateChanged,
   type Auth,
@@ -136,6 +137,17 @@ export async function uploadToFirebaseStorage(
     throw new Error("Firebase Storage client is not initialized.");
   }
 
+  // Ensure Firebase client is authenticated (anonymously if needed) so security rules pass
+  try {
+    const clientAuth = getFirebaseAuth();
+    if (clientAuth && !clientAuth.currentUser) {
+      await signInAnonymously(clientAuth);
+    }
+  } catch (authErr) {
+    // Non-fatal if Firebase Storage bucket rules permit public write
+    console.debug("Firebase anonymous auth check:", authErr);
+  }
+
   const cleanFolder = folder.replace(/[^a-zA-Z0-9-_]/g, "") || "uploads";
   const originalName = file instanceof File ? file.name : "upload.bin";
   const ext = originalName.includes(".") ? originalName.slice(originalName.lastIndexOf(".")) : "";
@@ -174,6 +186,13 @@ export async function uploadToFirebaseStorage(
       }
     );
   });
+}
+
+export function isFirebaseStorageConfigured(): boolean {
+  return Boolean(
+    (process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || firebaseConfig.storageBucket) &&
+    (process.env.NEXT_PUBLIC_FIREBASE_API_KEY || firebaseConfig.apiKey)
+  );
 }
 
 export { app, auth, db, storage, googleProvider };

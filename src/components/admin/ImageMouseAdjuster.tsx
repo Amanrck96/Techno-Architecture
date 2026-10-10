@@ -14,6 +14,7 @@ import {
   Maximize2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { uploadToFirebaseStorage } from "@/lib/firebaseClient";
 
 interface ImageMouseAdjusterProps {
   imageUrl: string;
@@ -21,6 +22,7 @@ interface ImageMouseAdjusterProps {
   positionY?: number; // 0 - 100
   scale?: number; // 1.0 - 2.5
   label?: string;
+  folder?: string;
   onChange: (update: {
     imageUrl?: string;
     positionX: number;
@@ -36,6 +38,7 @@ export function ImageMouseAdjuster({
   positionY = 50,
   scale = 1.0,
   label = "Hero Image & Mouse Alignment",
+  folder = "monographs",
   onChange,
   onToast,
 }: ImageMouseAdjusterProps) {
@@ -134,19 +137,67 @@ export function ImageMouseAdjuster({
     });
   };
 
-  // Handle local image file upload
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle image file upload (Priority 1: Firebase Storage, Priority 2: API, Priority 3: FileReader)
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      alert("Please upload a valid image file (.jpg, .png, .webp).");
+      alert("Please upload a valid image file (.jpg, .png, .webp, .avif).");
       return;
     }
 
     setIsUploading(true);
-    const reader = new FileReader();
+    onToast?.("Uploading image to Firebase Cloud Storage...");
 
+    // Priority 1: Direct Client-Side Firebase Storage Upload
+    try {
+      const fbResult = await uploadToFirebaseStorage(file, folder);
+      if (fbResult?.url) {
+        setUrlInput(fbResult.url);
+        onChange({
+          imageUrl: fbResult.url,
+          positionX: posX,
+          positionY: posY,
+          scale: currentScale,
+        });
+        onToast?.("✅ Image stored in Firebase Storage and applied to monograph.");
+        setIsUploading(false);
+        if (fileInputRef.current) fileInputRef.current.value = "";
+        return;
+      }
+    } catch (fbErr: any) {
+      console.warn("Direct Firebase upload failed, trying server API fallback:", fbErr);
+    }
+
+    // Priority 2: Upload via Next.js server /api/upload endpoint
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("folder", folder);
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.url) {
+          setUrlInput(data.url);
+          onChange({
+            imageUrl: data.url,
+            positionX: posX,
+            positionY: posY,
+            scale: currentScale,
+          });
+          onToast?.("✅ Image uploaded successfully and applied to monograph.");
+          setIsUploading(false);
+          if (fileInputRef.current) fileInputRef.current.value = "";
+          return;
+        }
+      }
+    } catch (apiErr) {
+      console.warn("Server upload fallback failed, using FileReader preview:", apiErr);
+    }
+
+    // Priority 3: Local FileReader preview fallback
+    const reader = new FileReader();
     reader.onload = (event) => {
       const dataUrl = event.target?.result as string;
       if (dataUrl) {
@@ -157,16 +208,14 @@ export function ImageMouseAdjuster({
           positionY: posY,
           scale: currentScale,
         });
-        onToast?.("Image uploaded successfully and applied to monograph.");
+        onToast?.("Local image preview loaded.");
       }
       setIsUploading(false);
     };
-
     reader.onerror = () => {
       alert("Failed to read image file.");
       setIsUploading(false);
     };
-
     reader.readAsDataURL(file);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };

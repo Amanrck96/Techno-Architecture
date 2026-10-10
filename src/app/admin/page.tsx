@@ -42,6 +42,7 @@ import {
   RotateCcw,
   Download,
   Upload,
+  Cloud,
   CheckCircle2,
   Trash2,
   Lock,
@@ -975,6 +976,15 @@ export default function AdminCMSPage() {
                   <span>Storage: <strong>Temporary Memory (/tmp)</strong> ⚠️</span>
                 </button>
               )}
+
+              {/* Firebase Cloud Storage Media Badge */}
+              <div
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11px] font-mono"
+                title="Firebase Cloud Storage: technoarchitecture-7d718.firebasestorage.app. All project, team, and monograph photos upload directly to Google Firebase."
+              >
+                <Cloud size={12} className="text-amber-400" />
+                <span>Media: <strong className="text-amber-200">Firebase Storage (Active)</strong></span>
+              </div>
 
               <Link
                 href="/"
@@ -4029,6 +4039,66 @@ export default function AdminCMSPage() {
                       Sign up at <a href="https://upstash.com" target="_blank" rel="noopener noreferrer" className="text-cyan-400 underline">upstash.com</a> (Free forever) → Create Redis Database → Copy <strong>UPSTASH_REDIS_REST_URL</strong> and <strong>UPSTASH_REDIS_REST_TOKEN</strong> above.
                     </p>
                   </div>
+                </div>
+              </div>
+
+              {/* Option C / Media Engine: Firebase Cloud Storage */}
+              <div className="lg:col-span-2 p-4 bg-white/5 border border-amber-500/30 rounded-lg space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <Cloud size={18} className="text-amber-400" />
+                    <div>
+                      <h4 className="text-xs font-semibold uppercase tracking-wider text-white">
+                        Firebase Cloud Storage — Media &amp; Asset Engine
+                      </h4>
+                      <p className="text-[11px] text-neutral-400">
+                        High-performance Google cloud media storage for architectural photography, CAD diagrams, videos, and monograph images.
+                      </p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-mono uppercase px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold flex items-center gap-1.5">
+                    <CheckCircle2 size={11} className="text-amber-400" /> Active Cloud Storage
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                  <div className="p-3 bg-black/40 border border-white/10 rounded space-y-1">
+                    <span className="text-[10px] uppercase font-mono text-neutral-400 block">Storage Bucket</span>
+                    <span className="font-mono text-amber-300 text-xs font-semibold break-all">
+                      technoarchitecture-7d718.firebasestorage.app
+                    </span>
+                  </div>
+                  <div className="p-3 bg-black/40 border border-white/10 rounded space-y-1">
+                    <span className="text-[10px] uppercase font-mono text-neutral-400 block">Delivery Network</span>
+                    <span className="font-mono text-white text-xs">Google Cloud Global CDN</span>
+                  </div>
+                  <div className="p-3 bg-black/40 border border-white/10 rounded space-y-1">
+                    <span className="text-[10px] uppercase font-mono text-neutral-400 block">Upload Engine</span>
+                    <span className="font-mono text-emerald-400 text-xs">Direct Client Resumable Stream</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-1 border-t border-white/10">
+                  <p className="text-[11px] text-neutral-300">
+                    Files uploaded anywhere in the Admin Dashboard (Projects, Team, Monographs, Services) stream directly to this Firebase bucket and return permanent global CDN URLs.
+                  </p>
+                  <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-neutral-950 font-semibold rounded text-xs transition-colors shrink-0">
+                    <Upload size={13} />
+                    <span>Test Firebase Upload</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          handleUploadPhoto(file, (url) => {
+                            showToast(`Firebase test upload verified: ${url.slice(0, 45)}...`);
+                          }, "test-uploads");
+                        }
+                      }}
+                    />
+                  </label>
                 </div>
               </div>
             </div>
