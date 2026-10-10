@@ -46,15 +46,30 @@ export default function HomeTeamSection() {
             >
               <div>
                 {/* Member Portrait */}
-                <div className="relative w-full aspect-[4/3] bg-neutral-100 overflow-hidden">
+                <div className="relative w-full aspect-square bg-neutral-100 overflow-hidden">
                   {member.image ? (
-                    <Image
-                      src={member.image}
-                      alt={member.name}
-                      fill
-                      unoptimized
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
+                    <>
+                      <Image
+                        src={member.image}
+                        alt={member.name}
+                        fill
+                        unoptimized
+                        className={`object-cover transition-all duration-500 ${
+                          member.hoverImage && member.hoverImage !== member.image
+                            ? "group-hover:opacity-0 group-hover:scale-105"
+                            : "group-hover:scale-105"
+                        }`}
+                      />
+                      {member.hoverImage && member.hoverImage !== member.image && (
+                        <Image
+                          src={member.hoverImage}
+                          alt={`${member.name} alternate`}
+                          fill
+                          unoptimized
+                          className="object-cover opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+                        />
+                      )}
+                    </>
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-100 text-neutral-400">
                       <span className="font-display text-3xl font-light tracking-wider text-neutral-300">
@@ -63,7 +78,7 @@ export default function HomeTeamSection() {
                       <span className="text-[9px] font-mono uppercase tracking-widest mt-1">Techno Studio</span>
                     </div>
                   )}
-                  <div className="absolute top-3 left-3">
+                  <div className="absolute top-3 left-3 z-10">
                     <span className="text-[8.5px] font-mono uppercase tracking-wider px-2 py-0.5 bg-black/80 backdrop-blur-xs text-white">
                       {member.discipline || "Architecture"}
                     </span>

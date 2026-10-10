@@ -30,7 +30,7 @@ export function sanitizeProjectsList(list: any[]): Project[] {
 export const STORAGE_KEYS = {
   PROJECTS: "techno_cms_projects_v9",
   SERVICES: "techno_cms_services_v5",
-  TEAM: "techno_cms_team_v8",
+  TEAM: "techno_cms_team_v9",
   BLOG: "techno_cms_blog_v5",
   FAQ: "techno_cms_faq_v5",
   GALLERY: "techno_cms_gallery_v5",
@@ -232,11 +232,12 @@ export function useCMSStore() {
     }
     if (Array.isArray(data.team) && data.team.length > 0) {
       const sanitizedTeam = data.team.map((m: any) => {
-        if (!m.image) {
-          const fallback = initialTeam.find((it) => it.id === m.id || it.name === m.name);
-          if (fallback?.image) return { ...m, image: fallback.image };
-        }
-        return m;
+        const fallback = initialTeam.find((it) => it.id === m.id || it.name === m.name);
+        let img = m.image;
+        let hoverImg = m.hoverImage;
+        if (!img && fallback?.image) img = fallback.image;
+        if (!hoverImg && fallback?.hoverImage) hoverImg = fallback.hoverImage;
+        return { ...m, image: img, hoverImage: hoverImg };
       });
       setTeam(sanitizedTeam);
       try { localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(sanitizedTeam)); } catch (_) {}
@@ -346,6 +347,7 @@ export function useCMSStore() {
       localStorage.removeItem("techno_cms_projects_v7");
       localStorage.removeItem("techno_cms_projects_v6");
       localStorage.removeItem("techno_cms_projects_v5");
+      localStorage.removeItem("techno_cms_team_v8");
       localStorage.removeItem("techno_cms_team_v7");
       localStorage.removeItem("techno_cms_team_v6");
       localStorage.removeItem("techno_cms_team_v5");
@@ -362,11 +364,12 @@ export function useCMSStore() {
           const parsedTeam = JSON.parse(st);
           if (Array.isArray(parsedTeam) && parsedTeam.length > 0) {
             const sanitizedTeam = parsedTeam.map((m: any) => {
-              if (!m.image) {
-                const fallback = initialTeam.find((it) => it.id === m.id || it.name === m.name);
-                if (fallback?.image) return { ...m, image: fallback.image };
-              }
-              return m;
+              const fallback = initialTeam.find((it) => it.id === m.id || it.name === m.name);
+              let img = m.image;
+              let hoverImg = m.hoverImage;
+              if (!img && fallback?.image) img = fallback.image;
+              if (!hoverImg && fallback?.hoverImage) hoverImg = fallback.hoverImage;
+              return { ...m, image: img, hoverImage: hoverImg };
             });
             setTeam(sanitizedTeam);
           }

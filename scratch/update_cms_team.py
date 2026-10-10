@@ -1,0 +1,272 @@
+import json
+import re
+
+team_members = [
+  {
+    "id": "team-rajesh",
+    "name": "Ar. Rajesh Shivaram",
+    "role": "Principal Architect & Founder",
+    "discipline": "Leadership",
+    "credentials": "B.Arch (Bangalore Institute of Technology)",
+    "bio": "A graduate of Bangalore Institute of Technology, Rajesh Shivaram is the Principal Architect of Techno Architecture and brings over two decades of professional experience to the practice. He leads the studio with a focus on design excellence, innovation, and careful execution, combining creativity with comfort, practicality, and environmental responsibility.",
+    "image": "/team/rajesh-shivaram.jpg",
+    "hoverImage": "/team/rajesh-copy.jpg",
+    "socials": [
+      { "platform": "Instagram", "url": "https://www.instagram.com/technoarchitecture_rajesh/" }
+    ]
+  },
+  {
+    "id": "team-dheemanth",
+    "name": "Ar. Dheemanth",
+    "role": "Senior Project Architect",
+    "discipline": "Architecture",
+    "credentials": "B.Arch",
+    "bio": "Directs luxury residential and mixed-use commissions, integrating passive climate strategies, volumetric daylighting, and monolithic structural coordination.",
+    "image": "/team/dheemanth-1.jpg",
+    "hoverImage": "/team/dheemanth-2.jpg",
+    "socials": []
+  },
+  {
+    "id": "team-anoop",
+    "name": "Ar. Anoop",
+    "role": "Senior Project Architect",
+    "discipline": "Architecture",
+    "credentials": "B.Arch",
+    "bio": "Specializes in contemporary spatial sequencing, climate-responsive building envelopes, and vernacular masonry detailing from concept to handover.",
+    "image": "/team/anoop-1.jpg",
+    "hoverImage": "/team/anoop-2.jpg",
+    "socials": []
+  },
+  {
+    "id": "team-chaya",
+    "name": "Ar. Chaya",
+    "role": "Studio Coordinator & Senior Architect",
+    "discipline": "Leadership",
+    "credentials": "B.Arch",
+    "bio": "Coordinates multidisciplinary studio operations, client partnerships, and design execution standards across architecture and interior commissions.",
+    "image": "/team/chaya-1.jpg",
+    "hoverImage": "/team/chaya-2.jpg",
+    "socials": []
+  },
+  {
+    "id": "team-veerendra",
+    "name": "Veerendra",
+    "role": "Technical Lead & Site Execution",
+    "discipline": "BIM & Technical",
+    "credentials": "B.E. (Civil) / Technical Coordination",
+    "bio": "Bridges architectural schematics with on-site structural reality, supervising MEP integration, vendor fabrication reviews, and strict construction tolerances.",
+    "image": "/team/veerendra-2.jpg",
+    "hoverImage": "/team/veerendra-1.jpg",
+    "socials": []
+  },
+  {
+    "id": "team-bipin",
+    "name": "Bipin",
+    "role": "Lead Interior Architect",
+    "discipline": "Interiors",
+    "credentials": "B.Arch / Interior Architecture",
+    "bio": "Directs spatial curation, bespoke millwork, acoustic textures, artisanal lighting schemes, and luxury residential interior fit-outs.",
+    "image": "/team/bipin-1.jpg",
+    "hoverImage": "/team/bipin-2.jpg",
+    "socials": []
+  },
+  {
+    "id": "team-prashant",
+    "name": "Prashant",
+    "role": "BIM & Technical Delivery Lead",
+    "discipline": "BIM & Technical",
+    "credentials": "B.Arch / BIM Certified",
+    "bio": "Spearheads Building Information Modeling, digital clash detection, structural coordination, and comprehensive tender documentation.",
+    "image": "/team/prashant-1.jpg",
+    "hoverImage": "/team/prashant-2.jpg",
+    "socials": []
+  },
+  {
+    "id": "team-suma",
+    "name": "Ar. Suma",
+    "role": "Senior Project Architect",
+    "discipline": "Architecture",
+    "credentials": "B.Arch",
+    "bio": "Focuses on residential masterplanning, internal courtyard microclimates, and sustainable material assemblies with sensitivity to site contours.",
+    "image": "/team/suma-2.jpg",
+    "hoverImage": "/team/suma-1.jpg",
+    "socials": []
+  },
+  {
+    "id": "team-darshan",
+    "name": "Darshan",
+    "role": "Senior Technical Architect",
+    "discipline": "BIM & Technical",
+    "credentials": "B.Arch",
+    "bio": "Develops precise architectural working drawings, structural interface details, and oversees site execution quality compliance.",
+    "image": "/team/darshan-2.jpg",
+    "hoverImage": "/team/darshan-1.jpg",
+    "socials": []
+  },
+  {
+    "id": "team-apeksh",
+    "name": "Ar. Apeksh",
+    "role": "Computational Design & Project Architect",
+    "discipline": "Architecture",
+    "credentials": "B.Arch",
+    "bio": "Focuses on parametric solar shading facades, computational geometry, daylight simulations, and contemporary envelope detailing.",
+    "image": "/team/apeksh-1.jpg",
+    "hoverImage": "/team/apeksh-2.jpg",
+    "socials": []
+  },
+  {
+    "id": "team-mohit",
+    "name": "Mohit",
+    "role": "Interior Architect & Space Planner",
+    "discipline": "Interiors",
+    "credentials": "B.Des / Interior Architecture",
+    "bio": "Translates architectural narratives into crafted living spaces, emphasizing ergonomic joinery, bespoke hardware, and tailored finishes.",
+    "image": "/team/mohit-2.jpg",
+    "hoverImage": "/team/mohit-1.jpg",
+    "socials": []
+  },
+  {
+    "id": "team-padmavathi",
+    "name": "Ar. Padmavathi",
+    "role": "Senior Architect & Design Research",
+    "discipline": "Research & Sustainability",
+    "credentials": "M.Arch / B.Arch",
+    "bio": "Leads research in passive cooling techniques, vernacular materials, and low-carbon construction systems across the studio's portfolio.",
+    "image": "/team/padmavathi-1.jpg",
+    "hoverImage": "/team/padmavathi-2.jpg",
+    "socials": []
+  },
+  {
+    "id": "team-nikhil",
+    "name": "Ar. Nikhil",
+    "role": "Project Architect",
+    "discipline": "Architecture",
+    "credentials": "B.Arch",
+    "bio": "Specializes in contemporary residential detailing, structural steel junctions, and continuous indoor-outdoor spatial connections.",
+    "image": "/team/nikhil-1.jpg",
+    "hoverImage": "/team/nikhil-2.jpg",
+    "socials": []
+  },
+  {
+    "id": "team-sanjana",
+    "name": "Sanjana",
+    "role": "Interior Architect",
+    "discipline": "Interiors",
+    "credentials": "B.Arch",
+    "bio": "Curates holistic interior environments, custom furniture design, and tactile color and textile palettes aligned with architectural concepts.",
+    "image": "/team/sanjana-2.jpg",
+    "hoverImage": "/team/sanjana-1.jpg",
+    "socials": []
+  },
+  {
+    "id": "team-rajvardhan",
+    "name": "Ar. Rajvardhan",
+    "role": "Project Architect",
+    "discipline": "Architecture",
+    "credentials": "B.Arch",
+    "bio": "Coordinates schematic design iterations, 3D spatial studies, statutory compliance packages, and client presentations.",
+    "image": "/team/rajvardhan-1.jpg",
+    "hoverImage": "/team/rajvardhan-2.jpg",
+    "socials": []
+  },
+  {
+    "id": "team-prarthana",
+    "name": "Prarthana",
+    "role": "Interior & Materials Specialist",
+    "discipline": "Interiors",
+    "credentials": "B.Des",
+    "bio": "Specializes in natural stone curation, artisanal metalwork, customized lighting fixtures, and sensory surface finishes.",
+    "image": "/team/prarthana-1.jpg",
+    "hoverImage": "/team/prarthana-2.jpg",
+    "socials": []
+  },
+  {
+    "id": "team-aditya",
+    "name": "Aditya",
+    "role": "Architectural Designer & Visualization Lead",
+    "discipline": "Architecture",
+    "credentials": "B.Arch",
+    "bio": "Directs digital spatial modeling, daylight rendering, and evocative 3D visual storytelling for client reviews and design iterations.",
+    "image": "/team/aditya-1.jpg",
+    "hoverImage": "/team/aditya-2.jpg",
+    "socials": []
+  },
+  {
+    "id": "team-ritika",
+    "name": "Ar. Ritika",
+    "role": "Sustainable Design & Landscape Coordinator",
+    "discipline": "Research & Sustainability",
+    "credentials": "B.Arch",
+    "bio": "Integrates native micro-habitats, rainwater percolation channels, and biophilic landscape zones within architectural footprints.",
+    "image": "/team/ritika-2.jpg",
+    "hoverImage": "/team/ritika-1.jpg",
+    "socials": []
+  },
+  {
+    "id": "team-varun",
+    "name": "Ar. Varun",
+    "role": "Project Architect",
+    "discipline": "Architecture",
+    "credentials": "B.Arch",
+    "bio": "Focuses on comprehensive architectural working drawings, structural coordination, and periodic site inspection for private residences.",
+    "image": "/team/varun-1.jpg",
+    "hoverImage": "/team/varun-2.jpg",
+    "socials": []
+  },
+  {
+    "id": "team-sahana",
+    "name": "Sahana",
+    "role": "Architectural Designer",
+    "discipline": "Architecture",
+    "credentials": "B.Arch",
+    "bio": "Contributes to early-stage concept development, space planning studies, and physical and digital presentation graphics.",
+    "image": "/team/sahana-1.jpg",
+    "hoverImage": "/team/sahana-2.jpg",
+    "socials": []
+  },
+  {
+    "id": "team-sujay",
+    "name": "Sujay",
+    "role": "Technical Architect & Site Coordinator",
+    "discipline": "BIM & Technical",
+    "credentials": "B.Arch",
+    "bio": "Oversees site progress benchmarks, material mockup evaluations, and architectural detail fidelity throughout construction.",
+    "image": "/team/sujay-1.jpg",
+    "hoverImage": "/team/sujay-2.jpg",
+    "socials": []
+  },
+  {
+    "id": "team-vaishnavi",
+    "name": "Vaishnavi",
+    "role": "Architectural Designer & Spatial Curator",
+    "discipline": "Architecture",
+    "credentials": "B.Arch",
+    "bio": "Develops spatial layout schemes, moodboards, and material compositions, supporting project architects across residential projects.",
+    "image": "/team/vaishnavi.jpg",
+    "hoverImage": "/team/vaishnavi.jpg",
+    "socials": []
+  },
+  {
+    "id": "team-harsan",
+    "name": "Harsan",
+    "role": "Visualization Specialist & Architect",
+    "discipline": "Architecture",
+    "credentials": "B.Arch",
+    "bio": "Creates atmospheric lighting renderings, realistic material shaders, and architectural animations to visualize design proposals.",
+    "image": "/team/harsan-1.jpg",
+    "hoverImage": "/team/harsan-2.jpg",
+    "socials": []
+  }
+]
+
+with open('src/data/cms-content.json', 'r', encoding='utf-8') as f:
+    data = json.load(f)
+
+data['team'] = team_members
+import datetime
+data['updatedAt'] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+with open('src/data/cms-content.json', 'w', encoding='utf-8') as f:
+    json.dump(data, f, indent=2, ensure_ascii=False)
+
+print(f"Successfully updated cms-content.json with {len(team_members)} team members!")

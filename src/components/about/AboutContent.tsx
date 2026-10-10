@@ -11,11 +11,17 @@ import { initialTeam } from "@/data/team";
 export default function AboutContent() {
   const { siteSettings, team } = useCMSStore();
   const [activeValueIndex, setActiveValueIndex] = useState<number | null>(null);
+  const [selectedDiscipline, setSelectedDiscipline] = useState<string>("All");
 
   const displayTeam = (team && team.length > 0) ? team : initialTeam;
   const rajesh =
     displayTeam.find((m) => m.name.toLowerCase().includes("rajesh")) ||
     initialTeam[0];
+
+  const disciplines = ["All", "Leadership", "Architecture", "Interiors", "BIM & Technical", "Research & Sustainability"];
+  const filteredTeam = selectedDiscipline === "All"
+    ? displayTeam
+    : displayTeam.filter((m) => m.discipline === selectedDiscipline);
 
   const tagline = siteSettings?.tagline || "Architecture shaped around people, place and purpose.";
   const foundedYear = siteSettings?.foundedYear || 2006;
@@ -263,14 +269,25 @@ export default function AboutContent() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
             {/* Leadership Portrait & Core Info */}
             <div className="lg:col-span-5 space-y-5">
-              <div className="relative w-full aspect-[4/5] max-w-sm bg-neutral-100 border border-neutral-200 overflow-hidden shadow-sm">
+              <div className="relative w-full aspect-[4/5] max-w-sm bg-neutral-100 border border-neutral-200 overflow-hidden shadow-sm group">
                 <Image
-                  src={rajesh?.image || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=85"}
+                  src={rajesh?.image || "/team/rajesh-shivaram.jpg"}
                   alt={rajesh?.name || "Ar. Rajesh Shivaram"}
                   fill
                   unoptimized
-                  className="object-cover object-top hover:scale-102 transition-transform duration-700"
+                  className={`object-cover object-top transition-all duration-700 ${
+                    rajesh?.hoverImage ? "group-hover:opacity-0 group-hover:scale-102" : "hover:scale-102"
+                  }`}
                 />
+                {rajesh?.hoverImage && (
+                  <Image
+                    src={rajesh.hoverImage}
+                    alt={`${rajesh?.name || "Ar. Rajesh Shivaram"} alternate`}
+                    fill
+                    unoptimized
+                    className="object-cover object-top opacity-0 group-hover:opacity-100 group-hover:scale-102 transition-all duration-700"
+                  />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-4 left-4 right-4 text-white">
                   <span className="text-[9px] font-mono uppercase tracking-[0.25em] text-neutral-300 block">
@@ -370,37 +387,77 @@ export default function AboutContent() {
 
         {/* Studio Practitioners & Team Members Grid */}
         <div className="space-y-6 pt-4">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-neutral-200 pb-4">
-            <div>
-              <span className="text-[9.5px] uppercase tracking-[0.25em] text-neutral-400 block font-mono font-semibold">
-                STUDIO PRACTITIONERS
-              </span>
-              <h3 className="font-display text-2xl font-light text-neutral-900 tracking-tight">
-                Architects & Specialists ({displayTeam.length})
-              </h3>
+          <div className="space-y-4 border-b border-neutral-200 pb-5">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+              <div>
+                <span className="text-[9.5px] uppercase tracking-[0.25em] text-neutral-400 block font-mono font-semibold">
+                  STUDIO PRACTITIONERS
+                </span>
+                <h3 className="font-display text-2xl font-light text-neutral-900 tracking-tight">
+                  Architects & Specialists ({filteredTeam.length})
+                </h3>
+              </div>
+              <p className="text-xs text-neutral-500 font-light max-w-md">
+                Our multidisciplinary team collaborating across research, schematic design, technical BIM modeling, and on-site coordination.
+              </p>
             </div>
-            <p className="text-xs text-neutral-500 font-light max-w-md">
-              Our multidisciplinary team collaborating across research, schematic design, technical BIM modeling, and on-site coordination.
-            </p>
+
+            {/* Discipline Filter Tabs */}
+            <div className="flex flex-wrap items-center gap-2 pt-2">
+              {disciplines.map((d) => {
+                const count = d === "All" ? displayTeam.length : displayTeam.filter((m) => m.discipline === d).length;
+                if (count === 0) return null;
+                const isSelected = selectedDiscipline === d;
+                return (
+                  <button
+                    key={d}
+                    onClick={() => setSelectedDiscipline(d)}
+                    className={`px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider transition-all duration-200 border ${
+                      isSelected
+                        ? "bg-neutral-900 text-white border-neutral-900 shadow-xs"
+                        : "bg-white text-neutral-600 border-neutral-200 hover:border-neutral-900 hover:text-black"
+                    }`}
+                  >
+                    <span>{d}</span>
+                    <span className={`ml-1.5 opacity-70 text-[9px]`}>({count})</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {displayTeam.map((member, mIdx) => (
+            {filteredTeam.map((member, mIdx) => (
               <div
                 key={member.id || mIdx}
                 className="group border border-neutral-200 bg-white hover:border-black transition-all duration-300 flex flex-col justify-between overflow-hidden shadow-xs hover:shadow-md"
               >
                 <div>
                   {/* Member Photo */}
-                  <div className="relative w-full aspect-[4/3] bg-neutral-100 overflow-hidden">
+                  <div className="relative w-full aspect-square bg-neutral-100 overflow-hidden">
                     {member.image ? (
-                      <Image
-                        src={member.image}
-                        alt={member.name}
-                        fill
-                        unoptimized
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
+                      <>
+                        <Image
+                          src={member.image}
+                          alt={member.name}
+                          fill
+                          unoptimized
+                          className={`object-cover transition-all duration-500 ${
+                            member.hoverImage && member.hoverImage !== member.image
+                              ? "group-hover:opacity-0 group-hover:scale-105"
+                              : "group-hover:scale-105"
+                          }`}
+                        />
+                        {member.hoverImage && member.hoverImage !== member.image && (
+                          <Image
+                            src={member.hoverImage}
+                            alt={`${member.name} alternate view`}
+                            fill
+                            unoptimized
+                            className="object-cover opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+                          />
+                        )}
+                      </>
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-100 text-neutral-400">
                         <span className="font-display text-3xl font-light tracking-wider text-neutral-300">
@@ -409,7 +466,7 @@ export default function AboutContent() {
                         <span className="text-[9px] font-mono uppercase tracking-widest mt-1">Techno Studio</span>
                       </div>
                     )}
-                    <div className="absolute top-3 left-3">
+                    <div className="absolute top-3 left-3 z-10">
                       <span className="text-[8.5px] font-mono uppercase tracking-wider px-2 py-0.5 bg-black/80 backdrop-blur-xs text-white">
                         {member.discipline || "Architecture"}
                       </span>
