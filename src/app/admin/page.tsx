@@ -2687,7 +2687,7 @@ export default function AdminCMSPage() {
                 Studio Leadership & Practitioners ({team.length})
               </h2>
               <p className="text-xs text-neutral-500">
-                Manage practitioner bios, credentials, roles, and photography.
+                Manage practitioner bios, credentials, roles, photography, and presentation order using the ORDER controls.
               </p>
             </div>
             <button
@@ -2715,6 +2715,67 @@ export default function AdminCMSPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {team.map((m, idx) => (
               <div key={m.id} className="p-4 border border-neutral-200 bg-white space-y-3 rounded shadow-xs text-xs">
+                {/* Practitioner Rearrangement Order Controls & Header */}
+                <div className="flex items-center justify-between pb-2 border-b border-neutral-100">
+                  <div className="flex items-center border border-neutral-300 rounded overflow-hidden bg-white shadow-2xs" title="Rearrange practitioner position">
+                    <span className="text-[9px] font-mono uppercase px-1.5 text-neutral-400 font-semibold bg-neutral-50 border-r border-neutral-200 select-none">
+                      ORDER
+                    </span>
+                    <button
+                      type="button"
+                      disabled={idx === 0}
+                      onClick={() => {
+                        if (idx === 0) return;
+                        const updated = [...team];
+                        const temp = updated[idx];
+                        updated[idx] = updated[idx - 1];
+                        updated[idx - 1] = temp;
+                        saveTeam(updated);
+                        showToast(`Moved "${m.name}" up to position #${idx}.`);
+                      }}
+                      className="p-1 hover:bg-neutral-100 text-neutral-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
+                      title="Move practitioner UP"
+                    >
+                      <ArrowUp size={12} />
+                    </button>
+                    <span className="text-[10px] font-mono px-2 text-neutral-900 font-bold select-none border-x border-neutral-200 bg-neutral-50/50">
+                      #{idx + 1}
+                    </span>
+                    <button
+                      type="button"
+                      disabled={idx === team.length - 1}
+                      onClick={() => {
+                        if (idx === team.length - 1) return;
+                        const updated = [...team];
+                        const temp = updated[idx];
+                        updated[idx] = updated[idx + 1];
+                        updated[idx + 1] = temp;
+                        saveTeam(updated);
+                        showToast(`Moved "${m.name}" down to position #${idx + 2}.`);
+                      }}
+                      className="p-1 hover:bg-neutral-100 text-neutral-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
+                      title="Move practitioner DOWN"
+                    >
+                      <ArrowDown size={12} />
+                    </button>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (confirm(`Remove ${m.name} from studio team?`)) {
+                        saveTeam(team.filter((x) => x.id !== m.id));
+                        showToast(`Removed ${m.name}.`);
+                      }
+                    }}
+                    className="text-neutral-400 hover:text-red-500 p-1 transition-colors flex items-center gap-1"
+                    title={`Remove ${m.name}`}
+                  >
+                    <Trash2 size={13} />
+                    <span className="text-[10px] font-mono text-neutral-400 hover:text-red-500">Remove</span>
+                  </button>
+                </div>
+
                 <div className="flex items-center gap-3">
                   <div className="relative w-12 h-14 bg-neutral-100 rounded overflow-hidden flex-shrink-0 group">
                     {m.image ? (
@@ -2779,17 +2840,6 @@ export default function AdminCMSPage() {
                       className="w-full text-xs text-neutral-600 mt-1 border-b border-neutral-200 focus:border-black focus:outline-none"
                     />
                   </div>
-                  <button
-                    onClick={() => {
-                      if (confirm(`Remove ${m.name} from studio team?`)) {
-                        saveTeam(team.filter((x) => x.id !== m.id));
-                        showToast(`Removed ${m.name}.`);
-                      }
-                    }}
-                    className="text-neutral-400 hover:text-red-500 p-1"
-                  >
-                    <Trash2 size={14} />
-                  </button>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
