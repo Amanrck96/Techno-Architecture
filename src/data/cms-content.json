@@ -2650,16 +2650,6 @@
       "image": "/team/harsan-1.jpg",
       "hoverImage": "/team/harsan-2.jpg",
       "socials": []
-    },
-    {
-      "id": "team-1791709754708",
-      "name": "AMAN SAH",
-      "role": "Project Architect",
-      "discipline": "BIM & Technical",
-      "credentials": "B.Arch",
-      "bio": "Practitioner contributing to innovative spatial planning and craftsmanship.",
-      "image": "/uploads/team/techno_aman_sah_1791712339268.jpeg",
-      "socials": []
     }
   ],
   "blog": [
@@ -4887,5 +4877,5 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-11T15:27:58.039Z"
+  "updatedAt": "2026-10-11T15:28:02.885Z"
 }
