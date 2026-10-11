@@ -337,6 +337,7 @@ async function writeStore(
     githubRepo?: string;
     upstashUrl?: string;
     upstashToken?: string;
+    forceGitHubCommit?: boolean;
   }
 ): Promise<WriteStoreResult> {
   // Always update in-memory store immediately
@@ -394,12 +395,12 @@ async function writeStore(
       }
     })(),
 
-    // Tier 3: GitHub direct commit (enabled in Vercel serverless for persistent deployments, or when explicit token provided)
+    // Tier 3: GitHub direct commit (enabled in Vercel serverless for persistent deployments, or when explicit forceGitHubCommit provided)
     (async () => {
       // In local development or local servers, write directly to local disk (Tier 1).
-      // Only auto-commit to remote GitHub if running on Vercel (read-only filesystem) OR if explicit token was provided by the user.
-      const isLocal = !process.env.VERCEL;
-      if (isLocal && !options?.githubToken) {
+      // Only auto-commit to remote GitHub if running on Vercel (read-only filesystem) OR if explicit forceGitHubCommit was requested.
+      const isVercel = Boolean(process.env.VERCEL);
+      if (!isVercel && !options?.forceGitHubCommit) {
         return;
       }
 
@@ -521,6 +522,7 @@ export async function POST(request: Request) {
       githubRepo: githubRepo || undefined,
       upstashUrl: upstashUrl || undefined,
       upstashToken: upstashToken || undefined,
+      forceGitHubCommit: Boolean(body.forceGitHubCommit),
     };
 
     // Action: Test credentials
