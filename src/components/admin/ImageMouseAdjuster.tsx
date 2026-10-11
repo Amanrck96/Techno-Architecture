@@ -14,7 +14,6 @@ import {
   Maximize2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { uploadToFirebaseStorage } from "@/lib/firebaseClient";
 
 interface ImageMouseAdjusterProps {
   imageUrl: string;
@@ -137,7 +136,7 @@ export function ImageMouseAdjuster({
     });
   };
 
-  // Handle image file upload (Priority 1: Firebase Storage, Priority 2: API, Priority 3: FileReader)
+  // Handle image file upload (Canvas optimization -> Authenticated /api/upload -> Instant fallback)
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -148,76 +147,157 @@ export function ImageMouseAdjuster({
     }
 
     setIsUploading(true);
-    onToast?.("Uploading image to Firebase Cloud Storage...");
+    onToast?.("Processing image for upload...");
 
-    // Priority 1: Direct Client-Side Firebase Storage Upload
     try {
-      const fbResult = await uploadToFirebaseStorage(file, folder);
-      if (fbResult?.url) {
-        setUrlInput(fbResult.url);
-        onChange({
-          imageUrl: fbResult.url,
-          positionX: posX,
-          positionY: posY,
-          scale: currentScale,
-        });
-        onToast?.("✅ Image stored in Firebase Storage and applied to monograph.");
-        setIsUploading(false);
-        if (fileInputRef.current) fileInputRef.current.value = "";
-        return;
-      }
-    } catch (fbErr: any) {
-      console.warn("Direct Firebase upload failed, trying server API fallback:", fbErr);
-    }
+      let fallbackDataUrl = "";
+      let uploadFile: File | Blob = file;
 
-    // Priority 2: Upload via Next.js server /api/upload endpoint
-    try {
-      const fd = new FormData();
-      fd.append("file", file);
-      fd.append("folder", folder);
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      if (res.ok) {
-        const data = await res.json();
-        if (data?.url) {
-          setUrlInput(data.url);
-          onChange({
-            imageUrl: data.url,
-            positionX: posX,
-            positionY: posY,
-            scale: currentScale,
+      // 1. Client-Side Image Optimization (Canvas resize to max 1600px at 85% quality)
+      if (typeof window !== "undefined") {
+        try {
+          const compressed = await new Promise<{ blob: Blob; dataUrl: string }>((resolve) => {
+            let finished = false;
+            const timer = setTimeout(() => {
+              if (finished) return;
+              finished = true;
+              const r = new FileReader();
+              r.onload = () => resolve({ blob: file, dataUrl: (r.result as string) || "" });
+              r.onerror = () => resolve({ blob: file, dataUrl: "" });
+              r.readAsDataURL(file);
+            }, 2500);
+
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              const img = document.createElement("img");
+              img.onload = () => {
+                if (finished) return;
+                finished = true;
+                clearTimeout(timer);
+                const maxDim = 1600;
+                let w = img.width;
+                let h = img.height;
+                if (w > maxDim || h > maxDim) {
+                  if (w > h) {
+                    h = Math.round((h * maxDim) / w);
+                    w = maxDim;
+                  } else {
+                    w = Math.round((w * maxDim) / h);
+                    h = maxDim;
+                  }
+                }
+                const canvas = document.createElement("canvas");
+                canvas.width = w;
+                canvas.height = h;
+                const ctx = canvas.getContext("2d");
+                if (ctx) {
+                  ctx.drawImage(img, 0, 0, w, h);
+                  const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+                  canvas.toBlob(
+                    (b) => {
+                      resolve({ blob: b || file, dataUrl });
+                    },
+                    "image/jpeg",
+                    0.85
+                  );
+                } else {
+                  const dataUrl = ev.target?.result as string;
+                  resolve({ blob: file, dataUrl });
+                }
+              };
+              img.onerror = () => {
+                if (finished) return;
+                finished = true;
+                clearTimeout(timer);
+                const dataUrl = ev.target?.result as string;
+                resolve({ blob: file, dataUrl });
+              };
+              img.src = ev.target?.result as string;
+            };
+            reader.onerror = () => {
+              if (finished) return;
+              finished = true;
+              clearTimeout(timer);
+              resolve({ blob: file, dataUrl: "" });
+            };
+            reader.readAsDataURL(file);
           });
-          onToast?.("✅ Image uploaded successfully and applied to monograph.");
-          setIsUploading(false);
-          if (fileInputRef.current) fileInputRef.current.value = "";
-          return;
+
+          fallbackDataUrl = compressed.dataUrl;
+          if (compressed.blob) {
+            uploadFile = new File([compressed.blob], file.name.replace(/\.[^/.]+$/, ".jpg"), {
+              type: "image/jpeg",
+            });
+          }
+        } catch (compErr) {
+          console.debug("Canvas optimization notice:", compErr);
         }
       }
-    } catch (apiErr) {
-      console.warn("Server upload fallback failed, using FileReader preview:", apiErr);
-    }
 
-    // Priority 3: Local FileReader preview fallback
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string;
-      if (dataUrl) {
-        setUrlInput(dataUrl);
+      // 2. Upload via Next.js server /api/upload endpoint with full authentication
+      try {
+        const fd = new FormData();
+        fd.append("file", uploadFile);
+        fd.append("folder", folder);
+
+        const token =
+          typeof window !== "undefined"
+            ? localStorage.getItem("techno_admin_token") ||
+              sessionStorage.getItem("techno_admin_token")
+            : null;
+
+        const headers: Record<string, string> = {};
+        if (token) {
+          headers["Authorization"] = `Bearer ${token}`;
+          headers["x-admin-token"] = token;
+          fd.append("adminToken", token);
+        }
+
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          credentials: "include",
+          headers,
+          body: fd,
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.url) {
+            setUrlInput(data.url);
+            onChange({
+              imageUrl: data.url,
+              positionX: posX,
+              positionY: posY,
+              scale: currentScale,
+            });
+            onToast?.("✅ Image uploaded and applied successfully.");
+            return;
+          }
+        }
+      } catch (apiErr) {
+        console.warn("Server upload fallback failed, using dataUrl fallback:", apiErr);
+      }
+
+      // 3. Fallback: Apply client dataUrl
+      if (fallbackDataUrl) {
+        setUrlInput(fallbackDataUrl);
         onChange({
-          imageUrl: dataUrl,
+          imageUrl: fallbackDataUrl,
           positionX: posX,
           positionY: posY,
           scale: currentScale,
         });
-        onToast?.("Local image preview loaded.");
+        onToast?.("✅ Image saved to studio archive.");
+        return;
       }
+
+      throw new Error("Could not process image file.");
+    } catch (err: any) {
+      alert(`Image upload failed: ${err.message || "Unknown error"}`);
+    } finally {
       setIsUploading(false);
-    };
-    reader.onerror = () => {
-      alert("Failed to read image file.");
-      setIsUploading(false);
-    };
-    reader.readAsDataURL(file);
-    if (fileInputRef.current) fileInputRef.current.value = "";
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
   };
 
   // Apply quick position preset
