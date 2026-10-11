@@ -37,180 +37,27 @@ export default function ProjectDetailPage() {
 
   const sanitizeProject = (p: (typeof projects)[0]) => {
     if (!p) return p;
-    if (
-      p.id === "proj-1" ||
-      p.slug === "aikya" ||
-      p.slug === "monolith-house" ||
-      p.title === "MONOLITH HOUSE"
-    ) {
-      return {
-        ...p,
-        title: "AIKYA",
-        slug: "aikya",
-        mainImage: "/projects/aikya/elevation-east.jpg",
-        videoTour: p.videoTour || {
-          title: "4,800 sq.ft Aikya House in Bengaluru by Technoarchitecture (Home Tour)",
-          url: "https://www.youtube.com/results?search_query=Aikya+House+Technoarchitecture+Home+Tour",
-          platform: "YouTube",
-          actionText: "Watch House Tour",
-        },
-      };
-    }
-    if (
-      p.id === "proj-2" ||
-      p.slug === "belaku" ||
-      p.slug === "corten-pavilion" ||
-      p.title === "CORTEN PAVILION"
-    ) {
-      return {
-        ...p,
-        title: "BELAKU",
-        slug: "belaku",
-        mainImage: "/projects/belaku/belaku-central-courtyard-entrance-vista.jpg",
-        videoTour: p.videoTour || {
-          title: "2400 sq.ft Compact Home in Bengaluru | Belaku Residence by Techno Architecture (Home Tour)",
-          url: "https://www.youtube.com/results?search_query=Belaku+Residence+Techno+Architecture+Home+Tour",
-          platform: "YouTube",
-          actionText: "Watch House Tour",
-        },
-      };
-    }
-    if (
-      p.id === "proj-3" ||
-      p.slug === "between-two-trees" ||
-      p.slug === "dune-sanctuary" ||
-      p.title === "DUNE SANCTUARY"
-    ) {
-      return {
-        ...p,
-        title: "BETWEEN TWO TREES",
-        slug: "between-two-trees",
-        mainImage: "/projects/between-two-trees/between-two-trees-mandapa-court-nandi-pool.jpg",
-        videoTour: p.videoTour || {
-          title: "House With a Traditional Chettinad Courtyard Between 2 Trees | Bengaluru | Technoarchitecture",
-          url: "https://www.youtube.com/results?search_query=Between+Two+Trees+House+With+a+Traditional+Chettinad+Courtyard+Technoarchitecture",
-          platform: "YouTube",
-          actionText: "Watch Video Tour",
-        },
-      };
-    }
-    if (
-      p.id === "proj-4" ||
-      p.slug === "brindavan" ||
-      p.slug === "atelier-basavanagudi" ||
-      p.title === "ATELIER BASAVANAGUDI"
-    ) {
-      return {
-        ...p,
-        title: "BRINDAVAN",
-        slug: "brindavan",
-        mainImage: "/projects/brindavan/brindavan-suspended-granite-staircase-motion.jpg",
-      };
-    }
-    if (
-      p.id === "proj-5" ||
-      p.slug === "far-site-buildofy" ||
-      p.slug === "shadow-house" ||
-      p.title === "SHADOW HOUSE"
-    ) {
-      return {
-        ...p,
-        title: "FAR SITE BUILDOFY",
-        slug: "far-site-buildofy",
-        mainImage: "/projects/far-site-buildofy/far-site-buildofy-twilight-facade-sky-garden.jpg",
-        videoTour: p.videoTour || {
-          title: "2,400 sq.ft Compact House in Malleshwaram Bengaluru Karnataka Explores a Courtyard in a Unique Way",
-          url: "https://www.youtube.com/results?search_query=2400+sqft+Compact+House+in+Malleshwaram+Bengaluru+The+Far+Site+Technoarchitecture",
-          platform: "Buildofy",
-          actionText: "Watch Buildofy Film",
-        },
-      };
-    }
-    if (
-      p.id === "proj-6" ||
-      p.slug === "house-in-the-air" ||
-      p.slug === "urban-veranda" ||
-      p.title === "URBAN VERANDA"
-    ) {
-      return {
-        ...p,
-        title: "HOUSE IN THE AIR",
-        slug: "house-in-the-air",
-        mainImage: "/projects/house-in-the-air/house-in-the-air-glass-prayer-sanctuary-foyer.jpg",
-      };
-    }
-    if (
-      p.id === "proj-7" ||
-      p.slug === "kanasu" ||
-      p.slug === "kavya-residence" ||
-      p.title === "KAVYA RESIDENCE"
-    ) {
-      return {
-        ...p,
-        title: "KANASU",
-        slug: "kanasu",
-        mainImage: "/projects/kanasu/kanasu-rooftop-pool-timber-canopy.jpg",
-        videoTour: p.videoTour || {
-          title: "Luxury Vastu House Kanasu in Bengaluru, Karnataka | Technoarchitecture (Home Tour)",
-          url: "https://www.youtube.com/results?search_query=Luxury+Vastu+House+Kanasu+in+Bengaluru+Technoarchitecture+Home+Tour",
-          platform: "YouTube",
-          actionText: "Watch House Tour",
-        },
-      };
-    }
-    if (
-      p.id === "proj-8" ||
-      p.slug === "kripa" ||
-      p.slug === "timber-terrace" ||
-      p.title === "TIMBER TERRACE"
-    ) {
-      return {
-        ...p,
-        title: "KRIPA",
-        slug: "kripa",
-        mainImage: "/projects/kripa/kripa-dining-room-indoor-outdoor-veranda.jpg",
-        videoTour: p.videoTour || {
-          title: "1,500 sq.ft. Compact Home in Bangalore (House Tour)",
-          url: "https://www.youtube.com/results?search_query=Kripa+1500+sq+ft+Techno+Architecture+House+Tour",
-          platform: "YouTube",
-          actionText: "Watch House Tour",
-        },
-      };
-    }
-    if (
-      p.id === "proj-10" ||
-      p.slug === "salut" ||
-      p.slug === "serene-penthouse" ||
-      p.title === "SERENE PENTHOUSE"
-    ) {
-      return {
-        ...p,
-        title: "SALUT",
-        slug: "salut",
-        mainImage: "/projects/salut/salut-terracotta-jali-bar-atrium.jpg",
-      };
-    }
-    if (
-      p.id === "proj-12" ||
-      p.slug === "mantle-buildofy" ||
-      p.slug === "zenith-residence" ||
-      p.title === "ZENITH RESIDENCE" ||
-      p.title === "MANTLE BUILDOFY"
-    ) {
-      return {
-        ...p,
-        title: "MANTLE BUILDOFY",
-        slug: "mantle-buildofy",
-        mainImage: "/projects/mantle-buildofy/mantle-buildofy-double-height-living-atrium.jpg",
-        videoTour: p.videoTour || {
-          title: "The Mantle | Main Video Review 2",
-          url: "https://www.youtube.com/results?search_query=The+Mantle+Techno+Architecture+Review",
-          platform: "Buildofy",
-          actionText: "Watch Video Review",
-        },
-      };
-    }
-    return p;
+    // Fallback images only if an individual project record has an empty mainImage:
+    const defaultImage =
+      p.id === "proj-1" ? "/projects/aikya/elevation-east.jpg" :
+      p.id === "proj-2" ? "/projects/belaku/belaku-central-courtyard-entrance-vista.jpg" :
+      p.id === "proj-3" ? "/projects/between-two-trees/between-two-trees-mandapa-court-nandi-pool.jpg" :
+      p.id === "proj-4" ? "/projects/brindavan/brindavan-suspended-granite-staircase-motion.jpg" :
+      p.id === "proj-5" ? "/projects/far-site-buildofy/far-site-buildofy-twilight-facade-sky-garden.jpg" :
+      p.id === "proj-6" ? "/projects/house-in-the-air/house-in-the-air-glass-prayer-sanctuary-foyer.jpg" :
+      p.id === "proj-7" ? "/projects/kanasu/kanasu-rooftop-pool-timber-canopy.jpg" :
+      p.id === "proj-8" ? "/projects/kripa/kripa-dining-room-indoor-outdoor-veranda.jpg" :
+      p.id === "proj-10" ? "/projects/salut/salut-terracotta-jali-bar-atrium.jpg" :
+      p.id === "proj-12" ? "/projects/mantle-buildofy/mantle-buildofy-double-height-living-atrium.jpg" :
+      "/projects/aikya/elevation-east.jpg";
+
+    return {
+      ...p,
+      title: p.title || "Untitled Project",
+      slug: p.slug,
+      mainImage: p.mainImage || defaultImage,
+      gallery: Array.isArray(p.gallery) ? p.gallery : [],
+    };
   };
 
   const project = sanitizeProject(rawProject);

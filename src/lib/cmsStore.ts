@@ -39,6 +39,7 @@ export const STORAGE_KEYS = {
   TESTIMONIALS: "techno_cms_testimonials_v5",
   CLIENT_UPDATED_AT: "techno_cms_client_updated_at",
   SERVER_SYNCED_AT: "techno_cms_server_synced_at",
+  HAS_UNSAVED_EDITS: "techno_cms_has_unsaved_edits",
   GITHUB_TOKEN: "techno_cms_github_token",
   GITHUB_REPO: "techno_cms_github_repo",
   UPSTASH_URL: "techno_cms_upstash_url",
@@ -83,6 +84,7 @@ function touchClientUpdate(): string {
   const now = new Date().toISOString();
   try {
     localStorage.setItem(STORAGE_KEYS.CLIENT_UPDATED_AT, now);
+    localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "true");
   } catch (_) {}
   return now;
 }
@@ -127,6 +129,7 @@ export async function syncToServer(payload: {
 }): Promise<{
   success: boolean;
   updatedAt?: string;
+  data?: any;
   storageStatus?: any;
   message?: string;
   error?: any;
@@ -173,11 +176,13 @@ export async function syncToServer(payload: {
         try {
           localStorage.setItem(STORAGE_KEYS.SERVER_SYNCED_AT, result.updatedAt);
           localStorage.setItem(STORAGE_KEYS.CLIENT_UPDATED_AT, result.updatedAt);
+          localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "false");
         } catch (_) {}
       }
       return {
         success: true,
         updatedAt: result.updatedAt,
+        data: result.data,
         storageStatus: result.storageStatus,
         message: result.message,
       };
@@ -275,6 +280,8 @@ export function useCMSStore() {
       const headers: Record<string, string> = {};
       if (creds.upstashUrl) headers["x-upstash-url"] = creds.upstashUrl;
       if (creds.upstashToken) headers["x-upstash-token"] = creds.upstashToken;
+      if (creds.githubToken) headers["x-github-token"] = creds.githubToken;
+      if (creds.githubRepo) headers["x-github-repo"] = creds.githubRepo;
 
       const res = await fetch("/api/cms", {
         cache: "no-store",
@@ -289,48 +296,40 @@ export function useCMSStore() {
         setServerStorageInfo(data._storageInfo);
       }
 
-      // 1. Check client vs server timestamps to prevent stale server data from overwriting local edits/deletions
-      let clientTime = 0;
+      // 1. Check if client has pending uncommitted local edits (e.g. edited right before refresh)
+      let hasUnsavedEdits = false;
       try {
-        const clientUpdated = localStorage.getItem(STORAGE_KEYS.CLIENT_UPDATED_AT);
-        if (clientUpdated) {
-          clientTime = new Date(clientUpdated).getTime();
-        }
+        hasUnsavedEdits = localStorage.getItem(STORAGE_KEYS.HAS_UNSAVED_EDITS) === "true";
       } catch (_) {}
 
-      const serverTime = data.updatedAt ? new Date(data.updatedAt).getTime() : 0;
-
-      // 2. If server returns default seed data, NEVER overwrite client edits!
-      if (data.isDefault) {
-        if (clientTime > 0) {
-          console.info("[CMS Store] Server returned default baseline seed. Syncing local client edits to server...");
-          const localData = getLocalDataset();
-          if (Object.keys(localData).length > 0) {
-            syncToServer({ allData: localData });
-          }
-          return;
-        }
-        // If client has no local cache (e.g. public visitor or new device), apply the server data!
-        applyDataset(data);
-        return;
-      }
-
-      // 3. If client has local edits that are newer than or equal to the server data, NEVER overwrite!
-      if (clientTime > 0 && clientTime >= serverTime) {
-        console.info("[CMS Store] Local changes are newer than or equal to server payload. Preserving local edits...");
+      if (hasUnsavedEdits) {
+        console.info("[CMS Store] Local uncommitted changes detected on refresh. Pushing to server now...");
         const localData = getLocalDataset();
         if (Object.keys(localData).length > 0) {
-          syncToServer({ allData: localData });
+          const syncRes = await syncToServer({ allData: localData });
+          if (syncRes.success && syncRes.updatedAt) {
+            lastServerUpdatedRef.current = syncRes.updatedAt;
+            try {
+              localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "false");
+            } catch (_) {}
+          }
         }
-        return;
+        return; // Retain local state without reverting to older server data
       }
 
-      // 4. If server data has changed since last check and is legitimately newer, apply it
+      // 2. Skip re-applying if this exact server updatedAt was already applied
       if (data.updatedAt && data.updatedAt === lastServerUpdatedRef.current) {
         return;
       }
+
+      // 3. Server data is valid and authoritative: apply it
       if (data.updatedAt) {
         lastServerUpdatedRef.current = data.updatedAt;
+        try {
+          localStorage.setItem(STORAGE_KEYS.SERVER_SYNCED_AT, data.updatedAt);
+          localStorage.setItem(STORAGE_KEYS.CLIENT_UPDATED_AT, data.updatedAt);
+          localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "false");
+        } catch (_) {}
       }
       applyDataset(data);
     } catch (err) {
@@ -445,10 +444,22 @@ export function useCMSStore() {
       fetchFromServer();
     }, 15000); // Gentle 15s background poll to keep all viewers live
 
+    // 6. Flush pending sync immediately on page unload/refresh
+    const handleBeforeUnload = () => {
+      if (syncTimersRef.current.size > 0) {
+        const localData = getLocalDataset();
+        if (Object.keys(localData).length > 0) {
+          syncToServer({ allData: localData });
+        }
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
     return () => {
       if (channel) channel.close();
       window.removeEventListener(SYNC_EVENT_NAME, handleLocalUpdate);
       window.removeEventListener("focus", handleFocus);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
       clearInterval(intervalId);
       syncTimersRef.current.forEach((t) => clearTimeout(t));
       syncTimersRef.current.clear();
@@ -475,9 +486,17 @@ export function useCMSStore() {
     if (existing) {
       clearTimeout(existing);
     }
-    const timer = setTimeout(() => {
+    const timer = setTimeout(async () => {
       syncTimersRef.current.delete(entity);
-      syncToServer({ entity, data });
+      const res = await syncToServer({ entity, data });
+      if (res.success && res.updatedAt) {
+        lastServerUpdatedRef.current = res.updatedAt;
+        try {
+          if (syncTimersRef.current.size === 0) {
+            localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "false");
+          }
+        } catch (_) {}
+      }
     }, 600);
     syncTimersRef.current.set(entity, timer);
   }, []);
@@ -594,8 +613,11 @@ export function useCMSStore() {
       testimonials,
     };
     const res = await syncToServer({ allData });
-    if (res.updatedAt) {
+    if (res.success && res.updatedAt) {
       lastServerUpdatedRef.current = res.updatedAt;
+      try {
+        localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "false");
+      } catch (_) {}
     }
     return res;
   }, [projects, services, team, blog, faq, gallery, recognitions, siteSettings, testimonials]);

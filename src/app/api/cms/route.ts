@@ -16,6 +16,7 @@ import staticCmsContent from "@/data/cms-content.json";
 import { getFirestoreDb } from "@/lib/firebaseAdmin";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const DATA_FILE_PATH = path.join(process.cwd(), "src", "data", "cms-content.json");
 // Use /tmp only in Vercel/serverless environments; use local project cache in dev to avoid writing to C:\tmp
@@ -97,6 +98,45 @@ async function saveToUpstashKV(data: any, explicitUrl?: string, explicitToken?: 
   }
 }
 
+// Mutex and state to serialize GitHub commits and eliminate 409 SHA conflicts
+let isGitHubCommitInProgress = false;
+let pendingGitHubCommit: { data: any; token?: string; repo?: string } | null = null;
+
+async function getFromGitHub(
+  explicitToken?: string,
+  explicitRepo?: string
+): Promise<any | null> {
+  const token = explicitToken || process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
+  const repo = explicitRepo || process.env.GITHUB_REPOSITORY || "Kima1011/Techno-Architecture";
+  const filePath = "src/data/cms-content.json";
+  if (!token) return null;
+
+  try {
+    const res = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/vnd.github.v3+json",
+        "User-Agent": "Techno-Architecture-CMS",
+      },
+      cache: "no-store",
+    });
+
+    if (res.ok) {
+      const json = await res.json();
+      if (json && json.content) {
+        const decoded = Buffer.from(json.content, "base64").toString("utf-8");
+        const parsed = JSON.parse(decoded);
+        if (parsed && typeof parsed === "object" && parsed.updatedAt) {
+          return parsed;
+        }
+      }
+    }
+  } catch (e) {
+    console.warn("[CMS Store] GitHub candidate fetch notice:", e);
+  }
+  return null;
+}
+
 async function saveToGitHub(
   data: any,
   explicitToken?: string,
@@ -107,51 +147,91 @@ async function saveToGitHub(
   const filePath = "src/data/cms-content.json";
   if (!token) return { success: false, error: "GitHub Personal Access Token not provided." };
 
+  // If a commit is already in progress, queue the latest data so we don't conflict
+  if (isGitHubCommitInProgress) {
+    pendingGitHubCommit = { data, token: explicitToken, repo: explicitRepo };
+    return { success: true, sha: "queued" };
+  }
+
+  isGitHubCommitInProgress = true;
+
   try {
-    const getRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/vnd.github.v3+json",
-      },
-      cache: "no-store",
-    });
-
-    let sha: string | undefined;
-    if (getRes.ok) {
-      const fileInfo = await getRes.json();
-      sha = fileInfo.sha;
-    } else if (getRes.status === 401 || getRes.status === 403) {
-      return { success: false, error: `GitHub authorization failed (HTTP ${getRes.status}). Verify your token has 'repo' access.` };
-    }
-
     const contentStr = JSON.stringify(data, null, 2);
     const contentBase64 = Buffer.from(contentStr).toString("base64");
 
-    const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/vnd.github.v3+json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        message: `chore(cms): update studio content via admin portal [${new Date().toISOString()}]`,
-        content: contentBase64,
-        sha,
-        branch: "main",
-      }),
-    });
+    // Retry loop for 409 Conflict (up to 3 attempts with fresh SHA fetch)
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      let sha: string | undefined;
 
-    if (putRes.ok) {
-      const putData = await putRes.json();
-      return { success: true, sha: putData.content?.sha };
+      try {
+        const getRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/vnd.github.v3+json",
+            "User-Agent": "Techno-Architecture-CMS",
+          },
+          cache: "no-store",
+        });
+
+        if (getRes.ok) {
+          const fileInfo = await getRes.json();
+          sha = fileInfo.sha;
+        } else if (getRes.status === 401 || getRes.status === 403) {
+          return {
+            success: false,
+            error: `GitHub authorization failed (HTTP ${getRes.status}). Verify your token has 'repo' access.`,
+          };
+        }
+      } catch (err: any) {
+        if (attempt === 3) throw err;
+      }
+
+      const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/vnd.github.v3+json",
+          "Content-Type": "application/json",
+          "User-Agent": "Techno-Architecture-CMS",
+        },
+        body: JSON.stringify({
+          message: `chore(cms): update studio content via admin portal [${new Date().toISOString()}]`,
+          content: contentBase64,
+          sha,
+          branch: "main",
+        }),
+      });
+
+      if (putRes.ok) {
+        const putData = await putRes.json();
+        return { success: true, sha: putData.content?.sha };
+      }
+
+      if (putRes.status === 409 && attempt < 3) {
+        // Conflict on SHA: wait 400ms and retry with fresh SHA
+        await new Promise((r) => setTimeout(r, 400));
+        continue;
+      }
+
+      const putErr = await putRes.text();
+      return { success: false, error: `GitHub commit rejected (HTTP ${putRes.status}): ${putErr}` };
     }
 
-    const putErr = await putRes.text();
-    return { success: false, error: `GitHub commit rejected (HTTP ${putRes.status}): ${putErr}` };
+    return { success: false, error: "Failed to commit to GitHub after 3 attempts." };
   } catch (err: any) {
     console.warn("[CMS Store] GitHub API commit error:", err);
     return { success: false, error: err?.message || "Network error connecting to GitHub API." };
+  } finally {
+    isGitHubCommitInProgress = false;
+
+    // Process queued commit if another save came in while committing
+    if (pendingGitHubCommit) {
+      const next = pendingGitHubCommit;
+      pendingGitHubCommit = null;
+      setTimeout(() => {
+        saveToGitHub(next.data, next.token, next.repo);
+      }, 500);
+    }
   }
 }
 
@@ -159,16 +239,31 @@ async function saveToGitHub(
 // READ & WRITE STORE
 // -------------------------------------------------------------
 
-async function readStore(customUpstashUrl?: string, customUpstashToken?: string) {
-  // 1. In production serverless warm containers, return in-memory cache. In development, read disk fresh every time.
-  if (process.env.NODE_ENV === "production" && globalThis.__techno_cms_store__) {
-    return JSON.parse(JSON.stringify(globalThis.__techno_cms_store__));
-  }
-
+async function readStore(
+  customUpstashUrl?: string,
+  customUpstashToken?: string,
+  customGithubToken?: string,
+  customGithubRepo?: string
+) {
   // Candidates for dataset
   const candidates: any[] = [];
 
-  // 1b. Try Cloud Firestore (Tier 0 persistence)
+  // 1. In production serverless warm containers, return in-memory cache if available
+  if (globalThis.__techno_cms_store__ && typeof globalThis.__techno_cms_store__ === "object" && globalThis.__techno_cms_store__.updatedAt) {
+    candidates.push(JSON.parse(JSON.stringify(globalThis.__techno_cms_store__)));
+  }
+
+  // 2. Try GitHub remote (single cloud source of truth for persistent deployments across all visitors)
+  try {
+    const ghData = await getFromGitHub(customGithubToken, customGithubRepo);
+    if (ghData && typeof ghData === "object" && ghData.updatedAt) {
+      candidates.push(ghData);
+    }
+  } catch (e) {
+    console.warn("[CMS Store] GitHub candidate read notice:", e);
+  }
+
+  // 3. Try Cloud Firestore (Tier 0 persistence if service account configured)
   try {
     const db = getFirestoreDb();
     if (db) {
@@ -184,13 +279,13 @@ async function readStore(customUpstashUrl?: string, customUpstashToken?: string)
     console.warn("[CMS Store] Firestore read notice:", e);
   }
 
-  // 2. Try Upstash / Vercel KV if configured
+  // 4. Try Upstash / Vercel KV if configured
   const upstashData = await getFromUpstashKV(customUpstashUrl, customUpstashToken);
   if (upstashData && typeof upstashData === "object" && upstashData.updatedAt) {
     candidates.push(upstashData);
   }
 
-  // 3. Try reading from DATA_FILE_PATH (static or persistent disk)
+  // 5. Try reading from DATA_FILE_PATH (static or persistent disk)
   try {
     const raw = await fs.readFile(DATA_FILE_PATH, "utf-8");
     const data = JSON.parse(raw);
@@ -199,7 +294,7 @@ async function readStore(customUpstashUrl?: string, customUpstashToken?: string)
     }
   } catch (_) {}
 
-  // 4. Try reading from TMP_FILE_PATH (written in serverless environments like Vercel)
+  // 6. Try reading from TMP_FILE_PATH (written in serverless environments like Vercel)
   try {
     const raw = await fs.readFile(TMP_FILE_PATH, "utf-8");
     const data = JSON.parse(raw);
@@ -208,7 +303,7 @@ async function readStore(customUpstashUrl?: string, customUpstashToken?: string)
     }
   } catch (_) {}
 
-  // 5. Statically bundled seed data from build
+  // 7. Statically bundled seed data from build
   const defaultData = getDefaultData();
   candidates.push(defaultData);
 
@@ -351,8 +446,10 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const customUpstashUrl = request.headers.get("x-upstash-url") || url.searchParams.get("upstashUrl") || undefined;
     const customUpstashToken = request.headers.get("x-upstash-token") || url.searchParams.get("upstashToken") || undefined;
+    const customGithubToken = request.headers.get("x-github-token") || url.searchParams.get("githubToken") || undefined;
+    const customGithubRepo = request.headers.get("x-github-repo") || url.searchParams.get("githubRepo") || undefined;
 
-    const data = await readStore(customUpstashUrl, customUpstashToken);
+    const data = await readStore(customUpstashUrl, customUpstashToken, customGithubToken, customGithubRepo);
 
     // Attach read-only metadata about storage health
     const storageInfo = {
@@ -433,7 +530,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true, results });
     }
 
-    const current = await readStore(upstashUrl, upstashToken);
+    const current = await readStore(upstashUrl, upstashToken, githubToken, githubRepo);
 
     if (body.reset === true) {
       const defaultData = getDefaultData();
@@ -477,6 +574,7 @@ export async function POST(request: Request) {
       return NextResponse.json({
         success: true,
         entity: body.entity,
+        data: current,
         message: storageStatus.summaryMessage,
         storageStatus,
         updatedAt: current.updatedAt,

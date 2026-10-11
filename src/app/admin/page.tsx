@@ -4343,7 +4343,7 @@ export default function AdminCMSPage() {
               </h3>
             </div>
 
-            {siteSettings.studios.map((st, sIdx) => (
+            {(siteSettings.studios || []).map((st, sIdx) => (
               <div key={sIdx} className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                 <div>
                   <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
