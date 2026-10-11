@@ -2658,7 +2658,7 @@
       "discipline": "BIM & Technical",
       "credentials": "B.Arch",
       "bio": "Practitioner contributing to innovative spatial planning and craftsmanship.",
-      "image": "",
+      "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=85",
       "socials": []
     }
   ],
@@ -4887,5 +4887,5 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-11T09:11:17.021Z"
+  "updatedAt": "2026-10-11T09:11:21.308Z"
 }
