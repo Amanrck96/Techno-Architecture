@@ -2477,7 +2477,7 @@
     },
     {
       "id": "team-suma",
-      "name": "Suma",
+      "name": "ASuma",
       "role": "Senior Project Architect",
       "discipline": "Architecture",
       "credentials": "B.Arch",
@@ -4877,5 +4877,5 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-11T03:00:55.914Z"
+  "updatedAt": "2026-10-11T03:01:03.187Z"
 }
