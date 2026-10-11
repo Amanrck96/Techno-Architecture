@@ -394,8 +394,15 @@ async function writeStore(
       }
     })(),
 
-    // Tier 3: GitHub direct commit (if configured or provided by admin)
+    // Tier 3: GitHub direct commit (enabled in Vercel serverless for persistent deployments, or when explicit token provided)
     (async () => {
+      // In local development or local servers, write directly to local disk (Tier 1).
+      // Only auto-commit to remote GitHub if running on Vercel (read-only filesystem) OR if explicit token was provided by the user.
+      const isLocal = !process.env.VERCEL;
+      if (isLocal && !options?.githubToken) {
+        return;
+      }
+
       const ghRes = await saveToGitHub(data, options?.githubToken, options?.githubRepo);
       if (ghRes.success) {
         result.github = true;

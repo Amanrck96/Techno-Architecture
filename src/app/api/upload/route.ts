@@ -133,9 +133,10 @@ export async function POST(request: Request) {
     } catch (_) {}
 
     // 4. Commit to GitHub repo if token configured (guarantees permanent Vercel deployment persistence)
+    const isVercel = Boolean(process.env.VERCEL);
     const ghToken = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
     const ghRepo = process.env.GITHUB_REPOSITORY || "Kima1011/Techno-Architecture";
-    if (ghToken && ghRepo && buffer.length < 25 * 1024 * 1024) {
+    if (isVercel && ghToken && ghRepo && buffer.length < 25 * 1024 * 1024) {
       try {
         const ghPath = `public/uploads/${folder}/${filename}`;
         const contentBase64 = buffer.toString("base64");
