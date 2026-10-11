@@ -83,7 +83,7 @@ export async function POST(request: Request) {
     const filename = `techno_${cleanBase}_${Date.now()}${ext}`;
     const storagePath = `${folder}/${filename}`;
 
-    // 2. Try uploading to Firebase Storage if configured
+    // 2. Upload to Firebase Cloud Storage (technoarchitecture-7d718.firebasestorage.app)
     try {
       const bucket = getFirebaseStorageBucket();
       if (bucket) {
@@ -97,7 +97,6 @@ export async function POST(request: Request) {
           },
         });
         
-        // Make public or generate public URL
         try {
           await fileRef.makePublic();
           const publicUrl = `https://storage.googleapis.com/${bucket.name}/${storagePath}`;
@@ -109,7 +108,6 @@ export async function POST(request: Request) {
             folder,
           });
         } catch (_) {
-          // Alternatively standard Firebase media link
           const downloadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(storagePath)}?alt=media&token=${filename}`;
           return NextResponse.json({
             success: true,
@@ -118,6 +116,42 @@ export async function POST(request: Request) {
             name: filename,
             folder,
           });
+        }
+      }
+
+      // If Admin SDK not initialized, upload directly to Firebase Cloud Storage via REST API
+      const fbBucket = process.env.FIREBASE_STORAGE_BUCKET || "technoarchitecture-7d718.firebasestorage.app";
+      if (fbBucket) {
+        const fbUrl = `https://firebasestorage.googleapis.com/v0/b/${fbBucket}/o?name=${encodeURIComponent(storagePath)}&uploadType=media`;
+        const fbRes = await fetch(fbUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": file.type || "application/octet-stream",
+          },
+          body: buffer,
+        });
+
+        if (fbRes.ok) {
+          const fbData = (await fbRes.json()) as { downloadTokens?: string };
+          const token = fbData.downloadTokens || filename;
+          const downloadUrl = `https://firebasestorage.googleapis.com/v0/b/${fbBucket}/o/${encodeURIComponent(storagePath)}?alt=media&token=${token}`;
+
+          // Save local backup copy in public/uploads/${folder}/ for offline resilience
+          try {
+            const uploadsDir = path.join(process.cwd(), "public", "uploads", folder);
+            await fs.mkdir(uploadsDir, { recursive: true });
+            await fs.writeFile(path.join(uploadsDir, filename), buffer);
+          } catch (_) {}
+
+          return NextResponse.json({
+            success: true,
+            url: downloadUrl,
+            storage: "firebase",
+            name: filename,
+            folder,
+          });
+        } else {
+          console.warn("Firebase Storage REST upload status:", fbRes.status, await fbRes.text());
         }
       }
     } catch (fbErr) {
