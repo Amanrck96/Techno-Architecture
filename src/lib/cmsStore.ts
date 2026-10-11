@@ -11,6 +11,8 @@ import { Recognition, initialRecognitions } from "@/data/recognitions";
 import { SiteSettings, initialSiteSettings } from "@/data/siteSettings";
 import { Testimonial, initialTestimonials } from "@/data/testimonials";
 
+import staticCmsContent from "@/data/cms-content.json";
+
 export const VALID_PROJECT_CATEGORIES = ["Residential", "Commercial", "Hospitality", "Interior"] as const;
 export type ValidProjectCategory = (typeof VALID_PROJECT_CATEGORIES)[number];
 
@@ -26,6 +28,17 @@ export function sanitizeProjectsList(list: any[]): Project[] {
     category: sanitizeProjectCategory(p?.category),
   }));
 }
+
+const seedData = (staticCmsContent as any) || {};
+export const defaultProjects: Project[] = Array.isArray(seedData.projects) && seedData.projects.length > 0 ? sanitizeProjectsList(seedData.projects) : initialProjects;
+export const defaultServices: Service[] = Array.isArray(seedData.services) && seedData.services.length > 0 ? seedData.services : initialServices;
+export const defaultTeam: TeamMember[] = Array.isArray(seedData.team) && seedData.team.length > 0 ? seedData.team : initialTeam;
+export const defaultBlog: BlogPost[] = Array.isArray(seedData.blog) && seedData.blog.length > 0 ? seedData.blog : initialBlogPosts;
+export const defaultFaq: FAQItem[] = Array.isArray(seedData.faq) && seedData.faq.length > 0 ? seedData.faq : initialFAQs;
+export const defaultGallery: GalleryItem[] = Array.isArray(seedData.gallery) && seedData.gallery.length > 0 ? seedData.gallery : initialGalleryItems;
+export const defaultRecognitions: Recognition[] = Array.isArray(seedData.recognitions) && seedData.recognitions.length > 0 ? seedData.recognitions : initialRecognitions;
+export const defaultSiteSettings: SiteSettings = seedData.siteSettings || initialSiteSettings;
+export const defaultTestimonials: Testimonial[] = Array.isArray(seedData.testimonials) && seedData.testimonials.length > 0 ? seedData.testimonials : initialTestimonials;
 
 export const STORAGE_KEYS = {
   PROJECTS: "techno_cms_projects_v9",
@@ -199,15 +212,15 @@ export async function syncToServer(payload: {
 
 export function useCMSStore() {
   const [isClient, setIsClient] = useState(false);
-  const [projects, setProjects] = useState<Project[]>(initialProjects);
-  const [services, setServices] = useState<Service[]>(initialServices);
-  const [team, setTeam] = useState<TeamMember[]>(initialTeam);
-  const [blog, setBlog] = useState<BlogPost[]>(initialBlogPosts);
-  const [faq, setFaq] = useState<FAQItem[]>(initialFAQs);
-  const [gallery, setGallery] = useState<GalleryItem[]>(initialGalleryItems);
-  const [recognitions, setRecognitions] = useState<Recognition[]>(initialRecognitions);
-  const [siteSettings, setSiteSettings] = useState<SiteSettings>(initialSiteSettings);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>(initialTestimonials);
+  const [projects, setProjects] = useState<Project[]>(() => defaultProjects);
+  const [services, setServices] = useState<Service[]>(() => defaultServices);
+  const [team, setTeam] = useState<TeamMember[]>(() => defaultTeam);
+  const [blog, setBlog] = useState<BlogPost[]>(() => defaultBlog);
+  const [faq, setFaq] = useState<FAQItem[]>(() => defaultFaq);
+  const [gallery, setGallery] = useState<GalleryItem[]>(() => defaultGallery);
+  const [recognitions, setRecognitions] = useState<Recognition[]>(() => defaultRecognitions);
+  const [siteSettings, setSiteSettings] = useState<SiteSettings>(() => defaultSiteSettings);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(() => defaultTestimonials);
 
   // Storage health status from server
   const [serverStorageInfo, setServerStorageInfo] = useState<{
@@ -219,7 +232,7 @@ export function useCMSStore() {
     localDiskWritable?: boolean;
   }>({});
 
-  const lastServerUpdatedRef = useRef<string>("");
+  const lastServerUpdatedRef = useRef<string>((staticCmsContent as any)?.updatedAt || "");
   const syncTimersRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
 
   // Function to apply complete dataset to state & local cache
@@ -341,7 +354,7 @@ export function useCMSStore() {
   useEffect(() => {
     setIsClient(true);
 
-    // 1. Quick initial hydration from local cache if present (purging legacy caches)
+    // 1. Safe hydration check: Only load localStorage if user has uncommitted edits or strictly newer cache
     try {
       localStorage.removeItem("techno_cms_projects_v7");
       localStorage.removeItem("techno_cms_projects_v6");
@@ -350,42 +363,43 @@ export function useCMSStore() {
       localStorage.removeItem("techno_cms_team_v7");
       localStorage.removeItem("techno_cms_team_v6");
       localStorage.removeItem("techno_cms_team_v5");
-      const sp = localStorage.getItem(STORAGE_KEYS.PROJECTS);
-      if (sp) {
-        const parsed = JSON.parse(sp);
-        setProjects(sanitizeProjectsList(parsed));
+
+      const hasUnsavedEdits = localStorage.getItem(STORAGE_KEYS.HAS_UNSAVED_EDITS) === "true";
+      const localSyncedAt = localStorage.getItem(STORAGE_KEYS.SERVER_SYNCED_AT) || localStorage.getItem(STORAGE_KEYS.CLIENT_UPDATED_AT);
+      const seedUpdated = (staticCmsContent as any)?.updatedAt || "2024-01-01";
+      const isLocalNewer = Boolean(localSyncedAt && new Date(localSyncedAt).getTime() > new Date(seedUpdated).getTime());
+
+      if (hasUnsavedEdits || isLocalNewer) {
+        const sp = localStorage.getItem(STORAGE_KEYS.PROJECTS);
+        if (sp) setProjects(sanitizeProjectsList(JSON.parse(sp)));
+        const ss = localStorage.getItem(STORAGE_KEYS.SERVICES);
+        if (ss) setServices(JSON.parse(ss));
+        const st = localStorage.getItem(STORAGE_KEYS.TEAM);
+        if (st) setTeam(JSON.parse(st));
+        const sb = localStorage.getItem(STORAGE_KEYS.BLOG);
+        if (sb) setBlog(JSON.parse(sb));
+        const sf = localStorage.getItem(STORAGE_KEYS.FAQ);
+        if (sf) setFaq(JSON.parse(sf));
+        const sg = localStorage.getItem(STORAGE_KEYS.GALLERY);
+        if (sg) setGallery(JSON.parse(sg));
+        const sr = localStorage.getItem(STORAGE_KEYS.RECOGNITIONS);
+        if (sr) setRecognitions(JSON.parse(sr));
+        const sset = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+        if (sset) setSiteSettings(JSON.parse(sset));
+        const stm = localStorage.getItem(STORAGE_KEYS.TESTIMONIALS);
+        if (stm) setTestimonials(JSON.parse(stm));
+      } else {
+        // Clear stale browser storage so it never overwrites the authoritative server data
+        localStorage.removeItem(STORAGE_KEYS.PROJECTS);
+        localStorage.removeItem(STORAGE_KEYS.SERVICES);
+        localStorage.removeItem(STORAGE_KEYS.TEAM);
+        localStorage.removeItem(STORAGE_KEYS.BLOG);
+        localStorage.removeItem(STORAGE_KEYS.FAQ);
+        localStorage.removeItem(STORAGE_KEYS.GALLERY);
+        localStorage.removeItem(STORAGE_KEYS.RECOGNITIONS);
+        localStorage.removeItem(STORAGE_KEYS.SETTINGS);
+        localStorage.removeItem(STORAGE_KEYS.TESTIMONIALS);
       }
-      const ss = localStorage.getItem(STORAGE_KEYS.SERVICES);
-      if (ss) setServices(JSON.parse(ss));
-      const st = localStorage.getItem(STORAGE_KEYS.TEAM);
-      if (st) {
-        try {
-          const parsedTeam = JSON.parse(st);
-          if (Array.isArray(parsedTeam) && parsedTeam.length > 0) {
-            const sanitizedTeam = parsedTeam.map((m: any) => {
-              const fallback = initialTeam.find((it) => it.id === m.id || it.name === m.name);
-              let img = m.image;
-              let hoverImg = m.hoverImage;
-              if (!img && fallback?.image) img = fallback.image;
-              if (!hoverImg && fallback?.hoverImage) hoverImg = fallback.hoverImage;
-              return { ...m, image: img, hoverImage: hoverImg };
-            });
-            setTeam(sanitizedTeam);
-          }
-        } catch (_) {}
-      }
-      const sb = localStorage.getItem(STORAGE_KEYS.BLOG);
-      if (sb) setBlog(JSON.parse(sb));
-      const sf = localStorage.getItem(STORAGE_KEYS.FAQ);
-      if (sf) setFaq(JSON.parse(sf));
-      const sg = localStorage.getItem(STORAGE_KEYS.GALLERY);
-      if (sg) setGallery(JSON.parse(sg));
-      const sr = localStorage.getItem(STORAGE_KEYS.RECOGNITIONS);
-      if (sr) setRecognitions(JSON.parse(sr));
-      const sset = localStorage.getItem(STORAGE_KEYS.SETTINGS);
-      if (sset) setSiteSettings(JSON.parse(sset));
-      const stm = localStorage.getItem(STORAGE_KEYS.TESTIMONIALS);
-      if (stm) setTestimonials(JSON.parse(stm));
     } catch (_) {}
 
     // 2. Fetch fresh live data from the server single source of truth
@@ -625,30 +639,30 @@ export function useCMSStore() {
   const resetAllToDefaults = useCallback(() => {
     syncTimersRef.current.forEach((t) => clearTimeout(t));
     syncTimersRef.current.clear();
-    setProjects(initialProjects);
-    setServices(initialServices);
-    setTeam(initialTeam);
-    setBlog(initialBlogPosts);
-    setFaq(initialFAQs);
-    setGallery(initialGalleryItems);
-    setRecognitions(initialRecognitions);
-    setSiteSettings(initialSiteSettings);
-    setTestimonials(initialTestimonials);
+    setProjects(defaultProjects);
+    setServices(defaultServices);
+    setTeam(defaultTeam);
+    setBlog(defaultBlog);
+    setFaq(defaultFaq);
+    setGallery(defaultGallery);
+    setRecognitions(defaultRecognitions);
+    setSiteSettings(defaultSiteSettings);
+    setTestimonials(defaultTestimonials);
 
     try {
       Object.values(STORAGE_KEYS).forEach((k) => localStorage.removeItem(k));
     } catch (_) {}
 
     const defaultData = {
-      projects: initialProjects,
-      services: initialServices,
-      team: initialTeam,
-      blog: initialBlogPosts,
-      faq: initialFAQs,
-      gallery: initialGalleryItems,
-      recognitions: initialRecognitions,
-      siteSettings: initialSiteSettings,
-      testimonials: initialTestimonials,
+      projects: defaultProjects,
+      services: defaultServices,
+      team: defaultTeam,
+      blog: defaultBlog,
+      faq: defaultFaq,
+      gallery: defaultGallery,
+      recognitions: defaultRecognitions,
+      siteSettings: defaultSiteSettings,
+      testimonials: defaultTestimonials,
     };
 
     broadcastChange("ALL_DATA", defaultData);

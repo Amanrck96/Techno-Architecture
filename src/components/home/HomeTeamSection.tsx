@@ -4,12 +4,12 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { useCMSStore } from "@/lib/cmsStore";
-import { initialTeam, TeamMember } from "@/data/team";
+import { useCMSStore, defaultTeam } from "@/lib/cmsStore";
+import { TeamMember } from "@/data/team";
 
 export default function HomeTeamSection() {
   const { team } = useCMSStore();
-  const displayTeam: TeamMember[] = (team && team.length > 0) ? team : initialTeam;
+  const displayTeam: TeamMember[] = (team && team.length > 0) ? team : defaultTeam;
 
   return (
     <section id="team" className="w-full py-14 md:py-20 px-6 sm:px-10 lg:px-16 bg-neutral-50/60 border-b border-neutral-200 scroll-mt-20">

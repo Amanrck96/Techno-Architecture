@@ -5,18 +5,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Award, Compass, Eye, ShieldCheck, Building2, CheckCircle2, GraduationCap, Instagram } from "lucide-react";
-import { useCMSStore } from "@/lib/cmsStore";
-import { initialTeam } from "@/data/team";
+import { useCMSStore, defaultTeam } from "@/lib/cmsStore";
 
 export default function AboutContent() {
   const { siteSettings, team } = useCMSStore();
   const [activeValueIndex, setActiveValueIndex] = useState<number | null>(null);
   const [selectedDiscipline, setSelectedDiscipline] = useState<string>("All");
 
-  const displayTeam = (team && team.length > 0) ? team : initialTeam;
+  const displayTeam = (team && team.length > 0) ? team : defaultTeam;
   const rajesh =
     displayTeam.find((m) => m.name.toLowerCase().includes("rajesh")) ||
-    initialTeam[0];
+    defaultTeam[0];
 
   const disciplines = ["All", "Leadership", "Architecture", "Interiors", "BIM & Technical", "Research & Sustainability"];
   const filteredTeam = selectedDiscipline === "All"
