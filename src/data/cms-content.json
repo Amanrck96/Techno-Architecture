@@ -2650,6 +2650,16 @@
       "image": "/team/harsan-1.jpg",
       "hoverImage": "/team/harsan-2.jpg",
       "socials": []
+    },
+    {
+      "id": "team-1791709754708",
+      "name": "Architect Name 24",
+      "role": "Project Architect",
+      "discipline": "Architecture",
+      "credentials": "B.Arch",
+      "bio": "Practitioner contributing to innovative spatial planning and craftsmanship.",
+      "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=85",
+      "socials": []
     }
   ],
   "blog": [
@@ -4877,5 +4887,5 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-11T08:41:18.442Z"
+  "updatedAt": "2026-10-11T09:09:14.898Z"
 }
