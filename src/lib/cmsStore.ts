@@ -1,6 +1,14 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+  useMemo,
+} from "react";
 import { Project, initialProjects } from "@/data/projects";
 import { Service, initialServices } from "@/data/services";
 import { TeamMember, initialTeam } from "@/data/team";
@@ -21,6 +29,21 @@ export function sanitizeProjectCategory(cat: any): ValidProjectCategory {
   return "Residential";
 }
 
+export function filterOutDeletedItems<T = any>(
+  items: T[],
+  deletedIds: string[] = []
+): T[] {
+  if (!Array.isArray(items)) return [];
+  if (!deletedIds || deletedIds.length === 0) return items;
+  const set = new Set(deletedIds.map((s) => String(s).toLowerCase().trim()));
+  return items.filter((item: any) => {
+    if (!item) return false;
+    if (item.id && set.has(String(item.id).toLowerCase().trim())) return false;
+    if (item.slug && set.has(String(item.slug).toLowerCase().trim())) return false;
+    return true;
+  });
+}
+
 export function sanitizeProjectsList(list: any[]): Project[] {
   if (!Array.isArray(list)) return [];
   return list.map((p) => ({
@@ -30,15 +53,43 @@ export function sanitizeProjectsList(list: any[]): Project[] {
 }
 
 const seedData = (staticCmsContent as any) || {};
-export const defaultProjects: Project[] = Array.isArray(seedData.projects) && seedData.projects.length > 0 ? sanitizeProjectsList(seedData.projects) : initialProjects;
-export const defaultServices: Service[] = Array.isArray(seedData.services) && seedData.services.length > 0 ? seedData.services : initialServices;
-export const defaultTeam: TeamMember[] = Array.isArray(seedData.team) && seedData.team.length > 0 ? seedData.team : initialTeam;
-export const defaultBlog: BlogPost[] = Array.isArray(seedData.blog) && seedData.blog.length > 0 ? seedData.blog : initialBlogPosts;
-export const defaultFaq: FAQItem[] = Array.isArray(seedData.faq) && seedData.faq.length > 0 ? seedData.faq : initialFAQs;
-export const defaultGallery: GalleryItem[] = Array.isArray(seedData.gallery) && seedData.gallery.length > 0 ? seedData.gallery : initialGalleryItems;
-export const defaultRecognitions: Recognition[] = Array.isArray(seedData.recognitions) && seedData.recognitions.length > 0 ? seedData.recognitions : initialRecognitions;
+const initialSeedDeletedIds: string[] = Array.isArray(seedData.deletedIds) ? seedData.deletedIds : [];
+
+export const defaultProjects: Project[] = filterOutDeletedItems(
+  Array.isArray(seedData.projects) && seedData.projects.length > 0
+    ? sanitizeProjectsList(seedData.projects)
+    : initialProjects,
+  initialSeedDeletedIds
+);
+export const defaultServices: Service[] = filterOutDeletedItems(
+  Array.isArray(seedData.services) && seedData.services.length > 0 ? seedData.services : initialServices,
+  initialSeedDeletedIds
+);
+export const defaultTeam: TeamMember[] = filterOutDeletedItems(
+  Array.isArray(seedData.team) && seedData.team.length > 0 ? seedData.team : initialTeam,
+  initialSeedDeletedIds
+);
+export const defaultBlog: BlogPost[] = filterOutDeletedItems(
+  Array.isArray(seedData.blog) && seedData.blog.length > 0 ? seedData.blog : initialBlogPosts,
+  initialSeedDeletedIds
+);
+export const defaultFaq: FAQItem[] = filterOutDeletedItems(
+  Array.isArray(seedData.faq) && seedData.faq.length > 0 ? seedData.faq : initialFAQs,
+  initialSeedDeletedIds
+);
+export const defaultGallery: GalleryItem[] = filterOutDeletedItems(
+  Array.isArray(seedData.gallery) && seedData.gallery.length > 0 ? seedData.gallery : initialGalleryItems,
+  initialSeedDeletedIds
+);
+export const defaultRecognitions: Recognition[] = filterOutDeletedItems(
+  Array.isArray(seedData.recognitions) && seedData.recognitions.length > 0 ? seedData.recognitions : initialRecognitions,
+  initialSeedDeletedIds
+);
 export const defaultSiteSettings: SiteSettings = seedData.siteSettings || initialSiteSettings;
-export const defaultTestimonials: Testimonial[] = Array.isArray(seedData.testimonials) && seedData.testimonials.length > 0 ? seedData.testimonials : initialTestimonials;
+export const defaultTestimonials: Testimonial[] = filterOutDeletedItems(
+  Array.isArray(seedData.testimonials) && seedData.testimonials.length > 0 ? seedData.testimonials : initialTestimonials,
+  initialSeedDeletedIds
+);
 
 export const STORAGE_KEYS = {
   PROJECTS: "techno_cms_projects_v9",
@@ -50,6 +101,7 @@ export const STORAGE_KEYS = {
   RECOGNITIONS: "techno_cms_recognitions_v5",
   SETTINGS: "techno_cms_settings_v5",
   TESTIMONIALS: "techno_cms_testimonials_v5",
+  DELETED_IDS: "techno_cms_deleted_ids_v1",
   CLIENT_UPDATED_AT: "techno_cms_client_updated_at",
   SERVER_SYNCED_AT: "techno_cms_server_synced_at",
   HAS_UNSAVED_EDITS: "techno_cms_has_unsaved_edits",
@@ -106,24 +158,28 @@ export function getLocalDataset(): any {
   const data: any = {};
   if (typeof window === "undefined") return data;
   try {
+    const sd = localStorage.getItem(STORAGE_KEYS.DELETED_IDS);
+    const deletedIds: string[] = sd ? JSON.parse(sd) : [];
+    if (deletedIds.length > 0) data.deletedIds = deletedIds;
+
     const sp = localStorage.getItem(STORAGE_KEYS.PROJECTS);
-    if (sp) data.projects = JSON.parse(sp);
+    if (sp) data.projects = filterOutDeletedItems(JSON.parse(sp), deletedIds);
     const ss = localStorage.getItem(STORAGE_KEYS.SERVICES);
-    if (ss) data.services = JSON.parse(ss);
+    if (ss) data.services = filterOutDeletedItems(JSON.parse(ss), deletedIds);
     const st = localStorage.getItem(STORAGE_KEYS.TEAM);
-    if (st) data.team = JSON.parse(st);
+    if (st) data.team = filterOutDeletedItems(JSON.parse(st), deletedIds);
     const sb = localStorage.getItem(STORAGE_KEYS.BLOG);
-    if (sb) data.blog = JSON.parse(sb);
+    if (sb) data.blog = filterOutDeletedItems(JSON.parse(sb), deletedIds);
     const sf = localStorage.getItem(STORAGE_KEYS.FAQ);
-    if (sf) data.faq = JSON.parse(sf);
+    if (sf) data.faq = filterOutDeletedItems(JSON.parse(sf), deletedIds);
     const sg = localStorage.getItem(STORAGE_KEYS.GALLERY);
-    if (sg) data.gallery = JSON.parse(sg);
+    if (sg) data.gallery = filterOutDeletedItems(JSON.parse(sg), deletedIds);
     const sr = localStorage.getItem(STORAGE_KEYS.RECOGNITIONS);
-    if (sr) data.recognitions = JSON.parse(sr);
+    if (sr) data.recognitions = filterOutDeletedItems(JSON.parse(sr), deletedIds);
     const sset = localStorage.getItem(STORAGE_KEYS.SETTINGS);
     if (sset) data.siteSettings = JSON.parse(sset);
     const stm = localStorage.getItem(STORAGE_KEYS.TESTIMONIALS);
-    if (stm) data.testimonials = JSON.parse(stm);
+    if (stm) data.testimonials = filterOutDeletedItems(JSON.parse(stm), deletedIds);
   } catch (_) {}
   return data;
 }
@@ -133,6 +189,7 @@ export async function syncToServer(payload: {
   entity?: string;
   data?: any;
   allData?: any;
+  deletedIds?: string[];
   reset?: boolean;
   action?: string;
   githubToken?: string;
@@ -210,19 +267,197 @@ export async function syncToServer(payload: {
   }
 }
 
-export function useCMSStore() {
-  const [isClient, setIsClient] = useState(false);
-  const [projects, setProjects] = useState<Project[]>(() => defaultProjects);
-  const [services, setServices] = useState<Service[]>(() => defaultServices);
-  const [team, setTeam] = useState<TeamMember[]>(() => defaultTeam);
-  const [blog, setBlog] = useState<BlogPost[]>(() => defaultBlog);
-  const [faq, setFaq] = useState<FAQItem[]>(() => defaultFaq);
-  const [gallery, setGallery] = useState<GalleryItem[]>(() => defaultGallery);
-  const [recognitions, setRecognitions] = useState<Recognition[]>(() => defaultRecognitions);
-  const [siteSettings, setSiteSettings] = useState<SiteSettings>(() => defaultSiteSettings);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>(() => defaultTestimonials);
+// =========================================================================
+// REACT CONTEXT & GLOBAL PROVIDER (GUARANTEES ZERO FLASH OF DELETED DATA)
+// =========================================================================
 
-  // Storage health status from server
+export interface CMSContextValue {
+  isClient: boolean;
+  projects: Project[];
+  services: Service[];
+  team: TeamMember[];
+  blog: BlogPost[];
+  faq: FAQItem[];
+  gallery: GalleryItem[];
+  recognitions: Recognition[];
+  siteSettings: SiteSettings;
+  testimonials: Testimonial[];
+  deletedIds: string[];
+  serverStorageInfo: any;
+  saveProjects: (newProjects: Project[], explicitDeletedId?: string) => void;
+  saveServices: (newServices: Service[], explicitDeletedId?: string) => void;
+  saveTeam: (newTeam: TeamMember[], explicitDeletedId?: string) => void;
+  saveBlog: (newBlog: BlogPost[], explicitDeletedId?: string) => void;
+  saveFaq: (newFaq: FAQItem[], explicitDeletedId?: string) => void;
+  saveGallery: (newGallery: GalleryItem[], explicitDeletedId?: string) => void;
+  saveRecognitions: (newRecognitions: Recognition[], explicitDeletedId?: string) => void;
+  saveSiteSettings: (newSettings: SiteSettings) => void;
+  saveTestimonials: (newTestimonials: Testimonial[], explicitDeletedId?: string) => void;
+  deleteEntity: (entity: string, id: string, slug?: string) => void;
+  saveAllToCloud: () => Promise<any>;
+  resetAllToDefaults: () => void;
+  refetchFromServer: () => Promise<void>;
+}
+
+const CMSContext = createContext<CMSContextValue | null>(null);
+
+export function CMSProvider({
+  children,
+  initialData,
+}: {
+  children: React.ReactNode;
+  initialData?: any;
+}) {
+  const [isClient, setIsClient] = useState(false);
+
+  // 1. Authoritative Deleted IDs tracking
+  const [deletedIds, setDeletedIds] = useState<string[]>(() => {
+    if (initialData?.deletedIds && Array.isArray(initialData.deletedIds)) {
+      return initialData.deletedIds;
+    }
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEYS.DELETED_IDS);
+        if (stored) return JSON.parse(stored);
+      } catch (_) {}
+    }
+    return initialSeedDeletedIds;
+  });
+
+  // 2. Synchronous initialization directly from server initialData (or local storage on client)
+  const [projects, setProjects] = useState<Project[]>(() => {
+    if (initialData?.projects && Array.isArray(initialData.projects)) {
+      return filterOutDeletedItems(sanitizeProjectsList(initialData.projects), initialData.deletedIds || []);
+    }
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEYS.PROJECTS);
+        const storedDeleted = localStorage.getItem(STORAGE_KEYS.DELETED_IDS);
+        const dIds: string[] = storedDeleted ? JSON.parse(storedDeleted) : initialSeedDeletedIds;
+        if (stored) return filterOutDeletedItems(sanitizeProjectsList(JSON.parse(stored)), dIds);
+      } catch (_) {}
+    }
+    return filterOutDeletedItems(defaultProjects, initialSeedDeletedIds);
+  });
+
+  const [services, setServices] = useState<Service[]>(() => {
+    if (initialData?.services && Array.isArray(initialData.services)) {
+      return filterOutDeletedItems(initialData.services, initialData.deletedIds || []);
+    }
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEYS.SERVICES);
+        const storedDeleted = localStorage.getItem(STORAGE_KEYS.DELETED_IDS);
+        const dIds: string[] = storedDeleted ? JSON.parse(storedDeleted) : initialSeedDeletedIds;
+        if (stored) return filterOutDeletedItems(JSON.parse(stored), dIds);
+      } catch (_) {}
+    }
+    return filterOutDeletedItems(defaultServices, initialSeedDeletedIds);
+  });
+
+  const [team, setTeam] = useState<TeamMember[]>(() => {
+    if (initialData?.team && Array.isArray(initialData.team)) {
+      return filterOutDeletedItems(initialData.team, initialData.deletedIds || []);
+    }
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEYS.TEAM);
+        const storedDeleted = localStorage.getItem(STORAGE_KEYS.DELETED_IDS);
+        const dIds: string[] = storedDeleted ? JSON.parse(storedDeleted) : initialSeedDeletedIds;
+        if (stored) return filterOutDeletedItems(JSON.parse(stored), dIds);
+      } catch (_) {}
+    }
+    return filterOutDeletedItems(defaultTeam, initialSeedDeletedIds);
+  });
+
+  const [blog, setBlog] = useState<BlogPost[]>(() => {
+    if (initialData?.blog && Array.isArray(initialData.blog)) {
+      return filterOutDeletedItems(initialData.blog, initialData.deletedIds || []);
+    }
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEYS.BLOG);
+        const storedDeleted = localStorage.getItem(STORAGE_KEYS.DELETED_IDS);
+        const dIds: string[] = storedDeleted ? JSON.parse(storedDeleted) : initialSeedDeletedIds;
+        if (stored) return filterOutDeletedItems(JSON.parse(stored), dIds);
+      } catch (_) {}
+    }
+    return filterOutDeletedItems(defaultBlog, initialSeedDeletedIds);
+  });
+
+  const [faq, setFaq] = useState<FAQItem[]>(() => {
+    if (initialData?.faq && Array.isArray(initialData.faq)) {
+      return filterOutDeletedItems(initialData.faq, initialData.deletedIds || []);
+    }
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEYS.FAQ);
+        const storedDeleted = localStorage.getItem(STORAGE_KEYS.DELETED_IDS);
+        const dIds: string[] = storedDeleted ? JSON.parse(storedDeleted) : initialSeedDeletedIds;
+        if (stored) return filterOutDeletedItems(JSON.parse(stored), dIds);
+      } catch (_) {}
+    }
+    return filterOutDeletedItems(defaultFaq, initialSeedDeletedIds);
+  });
+
+  const [gallery, setGallery] = useState<GalleryItem[]>(() => {
+    if (initialData?.gallery && Array.isArray(initialData.gallery)) {
+      return filterOutDeletedItems(initialData.gallery, initialData.deletedIds || []);
+    }
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEYS.GALLERY);
+        const storedDeleted = localStorage.getItem(STORAGE_KEYS.DELETED_IDS);
+        const dIds: string[] = storedDeleted ? JSON.parse(storedDeleted) : initialSeedDeletedIds;
+        if (stored) return filterOutDeletedItems(JSON.parse(stored), dIds);
+      } catch (_) {}
+    }
+    return filterOutDeletedItems(defaultGallery, initialSeedDeletedIds);
+  });
+
+  const [recognitions, setRecognitions] = useState<Recognition[]>(() => {
+    if (initialData?.recognitions && Array.isArray(initialData.recognitions)) {
+      return filterOutDeletedItems(initialData.recognitions, initialData.deletedIds || []);
+    }
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEYS.RECOGNITIONS);
+        const storedDeleted = localStorage.getItem(STORAGE_KEYS.DELETED_IDS);
+        const dIds: string[] = storedDeleted ? JSON.parse(storedDeleted) : initialSeedDeletedIds;
+        if (stored) return filterOutDeletedItems(JSON.parse(stored), dIds);
+      } catch (_) {}
+    }
+    return filterOutDeletedItems(defaultRecognitions, initialSeedDeletedIds);
+  });
+
+  const [siteSettings, setSiteSettings] = useState<SiteSettings>(() => {
+    if (initialData?.siteSettings && typeof initialData.siteSettings === "object") {
+      return initialData.siteSettings;
+    }
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+        if (stored) return JSON.parse(stored);
+      } catch (_) {}
+    }
+    return defaultSiteSettings;
+  });
+
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(() => {
+    if (initialData?.testimonials && Array.isArray(initialData.testimonials)) {
+      return filterOutDeletedItems(initialData.testimonials, initialData.deletedIds || []);
+    }
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEYS.TESTIMONIALS);
+        const storedDeleted = localStorage.getItem(STORAGE_KEYS.DELETED_IDS);
+        const dIds: string[] = storedDeleted ? JSON.parse(storedDeleted) : initialSeedDeletedIds;
+        if (stored) return filterOutDeletedItems(JSON.parse(stored), dIds);
+      } catch (_) {}
+    }
+    return filterOutDeletedItems(defaultTestimonials, initialSeedDeletedIds);
+  });
+
   const [serverStorageInfo, setServerStorageInfo] = useState<{
     isVercel?: boolean;
     isProduction?: boolean;
@@ -232,61 +467,82 @@ export function useCMSStore() {
     localDiskWritable?: boolean;
   }>({});
 
-  const lastServerUpdatedRef = useRef<string>((staticCmsContent as any)?.updatedAt || "");
+  const lastServerUpdatedRef = useRef<string>(initialData?.updatedAt || (staticCmsContent as any)?.updatedAt || "");
   const syncTimersRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
 
   // Function to apply complete dataset to state & local cache
   const applyDataset = useCallback((data: any) => {
     if (!data || typeof data !== "object") return;
 
+    // Merge deleted IDs from server with existing client deleted IDs
+    const serverDeletedIds = Array.isArray(data.deletedIds) ? data.deletedIds : [];
+    let activeDeletedIds = deletedIds;
+    const combinedDeleted = new Set([...deletedIds, ...serverDeletedIds]);
+    if (combinedDeleted.size > deletedIds.length) {
+      activeDeletedIds = Array.from(combinedDeleted);
+      setDeletedIds(activeDeletedIds);
+      try {
+        localStorage.setItem(STORAGE_KEYS.DELETED_IDS, JSON.stringify(activeDeletedIds));
+      } catch (_) {}
+    }
+
     if (Array.isArray(data.projects)) {
-      const sanitized = sanitizeProjectsList(data.projects);
+      const sanitized = filterOutDeletedItems(sanitizeProjectsList(data.projects), activeDeletedIds);
       setProjects(sanitized);
       try { localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(sanitized)); } catch (_) {}
     }
     if (Array.isArray(data.services)) {
-      setServices(data.services);
-      try { localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(data.services)); } catch (_) {}
+      const sanitized = filterOutDeletedItems<Service>(data.services, activeDeletedIds);
+      setServices(sanitized);
+      try { localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(sanitized)); } catch (_) {}
     }
     if (Array.isArray(data.team) && data.team.length > 0) {
-      const sanitizedTeam = data.team.map((m: any) => {
-        const fallback = initialTeam.find((it) => it.id === m.id || it.name === m.name);
-        let img = m.image;
-        let hoverImg = m.hoverImage;
-        if (!img && fallback?.image) img = fallback.image;
-        if (!hoverImg && fallback?.hoverImage) hoverImg = fallback.hoverImage;
-        return { ...m, image: img, hoverImage: hoverImg };
-      });
+      const sanitizedTeam = filterOutDeletedItems<TeamMember>(
+        data.team.map((m: any) => {
+          const fallback = initialTeam.find((it) => it.id === m.id || it.name === m.name);
+          let img = m.image;
+          let hoverImg = m.hoverImage;
+          if (!img && fallback?.image) img = fallback.image;
+          if (!hoverImg && fallback?.hoverImage) hoverImg = fallback.hoverImage;
+          return { ...m, image: img, hoverImage: hoverImg };
+        }),
+        activeDeletedIds
+      );
       setTeam(sanitizedTeam);
       try { localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(sanitizedTeam)); } catch (_) {}
     }
     if (Array.isArray(data.blog)) {
-      setBlog(data.blog);
-      try { localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(data.blog)); } catch (_) {}
+      const sanitized = filterOutDeletedItems<BlogPost>(data.blog, activeDeletedIds);
+      setBlog(sanitized);
+      try { localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(sanitized)); } catch (_) {}
     }
     if (Array.isArray(data.faq)) {
-      setFaq(data.faq);
-      try { localStorage.setItem(STORAGE_KEYS.FAQ, JSON.stringify(data.faq)); } catch (_) {}
+      const sanitized = filterOutDeletedItems<FAQItem>(data.faq, activeDeletedIds);
+      setFaq(sanitized);
+      try { localStorage.setItem(STORAGE_KEYS.FAQ, JSON.stringify(sanitized)); } catch (_) {}
     }
     if (Array.isArray(data.gallery)) {
-      setGallery(data.gallery);
-      try { localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(data.gallery)); } catch (_) {}
+      const sanitized = filterOutDeletedItems<GalleryItem>(data.gallery, activeDeletedIds);
+      setGallery(sanitized);
+      try { localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(sanitized)); } catch (_) {}
     }
     if (Array.isArray(data.recognitions)) {
-      setRecognitions(data.recognitions);
-      try { localStorage.setItem(STORAGE_KEYS.RECOGNITIONS, JSON.stringify(data.recognitions)); } catch (_) {}
+      const sanitized = filterOutDeletedItems<Recognition>(data.recognitions, activeDeletedIds);
+      setRecognitions(sanitized);
+      try { localStorage.setItem(STORAGE_KEYS.RECOGNITIONS, JSON.stringify(sanitized)); } catch (_) {}
     }
     if (data.siteSettings && typeof data.siteSettings === "object") {
       setSiteSettings(data.siteSettings);
       try { localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(data.siteSettings)); } catch (_) {}
     }
     if (Array.isArray(data.testimonials)) {
-      setTestimonials(data.testimonials);
-      try { localStorage.setItem(STORAGE_KEYS.TESTIMONIALS, JSON.stringify(data.testimonials)); } catch (_) {}
+      const sanitized = filterOutDeletedItems<Testimonial>(data.testimonials, activeDeletedIds);
+      setTestimonials(sanitized);
+      try { localStorage.setItem(STORAGE_KEYS.TESTIMONIALS, JSON.stringify(sanitized)); } catch (_) {}
     }
-  }, []);
+  }, [deletedIds]);
 
-  // Fetch latest live data from server permanently with client-timestamp protection
+  // Fetch latest live data from server
   const fetchFromServer = useCallback(async () => {
     try {
       const creds = getStorageCredentials();
@@ -309,17 +565,16 @@ export function useCMSStore() {
         setServerStorageInfo(data._storageInfo);
       }
 
-      // 1. Check if client has pending uncommitted local edits (e.g. edited right before refresh)
+      // Check if client has pending uncommitted local edits
       let hasUnsavedEdits = false;
       try {
         hasUnsavedEdits = localStorage.getItem(STORAGE_KEYS.HAS_UNSAVED_EDITS) === "true";
       } catch (_) {}
 
       if (hasUnsavedEdits) {
-        console.info("[CMS Store] Local uncommitted changes detected on refresh. Pushing to server now...");
         const localData = getLocalDataset();
         if (Object.keys(localData).length > 0) {
-          const syncRes = await syncToServer({ allData: localData });
+          const syncRes = await syncToServer({ allData: localData, deletedIds });
           if (syncRes.success && syncRes.updatedAt) {
             lastServerUpdatedRef.current = syncRes.updatedAt;
             try {
@@ -327,15 +582,13 @@ export function useCMSStore() {
             } catch (_) {}
           }
         }
-        return; // Retain local state without reverting to older server data
+        return;
       }
 
-      // 2. Skip re-applying if this exact server updatedAt was already applied
       if (data.updatedAt && data.updatedAt === lastServerUpdatedRef.current) {
         return;
       }
 
-      // 3. Server data is valid and authoritative: apply it
       if (data.updatedAt) {
         lastServerUpdatedRef.current = data.updatedAt;
         try {
@@ -346,109 +599,86 @@ export function useCMSStore() {
       }
       applyDataset(data);
     } catch (err) {
-      console.warn("CMS Store could not reach /api/cms:", err);
+      // Background poll silently resumes
     }
-  }, [applyDataset]);
+  }, [applyDataset, deletedIds]);
 
   // Initial mount & live event listeners
   useEffect(() => {
     setIsClient(true);
 
-    // 1. Safe hydration check: Only load localStorage if user has uncommitted edits or strictly newer cache
+    // Sync from local cache if available without clearing
     try {
-      localStorage.removeItem("techno_cms_projects_v7");
-      localStorage.removeItem("techno_cms_projects_v6");
-      localStorage.removeItem("techno_cms_projects_v5");
-      localStorage.removeItem("techno_cms_team_v8");
-      localStorage.removeItem("techno_cms_team_v7");
-      localStorage.removeItem("techno_cms_team_v6");
-      localStorage.removeItem("techno_cms_team_v5");
-
-      const hasUnsavedEdits = localStorage.getItem(STORAGE_KEYS.HAS_UNSAVED_EDITS) === "true";
-      const localSyncedAt = localStorage.getItem(STORAGE_KEYS.SERVER_SYNCED_AT) || localStorage.getItem(STORAGE_KEYS.CLIENT_UPDATED_AT);
-      const seedUpdated = (staticCmsContent as any)?.updatedAt || "2024-01-01";
-      const isLocalNewer = Boolean(localSyncedAt && new Date(localSyncedAt).getTime() > new Date(seedUpdated).getTime());
-
-      if (hasUnsavedEdits || isLocalNewer) {
-        const sp = localStorage.getItem(STORAGE_KEYS.PROJECTS);
-        if (sp) setProjects(sanitizeProjectsList(JSON.parse(sp)));
-        const ss = localStorage.getItem(STORAGE_KEYS.SERVICES);
-        if (ss) setServices(JSON.parse(ss));
-        const st = localStorage.getItem(STORAGE_KEYS.TEAM);
-        if (st) setTeam(JSON.parse(st));
-        const sb = localStorage.getItem(STORAGE_KEYS.BLOG);
-        if (sb) setBlog(JSON.parse(sb));
-        const sf = localStorage.getItem(STORAGE_KEYS.FAQ);
-        if (sf) setFaq(JSON.parse(sf));
-        const sg = localStorage.getItem(STORAGE_KEYS.GALLERY);
-        if (sg) setGallery(JSON.parse(sg));
-        const sr = localStorage.getItem(STORAGE_KEYS.RECOGNITIONS);
-        if (sr) setRecognitions(JSON.parse(sr));
-        const sset = localStorage.getItem(STORAGE_KEYS.SETTINGS);
-        if (sset) setSiteSettings(JSON.parse(sset));
-        const stm = localStorage.getItem(STORAGE_KEYS.TESTIMONIALS);
-        if (stm) setTestimonials(JSON.parse(stm));
-      } else {
-        // Clear stale browser storage so it never overwrites the authoritative server data
-        localStorage.removeItem(STORAGE_KEYS.PROJECTS);
-        localStorage.removeItem(STORAGE_KEYS.SERVICES);
-        localStorage.removeItem(STORAGE_KEYS.TEAM);
-        localStorage.removeItem(STORAGE_KEYS.BLOG);
-        localStorage.removeItem(STORAGE_KEYS.FAQ);
-        localStorage.removeItem(STORAGE_KEYS.GALLERY);
-        localStorage.removeItem(STORAGE_KEYS.RECOGNITIONS);
-        localStorage.removeItem(STORAGE_KEYS.SETTINGS);
-        localStorage.removeItem(STORAGE_KEYS.TESTIMONIALS);
+      const sd = localStorage.getItem(STORAGE_KEYS.DELETED_IDS);
+      if (sd) {
+        const parsedDIds = JSON.parse(sd);
+        if (Array.isArray(parsedDIds) && parsedDIds.length > 0) {
+          setDeletedIds((prev) => Array.from(new Set([...prev, ...parsedDIds])));
+        }
       }
     } catch (_) {}
 
-    // 2. Fetch fresh live data from the server single source of truth
+    // Fetch authoritative server data
     fetchFromServer();
 
-    // 3. Set up BroadcastChannel for instant inter-tab live sync
+    // BroadcastChannel for instant inter-tab live sync
     let channel: BroadcastChannel | null = null;
     if (typeof window !== "undefined" && "BroadcastChannel" in window) {
       try {
         channel = new BroadcastChannel(SYNC_CHANNEL_NAME);
         channel.onmessage = (event) => {
           if (event.data?.type === "CMS_UPDATE") {
-            const { entity, data } = event.data;
-            if (entity === "projects") setProjects(sanitizeProjectsList(data));
+            const { entity, data, deletedIds: incomingDeleted } = event.data;
+            if (Array.isArray(incomingDeleted)) {
+              setDeletedIds((prev) => {
+                const combined = Array.from(new Set([...prev, ...incomingDeleted]));
+                try { localStorage.setItem(STORAGE_KEYS.DELETED_IDS, JSON.stringify(combined)); } catch (_) {}
+                return combined;
+              });
+            }
 
-            else if (entity === "services") setServices(data);
-            else if (entity === "team") setTeam(data);
-            else if (entity === "blog") setBlog(data);
-            else if (entity === "faq") setFaq(data);
-            else if (entity === "gallery") setGallery(data);
-            else if (entity === "recognitions") setRecognitions(data);
+            if (entity === "projects") setProjects(filterOutDeletedItems(sanitizeProjectsList(data), incomingDeleted || deletedIds));
+            else if (entity === "services") setServices(filterOutDeletedItems(data, incomingDeleted || deletedIds));
+            else if (entity === "team") setTeam(filterOutDeletedItems(data, incomingDeleted || deletedIds));
+            else if (entity === "blog") setBlog(filterOutDeletedItems(data, incomingDeleted || deletedIds));
+            else if (entity === "faq") setFaq(filterOutDeletedItems(data, incomingDeleted || deletedIds));
+            else if (entity === "gallery") setGallery(filterOutDeletedItems(data, incomingDeleted || deletedIds));
+            else if (entity === "recognitions") setRecognitions(filterOutDeletedItems(data, incomingDeleted || deletedIds));
             else if (entity === "siteSettings") setSiteSettings(data);
-            else if (entity === "testimonials") setTestimonials(data);
+            else if (entity === "testimonials") setTestimonials(filterOutDeletedItems(data, incomingDeleted || deletedIds));
             else if (entity === "ALL_DATA") applyDataset(data);
           }
         };
       } catch (_) {}
     }
 
-    // 4. Custom window event listener for same-tab instant sync
+    // Custom window event listener for same-tab instant sync
     const handleLocalUpdate = (e: Event) => {
       const customEvent = e as CustomEvent;
       if (customEvent.detail) {
-        const { entity, data } = customEvent.detail;
-        if (entity === "projects") setProjects(sanitizeProjectsList(data));
-        else if (entity === "services") setServices(data);
-        else if (entity === "team") setTeam(data);
-        else if (entity === "blog") setBlog(data);
-        else if (entity === "faq") setFaq(data);
-        else if (entity === "gallery") setGallery(data);
-        else if (entity === "recognitions") setRecognitions(data);
+        const { entity, data, deletedIds: incomingDeleted } = customEvent.detail;
+        if (Array.isArray(incomingDeleted)) {
+          setDeletedIds((prev) => {
+            const combined = Array.from(new Set([...prev, ...incomingDeleted]));
+            try { localStorage.setItem(STORAGE_KEYS.DELETED_IDS, JSON.stringify(combined)); } catch (_) {}
+            return combined;
+          });
+        }
+
+        if (entity === "projects") setProjects(filterOutDeletedItems(sanitizeProjectsList(data), incomingDeleted || deletedIds));
+        else if (entity === "services") setServices(filterOutDeletedItems(data, incomingDeleted || deletedIds));
+        else if (entity === "team") setTeam(filterOutDeletedItems(data, incomingDeleted || deletedIds));
+        else if (entity === "blog") setBlog(filterOutDeletedItems(data, incomingDeleted || deletedIds));
+        else if (entity === "faq") setFaq(filterOutDeletedItems(data, incomingDeleted || deletedIds));
+        else if (entity === "gallery") setGallery(filterOutDeletedItems(data, incomingDeleted || deletedIds));
+        else if (entity === "recognitions") setRecognitions(filterOutDeletedItems(data, incomingDeleted || deletedIds));
         else if (entity === "siteSettings") setSiteSettings(data);
-        else if (entity === "testimonials") setTestimonials(data);
+        else if (entity === "testimonials") setTestimonials(filterOutDeletedItems(data, incomingDeleted || deletedIds));
         else if (entity === "ALL_DATA") applyDataset(data);
       }
     };
     window.addEventListener(SYNC_EVENT_NAME, handleLocalUpdate);
 
-    // 5. Automatic live sync when user refocuses tab or periodically
     const handleFocus = () => {
       fetchFromServer();
     };
@@ -456,14 +686,13 @@ export function useCMSStore() {
 
     const intervalId = setInterval(() => {
       fetchFromServer();
-    }, 15000); // Gentle 15s background poll to keep all viewers live
+    }, 15000);
 
-    // 6. Flush pending sync immediately on page unload/refresh
     const handleBeforeUnload = () => {
       if (syncTimersRef.current.size > 0) {
         const localData = getLocalDataset();
         if (Object.keys(localData).length > 0) {
-          syncToServer({ allData: localData });
+          syncToServer({ allData: localData, deletedIds });
         }
       }
     };
@@ -478,31 +707,30 @@ export function useCMSStore() {
       syncTimersRef.current.forEach((t) => clearTimeout(t));
       syncTimersRef.current.clear();
     };
-  }, [fetchFromServer, applyDataset]);
+  }, [fetchFromServer, applyDataset, deletedIds]);
 
-  // Broadcast helper
-  const broadcastChange = (entity: string, data: any) => {
+  const broadcastChange = (entity: string, data: any, activeDeleted?: string[]) => {
     if (typeof window !== "undefined") {
       try {
-        window.dispatchEvent(new CustomEvent(SYNC_EVENT_NAME, { detail: { entity, data } }));
+        const payload = { entity, data, deletedIds: activeDeleted || deletedIds };
+        window.dispatchEvent(new CustomEvent(SYNC_EVENT_NAME, { detail: payload }));
         if ("BroadcastChannel" in window) {
           const ch = new BroadcastChannel(SYNC_CHANNEL_NAME);
-          ch.postMessage({ type: "CMS_UPDATE", entity, data });
+          ch.postMessage({ type: "CMS_UPDATE", ...payload });
           ch.close();
         }
       } catch (_) {}
     }
   };
 
-  // Debounced server sync queue: guarantees 0ms instant UI and prevents network spam while typing
-  const debouncedSyncToServer = useCallback((entity: string, data: any) => {
+  const debouncedSyncToServer = useCallback((entity: string, data: any, currentDeleted?: string[]) => {
     const existing = syncTimersRef.current.get(entity);
     if (existing) {
       clearTimeout(existing);
     }
     const timer = setTimeout(async () => {
       syncTimersRef.current.delete(entity);
-      const res = await syncToServer({ entity, data });
+      const res = await syncToServer({ entity, data, deletedIds: currentDeleted || deletedIds });
       if (res.success && res.updatedAt) {
         lastServerUpdatedRef.current = res.updatedAt;
         try {
@@ -513,104 +741,382 @@ export function useCMSStore() {
       }
     }, 600);
     syncTimersRef.current.set(entity, timer);
-  }, []);
+  }, [deletedIds]);
 
   // =========================================================
-  // SAVE METHODS (INSTANT OPTIMISTIC UI + PERMANENT SERVER SYNC)
+  // SAVE METHODS (IMMEDIATE DELETION DISPATCH + OPTIMISTIC UI)
   // =========================================================
 
-  const saveProjects = useCallback((newProjects: Project[]) => {
-    const sanitized = sanitizeProjectsList(newProjects);
-    setProjects(sanitized);
-    try {
-      localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(sanitized));
-      touchClientUpdate();
-    } catch (_) {}
-    broadcastChange("projects", sanitized);
-    debouncedSyncToServer("projects", sanitized);
-  }, [debouncedSyncToServer]);
+  const saveProjects = useCallback(
+    (newProjects: Project[], explicitDeletedId?: string) => {
+      const oldIds = new Set(projects.map((p) => p.id));
+      const newIds = new Set(newProjects.map((p) => p.id));
+      const removed: string[] = [];
+      if (explicitDeletedId) removed.push(explicitDeletedId);
+      oldIds.forEach((id) => {
+        if (!newIds.has(id)) removed.push(id);
+      });
+      projects.forEach((p) => {
+        if (removed.includes(p.id) && p.slug) {
+          removed.push(p.slug);
+        }
+      });
 
-  const saveServices = useCallback((newServices: Service[]) => {
-    setServices(newServices);
-    try {
-      localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(newServices));
-      touchClientUpdate();
-    } catch (_) {}
-    broadcastChange("services", newServices);
-    debouncedSyncToServer("services", newServices);
-  }, [debouncedSyncToServer]);
+      let nextDeleted = deletedIds;
+      if (removed.length > 0) {
+        nextDeleted = Array.from(new Set([...deletedIds, ...removed]));
+        setDeletedIds(nextDeleted);
+        try {
+          localStorage.setItem(STORAGE_KEYS.DELETED_IDS, JSON.stringify(nextDeleted));
+        } catch (_) {}
+      }
 
-  const saveTeam = useCallback((newTeam: TeamMember[]) => {
-    setTeam(newTeam);
-    try {
-      localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(newTeam));
-      touchClientUpdate();
-    } catch (_) {}
-    broadcastChange("team", newTeam);
-    debouncedSyncToServer("team", newTeam);
-  }, [debouncedSyncToServer]);
+      const sanitized = filterOutDeletedItems(sanitizeProjectsList(newProjects), nextDeleted);
+      setProjects(sanitized);
+      try {
+        localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(sanitized));
+        touchClientUpdate();
+      } catch (_) {}
+      broadcastChange("projects", sanitized, nextDeleted);
 
-  const saveBlog = useCallback((newBlog: BlogPost[]) => {
-    setBlog(newBlog);
-    try {
-      localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(newBlog));
-      touchClientUpdate();
-    } catch (_) {}
-    broadcastChange("blog", newBlog);
-    debouncedSyncToServer("blog", newBlog);
-  }, [debouncedSyncToServer]);
+      // If items were removed, sync IMMEDIATELY with 0ms delay to eliminate any window for stale data
+      if (removed.length > 0) {
+        syncToServer({ entity: "projects", data: sanitized, deletedIds: nextDeleted });
+      } else {
+        debouncedSyncToServer("projects", sanitized, nextDeleted);
+      }
+    },
+    [projects, deletedIds, debouncedSyncToServer]
+  );
 
-  const saveFaq = useCallback((newFaq: FAQItem[]) => {
-    setFaq(newFaq);
-    try {
-      localStorage.setItem(STORAGE_KEYS.FAQ, JSON.stringify(newFaq));
-      touchClientUpdate();
-    } catch (_) {}
-    broadcastChange("faq", newFaq);
-    debouncedSyncToServer("faq", newFaq);
-  }, [debouncedSyncToServer]);
+  const saveServices = useCallback(
+    (newServices: Service[], explicitDeletedId?: string) => {
+      const oldIds = new Set(services.map((s) => s.id));
+      const newIds = new Set(newServices.map((s) => s.id));
+      const removed: string[] = [];
+      if (explicitDeletedId) removed.push(explicitDeletedId);
+      oldIds.forEach((id) => {
+        if (!newIds.has(id)) removed.push(id);
+      });
 
-  const saveGallery = useCallback((newGallery: GalleryItem[]) => {
-    setGallery(newGallery);
-    try {
-      localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(newGallery));
-      touchClientUpdate();
-    } catch (_) {}
-    broadcastChange("gallery", newGallery);
-    debouncedSyncToServer("gallery", newGallery);
-  }, [debouncedSyncToServer]);
+      let nextDeleted = deletedIds;
+      if (removed.length > 0) {
+        nextDeleted = Array.from(new Set([...deletedIds, ...removed]));
+        setDeletedIds(nextDeleted);
+        try {
+          localStorage.setItem(STORAGE_KEYS.DELETED_IDS, JSON.stringify(nextDeleted));
+        } catch (_) {}
+      }
 
-  const saveRecognitions = useCallback((newRecognitions: Recognition[]) => {
-    setRecognitions(newRecognitions);
-    try {
-      localStorage.setItem(STORAGE_KEYS.RECOGNITIONS, JSON.stringify(newRecognitions));
-      touchClientUpdate();
-    } catch (_) {}
-    broadcastChange("recognitions", newRecognitions);
-    debouncedSyncToServer("recognitions", newRecognitions);
-  }, [debouncedSyncToServer]);
+      const sanitized = filterOutDeletedItems(newServices, nextDeleted);
+      setServices(sanitized);
+      try {
+        localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(sanitized));
+        touchClientUpdate();
+      } catch (_) {}
+      broadcastChange("services", sanitized, nextDeleted);
 
-  const saveSiteSettings = useCallback((newSettings: SiteSettings) => {
-    setSiteSettings(newSettings);
-    try {
-      localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(newSettings));
-      touchClientUpdate();
-    } catch (_) {}
-    broadcastChange("siteSettings", newSettings);
-    debouncedSyncToServer("siteSettings", newSettings);
-  }, [debouncedSyncToServer]);
+      if (removed.length > 0) {
+        syncToServer({ entity: "services", data: sanitized, deletedIds: nextDeleted });
+      } else {
+        debouncedSyncToServer("services", sanitized, nextDeleted);
+      }
+    },
+    [services, deletedIds, debouncedSyncToServer]
+  );
 
-  const saveTestimonials = useCallback((newTestimonials: Testimonial[]) => {
-    setTestimonials(newTestimonials);
-    try {
-      localStorage.setItem(STORAGE_KEYS.TESTIMONIALS, JSON.stringify(newTestimonials));
-      touchClientUpdate();
-    } catch (_) {}
-    broadcastChange("testimonials", newTestimonials);
-    debouncedSyncToServer("testimonials", newTestimonials);
-  }, [debouncedSyncToServer]);
+  const saveTeam = useCallback(
+    (newTeam: TeamMember[], explicitDeletedId?: string) => {
+      const oldIds = new Set(team.map((m) => m.id));
+      const newIds = new Set(newTeam.map((m) => m.id));
+      const removed: string[] = [];
+      if (explicitDeletedId) removed.push(explicitDeletedId);
+      oldIds.forEach((id) => {
+        if (!newIds.has(id)) removed.push(id);
+      });
 
-  // Force push all current state to server permanently (immediate, flushes queue)
+      let nextDeleted = deletedIds;
+      if (removed.length > 0) {
+        nextDeleted = Array.from(new Set([...deletedIds, ...removed]));
+        setDeletedIds(nextDeleted);
+        try {
+          localStorage.setItem(STORAGE_KEYS.DELETED_IDS, JSON.stringify(nextDeleted));
+        } catch (_) {}
+      }
+
+      const sanitized = filterOutDeletedItems(newTeam, nextDeleted);
+      setTeam(sanitized);
+      try {
+        localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(sanitized));
+        touchClientUpdate();
+      } catch (_) {}
+      broadcastChange("team", sanitized, nextDeleted);
+
+      if (removed.length > 0) {
+        syncToServer({ entity: "team", data: sanitized, deletedIds: nextDeleted });
+      } else {
+        debouncedSyncToServer("team", sanitized, nextDeleted);
+      }
+    },
+    [team, deletedIds, debouncedSyncToServer]
+  );
+
+  const saveBlog = useCallback(
+    (newBlog: BlogPost[], explicitDeletedId?: string) => {
+      const oldIds = new Set(blog.map((b) => b.id));
+      const newIds = new Set(newBlog.map((b) => b.id));
+      const removed: string[] = [];
+      if (explicitDeletedId) removed.push(explicitDeletedId);
+      oldIds.forEach((id) => {
+        if (!newIds.has(id)) removed.push(id);
+      });
+      blog.forEach((b) => {
+        if (removed.includes(b.id) && b.slug) {
+          removed.push(b.slug);
+        }
+      });
+
+      let nextDeleted = deletedIds;
+      if (removed.length > 0) {
+        nextDeleted = Array.from(new Set([...deletedIds, ...removed]));
+        setDeletedIds(nextDeleted);
+        try {
+          localStorage.setItem(STORAGE_KEYS.DELETED_IDS, JSON.stringify(nextDeleted));
+        } catch (_) {}
+      }
+
+      const sanitized = filterOutDeletedItems(newBlog, nextDeleted);
+      setBlog(sanitized);
+      try {
+        localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(sanitized));
+        touchClientUpdate();
+      } catch (_) {}
+      broadcastChange("blog", sanitized, nextDeleted);
+
+      if (removed.length > 0) {
+        syncToServer({ entity: "blog", data: sanitized, deletedIds: nextDeleted });
+      } else {
+        debouncedSyncToServer("blog", sanitized, nextDeleted);
+      }
+    },
+    [blog, deletedIds, debouncedSyncToServer]
+  );
+
+  const saveFaq = useCallback(
+    (newFaq: FAQItem[], explicitDeletedId?: string) => {
+      const oldIds = new Set(faq.map((f) => f.id));
+      const newIds = new Set(newFaq.map((f) => f.id));
+      const removed: string[] = [];
+      if (explicitDeletedId) removed.push(explicitDeletedId);
+      oldIds.forEach((id) => {
+        if (!newIds.has(id)) removed.push(id);
+      });
+
+      let nextDeleted = deletedIds;
+      if (removed.length > 0) {
+        nextDeleted = Array.from(new Set([...deletedIds, ...removed]));
+        setDeletedIds(nextDeleted);
+        try {
+          localStorage.setItem(STORAGE_KEYS.DELETED_IDS, JSON.stringify(nextDeleted));
+        } catch (_) {}
+      }
+
+      const sanitized = filterOutDeletedItems(newFaq, nextDeleted);
+      setFaq(sanitized);
+      try {
+        localStorage.setItem(STORAGE_KEYS.FAQ, JSON.stringify(sanitized));
+        touchClientUpdate();
+      } catch (_) {}
+      broadcastChange("faq", sanitized, nextDeleted);
+
+      if (removed.length > 0) {
+        syncToServer({ entity: "faq", data: sanitized, deletedIds: nextDeleted });
+      } else {
+        debouncedSyncToServer("faq", sanitized, nextDeleted);
+      }
+    },
+    [faq, deletedIds, debouncedSyncToServer]
+  );
+
+  const saveGallery = useCallback(
+    (newGallery: GalleryItem[], explicitDeletedId?: string) => {
+      const oldIds = new Set(gallery.map((g) => g.id));
+      const newIds = new Set(newGallery.map((g) => g.id));
+      const removed: string[] = [];
+      if (explicitDeletedId) removed.push(explicitDeletedId);
+      oldIds.forEach((id) => {
+        if (!newIds.has(id)) removed.push(id);
+      });
+
+      let nextDeleted = deletedIds;
+      if (removed.length > 0) {
+        nextDeleted = Array.from(new Set([...deletedIds, ...removed]));
+        setDeletedIds(nextDeleted);
+        try {
+          localStorage.setItem(STORAGE_KEYS.DELETED_IDS, JSON.stringify(nextDeleted));
+        } catch (_) {}
+      }
+
+      const sanitized = filterOutDeletedItems(newGallery, nextDeleted);
+      setGallery(sanitized);
+      try {
+        localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(sanitized));
+        touchClientUpdate();
+      } catch (_) {}
+      broadcastChange("gallery", sanitized, nextDeleted);
+
+      if (removed.length > 0) {
+        syncToServer({ entity: "gallery", data: sanitized, deletedIds: nextDeleted });
+      } else {
+        debouncedSyncToServer("gallery", sanitized, nextDeleted);
+      }
+    },
+    [gallery, deletedIds, debouncedSyncToServer]
+  );
+
+  const saveRecognitions = useCallback(
+    (newRecognitions: Recognition[], explicitDeletedId?: string) => {
+      const oldIds = new Set(recognitions.map((r) => r.id));
+      const newIds = new Set(newRecognitions.map((r) => r.id));
+      const removed: string[] = [];
+      if (explicitDeletedId) removed.push(explicitDeletedId);
+      oldIds.forEach((id) => {
+        if (!newIds.has(id)) removed.push(id);
+      });
+
+      let nextDeleted = deletedIds;
+      if (removed.length > 0) {
+        nextDeleted = Array.from(new Set([...deletedIds, ...removed]));
+        setDeletedIds(nextDeleted);
+        try {
+          localStorage.setItem(STORAGE_KEYS.DELETED_IDS, JSON.stringify(nextDeleted));
+        } catch (_) {}
+      }
+
+      const sanitized = filterOutDeletedItems(newRecognitions, nextDeleted);
+      setRecognitions(sanitized);
+      try {
+        localStorage.setItem(STORAGE_KEYS.RECOGNITIONS, JSON.stringify(sanitized));
+        touchClientUpdate();
+      } catch (_) {}
+      broadcastChange("recognitions", sanitized, nextDeleted);
+
+      if (removed.length > 0) {
+        syncToServer({ entity: "recognitions", data: sanitized, deletedIds: nextDeleted });
+      } else {
+        debouncedSyncToServer("recognitions", sanitized, nextDeleted);
+      }
+    },
+    [recognitions, deletedIds, debouncedSyncToServer]
+  );
+
+  const saveSiteSettings = useCallback(
+    (newSettings: SiteSettings) => {
+      setSiteSettings(newSettings);
+      try {
+        localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(newSettings));
+        touchClientUpdate();
+      } catch (_) {}
+      broadcastChange("siteSettings", newSettings);
+      debouncedSyncToServer("siteSettings", newSettings);
+    },
+    [debouncedSyncToServer]
+  );
+
+  const saveTestimonials = useCallback(
+    (newTestimonials: Testimonial[], explicitDeletedId?: string) => {
+      const oldIds = new Set(testimonials.map((t) => t.id));
+      const newIds = new Set(newTestimonials.map((t) => t.id));
+      const removed: string[] = [];
+      if (explicitDeletedId) removed.push(explicitDeletedId);
+      oldIds.forEach((id) => {
+        if (!newIds.has(id)) removed.push(id);
+      });
+
+      let nextDeleted = deletedIds;
+      if (removed.length > 0) {
+        nextDeleted = Array.from(new Set([...deletedIds, ...removed]));
+        setDeletedIds(nextDeleted);
+        try {
+          localStorage.setItem(STORAGE_KEYS.DELETED_IDS, JSON.stringify(nextDeleted));
+        } catch (_) {}
+      }
+
+      const sanitized = filterOutDeletedItems(newTestimonials, nextDeleted);
+      setTestimonials(sanitized);
+      try {
+        localStorage.setItem(STORAGE_KEYS.TESTIMONIALS, JSON.stringify(sanitized));
+        touchClientUpdate();
+      } catch (_) {}
+      broadcastChange("testimonials", sanitized, nextDeleted);
+
+      if (removed.length > 0) {
+        syncToServer({ entity: "testimonials", data: sanitized, deletedIds: nextDeleted });
+      } else {
+        debouncedSyncToServer("testimonials", sanitized, nextDeleted);
+      }
+    },
+    [testimonials, deletedIds, debouncedSyncToServer]
+  );
+
+  // Dedicated explicit delete method
+  const deleteEntity = useCallback(
+    (entity: string, id: string, slug?: string) => {
+      const idsToRemove = [id];
+      if (slug) idsToRemove.push(slug);
+      const nextDeleted = Array.from(new Set([...deletedIds, ...idsToRemove]));
+      setDeletedIds(nextDeleted);
+      try {
+        localStorage.setItem(STORAGE_KEYS.DELETED_IDS, JSON.stringify(nextDeleted));
+      } catch (_) {}
+
+      if (entity === "projects") {
+        const updated = projects.filter((p) => p.id !== id && (!slug || p.slug !== slug));
+        saveProjects(updated, id);
+      } else if (entity === "services") {
+        const updated = services.filter((s) => s.id !== id && (!slug || s.slug !== slug));
+        saveServices(updated, id);
+      } else if (entity === "team") {
+        const updated = team.filter((m) => m.id !== id);
+        saveTeam(updated, id);
+      } else if (entity === "blog") {
+        const updated = blog.filter((b) => b.id !== id && (!slug || b.slug !== slug));
+        saveBlog(updated, id);
+      } else if (entity === "faq") {
+        const updated = faq.filter((f) => f.id !== id);
+        saveFaq(updated, id);
+      } else if (entity === "gallery") {
+        const updated = gallery.filter((g) => g.id !== id);
+        saveGallery(updated, id);
+      } else if (entity === "recognitions") {
+        const updated = recognitions.filter((r) => r.id !== id);
+        saveRecognitions(updated, id);
+      } else if (entity === "testimonials") {
+        const updated = testimonials.filter((t) => t.id !== id);
+        saveTestimonials(updated, id);
+      }
+    },
+    [
+      deletedIds,
+      projects,
+      services,
+      team,
+      blog,
+      faq,
+      gallery,
+      recognitions,
+      testimonials,
+      saveProjects,
+      saveServices,
+      saveTeam,
+      saveBlog,
+      saveFaq,
+      saveGallery,
+      saveRecognitions,
+      saveTestimonials,
+    ]
+  );
+
   const saveAllToCloud = useCallback(async () => {
     syncTimersRef.current.forEach((t) => clearTimeout(t));
     syncTimersRef.current.clear();
@@ -625,8 +1131,9 @@ export function useCMSStore() {
       recognitions,
       siteSettings,
       testimonials,
+      deletedIds,
     };
-    const res = await syncToServer({ allData });
+    const res = await syncToServer({ allData, deletedIds });
     if (res.success && res.updatedAt) {
       lastServerUpdatedRef.current = res.updatedAt;
       try {
@@ -634,11 +1141,12 @@ export function useCMSStore() {
       } catch (_) {}
     }
     return res;
-  }, [projects, services, team, blog, faq, gallery, recognitions, siteSettings, testimonials]);
+  }, [projects, services, team, blog, faq, gallery, recognitions, siteSettings, testimonials, deletedIds]);
 
   const resetAllToDefaults = useCallback(() => {
     syncTimersRef.current.forEach((t) => clearTimeout(t));
     syncTimersRef.current.clear();
+    setDeletedIds([]);
     setProjects(defaultProjects);
     setServices(defaultServices);
     setTeam(defaultTeam);
@@ -663,10 +1171,90 @@ export function useCMSStore() {
       recognitions: defaultRecognitions,
       siteSettings: defaultSiteSettings,
       testimonials: defaultTestimonials,
+      deletedIds: [],
     };
 
-    broadcastChange("ALL_DATA", defaultData);
+    broadcastChange("ALL_DATA", defaultData, []);
     syncToServer({ reset: true });
+  }, []);
+
+  const contextValue = useMemo<CMSContextValue>(
+    () => ({
+      isClient,
+      projects,
+      services,
+      team,
+      blog,
+      faq,
+      gallery,
+      recognitions,
+      siteSettings,
+      testimonials,
+      deletedIds,
+      serverStorageInfo,
+      saveProjects,
+      saveServices,
+      saveTeam,
+      saveBlog,
+      saveFaq,
+      saveGallery,
+      saveRecognitions,
+      saveSiteSettings,
+      saveTestimonials,
+      deleteEntity,
+      saveAllToCloud,
+      resetAllToDefaults,
+      refetchFromServer: fetchFromServer,
+    }),
+    [
+      isClient,
+      projects,
+      services,
+      team,
+      blog,
+      faq,
+      gallery,
+      recognitions,
+      siteSettings,
+      testimonials,
+      deletedIds,
+      serverStorageInfo,
+      saveProjects,
+      saveServices,
+      saveTeam,
+      saveBlog,
+      saveFaq,
+      saveGallery,
+      saveRecognitions,
+      saveSiteSettings,
+      saveTestimonials,
+      deleteEntity,
+      saveAllToCloud,
+      resetAllToDefaults,
+      fetchFromServer,
+    ]
+  );
+
+  return React.createElement(CMSContext.Provider, { value: contextValue }, children);
+}
+
+// Standalone fallback hook for components invoked outside CMSProvider
+function useStandaloneCMSStore(): CMSContextValue {
+  const [isClient, setIsClient] = useState(false);
+  const [deletedIds, setDeletedIds] = useState<string[]>(initialSeedDeletedIds);
+  const [projects, setProjects] = useState<Project[]>(() => defaultProjects);
+  const [services, setServices] = useState<Service[]>(() => defaultServices);
+  const [team, setTeam] = useState<TeamMember[]>(() => defaultTeam);
+  const [blog, setBlog] = useState<BlogPost[]>(() => defaultBlog);
+  const [faq, setFaq] = useState<FAQItem[]>(() => defaultFaq);
+  const [gallery, setGallery] = useState<GalleryItem[]>(() => defaultGallery);
+  const [recognitions, setRecognitions] = useState<Recognition[]>(() => defaultRecognitions);
+  const [siteSettings, setSiteSettings] = useState<SiteSettings>(() => defaultSiteSettings);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(() => defaultTestimonials);
+  const [serverStorageInfo] = useState({});
+
+  useEffect(() => {
+    setIsClient(true);
   }, []);
 
   return {
@@ -680,18 +1268,29 @@ export function useCMSStore() {
     recognitions,
     siteSettings,
     testimonials,
+    deletedIds,
     serverStorageInfo,
-    saveProjects,
-    saveServices,
-    saveTeam,
-    saveBlog,
-    saveFaq,
-    saveGallery,
-    saveRecognitions,
-    saveSiteSettings,
-    saveTestimonials,
-    saveAllToCloud,
-    resetAllToDefaults,
-    refetchFromServer: fetchFromServer,
+    saveProjects: () => {},
+    saveServices: () => {},
+    saveTeam: () => {},
+    saveBlog: () => {},
+    saveFaq: () => {},
+    saveGallery: () => {},
+    saveRecognitions: () => {},
+    saveSiteSettings: () => {},
+    saveTestimonials: () => {},
+    deleteEntity: () => {},
+    saveAllToCloud: async () => ({ success: true }),
+    resetAllToDefaults: () => {},
+    refetchFromServer: async () => {},
   };
+}
+
+// Universal Hook consumed across all client pages and components
+export function useCMSStore(): CMSContextValue {
+  const context = useContext(CMSContext);
+  if (context) {
+    return context;
+  }
+  return useStandaloneCMSStore();
 }

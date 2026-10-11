@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "@/styles/globals.css";
 import SiteShell from "@/components/layout/SiteShell";
+import { CMSProvider } from "@/lib/cmsStore";
+import { getAuthoritativeCMSData } from "@/lib/cmsServer";
 
 const inter = localFont({
   src: [
@@ -91,11 +93,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const initialCMSData = await getAuthoritativeCMSData();
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ArchitecturalFirm",
@@ -131,7 +135,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} antialiased min-h-screen bg-white text-neutral-900 selection:bg-black selection:text-white`}>
-        <SiteShell>{children}</SiteShell>
+        <CMSProvider initialData={initialCMSData}>
+          <SiteShell>{children}</SiteShell>
+        </CMSProvider>
       </body>
     </html>
   );
