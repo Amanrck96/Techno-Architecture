@@ -150,7 +150,8 @@
         "projectArchitect": "Ar.Varna, Ar.Dheemanth",
         "team": "Ar. Rajesh Shivaram, Vikramaditya Shenoy, Naveen Prasad",
         "photography": "Shamanth Patil Photography",
-        "projectLead": "Ar.Varna, Ar.Dheemanth"
+        "projectLead": "Ar.Varna, Ar.Dheemanth",
+        "landscapeArchitect": "Gree"
       },
       "featured": true,
       "relatedSlugs": [
@@ -4874,6 +4875,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-15T05:19:30.887Z",
+  "updatedAt": "2026-10-15T05:19:40.847Z",
   "deletedIds": []
 }
