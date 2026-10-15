@@ -1,6 +1,191 @@
 {
   "projects": [
     {
+      "id": "proj-8",
+      "slug": "kripa",
+      "title": "KRIPA",
+      "category": "Residential",
+      "status": "completed",
+      "location": "Bengaluru, India",
+      "year": 2024,
+      "client": "Private Residence",
+      "area": "5,800 sq.ft",
+      "description": "A biophilic residential sanctuary harmonizing geometric concrete breeze-block jaali screens, textured charcoal stone cladding, cascading hanging gardens, and a sculpted steel-and-teak folded plate staircase.",
+      "processNarrative": "Conceived as a breathing urban home, Kripa filters southern sunlight and street activity through an intricate porous concrete breeze block screen. Deep recessed balconies drape with lush curtain creepers, creating an introspective, tropical microclimate centered around a minimalist black folded steel staircase flight.",
+      "mainImage": "/projects/kripa/kripa-dining-room-indoor-outdoor-veranda.jpg",
+      "gallery": [
+        {
+          "url": "/projects/kripa/kripa-frontal-facade-cascading-greenery.jpg",
+          "caption": "Frontal street elevation featuring porous concrete breeze block jaali, entrance portal, and cascading balcony greenery",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-dusk-illuminated-jaali-facade.jpg",
+          "caption": "Twilight facade perspective featuring warm interior illumination glowing through the breeze-block jaali screen and floor-to-ceiling timber windows",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-stone-cladding-terrace-facade.jpg",
+          "caption": "Upper facade geometry clad in textured charcoal ashlar stone with recessed balcony planter beds and hanging curtain creepers",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-breeze-block-jaali-street-entry.jpg",
+          "caption": "Street-level perspective showing the geometric concrete jaali wall, perimeter garden beds, and mature shade trees",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-double-height-living-room-jaali-shadows.jpg",
+          "caption": "Dramatic double-height living room with sculptural glass-balustrade staircase, breeze-block jaali light filtration, and dandelion crystal chandelier",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-timber-aperture-staircase-study-foyer.jpg",
+          "caption": "Internal architectural aperture framed in warm teak wood looking toward the folded steel stair flight, reading nook, and integrated study desk",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/kripa/kripa-double-height-hallway-stair-descent.jpg",
+          "caption": "Double-height circulation volume featuring glass balustrade mezzanine, lush indoor foliage, and central black steel folded stair flight",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-folded-steel-staircase-profile.jpg",
+          "caption": "Architectural folded plate black steel staircase with warm teak treads, vertical balusters, and sculpted wooden handrail",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-stairwell-reading-lounge-plants.jpg",
+          "caption": "Light-filled stairwell landing lounge with reading armchair, woven rug, indoor planters, and folded steel stair flight",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-olive-green-master-bedroom-suite.jpg",
+          "caption": "Master bedroom suite with olive green upholstered headboard, sage bedding, textured bedside nightstand, and lush indoor plant",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-dusk-street-corner-elevation-suv.jpg",
+          "caption": "Dusk street corner perspective showcasing the multi-tier architectural volumes, angled roof canopy, illuminated jaali facade, and ground-level carport",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-carport-entrance-cascading-balcony-dusk.jpg",
+          "caption": "Warm illuminated carport entrance with geometric breeze-block jaali wall beneath the cantilevered balcony draped with cascading greenery",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-frontal-dusk-elevation-driveway.jpg",
+          "caption": "Full frontal dusk elevation highlighting the dramatic interplay between textured charcoal ashlar stone, illuminated breeze-block jaali screen, and paved driveway",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-corner-carport-glazed-volume-twilight.jpg",
+          "caption": "Twilight corner perspective revealing the wrap-around floor-to-ceiling timber glazing, deep cantilevered soffit, and breeze-block jaali screen",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-driveway-carport-balcony-garden.jpg",
+          "caption": "Ground-level carport and paved driveway framed by lush cascading balcony planter beds, warm interior lighting, and concrete jaali screens",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-granite-entry-steps-teak-door-creepers.jpg",
+          "caption": "Polished granite entrance stairway with sculpted teak handrail, solid wood front door, and cascading balcony curtain creepers",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-slatted-steel-gate-courtyard-breeze-blocks.jpg",
+          "caption": "Vertical slatted steel security gate opening toward the courtyard steps, framed by sunlit triangular concrete breeze-block jaali screens",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-dining-living-salon-garden-windows.jpg",
+          "caption": "Light-drenched dining and living salon with circular walnut table, textured area rug, and floor-to-ceiling timber windows framing garden greenery",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-cantilevered-terrace-balcony-granite-bench.jpg",
+          "caption": "Deep cantilevered terrace with polished black granite bench, lush planter boxes, and curtain creepers framing views of neighborhood tree canopies",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-dining-room-indoor-outdoor-veranda.jpg",
+          "caption": "Seamless indoor-outdoor dining space with custom circular table, bespoke timber joinery, and expansive sliding glass doors opening to the veranda planter garden",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/kripa/kripa-patinated-copper-coffee-table-lounge.jpg",
+          "caption": "Bespoke patinated copper coffee tables with Geoffrey Bawa monograph, textured area rug, and woven cane lounge seating",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-double-height-atrium-staircase-dining-vista.jpg",
+          "caption": "Double-height central atrium connecting the formal living room, sculptural glass-and-teak staircase flight, and ground-floor dining suite",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-modular-kitchen-circular-dining-table.jpg",
+          "caption": "Minimalist open-concept modular kitchen and dining zone featuring circular walnut table, leather chairs, and seamless teak joinery",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/kripa/kripa-mezzanine-lounge-blue-armchairs-jaali.jpg",
+          "caption": "Upper mezzanine seating lounge with blue velvet armchairs, geometric circular rug, and floor-to-ceiling concrete breeze-block jaali screen",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-double-height-corner-glass-living-salon.jpg",
+          "caption": "Double-height living salon with wrap-around corner timber glazing framing centenary tree canopies, cane daybeds, and dandelion chandelier",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-upper-jaali-screen-cantilever-canopy.jpg",
+          "caption": "Upper facade detail showcasing the concrete breeze-block jaali lattice, deep cantilevered white canopy soffit, and lush framing tree canopy",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kripa/kripa-timber-louvers-foliage-staircase-vista.jpg",
+          "caption": "Lush tropical planter greenery and timber-louvered shutters with staircase flight visible through large glazed window panels",
+          "aspect": "portrait"
+        }
+      ],
+      "servicesInvolved": [
+        "Urban Residential Architecture",
+        "Biophilic Facade Engineering",
+        "Bespoke Interior Design"
+      ],
+      "teamMembers": [
+        "Vikramaditya Shenoy",
+        "Divya Raghavan",
+        "Naveen Prasad"
+      ],
+      "credits": {
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Divya Raghavan",
+        "team": "Vikramaditya Shenoy, Divya Raghavan, Naveen Prasad",
+        "photography": "Shamanth Patil Photography"
+      },
+      "featured": true,
+      "relatedSlugs": [
+        "kanasu",
+        "house-in-the-air",
+        "brindavan"
+      ],
+      "videoTour": {
+        "title": "1,500 sq.ft. Compact Home in Bangalore (House Tour)",
+        "url": "https://www.youtube.com/results?search_query=Kripa+1500+sq+ft+Techno+Architecture+House+Tour",
+        "platform": "YouTube",
+        "actionText": "Watch House Tour"
+      },
+      "testimonial": {
+        "quote": "Kripa's climate-responsive screens, timber terraces, and central water court provide our family with unmatched comfort and thermal serenity throughout Bengaluru's changing seasons.",
+        "clientName": "Vikram & Radhika Chandran",
+        "designation": "Homeowners",
+        "company": "Kripa Residence"
+      }
+    },
+    {
       "id": "proj-2",
       "slug": "belaku",
       "title": "BELAKU",
@@ -1148,191 +1333,6 @@
         "clientName": "Raghavendra & Priya Joshi",
         "designation": "Homeowners",
         "company": "Kanasu Residence"
-      }
-    },
-    {
-      "id": "proj-8",
-      "slug": "kripa",
-      "title": "KRIPA",
-      "category": "Residential",
-      "status": "completed",
-      "location": "Bengaluru, India",
-      "year": 2024,
-      "client": "Private Residence",
-      "area": "5,800 sq.ft",
-      "description": "A biophilic residential sanctuary harmonizing geometric concrete breeze-block jaali screens, textured charcoal stone cladding, cascading hanging gardens, and a sculpted steel-and-teak folded plate staircase.",
-      "processNarrative": "Conceived as a breathing urban home, Kripa filters southern sunlight and street activity through an intricate porous concrete breeze block screen. Deep recessed balconies drape with lush curtain creepers, creating an introspective, tropical microclimate centered around a minimalist black folded steel staircase flight.",
-      "mainImage": "/projects/kripa/kripa-dining-room-indoor-outdoor-veranda.jpg",
-      "gallery": [
-        {
-          "url": "/projects/kripa/kripa-frontal-facade-cascading-greenery.jpg",
-          "caption": "Frontal street elevation featuring porous concrete breeze block jaali, entrance portal, and cascading balcony greenery",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-dusk-illuminated-jaali-facade.jpg",
-          "caption": "Twilight facade perspective featuring warm interior illumination glowing through the breeze-block jaali screen and floor-to-ceiling timber windows",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-stone-cladding-terrace-facade.jpg",
-          "caption": "Upper facade geometry clad in textured charcoal ashlar stone with recessed balcony planter beds and hanging curtain creepers",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-breeze-block-jaali-street-entry.jpg",
-          "caption": "Street-level perspective showing the geometric concrete jaali wall, perimeter garden beds, and mature shade trees",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-double-height-living-room-jaali-shadows.jpg",
-          "caption": "Dramatic double-height living room with sculptural glass-balustrade staircase, breeze-block jaali light filtration, and dandelion crystal chandelier",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-timber-aperture-staircase-study-foyer.jpg",
-          "caption": "Internal architectural aperture framed in warm teak wood looking toward the folded steel stair flight, reading nook, and integrated study desk",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/kripa/kripa-double-height-hallway-stair-descent.jpg",
-          "caption": "Double-height circulation volume featuring glass balustrade mezzanine, lush indoor foliage, and central black steel folded stair flight",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-folded-steel-staircase-profile.jpg",
-          "caption": "Architectural folded plate black steel staircase with warm teak treads, vertical balusters, and sculpted wooden handrail",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-stairwell-reading-lounge-plants.jpg",
-          "caption": "Light-filled stairwell landing lounge with reading armchair, woven rug, indoor planters, and folded steel stair flight",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-olive-green-master-bedroom-suite.jpg",
-          "caption": "Master bedroom suite with olive green upholstered headboard, sage bedding, textured bedside nightstand, and lush indoor plant",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-dusk-street-corner-elevation-suv.jpg",
-          "caption": "Dusk street corner perspective showcasing the multi-tier architectural volumes, angled roof canopy, illuminated jaali facade, and ground-level carport",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-carport-entrance-cascading-balcony-dusk.jpg",
-          "caption": "Warm illuminated carport entrance with geometric breeze-block jaali wall beneath the cantilevered balcony draped with cascading greenery",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-frontal-dusk-elevation-driveway.jpg",
-          "caption": "Full frontal dusk elevation highlighting the dramatic interplay between textured charcoal ashlar stone, illuminated breeze-block jaali screen, and paved driveway",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-corner-carport-glazed-volume-twilight.jpg",
-          "caption": "Twilight corner perspective revealing the wrap-around floor-to-ceiling timber glazing, deep cantilevered soffit, and breeze-block jaali screen",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-driveway-carport-balcony-garden.jpg",
-          "caption": "Ground-level carport and paved driveway framed by lush cascading balcony planter beds, warm interior lighting, and concrete jaali screens",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-granite-entry-steps-teak-door-creepers.jpg",
-          "caption": "Polished granite entrance stairway with sculpted teak handrail, solid wood front door, and cascading balcony curtain creepers",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-slatted-steel-gate-courtyard-breeze-blocks.jpg",
-          "caption": "Vertical slatted steel security gate opening toward the courtyard steps, framed by sunlit triangular concrete breeze-block jaali screens",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-dining-living-salon-garden-windows.jpg",
-          "caption": "Light-drenched dining and living salon with circular walnut table, textured area rug, and floor-to-ceiling timber windows framing garden greenery",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-cantilevered-terrace-balcony-granite-bench.jpg",
-          "caption": "Deep cantilevered terrace with polished black granite bench, lush planter boxes, and curtain creepers framing views of neighborhood tree canopies",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-dining-room-indoor-outdoor-veranda.jpg",
-          "caption": "Seamless indoor-outdoor dining space with custom circular table, bespoke timber joinery, and expansive sliding glass doors opening to the veranda planter garden",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/kripa/kripa-patinated-copper-coffee-table-lounge.jpg",
-          "caption": "Bespoke patinated copper coffee tables with Geoffrey Bawa monograph, textured area rug, and woven cane lounge seating",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-double-height-atrium-staircase-dining-vista.jpg",
-          "caption": "Double-height central atrium connecting the formal living room, sculptural glass-and-teak staircase flight, and ground-floor dining suite",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-modular-kitchen-circular-dining-table.jpg",
-          "caption": "Minimalist open-concept modular kitchen and dining zone featuring circular walnut table, leather chairs, and seamless teak joinery",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/kripa/kripa-mezzanine-lounge-blue-armchairs-jaali.jpg",
-          "caption": "Upper mezzanine seating lounge with blue velvet armchairs, geometric circular rug, and floor-to-ceiling concrete breeze-block jaali screen",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-double-height-corner-glass-living-salon.jpg",
-          "caption": "Double-height living salon with wrap-around corner timber glazing framing centenary tree canopies, cane daybeds, and dandelion chandelier",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-upper-jaali-screen-cantilever-canopy.jpg",
-          "caption": "Upper facade detail showcasing the concrete breeze-block jaali lattice, deep cantilevered white canopy soffit, and lush framing tree canopy",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kripa/kripa-timber-louvers-foliage-staircase-vista.jpg",
-          "caption": "Lush tropical planter greenery and timber-louvered shutters with staircase flight visible through large glazed window panels",
-          "aspect": "portrait"
-        }
-      ],
-      "servicesInvolved": [
-        "Urban Residential Architecture",
-        "Biophilic Facade Engineering",
-        "Bespoke Interior Design"
-      ],
-      "teamMembers": [
-        "Vikramaditya Shenoy",
-        "Divya Raghavan",
-        "Naveen Prasad"
-      ],
-      "credits": {
-        "principalArchitect": "Ar. Rajesh Shivaram",
-        "projectArchitect": "Divya Raghavan",
-        "team": "Vikramaditya Shenoy, Divya Raghavan, Naveen Prasad",
-        "photography": "Shamanth Patil Photography"
-      },
-      "featured": true,
-      "relatedSlugs": [
-        "kanasu",
-        "house-in-the-air",
-        "brindavan"
-      ],
-      "videoTour": {
-        "title": "1,500 sq.ft. Compact Home in Bangalore (House Tour)",
-        "url": "https://www.youtube.com/results?search_query=Kripa+1500+sq+ft+Techno+Architecture+House+Tour",
-        "platform": "YouTube",
-        "actionText": "Watch House Tour"
-      },
-      "testimonial": {
-        "quote": "Kripa's climate-responsive screens, timber terraces, and central water court provide our family with unmatched comfort and thermal serenity throughout Bengaluru's changing seasons.",
-        "clientName": "Vikram & Radhika Chandran",
-        "designation": "Homeowners",
-        "company": "Kripa Residence"
       }
     },
     {
@@ -4873,6 +4873,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-15T04:40:29.946Z",
+  "updatedAt": "2026-10-15T04:48:33.376Z",
   "deletedIds": []
 }
