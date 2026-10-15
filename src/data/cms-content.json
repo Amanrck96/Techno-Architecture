@@ -334,9 +334,10 @@
       ],
       "credits": {
         "principalArchitect": "Ar. Rajesh Shivaram",
-        "projectArchitect": "Divya Raghavan",
+        "projectArchitect": "Ar.Varna,",
         "team": " Ar.Akarsh K, Ar.Dheemanth L",
-        "photography": "Shamanth Patil Photography"
+        "photography": "Shamanth Patil Photography",
+        "projectLead": "Ar.Varna,"
       },
       "featured": true,
       "relatedSlugs": [
@@ -4879,6 +4880,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-15T10:04:57.062Z",
+  "updatedAt": "2026-10-15T10:04:59.999Z",
   "deletedIds": []
 }
