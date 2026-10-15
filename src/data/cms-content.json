@@ -626,6 +626,206 @@
       }
     },
     {
+      "id": "proj-12",
+      "slug": "mantle-buildofy",
+      "title": "MANTLE BUILDOFY",
+      "category": "Residential",
+      "status": "completed",
+      "location": "Banashankari, Bengaluru",
+      "year": 2021,
+      "client": "Private Client",
+      "area": "8,300 sq.ft",
+      "description": "Featured on Buildofy, The Mantle is an introspective residential retreat articulated around a central light court, raw textured concrete, teakwood louvers, floating steel staircases, and luminous double-height volumes.",
+      "processNarrative": "Conceived as a protective mantle shielding its inhabitants from the bustling street, the home organizes living spaces around a series of serene lightwells, courtyards, and a contemplative reflecting water body. Teak privacy screens and slatted pergolas modulate tropical light, casting dramatic linear shadows across white terrazzo and warm timber surfaces.",
+      "mainImage": "/projects/mantle-buildofy/mantle-buildofy-double-height-living-atrium.jpg",
+      "gallery": [
+        {
+          "url": "/projects/mantle-buildofy/mantle-buildofy-double-height-living-atrium.jpg",
+          "caption": "Double-height central living court featuring suspended cylindrical glass tube chandeliers and petrol blue leather seating",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/mantle-buildofy/mantle-buildofy-sunken-living-courtyard.jpg",
+          "caption": "Sunken formal living lounge with bespoke floral carpet looking out towards internal court garden and slatted timber screens",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/mantle-buildofy/mantle-buildofy-floating-steel-timber-staircase.jpg",
+          "caption": "Sculptural floating steel and teak timber staircase with slender vertical tension rods",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/mantle-buildofy/mantle-buildofy-skylight-pergola-stairwell.jpg",
+          "caption": "Upper stairwell illuminated by linear slatted pergola skylight casting rhythmic geometric shadow patterns",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/mantle-buildofy/mantle-buildofy-master-bedroom-terrace.jpg",
+          "caption": "Master bedroom suite with dusty rose feature wall, low platform bed, and floor-to-ceiling glass terrace doors",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/mantle-buildofy/25-zenith-residence-street-facade-yellow-portal.jpg",
+          "caption": "Signature street elevation highlighting mustard-yellow entry portal and timber louvers",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/mantle-buildofy/01-zenith-residence-twilight-cantilever-facade.jpg",
+          "caption": "Twilight exterior view of cantilevered cubes and timber louvers",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/mantle-buildofy/02-zenith-residence-yellow-entrance-portico.jpg",
+          "caption": "Framed entrance portico with vibrant yellow portal and teak door",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/mantle-buildofy/03-zenith-residence-street-elevation-evening.jpg",
+          "caption": "Illuminated evening street elevation showing fair-faced concrete and privacy screens",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/mantle-buildofy/04-zenith-residence-concrete-framing-canopy.jpg",
+          "caption": "Geometric concrete frame canopy surrounded by tropical foliage",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/mantle-buildofy/05-zenith-residence-timber-louver-balcony-detail.jpg",
+          "caption": "Balcony detail with vertical teak slats, planter boxes, and concrete soffit",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/mantle-buildofy/06-zenith-residence-buddha-water-court-portal.jpg",
+          "caption": "Arrival entrance alcove with yellow accent portal and serene sculpture",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/mantle-buildofy/07-zenith-residence-double-height-atrium-chandeliers.jpg",
+          "caption": "Internal courtyard with lush tropical planters and vertical timber screens",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/mantle-buildofy/08-zenith-residence-courtyard-indoor-planters.jpg",
+          "caption": "Internal courtyard with lush tropical planters and vertical timber screens",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/mantle-buildofy/11-zenith-residence-atrium-living-garden-view.jpg",
+          "caption": "Living area looking out towards internal court garden and floor-to-ceiling glass",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/mantle-buildofy/12-zenith-residence-chandelier-lightwell-upward.jpg",
+          "caption": "Vertical perspective looking up through the suspended tube chandeliers",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/mantle-buildofy/13-zenith-residence-formal-living-marble-tables.jpg",
+          "caption": "Formal seating area framed by marble tables and courtyard backdrop",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/mantle-buildofy/15-zenith-residence-upper-corridor-bridge-overlook.jpg",
+          "caption": "Upper corridor glazed bridge overlooking central atrium light well",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/mantle-buildofy/17-zenith-residence-ensuite-jacuzzi-timber-wall.jpg",
+          "caption": "Ensuite bath sanctuary with sunken tub, black marble, and timber screen",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/mantle-buildofy/18-zenith-residence-dining-pavilion-marble-table.jpg",
+          "caption": "Open dining pavilion with Italian marble dining table and pendant light",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/mantle-buildofy/19-zenith-residence-contemporary-kitchen-island.jpg",
+          "caption": "Modern open kitchen with fluted charcoal cabinetry and quartz island counter",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/mantle-buildofy/20-zenith-residence-foyer-entrance-chevron-door.jpg",
+          "caption": "Foyer arrival threshold with chevron-carved teak door and water channel steps",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/mantle-buildofy/21-zenith-residence-master-suite-chinoiserie-bed.jpg",
+          "caption": "Master suite with bespoke botanical accent wall and low platform bed",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/mantle-buildofy/22-zenith-residence-master-suite-reading-lounge.jpg",
+          "caption": "Master bedroom reading lounge with plush terracotta armchair and full-height glazing",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/mantle-buildofy/24-zenith-residence-atrium-aerial-top-down-view.jpg",
+          "caption": "Aerial perspective looking down into the landscaped courtyard through glass pendants",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/mantle-buildofy/26-zenith-residence-corner-facade-cantilever-box.jpg",
+          "caption": "Corner facade detail showing dramatic upper cantilevered box and entrance volume",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/mantle-buildofy/27-zenith-residence-entry-gate-lush-landscape.jpg",
+          "caption": "Entry courtyard framed by lush perimeter greenery and fair-faced concrete walls",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/mantle-buildofy/28-zenith-residence-rooftop-terrace-deck-dusk.jpg",
+          "caption": "Rooftop deck at dusk with ambient lit planter seating and skyline panorama",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/mantle-buildofy/29-zenith-residence-rooftop-bar-pergola-canopy.jpg",
+          "caption": "Terrace bar pavilion with curved micro-concrete plinth and geometric pergola",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/mantle-buildofy/30-zenith-residence-terrace-garden-lounge-nook.jpg",
+          "caption": "Rooftop garden lounge corner with designer outdoor seating and tropical plants",
+          "aspect": "portrait"
+        }
+      ],
+      "servicesInvolved": [
+        "Architecture",
+        "Interior Architecture",
+        "Landscape Design"
+      ],
+      "teamMembers": [
+        "Ar. Rajesh Shivaram",
+        "Vikramaditya Shenoy",
+        "Naveen Prasad"
+      ],
+      "credits": {
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Techno Architecture",
+        "team": "Ar. Rajesh Shivaram, Vikramaditya Shenoy, Naveen Prasad",
+        "photography": "Shamanth Patil Photography"
+      },
+      "featured": false,
+      "relatedSlugs": [
+        "aikya",
+        "between-two-trees",
+        "far-site-buildofy"
+      ],
+      "videoTour": {
+        "title": "The Mantle | Main Video Review 2",
+        "url": "https://www.youtube.com/results?search_query=The+Mantle+Techno+Architecture+Review",
+        "platform": "Buildofy",
+        "actionText": "Watch Video Review"
+      },
+      "testimonial": {
+        "quote": "The sculptural facade and tactile materiality established by Techno Architecture made this commission a flagship architectural landmark in Bengaluru. Featured on Buildofy, it is an absolute masterpiece.",
+        "clientName": "Pradeep & Shweta Nair",
+        "designation": "Patrons",
+        "company": "The Mantle Residence"
+      }
+    },
+    {
       "id": "proj-3",
       "slug": "between-two-trees",
       "title": "BETWEEN TWO TREES",
@@ -1333,206 +1533,6 @@
         "clientName": "Raghavendra & Priya Joshi",
         "designation": "Homeowners",
         "company": "Kanasu Residence"
-      }
-    },
-    {
-      "id": "proj-12",
-      "slug": "mantle-buildofy",
-      "title": "MANTLE BUILDOFY",
-      "category": "Residential",
-      "status": "completed",
-      "location": "Banashankari, Bengaluru",
-      "year": 2021,
-      "client": "Private Client",
-      "area": "8,300 sq.ft",
-      "description": "Featured on Buildofy, The Mantle is an introspective residential retreat articulated around a central light court, raw textured concrete, teakwood louvers, floating steel staircases, and luminous double-height volumes.",
-      "processNarrative": "Conceived as a protective mantle shielding its inhabitants from the bustling street, the home organizes living spaces around a series of serene lightwells, courtyards, and a contemplative reflecting water body. Teak privacy screens and slatted pergolas modulate tropical light, casting dramatic linear shadows across white terrazzo and warm timber surfaces.",
-      "mainImage": "/projects/mantle-buildofy/mantle-buildofy-double-height-living-atrium.jpg",
-      "gallery": [
-        {
-          "url": "/projects/mantle-buildofy/mantle-buildofy-double-height-living-atrium.jpg",
-          "caption": "Double-height central living court featuring suspended cylindrical glass tube chandeliers and petrol blue leather seating",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/mantle-buildofy/mantle-buildofy-sunken-living-courtyard.jpg",
-          "caption": "Sunken formal living lounge with bespoke floral carpet looking out towards internal court garden and slatted timber screens",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/mantle-buildofy/mantle-buildofy-floating-steel-timber-staircase.jpg",
-          "caption": "Sculptural floating steel and teak timber staircase with slender vertical tension rods",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/mantle-buildofy/mantle-buildofy-skylight-pergola-stairwell.jpg",
-          "caption": "Upper stairwell illuminated by linear slatted pergola skylight casting rhythmic geometric shadow patterns",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/mantle-buildofy/mantle-buildofy-master-bedroom-terrace.jpg",
-          "caption": "Master bedroom suite with dusty rose feature wall, low platform bed, and floor-to-ceiling glass terrace doors",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/mantle-buildofy/25-zenith-residence-street-facade-yellow-portal.jpg",
-          "caption": "Signature street elevation highlighting mustard-yellow entry portal and timber louvers",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/mantle-buildofy/01-zenith-residence-twilight-cantilever-facade.jpg",
-          "caption": "Twilight exterior view of cantilevered cubes and timber louvers",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/mantle-buildofy/02-zenith-residence-yellow-entrance-portico.jpg",
-          "caption": "Framed entrance portico with vibrant yellow portal and teak door",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/mantle-buildofy/03-zenith-residence-street-elevation-evening.jpg",
-          "caption": "Illuminated evening street elevation showing fair-faced concrete and privacy screens",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/mantle-buildofy/04-zenith-residence-concrete-framing-canopy.jpg",
-          "caption": "Geometric concrete frame canopy surrounded by tropical foliage",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/mantle-buildofy/05-zenith-residence-timber-louver-balcony-detail.jpg",
-          "caption": "Balcony detail with vertical teak slats, planter boxes, and concrete soffit",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/mantle-buildofy/06-zenith-residence-buddha-water-court-portal.jpg",
-          "caption": "Arrival entrance alcove with yellow accent portal and serene sculpture",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/mantle-buildofy/07-zenith-residence-double-height-atrium-chandeliers.jpg",
-          "caption": "Internal courtyard with lush tropical planters and vertical timber screens",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/mantle-buildofy/08-zenith-residence-courtyard-indoor-planters.jpg",
-          "caption": "Internal courtyard with lush tropical planters and vertical timber screens",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/mantle-buildofy/11-zenith-residence-atrium-living-garden-view.jpg",
-          "caption": "Living area looking out towards internal court garden and floor-to-ceiling glass",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/mantle-buildofy/12-zenith-residence-chandelier-lightwell-upward.jpg",
-          "caption": "Vertical perspective looking up through the suspended tube chandeliers",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/mantle-buildofy/13-zenith-residence-formal-living-marble-tables.jpg",
-          "caption": "Formal seating area framed by marble tables and courtyard backdrop",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/mantle-buildofy/15-zenith-residence-upper-corridor-bridge-overlook.jpg",
-          "caption": "Upper corridor glazed bridge overlooking central atrium light well",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/mantle-buildofy/17-zenith-residence-ensuite-jacuzzi-timber-wall.jpg",
-          "caption": "Ensuite bath sanctuary with sunken tub, black marble, and timber screen",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/mantle-buildofy/18-zenith-residence-dining-pavilion-marble-table.jpg",
-          "caption": "Open dining pavilion with Italian marble dining table and pendant light",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/mantle-buildofy/19-zenith-residence-contemporary-kitchen-island.jpg",
-          "caption": "Modern open kitchen with fluted charcoal cabinetry and quartz island counter",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/mantle-buildofy/20-zenith-residence-foyer-entrance-chevron-door.jpg",
-          "caption": "Foyer arrival threshold with chevron-carved teak door and water channel steps",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/mantle-buildofy/21-zenith-residence-master-suite-chinoiserie-bed.jpg",
-          "caption": "Master suite with bespoke botanical accent wall and low platform bed",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/mantle-buildofy/22-zenith-residence-master-suite-reading-lounge.jpg",
-          "caption": "Master bedroom reading lounge with plush terracotta armchair and full-height glazing",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/mantle-buildofy/24-zenith-residence-atrium-aerial-top-down-view.jpg",
-          "caption": "Aerial perspective looking down into the landscaped courtyard through glass pendants",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/mantle-buildofy/26-zenith-residence-corner-facade-cantilever-box.jpg",
-          "caption": "Corner facade detail showing dramatic upper cantilevered box and entrance volume",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/mantle-buildofy/27-zenith-residence-entry-gate-lush-landscape.jpg",
-          "caption": "Entry courtyard framed by lush perimeter greenery and fair-faced concrete walls",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/mantle-buildofy/28-zenith-residence-rooftop-terrace-deck-dusk.jpg",
-          "caption": "Rooftop deck at dusk with ambient lit planter seating and skyline panorama",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/mantle-buildofy/29-zenith-residence-rooftop-bar-pergola-canopy.jpg",
-          "caption": "Terrace bar pavilion with curved micro-concrete plinth and geometric pergola",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/mantle-buildofy/30-zenith-residence-terrace-garden-lounge-nook.jpg",
-          "caption": "Rooftop garden lounge corner with designer outdoor seating and tropical plants",
-          "aspect": "portrait"
-        }
-      ],
-      "servicesInvolved": [
-        "Architecture",
-        "Interior Architecture",
-        "Landscape Design"
-      ],
-      "teamMembers": [
-        "Ar. Rajesh Shivaram",
-        "Vikramaditya Shenoy",
-        "Naveen Prasad"
-      ],
-      "credits": {
-        "principalArchitect": "Ar. Rajesh Shivaram",
-        "projectArchitect": "Techno Architecture",
-        "team": "Ar. Rajesh Shivaram, Vikramaditya Shenoy, Naveen Prasad",
-        "photography": "Shamanth Patil Photography"
-      },
-      "featured": false,
-      "relatedSlugs": [
-        "aikya",
-        "between-two-trees",
-        "far-site-buildofy"
-      ],
-      "videoTour": {
-        "title": "The Mantle | Main Video Review 2",
-        "url": "https://www.youtube.com/results?search_query=The+Mantle+Techno+Architecture+Review",
-        "platform": "Buildofy",
-        "actionText": "Watch Video Review"
-      },
-      "testimonial": {
-        "quote": "The sculptural facade and tactile materiality established by Techno Architecture made this commission a flagship architectural landmark in Bengaluru. Featured on Buildofy, it is an absolute masterpiece.",
-        "clientName": "Pradeep & Shweta Nair",
-        "designation": "Patrons",
-        "company": "The Mantle Residence"
       }
     },
     {
@@ -4873,6 +4873,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-15T04:48:58.180Z",
+  "updatedAt": "2026-10-15T04:48:59.348Z",
   "deletedIds": []
 }
