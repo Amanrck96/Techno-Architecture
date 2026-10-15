@@ -1129,7 +1129,7 @@
       "testimonial": {
         "quote": "The play of shadows cast by the terracotta jali and the lush cantilevered terraces make this home feel like a personal sanctuary in the city. Techno Architecture's vision featured on Buildofy is truly exemplary.",
         "clientName": "Dr. Arvind Natarajan",
-        "designation": "H",
+        "designation": "Home",
         "company": "Natarajan Medical Group"
       }
     },
@@ -4875,6 +4875,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-15T06:23:18.913Z",
+  "updatedAt": "2026-10-15T06:23:20.349Z",
   "deletedIds": []
 }
