@@ -957,6 +957,181 @@
       }
     },
     {
+      "id": "proj-7",
+      "slug": "kanasu",
+      "title": "KANASU",
+      "category": "Residential",
+      "status": "completed",
+      "location": "Sadashivanagar, Bengaluru",
+      "year": 2024,
+      "client": "Private Residence",
+      "area": "8,900 sq.ft",
+      "description": "An ultra-luxury private sanctuary featuring cantilevered post-tensioned slabs, a soaring double-height dining volume, warm teak vertical screens, and a serene rooftop swimming pool pavilion overlooking Bengaluru's tree line.",
+      "processNarrative": "Centred on the seamless dialogue between indoor living spaces and verdant perimeter courtyards, Kanasu choreographs movement across marble-lined living halls, double-height volumes, and an elevated rooftop pool canopy crafted with warm slatted timber soffits and slender steel columns.",
+      "mainImage": "/projects/kanasu/kanasu-rooftop-pool-timber-canopy.jpg",
+      "gallery": [
+        {
+          "url": "/projects/kanasu/kanasu-rooftop-pool-timber-canopy.jpg",
+          "caption": "Cantilevered rooftop lap pool pavilion featuring warm timber ceiling soffit, stone terrace, and lush treetop canopy",
+          "aspect": "full"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-double-height-dining-sculptural-art.jpg",
+          "caption": "Soaring double-height dining volume with custom mustard leather chairs, sculptural cloud pendants, and copper herd wall relief",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-living-lounge-timber-screen.jpg",
+          "caption": "Ground level living lounge with Italian calacatta marble flooring, bespoke leather seating, and slatted vertical timber partition",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-column-veranda-timber-accent-wall.jpg",
+          "caption": "Transition gallery framed by a cylindrical exposed concrete column, vertical timber paneling, and sunken garden greenery",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-poolside-terrace-wicker-lounge.jpg",
+          "caption": "Rooftop poolside lounge with sage green woven wicker armchairs, tropical planter bed, and azure swimming pool waters",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-master-bath-calacatta-marble-spa.jpg",
+          "caption": "Master bathroom sanctuary featuring bookmatched calacatta marble, frameless glass rain shower, floating bench, and rich teak ceiling soffit",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-living-partition-dining-vista.jpg",
+          "caption": "Living lounge looking across the vertical timber screen toward the dining volume, double-height ceiling, and illuminated art gallery",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-panoramic-living-media-suite-flow.jpg",
+          "caption": "Expansive open-plan circulation connecting the marble living salon, vertical timber divider, and timber-framed media lounge",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-timber-canopy-veranda-lounge.jpg",
+          "caption": "Deep timber-clad cantilevered balcony veranda with woven rope armchair, stone flooring, and lush treetop garden canopy",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-veranda-reading-nook-garden-balcony.jpg",
+          "caption": "Intimate balcony reading nook enveloped by rich vertical timber slats, timber ceiling, tropical planter bed, and tree shadows",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-cantilever-balconies-tree-canopy.jpg",
+          "caption": "Dramatic low-angle view of the cantilevered white balcony slabs and glass planter balustrades framed by mature green tree canopies",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-monolithic-cantilever-facade-entry.jpg",
+          "caption": "Towering vertical street elevation showing the cylindrical exposed concrete column, corten entrance gate, and cantilevered upper balcony trays",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-double-height-curtain-wall-greenery.jpg",
+          "caption": "Soaring double-height dining room featuring floor-to-ceiling curtain wall looking onto lush vertical garden wall and sculptural pendant chandeliers",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-dining-atrium-mezzanine-bridge.jpg",
+          "caption": "Double-height dining atrium with yellow leather chairs, timber mezzanine bridge, and slatted vertical screen",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-dining-vista-glass-elevator-stairs.jpg",
+          "caption": "Perspective across dining suite toward the glass elevator tower, step-lit floating marble staircase, and timber mezzanine",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-rooftop-pool-garden-pergola-lounge.jpg",
+          "caption": "Rooftop swimming pool terrace under steel pergola with lush garden planters, yellow pots, and soft outdoor lounge seating",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-family-lounge-hardwood-elevator-vista.jpg",
+          "caption": "Upper level family lounge with solid hardwood flooring, bespoke upholstered seating, backlit shelving, and glass elevator vista",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-master-suite-timber-portal-entry.jpg",
+          "caption": "Master bedroom threshold framed by rich walnut paneling, backlit display unit, calacatta marble, and canopy window",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-master-bedroom-backlit-timber-headboard.jpg",
+          "caption": "Master bedroom interior showcasing bespoke backlit timber storage niche, upholstered bed, and acoustic fabric wall panel",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-poolside-pavilion-indoor-outdoor-terrace.jpg",
+          "caption": "Seamless indoor-outdoor pool pavilion connecting the covered living suite with the rooftop lap pool and timber pergola terrace",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-twilight-street-facade-corten-gate.jpg",
+          "caption": "Frontal twilight elevation featuring illuminated corten fence with Kannada 'Kanasu' typography, glowing cantilevered soffit, and tree canopy",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-corner-twilight-street-perspective.jpg",
+          "caption": "Corner street perspective at twilight showcasing the multi-tier architectural volumes harmoniously integrated into mature Bangalore trees",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-dusk-garage-ramp-entrance-elevation.jpg",
+          "caption": "Dusk street entrance showcasing illuminated subterranean garage ramp, cantilevered glowing LED soffit, and exposed concrete column",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-sunset-poolside-wicker-terrace.jpg",
+          "caption": "Rooftop poolside lounge at golden hour sunset with woven armchairs, lanterns, and tranquil azure waters",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/kanasu/kanasu-covered-rooftop-pergola-lounge-suite.jpg",
+          "caption": "Covered timber pergola roof lounge with modular pink seating, floating step benches, and lush tropical planters",
+          "aspect": "portrait"
+        }
+      ],
+      "servicesInvolved": [
+        "Turnkey Architecture",
+        "Structural BIM Coordination",
+        "Interior Design"
+      ],
+      "teamMembers": [
+        "Vikramaditya Shenoy",
+        "Karthik Sundaram",
+        "Aditya Joshi"
+      ],
+      "credits": {
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Aditya Joshi",
+        "team": "Vikramaditya Shenoy, Karthik Sundaram, Aditya Joshi",
+        "photography": "Shamanth Patil Photography"
+      },
+      "featured": true,
+      "relatedSlugs": [
+        "house-in-the-air",
+        "far-site-buildofy",
+        "between-two-trees"
+      ],
+      "videoTour": {
+        "title": "Luxury Vastu House Kanasu in Bengaluru, Karnataka | Technoarchitecture (Home Tour)",
+        "url": "https://www.youtube.com/results?search_query=Luxury+Vastu+House+Kanasu+in+Bengaluru+Technoarchitecture+Home+Tour",
+        "platform": "YouTube",
+        "actionText": "Watch House Tour"
+      },
+      "testimonial": {
+        "quote": "Kanasu perfectly balances traditional Vastu principles with contemporary tropical design. The volumetric light and serene internal courtyards give our family an extraordinary sense of calm.",
+        "clientName": "Raghavendra & Priya Joshi",
+        "designation": "Homeowners",
+        "company": "Kanasu Residence"
+      }
+    },
+    {
       "id": "proj-2",
       "slug": "belaku",
       "title": "BELAKU",
@@ -1130,181 +1305,6 @@
         "clientName": "Suresh & Anitha Gowda",
         "designation": "Homeowners",
         "company": "Belaku Residence"
-      }
-    },
-    {
-      "id": "proj-7",
-      "slug": "kanasu",
-      "title": "KANASU",
-      "category": "Residential",
-      "status": "completed",
-      "location": "Sadashivanagar, Bengaluru",
-      "year": 2024,
-      "client": "Private Residence",
-      "area": "8,900 sq.ft",
-      "description": "An ultra-luxury private sanctuary featuring cantilevered post-tensioned slabs, a soaring double-height dining volume, warm teak vertical screens, and a serene rooftop swimming pool pavilion overlooking Bengaluru's tree line.",
-      "processNarrative": "Centred on the seamless dialogue between indoor living spaces and verdant perimeter courtyards, Kanasu choreographs movement across marble-lined living halls, double-height volumes, and an elevated rooftop pool canopy crafted with warm slatted timber soffits and slender steel columns.",
-      "mainImage": "/projects/kanasu/kanasu-rooftop-pool-timber-canopy.jpg",
-      "gallery": [
-        {
-          "url": "/projects/kanasu/kanasu-rooftop-pool-timber-canopy.jpg",
-          "caption": "Cantilevered rooftop lap pool pavilion featuring warm timber ceiling soffit, stone terrace, and lush treetop canopy",
-          "aspect": "full"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-double-height-dining-sculptural-art.jpg",
-          "caption": "Soaring double-height dining volume with custom mustard leather chairs, sculptural cloud pendants, and copper herd wall relief",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-living-lounge-timber-screen.jpg",
-          "caption": "Ground level living lounge with Italian calacatta marble flooring, bespoke leather seating, and slatted vertical timber partition",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-column-veranda-timber-accent-wall.jpg",
-          "caption": "Transition gallery framed by a cylindrical exposed concrete column, vertical timber paneling, and sunken garden greenery",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-poolside-terrace-wicker-lounge.jpg",
-          "caption": "Rooftop poolside lounge with sage green woven wicker armchairs, tropical planter bed, and azure swimming pool waters",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-master-bath-calacatta-marble-spa.jpg",
-          "caption": "Master bathroom sanctuary featuring bookmatched calacatta marble, frameless glass rain shower, floating bench, and rich teak ceiling soffit",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-living-partition-dining-vista.jpg",
-          "caption": "Living lounge looking across the vertical timber screen toward the dining volume, double-height ceiling, and illuminated art gallery",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-panoramic-living-media-suite-flow.jpg",
-          "caption": "Expansive open-plan circulation connecting the marble living salon, vertical timber divider, and timber-framed media lounge",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-timber-canopy-veranda-lounge.jpg",
-          "caption": "Deep timber-clad cantilevered balcony veranda with woven rope armchair, stone flooring, and lush treetop garden canopy",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-veranda-reading-nook-garden-balcony.jpg",
-          "caption": "Intimate balcony reading nook enveloped by rich vertical timber slats, timber ceiling, tropical planter bed, and tree shadows",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-cantilever-balconies-tree-canopy.jpg",
-          "caption": "Dramatic low-angle view of the cantilevered white balcony slabs and glass planter balustrades framed by mature green tree canopies",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-monolithic-cantilever-facade-entry.jpg",
-          "caption": "Towering vertical street elevation showing the cylindrical exposed concrete column, corten entrance gate, and cantilevered upper balcony trays",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-double-height-curtain-wall-greenery.jpg",
-          "caption": "Soaring double-height dining room featuring floor-to-ceiling curtain wall looking onto lush vertical garden wall and sculptural pendant chandeliers",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-dining-atrium-mezzanine-bridge.jpg",
-          "caption": "Double-height dining atrium with yellow leather chairs, timber mezzanine bridge, and slatted vertical screen",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-dining-vista-glass-elevator-stairs.jpg",
-          "caption": "Perspective across dining suite toward the glass elevator tower, step-lit floating marble staircase, and timber mezzanine",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-rooftop-pool-garden-pergola-lounge.jpg",
-          "caption": "Rooftop swimming pool terrace under steel pergola with lush garden planters, yellow pots, and soft outdoor lounge seating",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-family-lounge-hardwood-elevator-vista.jpg",
-          "caption": "Upper level family lounge with solid hardwood flooring, bespoke upholstered seating, backlit shelving, and glass elevator vista",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-master-suite-timber-portal-entry.jpg",
-          "caption": "Master bedroom threshold framed by rich walnut paneling, backlit display unit, calacatta marble, and canopy window",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-master-bedroom-backlit-timber-headboard.jpg",
-          "caption": "Master bedroom interior showcasing bespoke backlit timber storage niche, upholstered bed, and acoustic fabric wall panel",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-poolside-pavilion-indoor-outdoor-terrace.jpg",
-          "caption": "Seamless indoor-outdoor pool pavilion connecting the covered living suite with the rooftop lap pool and timber pergola terrace",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-twilight-street-facade-corten-gate.jpg",
-          "caption": "Frontal twilight elevation featuring illuminated corten fence with Kannada 'Kanasu' typography, glowing cantilevered soffit, and tree canopy",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-corner-twilight-street-perspective.jpg",
-          "caption": "Corner street perspective at twilight showcasing the multi-tier architectural volumes harmoniously integrated into mature Bangalore trees",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-dusk-garage-ramp-entrance-elevation.jpg",
-          "caption": "Dusk street entrance showcasing illuminated subterranean garage ramp, cantilevered glowing LED soffit, and exposed concrete column",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-sunset-poolside-wicker-terrace.jpg",
-          "caption": "Rooftop poolside lounge at golden hour sunset with woven armchairs, lanterns, and tranquil azure waters",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/kanasu/kanasu-covered-rooftop-pergola-lounge-suite.jpg",
-          "caption": "Covered timber pergola roof lounge with modular pink seating, floating step benches, and lush tropical planters",
-          "aspect": "portrait"
-        }
-      ],
-      "servicesInvolved": [
-        "Turnkey Architecture",
-        "Structural BIM Coordination",
-        "Interior Design"
-      ],
-      "teamMembers": [
-        "Vikramaditya Shenoy",
-        "Karthik Sundaram",
-        "Aditya Joshi"
-      ],
-      "credits": {
-        "principalArchitect": "Ar. Rajesh Shivaram",
-        "projectArchitect": "Aditya Joshi",
-        "team": "Vikramaditya Shenoy, Karthik Sundaram, Aditya Joshi",
-        "photography": "Shamanth Patil Photography"
-      },
-      "featured": true,
-      "relatedSlugs": [
-        "house-in-the-air",
-        "far-site-buildofy",
-        "between-two-trees"
-      ],
-      "videoTour": {
-        "title": "Luxury Vastu House Kanasu in Bengaluru, Karnataka | Technoarchitecture (Home Tour)",
-        "url": "https://www.youtube.com/results?search_query=Luxury+Vastu+House+Kanasu+in+Bengaluru+Technoarchitecture+Home+Tour",
-        "platform": "YouTube",
-        "actionText": "Watch House Tour"
-      },
-      "testimonial": {
-        "quote": "Kanasu perfectly balances traditional Vastu principles with contemporary tropical design. The volumetric light and serene internal courtyards give our family an extraordinary sense of calm.",
-        "clientName": "Raghavendra & Priya Joshi",
-        "designation": "Homeowners",
-        "company": "Kanasu Residence"
       }
     },
     {
@@ -4873,6 +4873,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-15T04:51:35.117Z",
+  "updatedAt": "2026-10-15T04:51:55.209Z",
   "deletedIds": []
 }
