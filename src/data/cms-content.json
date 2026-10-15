@@ -538,7 +538,7 @@
         "team": "Rajesh Shivaram (Principal Architect) Rupali (Project Architect) Varna Vidhul Akash",
         "photography": "Shamanth Patil Photography"
       },
-      "featured": false,
+      "featured": true,
       "relatedSlugs": [
         "aikya",
         "between-two-trees",
@@ -4879,6 +4879,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-15T09:54:36.901Z",
+  "updatedAt": "2026-10-15T09:54:51.261Z",
   "deletedIds": []
 }
