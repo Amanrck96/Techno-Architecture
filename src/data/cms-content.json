@@ -757,182 +757,6 @@
       }
     },
     {
-      "id": "proj-2",
-      "slug": "belaku",
-      "title": "BELAKU",
-      "category": "Residential",
-      "status": "completed",
-      "location": "Bengaluru, India",
-      "year": 2023,
-      "client": "Private Residence",
-      "area": "6,200 sq.ft",
-      "description": "A striking multi-tier private residence defined by bold cantilevered volumes, weathered corten steel cladding, rhythmic timber screening, and cascading tropical planters.",
-      "processNarrative": "Named 'Belaku'—the Kannada word for light—the residence is sculpted around the choreography of daylight and natural ventilation. An expressive spiral staircase anchors the arrival portal beneath parametric vertical louvers, while weathered corten panels and rich timber slats create a dialogue between industrial permanence and biophilic warmth.",
-      "mainImage": "/projects/belaku/belaku-central-courtyard-entrance-vista.jpg",
-      "gallery": [
-        {
-          "url": "/projects/belaku/belaku-elevation-front.jpg",
-          "caption": "Direct frontal facade highlighting stacked cubic geometries, louvers, and cascading greenery",
-          "aspect": "full"
-        },
-        {
-          "url": "/projects/belaku/belaku-elevation-perspective.jpg",
-          "caption": "Cantilevered upper pavilion and arrival gateway with the inscribed Belaku identity",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-spiral-staircase-foyer.jpg",
-          "caption": "Sculptural spiral staircase arrival foyer accented by parametric timber batten canopy",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-corten-balcony-detail.jpg",
-          "caption": "Weathered corten steel paneling and warm timber screen balcony overlooking green foliage",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-living-louvered-light.jpg",
-          "caption": "Sun-drenched living salon with timber louvered shading casting kinetic light patterns",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/belaku/belaku-internal-water-courtyard.jpg",
-          "caption": "Internal water courtyard with overflowing reflecting pool, indoor tree, and seamless connection to living areas",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/belaku/belaku-double-height-library-kitchen.jpg",
-          "caption": "Double-height central volume with bespoke full-height teak bookcase, sculptural pendant luminaires, and kitchen island",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-atrium-indoor-garden.jpg",
-          "caption": "Top-down view of the skylit central court with indigenous vegetation ascending through the vertical spine",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-upper-bridge-pendants.jpg",
-          "caption": "Upper floor glass-and-timber walkway bridge overlooking the central atrium with wood louvered shutters",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-timber-batten-lounge.jpg",
-          "caption": "Upper level reading lounge featuring full-height acoustic timber battens, custom sofa, and panoramic tree canopy views",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-master-bedroom-suite.jpg",
-          "caption": "Master bedroom suite with floating walnut bed platform, ceiling wood soffit, and private balcony garden terrace",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/belaku/belaku-bedroom-vignette-detail.jpg",
-          "caption": "Artisanal tea service, hand-turned brass planter with monstera, and circular mirror detail in master suite",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-upper-corridor-library.jpg",
-          "caption": "Upper floor library gallery with teak hardwood floors, exposed concrete ceiling, curated pop-art wall, and reading nook",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-upper-hallway-living-view.jpg",
-          "caption": "Upper gallery corridor overlooking the lower formal salon beneath the cluster of timber cone pendants",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-atrium-library-vista.jpg",
-          "caption": "Central atrium vista looking across the reflective indoor water court toward the full-height teak bookcase",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-open-kitchen-island-dining.jpg",
-          "caption": "Gourmet open kitchen featuring a monolithic island, integrated cooktop, and cantilevered solid timber dining counter",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/belaku/belaku-dining-counter-courtyard-vista.jpg",
-          "caption": "Cantilevered solid timber dining bar looking out to the central internal court and spiral staircase",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/belaku/belaku-courtyard-pool-kitchen-perspective.jpg",
-          "caption": "Panoramic ground-level view connecting the cascading waterfall basin to the culinary pavilion and indoor tree",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/belaku/belaku-central-courtyard-entrance-vista.jpg",
-          "caption": "Central courtyard reflecting pool looking toward the grand solid teak entrance door, central tree, and open kitchen",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/belaku/belaku-waterfall-guitar-niche-atrium.jpg",
-          "caption": "Double-height atrium featuring a built-in acoustic guitar display niche and Kadappa stone waterfall cascade",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-central-water-court-staircase.jpg",
-          "caption": "Central water garden with fountain grasses, rising living tree, and floating spiral stair in the background",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-elevation-dusk-frontal.jpg",
-          "caption": "Full frontal elevation at dusk with warm interior illumination glowing against the purple twilight sky",
-          "aspect": "full"
-        },
-        {
-          "url": "/projects/belaku/belaku-elevation-dusk-perspective.jpg",
-          "caption": "Twilight street perspective highlighting dramatic cantilevered volumes, illuminated tree shadows, and glowing Belaku signage",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-living-salon-evening-courtyard.jpg",
-          "caption": "Evening courtyard perspective looking into the formal living salon with soft ambient lighting",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-waterfall-guitar-niche-detail.jpg",
-          "caption": "Close-up architectural detail of the Kadappa stone waterfall cascade with ambient spotlighting and display niche",
-          "aspect": "portrait"
-        }
-      ],
-      "servicesInvolved": [
-        "Luxury Residential Architecture",
-        "Parametric Facade Engineering",
-        "Interior & Landscape Design"
-      ],
-      "teamMembers": [
-        "Ar. Rajesh Shivaram",
-        "Vikramaditya Shenoy",
-        "Naveen Prasad"
-      ],
-      "credits": {
-        "principalArchitect": "Ar. Rajesh Shivaram",
-        "projectArchitect": "Vikramaditya Shenoy",
-        "team": "Ar. Rajesh Shivaram, Vikramaditya Shenoy, Naveen Prasad",
-        "photography": "Shamanth Patil Photography",
-        "lightingConsultant": "Studio Illumine"
-      },
-      "featured": true,
-      "relatedSlugs": [
-        "aikya",
-        "far-site-buildofy",
-        "kanasu"
-      ],
-      "videoTour": {
-        "title": "2400 sq.ft Compact Home in Bengaluru | Belaku Residence by Techno Architecture (Home Tour)",
-        "url": "https://www.youtube.com/results?search_query=Belaku+Residence+Techno+Architecture+Home+Tour",
-        "platform": "YouTube",
-        "actionText": "Watch House Tour"
-      },
-      "testimonial": {
-        "quote": "Techno created a private urban sanctuary that dances with natural light throughout the day. The interplay of cantilevered concrete, corten steel, and sculptural timber screens makes Belaku an architectural masterwork we are proud to call home.",
-        "clientName": "Suresh & Anitha Gowda",
-        "designation": "Homeowners",
-        "company": "Belaku Residence"
-      }
-    },
-    {
       "id": "proj-5",
       "slug": "far-site-buildofy",
       "title": "FAR SITE BUILDOFY",
@@ -1133,6 +957,182 @@
       }
     },
     {
+      "id": "proj-2",
+      "slug": "belaku",
+      "title": "BELAKU",
+      "category": "Residential",
+      "status": "completed",
+      "location": "Bengaluru, India",
+      "year": 2023,
+      "client": "Private Residence",
+      "area": "6,200 sq.ft",
+      "description": "A striking multi-tier private residence defined by bold cantilevered volumes, weathered corten steel cladding, rhythmic timber screening, and cascading tropical planters.",
+      "processNarrative": "Named 'Belaku'—the Kannada word for light—the residence is sculpted around the choreography of daylight and natural ventilation. An expressive spiral staircase anchors the arrival portal beneath parametric vertical louvers, while weathered corten panels and rich timber slats create a dialogue between industrial permanence and biophilic warmth.",
+      "mainImage": "/projects/belaku/belaku-central-courtyard-entrance-vista.jpg",
+      "gallery": [
+        {
+          "url": "/projects/belaku/belaku-elevation-front.jpg",
+          "caption": "Direct frontal facade highlighting stacked cubic geometries, louvers, and cascading greenery",
+          "aspect": "full"
+        },
+        {
+          "url": "/projects/belaku/belaku-elevation-perspective.jpg",
+          "caption": "Cantilevered upper pavilion and arrival gateway with the inscribed Belaku identity",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-spiral-staircase-foyer.jpg",
+          "caption": "Sculptural spiral staircase arrival foyer accented by parametric timber batten canopy",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-corten-balcony-detail.jpg",
+          "caption": "Weathered corten steel paneling and warm timber screen balcony overlooking green foliage",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-living-louvered-light.jpg",
+          "caption": "Sun-drenched living salon with timber louvered shading casting kinetic light patterns",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/belaku/belaku-internal-water-courtyard.jpg",
+          "caption": "Internal water courtyard with overflowing reflecting pool, indoor tree, and seamless connection to living areas",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/belaku/belaku-double-height-library-kitchen.jpg",
+          "caption": "Double-height central volume with bespoke full-height teak bookcase, sculptural pendant luminaires, and kitchen island",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-atrium-indoor-garden.jpg",
+          "caption": "Top-down view of the skylit central court with indigenous vegetation ascending through the vertical spine",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-upper-bridge-pendants.jpg",
+          "caption": "Upper floor glass-and-timber walkway bridge overlooking the central atrium with wood louvered shutters",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-timber-batten-lounge.jpg",
+          "caption": "Upper level reading lounge featuring full-height acoustic timber battens, custom sofa, and panoramic tree canopy views",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-master-bedroom-suite.jpg",
+          "caption": "Master bedroom suite with floating walnut bed platform, ceiling wood soffit, and private balcony garden terrace",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/belaku/belaku-bedroom-vignette-detail.jpg",
+          "caption": "Artisanal tea service, hand-turned brass planter with monstera, and circular mirror detail in master suite",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-upper-corridor-library.jpg",
+          "caption": "Upper floor library gallery with teak hardwood floors, exposed concrete ceiling, curated pop-art wall, and reading nook",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-upper-hallway-living-view.jpg",
+          "caption": "Upper gallery corridor overlooking the lower formal salon beneath the cluster of timber cone pendants",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-atrium-library-vista.jpg",
+          "caption": "Central atrium vista looking across the reflective indoor water court toward the full-height teak bookcase",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-open-kitchen-island-dining.jpg",
+          "caption": "Gourmet open kitchen featuring a monolithic island, integrated cooktop, and cantilevered solid timber dining counter",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/belaku/belaku-dining-counter-courtyard-vista.jpg",
+          "caption": "Cantilevered solid timber dining bar looking out to the central internal court and spiral staircase",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/belaku/belaku-courtyard-pool-kitchen-perspective.jpg",
+          "caption": "Panoramic ground-level view connecting the cascading waterfall basin to the culinary pavilion and indoor tree",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/belaku/belaku-central-courtyard-entrance-vista.jpg",
+          "caption": "Central courtyard reflecting pool looking toward the grand solid teak entrance door, central tree, and open kitchen",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/belaku/belaku-waterfall-guitar-niche-atrium.jpg",
+          "caption": "Double-height atrium featuring a built-in acoustic guitar display niche and Kadappa stone waterfall cascade",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-central-water-court-staircase.jpg",
+          "caption": "Central water garden with fountain grasses, rising living tree, and floating spiral stair in the background",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-elevation-dusk-frontal.jpg",
+          "caption": "Full frontal elevation at dusk with warm interior illumination glowing against the purple twilight sky",
+          "aspect": "full"
+        },
+        {
+          "url": "/projects/belaku/belaku-elevation-dusk-perspective.jpg",
+          "caption": "Twilight street perspective highlighting dramatic cantilevered volumes, illuminated tree shadows, and glowing Belaku signage",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-living-salon-evening-courtyard.jpg",
+          "caption": "Evening courtyard perspective looking into the formal living salon with soft ambient lighting",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-waterfall-guitar-niche-detail.jpg",
+          "caption": "Close-up architectural detail of the Kadappa stone waterfall cascade with ambient spotlighting and display niche",
+          "aspect": "portrait"
+        }
+      ],
+      "servicesInvolved": [
+        "Luxury Residential Architecture",
+        "Parametric Facade Engineering",
+        "Interior & Landscape Design"
+      ],
+      "teamMembers": [
+        "Ar. Rajesh Shivaram",
+        "Vikramaditya Shenoy",
+        "Naveen Prasad"
+      ],
+      "credits": {
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Vikramaditya Shenoy",
+        "team": "Ar. Rajesh Shivaram, Vikramaditya Shenoy, Naveen Prasad",
+        "photography": "Shamanth Patil Photography",
+        "lightingConsultant": "Studio Illumine"
+      },
+      "featured": true,
+      "relatedSlugs": [
+        "aikya",
+        "far-site-buildofy",
+        "kanasu"
+      ],
+      "videoTour": {
+        "title": "2400 sq.ft Compact Home in Bengaluru | Belaku Residence by Techno Architecture (Home Tour)",
+        "url": "https://www.youtube.com/results?search_query=Belaku+Residence+Techno+Architecture+Home+Tour",
+        "platform": "YouTube",
+        "actionText": "Watch House Tour"
+      },
+      "testimonial": {
+        "quote": "Techno created a private urban sanctuary that dances with natural light throughout the day. The interplay of cantilevered concrete, corten steel, and sculptural timber screens makes Belaku an architectural masterwork we are proud to call home.",
+        "clientName": "Suresh & Anitha Gowda",
+        "designation": "Homeowners",
+        "company": "Belaku Residence"
+      }
+    },
+    {
       "id": "proj-1",
       "slug": "aikya",
       "title": "AIKYA",
@@ -1224,140 +1224,6 @@
         "clientName": "Mrs.Divya Murthy and Mr.Mohan Malligappa",
         "designation": "Homeowners",
         "company": "Private Residence"
-      }
-    },
-    {
-      "id": "proj-6",
-      "slug": "house-in-the-air",
-      "title": "HOUSE IN THE AIR",
-      "category": "Residential",
-      "status": "completed",
-      "location": "Bengaluru, India",
-      "year": 2023,
-      "client": "Private Client",
-      "area": "5,200 sq.ft",
-      "description": "A gravity-defying urban residence distinguished by dramatic cantilevered timber canopies, continuous glass planter balconies, a freestanding glass prayer pavilion, and a sculptural helical staircase.",
-      "processNarrative": "Conceived as 'House in the Air', the home elevates private living quarters above a secure stilt arrival zone with bold cantilevered volumes finished in warm teak cladding and crisp white stucco frames. Deep planter balconies provide a lush green buffer against the street while filtering tropical daylight into double-height interior spaces. Inside, an architectural journey unfolds around a central illuminated glass prayer sanctum, a sunlit living salon under a clerestory lantern, and an ethereal white steel spiral stair connecting upper galleries.",
-      "mainImage": "/projects/house-in-the-air/house-in-the-air-glass-prayer-sanctuary-foyer.jpg",
-      "gallery": [
-        {
-          "url": "/projects/house-in-the-air/house-in-the-air-cantilever-facade-elevation.jpg",
-          "caption": "Multi-tier street elevation featuring cantilevered teak canopy volumes, glass planter balconies with tropical palms, and stilt arrival",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/house-in-the-air/house-in-the-air-glass-prayer-sanctuary-foyer.jpg",
-          "caption": "Central glass prayer pavilion with teak framing and illuminated deity sanctum, set below warm timber ceiling with linear light channels",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/house-in-the-air/house-in-the-air-fluted-teak-pivot-door-foyer.jpg",
-          "caption": "Foyer entrance anchored by an oversized solid teak pivot door with vertical fluting, brass drop pendants, and hardwood flooring",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/house-in-the-air/house-in-the-air-sculptural-spiral-staircase-mezzanine.jpg",
-          "caption": "Dramatic white steel sculptural spiral stair ascending from hardwood mezzanine bridge through double-height atrium",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/house-in-the-air/house-in-the-air-double-height-living-skylight.jpg",
-          "caption": "Soaring double-height formal living salon flooded with natural daylight through a high clerestory lantern skylight",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/house-in-the-air/house-in-the-air-twilight-facade-overcast.jpg",
-          "caption": "Twilight elevation under atmospheric overcast skies showcasing cantilevered teak volumes, illuminated stair, and planter balconies",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/house-in-the-air/house-in-the-air-atrium-timber-ceiling-disc-pendants.jpg",
-          "caption": "Direct upward perspective of the skylit timber ceiling featuring bespoke circular textured luminous pendant fixtures",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/house-in-the-air/house-in-the-air-foyer-living-panoramic-transition.jpg",
-          "caption": "Panoramic vista capturing the material threshold from the rich teak foyer into the expansive marble double-height living salon",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/house-in-the-air/house-in-the-air-steel-rod-stairwell-chandelier.jpg",
-          "caption": "Vertical steel suspension rod balustrade framing the marble stairwell and cluster of faceted crystal drop pendants",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/house-in-the-air/house-in-the-air-elevated-dusk-street-perspective.jpg",
-          "caption": "Elevated dusk perspective revealing the floating multi-tier architecture, illuminated teak facade, and cantilevered balconies",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/house-in-the-air/house-in-the-air-dusk-elevation-entry-stair.jpg",
-          "caption": "Three-quarter dusk perspective highlighting illuminated entrance steps, backlit wall sculpture, and cantilevered teak canopies",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/house-in-the-air/house-in-the-air-frontal-twilight-facade.jpg",
-          "caption": "Direct frontal twilight elevation capturing the hovering teak volumes, warm soffit illumination, and lush planter balconies",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/house-in-the-air/house-in-the-air-dining-pavilion-open-kitchen.jpg",
-          "caption": "Open-plan dining pavilion with sculptural leather seating, marble table, linear bronze pendants, and teak ceiling soffit",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/house-in-the-air/house-in-the-air-daylight-street-elevation-sunlight.jpg",
-          "caption": "Crisp daylight street perspective showing the contrasting dialogue between white stucco frames, teak cladding, and green palms",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/house-in-the-air/house-in-the-air-spiral-staircase-overhead-helix.jpg",
-          "caption": "Dramatic downward helical perspective of the sculpted white steel spiral stair with fan-splayed solid teak treads",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/house-in-the-air/house-in-the-air-double-height-salon-spiral-void.jpg",
-          "caption": "Double-height living salon overlooking the helical spiral staircase, suspended luminous pendants, and open plan ground level",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/house-in-the-air/house-in-the-air-illuminated-stair-prayer-pavilion.jpg",
-          "caption": "Step-lit marble staircase flanked by the freestanding glass and teak prayer sanctuary with geometric filigree screen",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/house-in-the-air/house-in-the-air-soaring-living-void-mezzanine-view.jpg",
-          "caption": "Vertical perspective of the double-height volume connecting the marble lounge, timber ceiling lanterns, and upper glass bridge",
-          "aspect": "portrait"
-        }
-      ],
-      "servicesInvolved": [
-        "Urban Residential Architecture",
-        "Cantilever Engineering",
-        "Bespoke Interior Design"
-      ],
-      "teamMembers": [
-        "Vikramaditya Shenoy",
-        "Divya Raghavan",
-        "Naveen Prasad"
-      ],
-      "credits": {
-        "principalArchitect": "Ar. Rajesh Shivaram",
-        "projectArchitect": "Vikramaditya Shenoy",
-        "team": "Vikramaditya Shenoy, Divya Raghavan, Naveen Prasad",
-        "photography": "Technoarchitecture Studio"
-      },
-      "featured": true,
-      "relatedSlugs": [
-        "far-site-buildofy",
-        "brindavan",
-        "belaku"
-      ],
-      "testimonial": {
-        "quote": "The elevated glass prayer sanctuary and seamless terrace verandas make House in the Air feel suspended above the city. Living here is a serene daily experience of panoramic sky and floating greens.",
-        "clientName": "Rahul & Meera Krishnan",
-        "designation": "Homeowners",
-        "company": "House in the Air"
       }
     },
     {
@@ -1533,6 +1399,140 @@
         "clientName": "Raghavendra & Priya Joshi",
         "designation": "Homeowners",
         "company": "Kanasu Residence"
+      }
+    },
+    {
+      "id": "proj-6",
+      "slug": "house-in-the-air",
+      "title": "HOUSE IN THE AIR",
+      "category": "Residential",
+      "status": "completed",
+      "location": "Bengaluru, India",
+      "year": 2023,
+      "client": "Private Client",
+      "area": "5,200 sq.ft",
+      "description": "A gravity-defying urban residence distinguished by dramatic cantilevered timber canopies, continuous glass planter balconies, a freestanding glass prayer pavilion, and a sculptural helical staircase.",
+      "processNarrative": "Conceived as 'House in the Air', the home elevates private living quarters above a secure stilt arrival zone with bold cantilevered volumes finished in warm teak cladding and crisp white stucco frames. Deep planter balconies provide a lush green buffer against the street while filtering tropical daylight into double-height interior spaces. Inside, an architectural journey unfolds around a central illuminated glass prayer sanctum, a sunlit living salon under a clerestory lantern, and an ethereal white steel spiral stair connecting upper galleries.",
+      "mainImage": "/projects/house-in-the-air/house-in-the-air-glass-prayer-sanctuary-foyer.jpg",
+      "gallery": [
+        {
+          "url": "/projects/house-in-the-air/house-in-the-air-cantilever-facade-elevation.jpg",
+          "caption": "Multi-tier street elevation featuring cantilevered teak canopy volumes, glass planter balconies with tropical palms, and stilt arrival",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/house-in-the-air/house-in-the-air-glass-prayer-sanctuary-foyer.jpg",
+          "caption": "Central glass prayer pavilion with teak framing and illuminated deity sanctum, set below warm timber ceiling with linear light channels",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/house-in-the-air/house-in-the-air-fluted-teak-pivot-door-foyer.jpg",
+          "caption": "Foyer entrance anchored by an oversized solid teak pivot door with vertical fluting, brass drop pendants, and hardwood flooring",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/house-in-the-air/house-in-the-air-sculptural-spiral-staircase-mezzanine.jpg",
+          "caption": "Dramatic white steel sculptural spiral stair ascending from hardwood mezzanine bridge through double-height atrium",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/house-in-the-air/house-in-the-air-double-height-living-skylight.jpg",
+          "caption": "Soaring double-height formal living salon flooded with natural daylight through a high clerestory lantern skylight",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/house-in-the-air/house-in-the-air-twilight-facade-overcast.jpg",
+          "caption": "Twilight elevation under atmospheric overcast skies showcasing cantilevered teak volumes, illuminated stair, and planter balconies",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/house-in-the-air/house-in-the-air-atrium-timber-ceiling-disc-pendants.jpg",
+          "caption": "Direct upward perspective of the skylit timber ceiling featuring bespoke circular textured luminous pendant fixtures",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/house-in-the-air/house-in-the-air-foyer-living-panoramic-transition.jpg",
+          "caption": "Panoramic vista capturing the material threshold from the rich teak foyer into the expansive marble double-height living salon",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/house-in-the-air/house-in-the-air-steel-rod-stairwell-chandelier.jpg",
+          "caption": "Vertical steel suspension rod balustrade framing the marble stairwell and cluster of faceted crystal drop pendants",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/house-in-the-air/house-in-the-air-elevated-dusk-street-perspective.jpg",
+          "caption": "Elevated dusk perspective revealing the floating multi-tier architecture, illuminated teak facade, and cantilevered balconies",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/house-in-the-air/house-in-the-air-dusk-elevation-entry-stair.jpg",
+          "caption": "Three-quarter dusk perspective highlighting illuminated entrance steps, backlit wall sculpture, and cantilevered teak canopies",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/house-in-the-air/house-in-the-air-frontal-twilight-facade.jpg",
+          "caption": "Direct frontal twilight elevation capturing the hovering teak volumes, warm soffit illumination, and lush planter balconies",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/house-in-the-air/house-in-the-air-dining-pavilion-open-kitchen.jpg",
+          "caption": "Open-plan dining pavilion with sculptural leather seating, marble table, linear bronze pendants, and teak ceiling soffit",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/house-in-the-air/house-in-the-air-daylight-street-elevation-sunlight.jpg",
+          "caption": "Crisp daylight street perspective showing the contrasting dialogue between white stucco frames, teak cladding, and green palms",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/house-in-the-air/house-in-the-air-spiral-staircase-overhead-helix.jpg",
+          "caption": "Dramatic downward helical perspective of the sculpted white steel spiral stair with fan-splayed solid teak treads",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/house-in-the-air/house-in-the-air-double-height-salon-spiral-void.jpg",
+          "caption": "Double-height living salon overlooking the helical spiral staircase, suspended luminous pendants, and open plan ground level",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/house-in-the-air/house-in-the-air-illuminated-stair-prayer-pavilion.jpg",
+          "caption": "Step-lit marble staircase flanked by the freestanding glass and teak prayer sanctuary with geometric filigree screen",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/house-in-the-air/house-in-the-air-soaring-living-void-mezzanine-view.jpg",
+          "caption": "Vertical perspective of the double-height volume connecting the marble lounge, timber ceiling lanterns, and upper glass bridge",
+          "aspect": "portrait"
+        }
+      ],
+      "servicesInvolved": [
+        "Urban Residential Architecture",
+        "Cantilever Engineering",
+        "Bespoke Interior Design"
+      ],
+      "teamMembers": [
+        "Vikramaditya Shenoy",
+        "Divya Raghavan",
+        "Naveen Prasad"
+      ],
+      "credits": {
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Vikramaditya Shenoy",
+        "team": "Vikramaditya Shenoy, Divya Raghavan, Naveen Prasad",
+        "photography": "Technoarchitecture Studio"
+      },
+      "featured": true,
+      "relatedSlugs": [
+        "far-site-buildofy",
+        "brindavan",
+        "belaku"
+      ],
+      "testimonial": {
+        "quote": "The elevated glass prayer sanctuary and seamless terrace verandas make House in the Air feel suspended above the city. Living here is a serene daily experience of panoramic sky and floating greens.",
+        "clientName": "Rahul & Meera Krishnan",
+        "designation": "Homeowners",
+        "company": "House in the Air"
       }
     },
     {
@@ -4873,6 +4873,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-15T04:50:58.652Z",
+  "updatedAt": "2026-10-15T04:51:31.694Z",
   "deletedIds": []
 }
