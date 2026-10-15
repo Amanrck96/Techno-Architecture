@@ -554,7 +554,7 @@
       "testimonial": {
         "quote": "The sculptural facade and tactile materiality established by Techno Architecture made this commission a flagship architectural landmark in Bengaluru.",
         "clientName": "Mr. Chandrashekhar and Mrs. Mangala",
-        "designation": "Homeownes",
+        "designation": "Homeowne",
         "company": "The Mantle Residence"
       }
     },
@@ -4880,6 +4880,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-15T10:09:53.302Z",
+  "updatedAt": "2026-10-15T10:09:54.477Z",
   "deletedIds": []
 }
