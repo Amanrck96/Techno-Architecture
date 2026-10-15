@@ -147,10 +147,10 @@
       ],
       "credits": {
         "principalArchitect": "Ar. Rajesh Shivaram",
-        "projectArchitect": "Ar.Varna, ",
+        "projectArchitect": "Ar.Varna, Ar",
         "team": "Ar. Rajesh Shivaram, Vikramaditya Shenoy, Naveen Prasad",
         "photography": "Shamanth Patil Photography",
-        "projectLead": "Ar.Varna, "
+        "projectLead": "Ar.Varna, Ar"
       },
       "featured": true,
       "relatedSlugs": [
@@ -4874,6 +4874,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-15T05:18:56.536Z",
+  "updatedAt": "2026-10-15T05:18:57.582Z",
   "deletedIds": []
 }
