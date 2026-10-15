@@ -556,182 +556,6 @@
       }
     },
     {
-      "id": "proj-2",
-      "slug": "belaku",
-      "title": "BELAKU",
-      "category": "Residential",
-      "status": "completed",
-      "location": "Bengaluru, India",
-      "year": 2023,
-      "client": "Private Residence",
-      "area": "6,200 sq.ft",
-      "description": "A striking multi-tier private residence defined by bold cantilevered volumes, weathered corten steel cladding, rhythmic timber screening, and cascading tropical planters.",
-      "processNarrative": "Named 'Belaku'—the Kannada word for light—the residence is sculpted around the choreography of daylight and natural ventilation. An expressive spiral staircase anchors the arrival portal beneath parametric vertical louvers, while weathered corten panels and rich timber slats create a dialogue between industrial permanence and biophilic warmth.",
-      "mainImage": "/projects/belaku/belaku-central-courtyard-entrance-vista.jpg",
-      "gallery": [
-        {
-          "url": "/projects/belaku/belaku-elevation-front.jpg",
-          "caption": "Direct frontal facade highlighting stacked cubic geometries, louvers, and cascading greenery",
-          "aspect": "full"
-        },
-        {
-          "url": "/projects/belaku/belaku-elevation-perspective.jpg",
-          "caption": "Cantilevered upper pavilion and arrival gateway with the inscribed Belaku identity",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-spiral-staircase-foyer.jpg",
-          "caption": "Sculptural spiral staircase arrival foyer accented by parametric timber batten canopy",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-corten-balcony-detail.jpg",
-          "caption": "Weathered corten steel paneling and warm timber screen balcony overlooking green foliage",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-living-louvered-light.jpg",
-          "caption": "Sun-drenched living salon with timber louvered shading casting kinetic light patterns",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/belaku/belaku-internal-water-courtyard.jpg",
-          "caption": "Internal water courtyard with overflowing reflecting pool, indoor tree, and seamless connection to living areas",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/belaku/belaku-double-height-library-kitchen.jpg",
-          "caption": "Double-height central volume with bespoke full-height teak bookcase, sculptural pendant luminaires, and kitchen island",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-atrium-indoor-garden.jpg",
-          "caption": "Top-down view of the skylit central court with indigenous vegetation ascending through the vertical spine",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-upper-bridge-pendants.jpg",
-          "caption": "Upper floor glass-and-timber walkway bridge overlooking the central atrium with wood louvered shutters",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-timber-batten-lounge.jpg",
-          "caption": "Upper level reading lounge featuring full-height acoustic timber battens, custom sofa, and panoramic tree canopy views",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-master-bedroom-suite.jpg",
-          "caption": "Master bedroom suite with floating walnut bed platform, ceiling wood soffit, and private balcony garden terrace",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/belaku/belaku-bedroom-vignette-detail.jpg",
-          "caption": "Artisanal tea service, hand-turned brass planter with monstera, and circular mirror detail in master suite",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-upper-corridor-library.jpg",
-          "caption": "Upper floor library gallery with teak hardwood floors, exposed concrete ceiling, curated pop-art wall, and reading nook",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-upper-hallway-living-view.jpg",
-          "caption": "Upper gallery corridor overlooking the lower formal salon beneath the cluster of timber cone pendants",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-atrium-library-vista.jpg",
-          "caption": "Central atrium vista looking across the reflective indoor water court toward the full-height teak bookcase",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-open-kitchen-island-dining.jpg",
-          "caption": "Gourmet open kitchen featuring a monolithic island, integrated cooktop, and cantilevered solid timber dining counter",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/belaku/belaku-dining-counter-courtyard-vista.jpg",
-          "caption": "Cantilevered solid timber dining bar looking out to the central internal court and spiral staircase",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/belaku/belaku-courtyard-pool-kitchen-perspective.jpg",
-          "caption": "Panoramic ground-level view connecting the cascading waterfall basin to the culinary pavilion and indoor tree",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/belaku/belaku-central-courtyard-entrance-vista.jpg",
-          "caption": "Central courtyard reflecting pool looking toward the grand solid teak entrance door, central tree, and open kitchen",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/belaku/belaku-waterfall-guitar-niche-atrium.jpg",
-          "caption": "Double-height atrium featuring a built-in acoustic guitar display niche and Kadappa stone waterfall cascade",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-central-water-court-staircase.jpg",
-          "caption": "Central water garden with fountain grasses, rising living tree, and floating spiral stair in the background",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-elevation-dusk-frontal.jpg",
-          "caption": "Full frontal elevation at dusk with warm interior illumination glowing against the purple twilight sky",
-          "aspect": "full"
-        },
-        {
-          "url": "/projects/belaku/belaku-elevation-dusk-perspective.jpg",
-          "caption": "Twilight street perspective highlighting dramatic cantilevered volumes, illuminated tree shadows, and glowing Belaku signage",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-living-salon-evening-courtyard.jpg",
-          "caption": "Evening courtyard perspective looking into the formal living salon with soft ambient lighting",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/belaku/belaku-waterfall-guitar-niche-detail.jpg",
-          "caption": "Close-up architectural detail of the Kadappa stone waterfall cascade with ambient spotlighting and display niche",
-          "aspect": "portrait"
-        }
-      ],
-      "servicesInvolved": [
-        "Luxury Residential Architecture",
-        "Parametric Facade Engineering",
-        "Interior & Landscape Design"
-      ],
-      "teamMembers": [
-        "Ar. Rajesh Shivaram",
-        "Vikramaditya Shenoy",
-        "Naveen Prasad"
-      ],
-      "credits": {
-        "principalArchitect": "Ar. Rajesh Shivaram",
-        "projectArchitect": "Vikramaditya Shenoy",
-        "team": "Ar. Rajesh Shivaram, Vikramaditya Shenoy, Naveen Prasad",
-        "photography": "Shamanth Patil Photography",
-        "lightingConsultant": "Studio Illumine"
-      },
-      "featured": true,
-      "relatedSlugs": [
-        "aikya",
-        "far-site-buildofy",
-        "kanasu"
-      ],
-      "videoTour": {
-        "title": "2400 sq.ft Compact Home in Bengaluru | Belaku Residence by Techno Architecture (Home Tour)",
-        "url": "https://www.youtube.com/results?search_query=Belaku+Residence+Techno+Architecture+Home+Tour",
-        "platform": "YouTube",
-        "actionText": "Watch House Tour"
-      },
-      "testimonial": {
-        "quote": "Techno created a private urban sanctuary that dances with natural light throughout the day. The interplay of cantilevered concrete, corten steel, and sculptural timber screens makes Belaku an architectural masterwork we are proud to call home.",
-        "clientName": "Suresh & Anitha Gowda",
-        "designation": "Homeowners",
-        "company": "Belaku Residence"
-      }
-    },
-    {
       "id": "proj-3",
       "slug": "between-two-trees",
       "title": "BETWEEN TWO TREES",
@@ -930,6 +754,182 @@
         "clientName": "Dr. Sandeep & Deepa Rao",
         "designation": "Homeowners",
         "company": "Between Two Trees Residence"
+      }
+    },
+    {
+      "id": "proj-2",
+      "slug": "belaku",
+      "title": "BELAKU",
+      "category": "Residential",
+      "status": "completed",
+      "location": "Bengaluru, India",
+      "year": 2023,
+      "client": "Private Residence",
+      "area": "6,200 sq.ft",
+      "description": "A striking multi-tier private residence defined by bold cantilevered volumes, weathered corten steel cladding, rhythmic timber screening, and cascading tropical planters.",
+      "processNarrative": "Named 'Belaku'—the Kannada word for light—the residence is sculpted around the choreography of daylight and natural ventilation. An expressive spiral staircase anchors the arrival portal beneath parametric vertical louvers, while weathered corten panels and rich timber slats create a dialogue between industrial permanence and biophilic warmth.",
+      "mainImage": "/projects/belaku/belaku-central-courtyard-entrance-vista.jpg",
+      "gallery": [
+        {
+          "url": "/projects/belaku/belaku-elevation-front.jpg",
+          "caption": "Direct frontal facade highlighting stacked cubic geometries, louvers, and cascading greenery",
+          "aspect": "full"
+        },
+        {
+          "url": "/projects/belaku/belaku-elevation-perspective.jpg",
+          "caption": "Cantilevered upper pavilion and arrival gateway with the inscribed Belaku identity",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-spiral-staircase-foyer.jpg",
+          "caption": "Sculptural spiral staircase arrival foyer accented by parametric timber batten canopy",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-corten-balcony-detail.jpg",
+          "caption": "Weathered corten steel paneling and warm timber screen balcony overlooking green foliage",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-living-louvered-light.jpg",
+          "caption": "Sun-drenched living salon with timber louvered shading casting kinetic light patterns",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/belaku/belaku-internal-water-courtyard.jpg",
+          "caption": "Internal water courtyard with overflowing reflecting pool, indoor tree, and seamless connection to living areas",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/belaku/belaku-double-height-library-kitchen.jpg",
+          "caption": "Double-height central volume with bespoke full-height teak bookcase, sculptural pendant luminaires, and kitchen island",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-atrium-indoor-garden.jpg",
+          "caption": "Top-down view of the skylit central court with indigenous vegetation ascending through the vertical spine",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-upper-bridge-pendants.jpg",
+          "caption": "Upper floor glass-and-timber walkway bridge overlooking the central atrium with wood louvered shutters",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-timber-batten-lounge.jpg",
+          "caption": "Upper level reading lounge featuring full-height acoustic timber battens, custom sofa, and panoramic tree canopy views",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-master-bedroom-suite.jpg",
+          "caption": "Master bedroom suite with floating walnut bed platform, ceiling wood soffit, and private balcony garden terrace",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/belaku/belaku-bedroom-vignette-detail.jpg",
+          "caption": "Artisanal tea service, hand-turned brass planter with monstera, and circular mirror detail in master suite",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-upper-corridor-library.jpg",
+          "caption": "Upper floor library gallery with teak hardwood floors, exposed concrete ceiling, curated pop-art wall, and reading nook",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-upper-hallway-living-view.jpg",
+          "caption": "Upper gallery corridor overlooking the lower formal salon beneath the cluster of timber cone pendants",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-atrium-library-vista.jpg",
+          "caption": "Central atrium vista looking across the reflective indoor water court toward the full-height teak bookcase",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-open-kitchen-island-dining.jpg",
+          "caption": "Gourmet open kitchen featuring a monolithic island, integrated cooktop, and cantilevered solid timber dining counter",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/belaku/belaku-dining-counter-courtyard-vista.jpg",
+          "caption": "Cantilevered solid timber dining bar looking out to the central internal court and spiral staircase",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/belaku/belaku-courtyard-pool-kitchen-perspective.jpg",
+          "caption": "Panoramic ground-level view connecting the cascading waterfall basin to the culinary pavilion and indoor tree",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/belaku/belaku-central-courtyard-entrance-vista.jpg",
+          "caption": "Central courtyard reflecting pool looking toward the grand solid teak entrance door, central tree, and open kitchen",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/belaku/belaku-waterfall-guitar-niche-atrium.jpg",
+          "caption": "Double-height atrium featuring a built-in acoustic guitar display niche and Kadappa stone waterfall cascade",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-central-water-court-staircase.jpg",
+          "caption": "Central water garden with fountain grasses, rising living tree, and floating spiral stair in the background",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-elevation-dusk-frontal.jpg",
+          "caption": "Full frontal elevation at dusk with warm interior illumination glowing against the purple twilight sky",
+          "aspect": "full"
+        },
+        {
+          "url": "/projects/belaku/belaku-elevation-dusk-perspective.jpg",
+          "caption": "Twilight street perspective highlighting dramatic cantilevered volumes, illuminated tree shadows, and glowing Belaku signage",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-living-salon-evening-courtyard.jpg",
+          "caption": "Evening courtyard perspective looking into the formal living salon with soft ambient lighting",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/belaku/belaku-waterfall-guitar-niche-detail.jpg",
+          "caption": "Close-up architectural detail of the Kadappa stone waterfall cascade with ambient spotlighting and display niche",
+          "aspect": "portrait"
+        }
+      ],
+      "servicesInvolved": [
+        "Luxury Residential Architecture",
+        "Parametric Facade Engineering",
+        "Interior & Landscape Design"
+      ],
+      "teamMembers": [
+        "Ar. Rajesh Shivaram",
+        "Vikramaditya Shenoy",
+        "Naveen Prasad"
+      ],
+      "credits": {
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Vikramaditya Shenoy",
+        "team": "Ar. Rajesh Shivaram, Vikramaditya Shenoy, Naveen Prasad",
+        "photography": "Shamanth Patil Photography",
+        "lightingConsultant": "Studio Illumine"
+      },
+      "featured": true,
+      "relatedSlugs": [
+        "aikya",
+        "far-site-buildofy",
+        "kanasu"
+      ],
+      "videoTour": {
+        "title": "2400 sq.ft Compact Home in Bengaluru | Belaku Residence by Techno Architecture (Home Tour)",
+        "url": "https://www.youtube.com/results?search_query=Belaku+Residence+Techno+Architecture+Home+Tour",
+        "platform": "YouTube",
+        "actionText": "Watch House Tour"
+      },
+      "testimonial": {
+        "quote": "Techno created a private urban sanctuary that dances with natural light throughout the day. The interplay of cantilevered concrete, corten steel, and sculptural timber screens makes Belaku an architectural masterwork we are proud to call home.",
+        "clientName": "Suresh & Anitha Gowda",
+        "designation": "Homeowners",
+        "company": "Belaku Residence"
       }
     },
     {
@@ -4873,6 +4873,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-15T04:50:46.821Z",
+  "updatedAt": "2026-10-15T04:50:48.809Z",
   "deletedIds": []
 }
