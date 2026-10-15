@@ -359,7 +359,7 @@
     },
     {
       "id": "proj-12",
-      "slug": "mantle",
+      "slug": "the mantle",
       "title": "THE MANTLE",
       "category": "Residential",
       "status": "completed",
@@ -4879,6 +4879,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-15T09:57:53.088Z",
+  "updatedAt": "2026-10-15T09:57:55.932Z",
   "deletedIds": []
 }
