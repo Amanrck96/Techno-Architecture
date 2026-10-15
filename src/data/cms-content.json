@@ -186,6 +186,176 @@
       }
     },
     {
+      "id": "proj-4",
+      "slug": "brindavan",
+      "title": "BRINDAVAN",
+      "category": "Residential",
+      "status": "completed",
+      "location": "Bengaluru, India",
+      "year": 2024,
+      "client": "Private Client",
+      "area": "4,500 sq.ft",
+      "description": "An expressive vertical urban residence in Bengaluru defined by textural buff brick cladding, sage green cantilevered balconies with cascading biophilic planters, and a sculptural spiral staircase leading to the entrance portal.",
+      "processNarrative": "Conceived as 'Brindavan'—a verdant garden sanctuary within the dense urban fabric—the residence layers vertical buff-brick tilework with tactile sage green stucco terraces. Cantilevered balconies burst with indigenous flora, creating a living microclimate that shields interior living quarters from street bustle while dappling tropical sunlight into double-height timber volumes. A floating external spiral stair ascends directly from street level to the arrival balcony, announcing the home with sculpted Kannada brass typography.",
+      "mainImage": "/projects/brindavan/brindavan-suspended-granite-staircase-motion.jpg",
+      "gallery": [
+        {
+          "url": "/projects/brindavan/brindavan-facade-elevation.jpg",
+          "caption": "Multi-storey street elevation framed by tree canopy with stacked sage green planter balconies and buff brick cladding",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-balcony-spiral-stair-entry.jpg",
+          "caption": "Street perspective showing resident ascending the external steel spiral staircase to the sage green entrance balcony with Kannada 'Brindavan 1714' signage",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-signage-spiral-stair-detail.jpg",
+          "caption": "Close-up of the cantilevered sage green balcony corner with Kannada 'Brindavan' brass typography, house number 1714, and black granite spiral steps",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-green-terrace-balcony.jpg",
+          "caption": "First-floor cantilevered terrace with resident pet, lush tropical planters, trailing creepers, and solid teak entrance portal",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-interior-landing-pendants.jpg",
+          "caption": "Upper level interior hallway with solid teak flooring, vertical fluted brick feature wall, and trio of sculptural fabric cocoon pendants",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-teak-spiral-stair-overhead.jpg",
+          "caption": "Bird's-eye perspective of the internal spiral staircase featuring fan-splayed solid teak treads, cylindrical steel spine, and buff brick perimeter",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-living-lounge-floating-stair.jpg",
+          "caption": "Living salon with rust boucle lounge, dining table, floating black granite staircase with ceiling suspension rods, and glass balcony opening",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-stairwell-skylit-brick-shadows.jpg",
+          "caption": "Stairwell lightwell showcasing vertical buff brick bond, potted indoor ficus, manual gear-lever mechanism, and linear skylight shadowplay",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-cantilever-green-balcony-terrace.jpg",
+          "caption": "Cantilevered green balcony terrace with olive plaster soffit, potted frangipani, vertical brick cladding, and lush treetop canopy view",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-balcony-spiral-stair-facade.jpg",
+          "caption": "Mid-level perspective of the arrival terrace featuring the external spiral staircase, Kannada house inscription, and slatted security grilles",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-atrium-lightwell-timber-pergola.jpg",
+          "caption": "Double-height lightwell court looking up toward timber pergola rafters with suspended cocoon lanterns and upper balcony threshold",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-louvered-skylight-shadow-terrace.jpg",
+          "caption": "Upper terrace court defined by vertical architectural louvers casting rhythmic linear shadow lines across the brick floor",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-brick-wall-bench-meditation.jpg",
+          "caption": "Resident sitting on woven timber bench against vertical buff brick feature wall under kinetic linear skylight shadows",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-staircase-planter-pergola-shadows.jpg",
+          "caption": "Lightwell staircase landing with potted umbrella tree, vertical buff brick bond, timber pergola, and skylight mechanical gear operator",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-landing-golden-retriever-pendants.jpg",
+          "caption": "Upper floor landing featuring resident pet, vertical buff brick wall, cluster of paper cocoon pendants, and sunlit balcony garden opening",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-dining-sage-wall-open-stair.jpg",
+          "caption": "Open-plan dining area with round stone table, teak wishbone chairs, sage green lime plaster accent wall, and suspended granite staircase",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-suspended-granite-staircase-motion.jpg",
+          "caption": "Suspended granite open-riser staircase with slender steel ceiling rods, modern wall art tiles, and polished concrete floor",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-double-height-atrium-sculptural-niche.jpg",
+          "caption": "Dramatic double-height living atrium featuring sculptural concrete niche divider, solid teak mezzanine bridge, and vertical buff brick lightwell",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-brick-wall-mechanical-wheel-vignette.jpg",
+          "caption": "Architectural vignette of the buff brick lightwell wall, artisanal bench with design monographs, and industrial gear wheel operator",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-upper-teak-bridge-lightwell-view.jpg",
+          "caption": "Upper level teak-lined bridge walkway overlooking the double-height lightwell court, sculptural cocoon pendants, and spiral stair landing",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-floating-stair-treads-rods-detail.jpg",
+          "caption": "Graphic architectural profile of cantilevered timber treads suspended by slender steel rods against white plaster wall",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-lightwell-teak-bridge-balcony-view.jpg",
+          "caption": "Perspective down the lightwell court over solid teak bridge balustrade toward buff brick wall and pergola shadow bands",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-teak-bookshelf-brick-shadows.jpg",
+          "caption": "Bespoke open teak shelving unit displaying books and pop art bulldog sculpture against diagonal pergola sun shadows",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/brindavan/brindavan-upper-gallery-reading-nook-shadows.jpg",
+          "caption": "Upper gallery reading nook featuring teak balustrade, curated open bookshelf, and dynamic pergola shadow patterns on buff brick",
+          "aspect": "portrait"
+        }
+      ],
+      "servicesInvolved": [
+        "Urban Residential Architecture",
+        "Biophilic Facade Engineering",
+        "Bespoke Interior Design"
+      ],
+      "teamMembers": [
+        "Ar. Rajesh Shivaram",
+        "Vikramaditya Shenoy",
+        "Naveen Prasad"
+      ],
+      "credits": {
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Vikramaditya Shenoy",
+        "team": "Ar. Rajesh Shivaram, Vikramaditya Shenoy, Naveen Prasad",
+        "photography": "Shamanth Patil Photography"
+      },
+      "featured": true,
+      "relatedSlugs": [
+        "belaku",
+        "between-two-trees",
+        "aikya"
+      ],
+      "testimonial": {
+        "quote": "Techno Architecture crafted Brindavan as a serene haven where suspended granite staircases and floating volumes blend seamlessly with traditional materials. Every room feels alive with natural ventilation and daylight.",
+        "clientName": "K. S. Balasubramanian & Family",
+        "designation": "Homeowners",
+        "company": "Brindavan Villa"
+      },
+      "videoTour": {
+        "title": "Brindavan Villa Architectural Film Walkthrough | Techno Architecture",
+        "url": "/projects/brindavan/brindavan.mp4",
+        "platform": "Film",
+        "actionText": "Watch Architectural Film"
+      }
+    },
+    {
       "id": "proj-2",
       "slug": "belaku",
       "title": "BELAKU",
@@ -359,176 +529,6 @@
         "clientName": "Suresh & Anitha Gowda",
         "designation": "Homeowners",
         "company": "Belaku Residence"
-      }
-    },
-    {
-      "id": "proj-4",
-      "slug": "brindavan",
-      "title": "BRINDAVAN",
-      "category": "Residential",
-      "status": "completed",
-      "location": "Bengaluru, India",
-      "year": 2024,
-      "client": "Private Client",
-      "area": "4,500 sq.ft",
-      "description": "An expressive vertical urban residence in Bengaluru defined by textural buff brick cladding, sage green cantilevered balconies with cascading biophilic planters, and a sculptural spiral staircase leading to the entrance portal.",
-      "processNarrative": "Conceived as 'Brindavan'—a verdant garden sanctuary within the dense urban fabric—the residence layers vertical buff-brick tilework with tactile sage green stucco terraces. Cantilevered balconies burst with indigenous flora, creating a living microclimate that shields interior living quarters from street bustle while dappling tropical sunlight into double-height timber volumes. A floating external spiral stair ascends directly from street level to the arrival balcony, announcing the home with sculpted Kannada brass typography.",
-      "mainImage": "/projects/brindavan/brindavan-suspended-granite-staircase-motion.jpg",
-      "gallery": [
-        {
-          "url": "/projects/brindavan/brindavan-facade-elevation.jpg",
-          "caption": "Multi-storey street elevation framed by tree canopy with stacked sage green planter balconies and buff brick cladding",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-balcony-spiral-stair-entry.jpg",
-          "caption": "Street perspective showing resident ascending the external steel spiral staircase to the sage green entrance balcony with Kannada 'Brindavan 1714' signage",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-signage-spiral-stair-detail.jpg",
-          "caption": "Close-up of the cantilevered sage green balcony corner with Kannada 'Brindavan' brass typography, house number 1714, and black granite spiral steps",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-green-terrace-balcony.jpg",
-          "caption": "First-floor cantilevered terrace with resident pet, lush tropical planters, trailing creepers, and solid teak entrance portal",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-interior-landing-pendants.jpg",
-          "caption": "Upper level interior hallway with solid teak flooring, vertical fluted brick feature wall, and trio of sculptural fabric cocoon pendants",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-teak-spiral-stair-overhead.jpg",
-          "caption": "Bird's-eye perspective of the internal spiral staircase featuring fan-splayed solid teak treads, cylindrical steel spine, and buff brick perimeter",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-living-lounge-floating-stair.jpg",
-          "caption": "Living salon with rust boucle lounge, dining table, floating black granite staircase with ceiling suspension rods, and glass balcony opening",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-stairwell-skylit-brick-shadows.jpg",
-          "caption": "Stairwell lightwell showcasing vertical buff brick bond, potted indoor ficus, manual gear-lever mechanism, and linear skylight shadowplay",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-cantilever-green-balcony-terrace.jpg",
-          "caption": "Cantilevered green balcony terrace with olive plaster soffit, potted frangipani, vertical brick cladding, and lush treetop canopy view",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-balcony-spiral-stair-facade.jpg",
-          "caption": "Mid-level perspective of the arrival terrace featuring the external spiral staircase, Kannada house inscription, and slatted security grilles",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-atrium-lightwell-timber-pergola.jpg",
-          "caption": "Double-height lightwell court looking up toward timber pergola rafters with suspended cocoon lanterns and upper balcony threshold",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-louvered-skylight-shadow-terrace.jpg",
-          "caption": "Upper terrace court defined by vertical architectural louvers casting rhythmic linear shadow lines across the brick floor",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-brick-wall-bench-meditation.jpg",
-          "caption": "Resident sitting on woven timber bench against vertical buff brick feature wall under kinetic linear skylight shadows",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-staircase-planter-pergola-shadows.jpg",
-          "caption": "Lightwell staircase landing with potted umbrella tree, vertical buff brick bond, timber pergola, and skylight mechanical gear operator",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-landing-golden-retriever-pendants.jpg",
-          "caption": "Upper floor landing featuring resident pet, vertical buff brick wall, cluster of paper cocoon pendants, and sunlit balcony garden opening",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-dining-sage-wall-open-stair.jpg",
-          "caption": "Open-plan dining area with round stone table, teak wishbone chairs, sage green lime plaster accent wall, and suspended granite staircase",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-suspended-granite-staircase-motion.jpg",
-          "caption": "Suspended granite open-riser staircase with slender steel ceiling rods, modern wall art tiles, and polished concrete floor",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-double-height-atrium-sculptural-niche.jpg",
-          "caption": "Dramatic double-height living atrium featuring sculptural concrete niche divider, solid teak mezzanine bridge, and vertical buff brick lightwell",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-brick-wall-mechanical-wheel-vignette.jpg",
-          "caption": "Architectural vignette of the buff brick lightwell wall, artisanal bench with design monographs, and industrial gear wheel operator",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-upper-teak-bridge-lightwell-view.jpg",
-          "caption": "Upper level teak-lined bridge walkway overlooking the double-height lightwell court, sculptural cocoon pendants, and spiral stair landing",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-floating-stair-treads-rods-detail.jpg",
-          "caption": "Graphic architectural profile of cantilevered timber treads suspended by slender steel rods against white plaster wall",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-lightwell-teak-bridge-balcony-view.jpg",
-          "caption": "Perspective down the lightwell court over solid teak bridge balustrade toward buff brick wall and pergola shadow bands",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-teak-bookshelf-brick-shadows.jpg",
-          "caption": "Bespoke open teak shelving unit displaying books and pop art bulldog sculpture against diagonal pergola sun shadows",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/brindavan/brindavan-upper-gallery-reading-nook-shadows.jpg",
-          "caption": "Upper gallery reading nook featuring teak balustrade, curated open bookshelf, and dynamic pergola shadow patterns on buff brick",
-          "aspect": "portrait"
-        }
-      ],
-      "servicesInvolved": [
-        "Urban Residential Architecture",
-        "Biophilic Facade Engineering",
-        "Bespoke Interior Design"
-      ],
-      "teamMembers": [
-        "Ar. Rajesh Shivaram",
-        "Vikramaditya Shenoy",
-        "Naveen Prasad"
-      ],
-      "credits": {
-        "principalArchitect": "Ar. Rajesh Shivaram",
-        "projectArchitect": "Vikramaditya Shenoy",
-        "team": "Ar. Rajesh Shivaram, Vikramaditya Shenoy, Naveen Prasad",
-        "photography": "Shamanth Patil Photography"
-      },
-      "featured": true,
-      "relatedSlugs": [
-        "belaku",
-        "between-two-trees",
-        "aikya"
-      ],
-      "testimonial": {
-        "quote": "Techno Architecture crafted Brindavan as a serene haven where suspended granite staircases and floating volumes blend seamlessly with traditional materials. Every room feels alive with natural ventilation and daylight.",
-        "clientName": "K. S. Balasubramanian & Family",
-        "designation": "Homeowners",
-        "company": "Brindavan Villa"
-      },
-      "videoTour": {
-        "title": "Brindavan Villa Architectural Film Walkthrough | Techno Architecture",
-        "url": "/projects/brindavan/brindavan.mp4",
-        "platform": "Film",
-        "actionText": "Watch Architectural Film"
       }
     },
     {
@@ -4873,6 +4873,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-15T04:48:42.250Z",
+  "updatedAt": "2026-10-15T04:48:42.934Z",
   "deletedIds": []
 }
