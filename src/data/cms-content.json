@@ -1,100 +1,6 @@
 {
   "projects": [
     {
-      "id": "proj-1",
-      "slug": "aikya",
-      "title": "AIKYA",
-      "category": "Residential",
-      "status": "completed",
-      "location": "Bengaluru, India",
-      "year": 2021,
-      "client": "Private Client",
-      "area": "6500 sq.ft.",
-      "description": "A contemporary tropical sanctuary defined by interlocking geometric volumes, warm timber louvers, and a serene internal courtyard woven with water bodies and lush foliage.",
-      "processNarrative": "Aikya — embodying unity, harmony, and connection — dissolves the boundary between architecture and nature. Designed around climate-responsive passive physics, the residence features cantilevered deep overhangs, a double-height living pavilion with mezzanine study, an internal courtyard with reflecting koi pond, and tactile timber screening that filters Bengaluru's tropical light into poetic shadow play.",
-      "mainImage": "/projects/aikya/elevation-east.jpg",
-      "gallery": [
-        {
-          "url": "/projects/aikya/elevation-east.jpg",
-          "caption": "Frontal elevation showcasing timber louvers, cantilevered portals, and reflective pool",
-          "aspect": "full"
-        },
-        {
-          "url": "/projects/aikya/elevation-evening.jpg",
-          "caption": "Twilight elevation highlighting warm ambient illumination and volumetric articulation",
-          "aspect": "full"
-        },
-        {
-          "url": "/projects/aikya/double-height-and-study-area.jpg",
-          "caption": "Double-height living space with timber ceiling soffit, bespoke bookshelf, and upper study mezzanine",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/aikya/courtyard-view.jpg",
-          "caption": "Central skylit court featuring an indigenous tree planter, reflection pool, and steel staircase",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/aikya/view-from-courtyard.jpg",
-          "caption": "Upper cantilevered balcony overlooking the tranquil water court and green landscape",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/aikya/living-and-study-area.jpg",
-          "caption": "Mezzanine perspective looking across the illuminated double-height spatial volume",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/aikya/living-room.jpg",
-          "caption": "Ground-floor living pavilion opening seamlessly to garden greenery and outdoor light",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/aikya/outdoor-landscape-view-evening.jpg",
-          "caption": "Evening garden view capturing the harmonious integration of built form and nature",
-          "aspect": "full"
-        }
-      ],
-      "servicesInvolved": [
-        "Architectural Design",
-        "Interior Architecture",
-        "Landscape Integration"
-      ],
-      "teamMembers": [
-        "Ar. Rajesh Shivaram",
-        "Karthik Sundaram",
-        "Divya Raghavan"
-      ],
-      "credits": {
-        "principalArchitect": "Ar. Rajesh Shivaram",
-        "projectArchitect": "Deepak Kumar",
-        "team": "Saswath, Niketh",
-        "landscapeArchitect": "Verdant Studio",
-        "photography": "Shamanth Patil Photography",
-        "lightingConsultant": "Lumen Praxis",
-        "generalContractor": "Apex Buildtech Projects",
-        "projectLead": "Deepak Kumar"
-      },
-      "featured": true,
-      "relatedSlugs": [
-        "far-site-buildofy",
-        "kanasu",
-        "between-two-trees"
-      ],
-      "videoTour": {
-        "title": "6500 sq.ft Aikya House in Bengaluru by Technoarchitecture (Home Tour)",
-        "url": "https://www.youtube.com/results?search_query=Aikya+House+Technoarchitecture+Home+Tour",
-        "platform": "YouTube",
-        "actionText": "Watch House Tour"
-      },
-      "testimonial": {
-        "quote": "Living in Aikya has transformed our daily relationship with light and nature. Even during the peak of summer, the serene water courts and double-height living areas create an astonishingly cool, harmonious atmosphere. Techno's obsession with every millimeter of craft is evident everywhere you look.",
-        "clientName": "Mrs.Divya Murthy and Mr.Mohan Malligappa",
-        "designation": "Homeowners",
-        "company": "Private Residence"
-      }
-    },
-    {
       "id": "proj-2",
       "slug": "belaku",
       "title": "BELAKU",
@@ -268,6 +174,100 @@
         "clientName": "Suresh & Anitha Gowda",
         "designation": "Homeowners",
         "company": "Belaku Residence"
+      }
+    },
+    {
+      "id": "proj-1",
+      "slug": "aikya",
+      "title": "AIKYA",
+      "category": "Residential",
+      "status": "completed",
+      "location": "Bengaluru, India",
+      "year": 2021,
+      "client": "Private Client",
+      "area": "6500 sq.ft.",
+      "description": "A contemporary tropical sanctuary defined by interlocking geometric volumes, warm timber louvers, and a serene internal courtyard woven with water bodies and lush foliage.",
+      "processNarrative": "Aikya — embodying unity, harmony, and connection — dissolves the boundary between architecture and nature. Designed around climate-responsive passive physics, the residence features cantilevered deep overhangs, a double-height living pavilion with mezzanine study, an internal courtyard with reflecting koi pond, and tactile timber screening that filters Bengaluru's tropical light into poetic shadow play.",
+      "mainImage": "/projects/aikya/elevation-east.jpg",
+      "gallery": [
+        {
+          "url": "/projects/aikya/elevation-east.jpg",
+          "caption": "Frontal elevation showcasing timber louvers, cantilevered portals, and reflective pool",
+          "aspect": "full"
+        },
+        {
+          "url": "/projects/aikya/elevation-evening.jpg",
+          "caption": "Twilight elevation highlighting warm ambient illumination and volumetric articulation",
+          "aspect": "full"
+        },
+        {
+          "url": "/projects/aikya/double-height-and-study-area.jpg",
+          "caption": "Double-height living space with timber ceiling soffit, bespoke bookshelf, and upper study mezzanine",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/aikya/courtyard-view.jpg",
+          "caption": "Central skylit court featuring an indigenous tree planter, reflection pool, and steel staircase",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/aikya/view-from-courtyard.jpg",
+          "caption": "Upper cantilevered balcony overlooking the tranquil water court and green landscape",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/aikya/living-and-study-area.jpg",
+          "caption": "Mezzanine perspective looking across the illuminated double-height spatial volume",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/aikya/living-room.jpg",
+          "caption": "Ground-floor living pavilion opening seamlessly to garden greenery and outdoor light",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/aikya/outdoor-landscape-view-evening.jpg",
+          "caption": "Evening garden view capturing the harmonious integration of built form and nature",
+          "aspect": "full"
+        }
+      ],
+      "servicesInvolved": [
+        "Architectural Design",
+        "Interior Architecture",
+        "Landscape Integration"
+      ],
+      "teamMembers": [
+        "Ar. Rajesh Shivaram",
+        "Karthik Sundaram",
+        "Divya Raghavan"
+      ],
+      "credits": {
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Deepak Kumar",
+        "team": "Saswath, Niketh",
+        "landscapeArchitect": "Verdant Studio",
+        "photography": "Shamanth Patil Photography",
+        "lightingConsultant": "Lumen Praxis",
+        "generalContractor": "Apex Buildtech Projects",
+        "projectLead": "Deepak Kumar"
+      },
+      "featured": true,
+      "relatedSlugs": [
+        "far-site-buildofy",
+        "kanasu",
+        "between-two-trees"
+      ],
+      "videoTour": {
+        "title": "6500 sq.ft Aikya House in Bengaluru by Technoarchitecture (Home Tour)",
+        "url": "https://www.youtube.com/results?search_query=Aikya+House+Technoarchitecture+Home+Tour",
+        "platform": "YouTube",
+        "actionText": "Watch House Tour"
+      },
+      "testimonial": {
+        "quote": "Living in Aikya has transformed our daily relationship with light and nature. Even during the peak of summer, the serene water courts and double-height living areas create an astonishingly cool, harmonious atmosphere. Techno's obsession with every millimeter of craft is evident everywhere you look.",
+        "clientName": "Mrs.Divya Murthy and Mr.Mohan Malligappa",
+        "designation": "Homeowners",
+        "company": "Private Residence"
       }
     },
     {
@@ -2234,59 +2234,6 @@
     },
     {
       "id": "serv-2",
-      "slug": "structural-design",
-      "title": "Structural Design",
-      "shortDescription": "We coordinate the structural system with the architectural concept from early design stages for safe, efficient, and buildable buildings.",
-      "detailedDescription": "Structural design forms an integral part of our end to end project scope. We coordinate the structural system with the architectural concept from the early design stages, helping the building remain safe, efficient, buildable and aligned with the intended spatial character.",
-      "image": "/projects/between-two-trees/between-two-trees-facade-street.jpg",
-      "process": [
-        {
-          "step": "01",
-          "title": "Structural Concept Development",
-          "description": "Establishing load paths and structural logic aligned with architectural vision."
-        },
-        {
-          "step": "02",
-          "title": "Structural System Planning",
-          "description": "Selecting optimal RCC frames, steel elements, or composite structural schemes."
-        },
-        {
-          "step": "03",
-          "title": "Foundation and Framing Coordination",
-          "description": "Soil assessment review, column grid layouts, and foundation engineering."
-        },
-        {
-          "step": "04",
-          "title": "Coordination of Structural Drawings and Calculations",
-          "description": "Rigorous calculations ensuring structural integrity, safety, and efficiency."
-        },
-        {
-          "step": "05",
-          "title": "Integration with Architectural and Services Drawings",
-          "description": "Clash detection and seamless coordination with plumbing, electrical, and HVAC."
-        },
-        {
-          "step": "06",
-          "title": "Construction-Stage Structural Coordination",
-          "description": "Rebar inspections, concrete casting review, and structural alignment verification."
-        }
-      ],
-      "deliverables": [
-        "Structural concept development",
-        "Structural system planning",
-        "Foundation and framing coordination",
-        "Coordination of structural drawings and calculations",
-        "Integration with architectural and services drawings",
-        "Construction-stage structural coordination"
-      ],
-      "relatedProjectSlugs": [
-        "mantle-buildofy",
-        "belaku",
-        "kripa"
-      ]
-    },
-    {
-      "id": "serv-3",
       "slug": "interior-design",
       "title": "Interior Design",
       "shortDescription": "Our interior work extends the architectural idea into spaces that are comfortable, functional and materially refined.",
@@ -2336,6 +2283,59 @@
         "salut",
         "brindavan",
         "far-site-buildofy"
+      ]
+    },
+    {
+      "id": "serv-3",
+      "slug": "structural-design",
+      "title": "Structural Design",
+      "shortDescription": "We coordinate the structural system with the architectural concept from early design stages for safe, efficient, and buildable buildings.",
+      "detailedDescription": "Structural design forms an integral part of our end to end project scope. We coordinate the structural system with the architectural concept from the early design stages, helping the building remain safe, efficient, buildable and aligned with the intended spatial character.",
+      "image": "/projects/between-two-trees/between-two-trees-facade-street.jpg",
+      "process": [
+        {
+          "step": "01",
+          "title": "Structural Concept Development",
+          "description": "Establishing load paths and structural logic aligned with architectural vision."
+        },
+        {
+          "step": "02",
+          "title": "Structural System Planning",
+          "description": "Selecting optimal RCC frames, steel elements, or composite structural schemes."
+        },
+        {
+          "step": "03",
+          "title": "Foundation and Framing Coordination",
+          "description": "Soil assessment review, column grid layouts, and foundation engineering."
+        },
+        {
+          "step": "04",
+          "title": "Coordination of Structural Drawings and Calculations",
+          "description": "Rigorous calculations ensuring structural integrity, safety, and efficiency."
+        },
+        {
+          "step": "05",
+          "title": "Integration with Architectural and Services Drawings",
+          "description": "Clash detection and seamless coordination with plumbing, electrical, and HVAC."
+        },
+        {
+          "step": "06",
+          "title": "Construction-Stage Structural Coordination",
+          "description": "Rebar inspections, concrete casting review, and structural alignment verification."
+        }
+      ],
+      "deliverables": [
+        "Structural concept development",
+        "Structural system planning",
+        "Foundation and framing coordination",
+        "Coordination of structural drawings and calculations",
+        "Integration with architectural and services drawings",
+        "Construction-stage structural coordination"
+      ],
+      "relatedProjectSlugs": [
+        "mantle-buildofy",
+        "belaku",
+        "kripa"
       ]
     },
     {
@@ -4801,15 +4801,13 @@
   ],
   "siteSettings": {
     "name": "Techno Architecture",
-    "tagline": "Architecture shaped around people, place and purpose.",
+    "tagline": "Architecture shaped around people, place and purpose",
     "shortDescription": "Techno Architecture is an architecture and design practice creating thoughtful, practical and environmentally responsive spaces.",
     "longDescription": "Led by architect Rajesh Shivaram, Techno Architecture is a design practice committed to architecture that is distinctive, environmentally responsible and grounded in everyday life. Our work brings together planning, material expression, natural light and careful detailing to create spaces with lasting value.",
     "foundedYear": 2006,
     "contact": {
       "email": "technoarchitecture@gmail.com",
-      "phone": "+91 80 4210 3764",
-      "phoneBsnl": "+91 80 2991 4561",
-      "whatsapp": "+91 91800 14561",
+      "phone": "080 4210 3764",
       "pressEmail": "technoarchitecture@gmail.com",
       "careersEmail": "technoarchitecture@gmail.com"
     },
@@ -4818,9 +4816,7 @@
         "city": "Bengaluru Studio",
         "address": "No 9, Uttaradhi Mutt Road, Shankarpuram, Basavanagudi",
         "postalCode": "Karnataka 560004",
-        "phone": "+91 80 4210 3764",
-        "phoneBsnl": "+91 80 2991 4561",
-        "whatsapp": "+91 91800 14561",
+        "phone": "080 4210 3764",
         "isHeadquarters": true
       }
     ],
@@ -4877,5 +4873,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-11T16:15:01.186Z"
+  "updatedAt": "2026-10-15T04:40:24.574Z",
+  "deletedIds": []
 }
