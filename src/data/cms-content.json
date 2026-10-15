@@ -360,7 +360,7 @@
     {
       "id": "proj-12",
       "slug": "mantle-buildofy",
-      "title": "MANTLE BUILDOFY",
+      "title": "MANTLE BUI",
       "category": "Residential",
       "status": "completed",
       "location": "Banashankari, Bengaluru",
@@ -2236,59 +2236,6 @@
     },
     {
       "id": "serv-2",
-      "slug": "interior-design",
-      "title": "Interior Design",
-      "shortDescription": "Our interior work extends the architectural idea into spaces that are comfortable, functional and materially refined.",
-      "detailedDescription": "Our interior work extends the architectural idea into spaces that are comfortable, functional and materially refined. We plan circulation, furniture, lighting, storage and finishes as one coordinated system, with close attention to proportions and daily use.",
-      "image": "/projects/salut/salut-terrace-bar-screening-ambience.jpg",
-      "process": [
-        {
-          "step": "01",
-          "title": "Space Planning",
-          "description": "Circulation mapping, functional zoning, and furniture layout optimization."
-        },
-        {
-          "step": "02",
-          "title": "Interior Concept Development",
-          "description": "Mood boards, spatial narratives, 3D visualization, and thematic continuity."
-        },
-        {
-          "step": "03",
-          "title": "Material and Finish Selection",
-          "description": "Selecting tactile, durable stones, woods, metal accents, and textural fabrics."
-        },
-        {
-          "step": "04",
-          "title": "Custom Furniture and Joinery Design",
-          "description": "Bespoke millwork, built-in wardrobes, custom seating, and tailored details."
-        },
-        {
-          "step": "05",
-          "title": "Lighting Coordination",
-          "description": "Layered ambient, task, and architectural accent lighting schemes."
-        },
-        {
-          "step": "06",
-          "title": "Detailed Drawings and Site Review",
-          "description": "Comprehensive execution shop drawings and precision craftsmanship inspection."
-        }
-      ],
-      "deliverables": [
-        "Space planning",
-        "Interior concept development",
-        "Material and finish selection",
-        "Custom furniture and joinery design",
-        "Lighting coordination",
-        "Detailed drawings and site review"
-      ],
-      "relatedProjectSlugs": [
-        "salut",
-        "brindavan",
-        "far-site-buildofy"
-      ]
-    },
-    {
-      "id": "serv-3",
       "slug": "structural-design",
       "title": "Structural Design",
       "shortDescription": "We coordinate the structural system with the architectural concept from early design stages for safe, efficient, and buildable buildings.",
@@ -2338,6 +2285,59 @@
         "mantle-buildofy",
         "belaku",
         "kripa"
+      ]
+    },
+    {
+      "id": "serv-3",
+      "slug": "interior-design",
+      "title": "Interior Design",
+      "shortDescription": "Our interior work extends the architectural idea into spaces that are comfortable, functional and materially refined.",
+      "detailedDescription": "Our interior work extends the architectural idea into spaces that are comfortable, functional and materially refined. We plan circulation, furniture, lighting, storage and finishes as one coordinated system, with close attention to proportions and daily use.",
+      "image": "/projects/salut/salut-terrace-bar-screening-ambience.jpg",
+      "process": [
+        {
+          "step": "01",
+          "title": "Space Planning",
+          "description": "Circulation mapping, functional zoning, and furniture layout optimization."
+        },
+        {
+          "step": "02",
+          "title": "Interior Concept Development",
+          "description": "Mood boards, spatial narratives, 3D visualization, and thematic continuity."
+        },
+        {
+          "step": "03",
+          "title": "Material and Finish Selection",
+          "description": "Selecting tactile, durable stones, woods, metal accents, and textural fabrics."
+        },
+        {
+          "step": "04",
+          "title": "Custom Furniture and Joinery Design",
+          "description": "Bespoke millwork, built-in wardrobes, custom seating, and tailored details."
+        },
+        {
+          "step": "05",
+          "title": "Lighting Coordination",
+          "description": "Layered ambient, task, and architectural accent lighting schemes."
+        },
+        {
+          "step": "06",
+          "title": "Detailed Drawings and Site Review",
+          "description": "Comprehensive execution shop drawings and precision craftsmanship inspection."
+        }
+      ],
+      "deliverables": [
+        "Space planning",
+        "Interior concept development",
+        "Material and finish selection",
+        "Custom furniture and joinery design",
+        "Lighting coordination",
+        "Detailed drawings and site review"
+      ],
+      "relatedProjectSlugs": [
+        "salut",
+        "brindavan",
+        "far-site-buildofy"
       ]
     },
     {
@@ -2479,7 +2479,7 @@
     },
     {
       "id": "team-suma",
-      "name": "Suma",
+      "name": "ASuma",
       "role": "Senior Project Architect",
       "discipline": "Architecture",
       "credentials": "B.Arch",
@@ -4809,7 +4809,9 @@
     "foundedYear": 2006,
     "contact": {
       "email": "technoarchitecture@gmail.com",
-      "phone": "080 4210 3764",
+      "phone": "+91 80 4210 3764",
+      "phoneBsnl": "+91 80 2991 4561",
+      "whatsapp": "+91 91800 14561",
       "pressEmail": "technoarchitecture@gmail.com",
       "careersEmail": "technoarchitecture@gmail.com"
     },
@@ -4818,7 +4820,9 @@
         "city": "Bengaluru Studio",
         "address": "No 9, Uttaradhi Mutt Road, Shankarpuram, Basavanagudi",
         "postalCode": "Karnataka 560004",
-        "phone": "080 4210 3764",
+        "phone": "+91 80 4210 3764",
+        "phoneBsnl": "+91 80 2991 4561",
+        "whatsapp": "+91 91800 14561",
         "isHeadquarters": true
       }
     ],
@@ -4875,6 +4879,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-15T06:28:06.256Z",
+  "updatedAt": "2026-10-15T06:29:00.475Z",
   "deletedIds": []
 }
