@@ -360,7 +360,7 @@
     {
       "id": "proj-12",
       "slug": "mantle-buildofy",
-      "title": "MA",
+      "title": "THW",
       "category": "Residential",
       "status": "completed",
       "location": "Banashankari, Bengaluru",
@@ -4879,6 +4879,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-15T06:29:01.463Z",
+  "updatedAt": "2026-10-15T06:29:08.233Z",
   "deletedIds": []
 }
