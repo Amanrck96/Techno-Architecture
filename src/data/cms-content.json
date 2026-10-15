@@ -937,7 +937,7 @@
     {
       "id": "proj-5",
       "slug": "far-site-buildofy",
-      "title": "FAR SITE BUIL",
+      "title": "FAR SITE ",
       "category": "Residential",
       "status": "completed",
       "location": "Bengaluru, India",
@@ -4880,6 +4880,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-15T10:10:30.778Z",
+  "updatedAt": "2026-10-15T10:10:32.197Z",
   "deletedIds": []
 }
