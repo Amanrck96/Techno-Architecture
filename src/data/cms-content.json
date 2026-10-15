@@ -352,7 +352,7 @@
         "actionText": "Watch House Tour"
       },
       "testimonial": {
-        "quote": "",
+        "quote": "\n“KRIPA feels open, calm and truly ours—a home where light, greenery and everyday life come together beautifully.”",
         "clientName": "Mr.Arun Charanthimanth",
         "designation": "Homeowners",
         "company": "Kripa Residence"
@@ -4880,6 +4880,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-15T10:05:37.387Z",
+  "updatedAt": "2026-10-15T10:06:52.786Z",
   "deletedIds": []
 }
