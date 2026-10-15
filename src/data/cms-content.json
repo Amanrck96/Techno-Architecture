@@ -183,7 +183,7 @@
       "client": "Private Residence",
       "area": "5,800 sq.ft",
       "description": "A biophilic residential sanctuary harmonizing geometric concrete breeze-block jaali screens, textured charcoal stone cladding, cascading hanging gardens, and a sculpted steel-and-teak folded plate staircase.",
-      "processNarrative": "Conceived as a breathing urban home, Kripa filters southern sunlight and street activity through an intricate porous concrete breeze block screen. Deep recessed balconies drape with lush curtain creepers, creating an introspective, tropical microclimate centered around a minimalist black folded steel staircase flight.",
+      "processNarrative": "",
       "mainImage": "/projects/kripa/kripa-dining-room-indoor-outdoor-veranda.jpg",
       "gallery": [
         {
@@ -4879,6 +4879,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-15T10:02:22.130Z",
+  "updatedAt": "2026-10-15T10:03:48.806Z",
   "deletedIds": []
 }
