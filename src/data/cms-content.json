@@ -1133,100 +1133,6 @@
       }
     },
     {
-      "id": "proj-1",
-      "slug": "aikya",
-      "title": "AIKYA",
-      "category": "Residential",
-      "status": "completed",
-      "location": "Bengaluru, India",
-      "year": 2021,
-      "client": "Private Client",
-      "area": "6500 sq.ft.",
-      "description": "A contemporary tropical sanctuary defined by interlocking geometric volumes, warm timber louvers, and a serene internal courtyard woven with water bodies and lush foliage.",
-      "processNarrative": "Aikya — embodying unity, harmony, and connection — dissolves the boundary between architecture and nature. Designed around climate-responsive passive physics, the residence features cantilevered deep overhangs, a double-height living pavilion with mezzanine study, an internal courtyard with reflecting koi pond, and tactile timber screening that filters Bengaluru's tropical light into poetic shadow play.",
-      "mainImage": "/projects/aikya/elevation-east.jpg",
-      "gallery": [
-        {
-          "url": "/projects/aikya/elevation-east.jpg",
-          "caption": "Frontal elevation showcasing timber louvers, cantilevered portals, and reflective pool",
-          "aspect": "full"
-        },
-        {
-          "url": "/projects/aikya/elevation-evening.jpg",
-          "caption": "Twilight elevation highlighting warm ambient illumination and volumetric articulation",
-          "aspect": "full"
-        },
-        {
-          "url": "/projects/aikya/double-height-and-study-area.jpg",
-          "caption": "Double-height living space with timber ceiling soffit, bespoke bookshelf, and upper study mezzanine",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/aikya/courtyard-view.jpg",
-          "caption": "Central skylit court featuring an indigenous tree planter, reflection pool, and steel staircase",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/aikya/view-from-courtyard.jpg",
-          "caption": "Upper cantilevered balcony overlooking the tranquil water court and green landscape",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/aikya/living-and-study-area.jpg",
-          "caption": "Mezzanine perspective looking across the illuminated double-height spatial volume",
-          "aspect": "portrait"
-        },
-        {
-          "url": "/projects/aikya/living-room.jpg",
-          "caption": "Ground-floor living pavilion opening seamlessly to garden greenery and outdoor light",
-          "aspect": "landscape"
-        },
-        {
-          "url": "/projects/aikya/outdoor-landscape-view-evening.jpg",
-          "caption": "Evening garden view capturing the harmonious integration of built form and nature",
-          "aspect": "full"
-        }
-      ],
-      "servicesInvolved": [
-        "Architectural Design",
-        "Interior Architecture",
-        "Landscape Integration"
-      ],
-      "teamMembers": [
-        "Ar. Rajesh Shivaram",
-        "Karthik Sundaram",
-        "Divya Raghavan"
-      ],
-      "credits": {
-        "principalArchitect": "Ar. Rajesh Shivaram",
-        "projectArchitect": "Deepak Kumar",
-        "team": "Saswath, Niketh",
-        "landscapeArchitect": "Verdant Studio",
-        "photography": "Shamanth Patil Photography",
-        "lightingConsultant": "Lumen Praxis",
-        "generalContractor": "Apex Buildtech Projects",
-        "projectLead": "Deepak Kumar"
-      },
-      "featured": true,
-      "relatedSlugs": [
-        "far-site-buildofy",
-        "kanasu",
-        "between-two-trees"
-      ],
-      "videoTour": {
-        "title": "6500 sq.ft Aikya House in Bengaluru by Technoarchitecture (Home Tour)",
-        "url": "https://www.youtube.com/results?search_query=Aikya+House+Technoarchitecture+Home+Tour",
-        "platform": "YouTube",
-        "actionText": "Watch House Tour"
-      },
-      "testimonial": {
-        "quote": "Living in Aikya has transformed our daily relationship with light and nature. Even during the peak of summer, the serene water courts and double-height living areas create an astonishingly cool, harmonious atmosphere. Techno's obsession with every millimeter of craft is evident everywhere you look.",
-        "clientName": "Mrs.Divya Murthy and Mr.Mohan Malligappa",
-        "designation": "Homeowners",
-        "company": "Private Residence"
-      }
-    },
-    {
       "id": "proj-7",
       "slug": "kanasu",
       "title": "KANASU",
@@ -1399,6 +1305,100 @@
         "clientName": "Raghavendra & Priya Joshi",
         "designation": "Homeowners",
         "company": "Kanasu Residence"
+      }
+    },
+    {
+      "id": "proj-1",
+      "slug": "aikya",
+      "title": "AIKYA",
+      "category": "Residential",
+      "status": "completed",
+      "location": "Bengaluru, India",
+      "year": 2021,
+      "client": "Private Client",
+      "area": "6500 sq.ft.",
+      "description": "A contemporary tropical sanctuary defined by interlocking geometric volumes, warm timber louvers, and a serene internal courtyard woven with water bodies and lush foliage.",
+      "processNarrative": "Aikya — embodying unity, harmony, and connection — dissolves the boundary between architecture and nature. Designed around climate-responsive passive physics, the residence features cantilevered deep overhangs, a double-height living pavilion with mezzanine study, an internal courtyard with reflecting koi pond, and tactile timber screening that filters Bengaluru's tropical light into poetic shadow play.",
+      "mainImage": "/projects/aikya/elevation-east.jpg",
+      "gallery": [
+        {
+          "url": "/projects/aikya/elevation-east.jpg",
+          "caption": "Frontal elevation showcasing timber louvers, cantilevered portals, and reflective pool",
+          "aspect": "full"
+        },
+        {
+          "url": "/projects/aikya/elevation-evening.jpg",
+          "caption": "Twilight elevation highlighting warm ambient illumination and volumetric articulation",
+          "aspect": "full"
+        },
+        {
+          "url": "/projects/aikya/double-height-and-study-area.jpg",
+          "caption": "Double-height living space with timber ceiling soffit, bespoke bookshelf, and upper study mezzanine",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/aikya/courtyard-view.jpg",
+          "caption": "Central skylit court featuring an indigenous tree planter, reflection pool, and steel staircase",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/aikya/view-from-courtyard.jpg",
+          "caption": "Upper cantilevered balcony overlooking the tranquil water court and green landscape",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/aikya/living-and-study-area.jpg",
+          "caption": "Mezzanine perspective looking across the illuminated double-height spatial volume",
+          "aspect": "portrait"
+        },
+        {
+          "url": "/projects/aikya/living-room.jpg",
+          "caption": "Ground-floor living pavilion opening seamlessly to garden greenery and outdoor light",
+          "aspect": "landscape"
+        },
+        {
+          "url": "/projects/aikya/outdoor-landscape-view-evening.jpg",
+          "caption": "Evening garden view capturing the harmonious integration of built form and nature",
+          "aspect": "full"
+        }
+      ],
+      "servicesInvolved": [
+        "Architectural Design",
+        "Interior Architecture",
+        "Landscape Integration"
+      ],
+      "teamMembers": [
+        "Ar. Rajesh Shivaram",
+        "Karthik Sundaram",
+        "Divya Raghavan"
+      ],
+      "credits": {
+        "principalArchitect": "Ar. Rajesh Shivaram",
+        "projectArchitect": "Deepak Kumar",
+        "team": "Saswath, Niketh",
+        "landscapeArchitect": "Verdant Studio",
+        "photography": "Shamanth Patil Photography",
+        "lightingConsultant": "Lumen Praxis",
+        "generalContractor": "Apex Buildtech Projects",
+        "projectLead": "Deepak Kumar"
+      },
+      "featured": true,
+      "relatedSlugs": [
+        "far-site-buildofy",
+        "kanasu",
+        "between-two-trees"
+      ],
+      "videoTour": {
+        "title": "6500 sq.ft Aikya House in Bengaluru by Technoarchitecture (Home Tour)",
+        "url": "https://www.youtube.com/results?search_query=Aikya+House+Technoarchitecture+Home+Tour",
+        "platform": "YouTube",
+        "actionText": "Watch House Tour"
+      },
+      "testimonial": {
+        "quote": "Living in Aikya has transformed our daily relationship with light and nature. Even during the peak of summer, the serene water courts and double-height living areas create an astonishingly cool, harmonious atmosphere. Techno's obsession with every millimeter of craft is evident everywhere you look.",
+        "clientName": "Mrs.Divya Murthy and Mr.Mohan Malligappa",
+        "designation": "Homeowners",
+        "company": "Private Residence"
       }
     },
     {
@@ -4873,6 +4873,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-15T04:51:31.694Z",
+  "updatedAt": "2026-10-15T04:51:35.117Z",
   "deletedIds": []
 }
