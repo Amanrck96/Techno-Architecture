@@ -1524,7 +1524,7 @@
         "team": "Vikramaditya Shenoy, Divya Raghavan, Naveen Prasad",
         "photography": "Technoarchitecture Studio"
       },
-      "featured": true,
+      "featured": false,
       "relatedSlugs": [
         "far-site-buildofy",
         "brindavan",
@@ -4875,6 +4875,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-15T06:16:54.018Z",
+  "updatedAt": "2026-10-15T06:17:21.120Z",
   "deletedIds": []
 }
