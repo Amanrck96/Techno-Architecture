@@ -535,9 +535,10 @@
       ],
       "credits": {
         "principalArchitect": "Ar. Rajesh Shivaram",
-        "projectArchitect": "Techno Architecture",
+        "projectArchitect": "Ru",
         "team": "Ar.Rajesh Shivaram, Ar.Varna, Ar.Vidhul, Ar.Akash",
-        "photography": "Shamanth Patil Photography"
+        "photography": "Shamanth Patil Photography",
+        "projectLead": "Ru"
       },
       "featured": true,
       "relatedSlugs": [
@@ -4880,6 +4881,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-16T04:55:42.853Z",
+  "updatedAt": "2026-10-16T04:56:35.968Z",
   "deletedIds": []
 }
