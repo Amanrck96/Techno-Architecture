@@ -712,10 +712,11 @@
       ],
       "credits": {
         "principalArchitect": "Ar. Rajesh Shivaram",
-        "projectArchitect": "ArSaswat",
+        "projectArchitect": "Ar.Saswat",
         "team": "Vikramaditya Shenoy, Karthik Sundaram, Aditya Joshi",
         "photography": "Shamanth Patil Photography",
-        "projectLead": "ArSaswat"
+        "projectLead": "Ar.Saswat",
+        "landscapeArchitect": "3"
       },
       "featured": true,
       "relatedSlugs": [
@@ -4883,6 +4884,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-16T05:14:11.377Z",
+  "updatedAt": "2026-10-16T05:14:19.704Z",
   "deletedIds": []
 }
