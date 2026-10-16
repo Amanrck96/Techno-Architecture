@@ -548,7 +548,7 @@
         "far-site-buildofy"
       ],
       "videoTour": {
-        "title": "The Mantle | Main Video",
+        "title": "The Mantle ",
         "url": "https://www.youtube.com/results?search_query=The+Mantle+Techno+Architecture+Review",
         "platform": "Buildofy",
         "actionText": "Watch Video Review"
@@ -4882,6 +4882,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-16T04:58:29.030Z",
+  "updatedAt": "2026-10-16T04:58:41.683Z",
   "deletedIds": []
 }
