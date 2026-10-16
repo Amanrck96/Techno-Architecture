@@ -538,7 +538,8 @@
         "projectArchitect": "Rupali Dhadde",
         "team": "Ar.Rajesh Shivaram, Ar.Varna, Ar.Vidhul, Ar.Akash",
         "photography": "Shamanth Patil Photography",
-        "projectLead": "Rupali Dhadde"
+        "projectLead": "Rupali Dhadde",
+        "landscapeArchitect": "3 "
       },
       "featured": true,
       "relatedSlugs": [
@@ -4881,6 +4882,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-16T04:56:49.539Z",
+  "updatedAt": "2026-10-16T04:57:05.055Z",
   "deletedIds": []
 }
