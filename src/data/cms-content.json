@@ -166,7 +166,7 @@
         "company": "Brindavana residence"
       },
       "videoTour": {
-        "title": "Brindavan| Technoarchitecture (Home Tour)",
+        "title": "Brindavana | Technoarchitecture (Home Tour)",
         "url": "/projects/brindavan/brindavan.mp4",
         "platform": "Film",
         "actionText": "Watch Architectural Film"
@@ -926,7 +926,7 @@
         "far-site-buildofy"
       ],
       "videoTour": {
-        "title": "House With a Traditional Chettinad Courtyard Between 2 Trees | Bengaluru | Technoarchitecture",
+        "title": "House With a Traditional Chettinad Courtyard Between 2 Trees | Technoarchitecture (Home Tour)",
         "url": "https://www.youtube.com/results?search_query=Between+Two+Trees+House+With+a+Traditional+Chettinad+Courtyard+Technoarchitecture",
         "platform": "YouTube",
         "actionText": "Watch Video Tour"
@@ -4884,6 +4884,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-16T05:23:12.645Z",
+  "updatedAt": "2026-10-16T05:23:42.879Z",
   "deletedIds": []
 }
