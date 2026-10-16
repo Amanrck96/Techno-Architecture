@@ -730,7 +730,7 @@
       },
       "testimonial": {
         "quote": "Kanasu perfectly balances traditional Vastu principles with contemporary tropical design. The volumetric light and serene internal courtyards give our family an extraordinary sense of calm.",
-        "clientName": "Mrs.us",
+        "clientName": "Mrs.",
         "designation": "Homeowners ",
         "company": "Kanasu Residence"
       }
@@ -4882,6 +4882,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-16T05:09:59.113Z",
+  "updatedAt": "2026-10-16T05:10:00.139Z",
   "deletedIds": []
 }
