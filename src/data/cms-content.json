@@ -713,10 +713,10 @@
       "credits": {
         "principalArchitect": "Ar. Rajesh Shivaram",
         "projectArchitect": "Ar.Saswat",
-        "team": "Vikramaditya Shenoy, Karthik Sundaram, Aditya Joshi",
+        "team": "",
         "photography": "Shamanth Patil Photography",
         "projectLead": "Ar.Saswat",
-        "landscapeArchitect": "3Fold Designs"
+        "landscapeArchitect": "3 Fold Designs"
       },
       "featured": true,
       "relatedSlugs": [
@@ -4884,6 +4884,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-16T05:14:35.099Z",
+  "updatedAt": "2026-10-16T05:14:54.860Z",
   "deletedIds": []
 }
