@@ -712,10 +712,10 @@
       ],
       "credits": {
         "principalArchitect": "Ar. Rajesh Shivaram",
-        "projectArchitect": "Sasw",
+        "projectArchitect": "Sas",
         "team": "Vikramaditya Shenoy, Karthik Sundaram, Aditya Joshi",
         "photography": "Shamanth Patil Photography",
-        "projectLead": "Sasw"
+        "projectLead": "Sas"
       },
       "featured": true,
       "relatedSlugs": [
@@ -4883,6 +4883,6 @@
       "year": 2023
     }
   ],
-  "updatedAt": "2026-10-16T05:13:50.090Z",
+  "updatedAt": "2026-10-16T05:13:49.009Z",
   "deletedIds": []
 }
