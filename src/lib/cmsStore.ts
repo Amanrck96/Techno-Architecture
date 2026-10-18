@@ -46,10 +46,21 @@ export function filterOutDeletedItems<T = any>(
 
 export function sanitizeProjectsList(list: any[]): Project[] {
   if (!Array.isArray(list)) return [];
-  return list.map((p) => ({
-    ...p,
-    category: sanitizeProjectCategory(p?.category),
-  }));
+  return list.map((p) => {
+    let cleanSlug = (p?.slug || "").trim().toLowerCase().replace(/[\s_]+/g, "-");
+    if (
+      (!p?.slug || cleanSlug === "zenith-residence" || cleanSlug === "mantle-buildofy") &&
+      p?.id === "proj-12"
+    ) {
+      cleanSlug = "the-mantle";
+    }
+
+    return {
+      ...p,
+      slug: cleanSlug || p?.slug,
+      category: sanitizeProjectCategory(p?.category),
+    };
+  });
 }
 
 const seedData = (staticCmsContent as any) || {};
@@ -92,14 +103,14 @@ export const defaultTestimonials: Testimonial[] = filterOutDeletedItems(
 );
 
 export const STORAGE_KEYS = {
-  PROJECTS: "techno_cms_projects_v9",
-  SERVICES: "techno_cms_services_v5",
+  PROJECTS: "techno_cms_projects_v11",
+  SERVICES: "techno_cms_services_v6",
   TEAM: "techno_cms_team_v9",
   BLOG: "techno_cms_blog_v5",
   FAQ: "techno_cms_faq_v5",
   GALLERY: "techno_cms_gallery_v5",
   RECOGNITIONS: "techno_cms_recognitions_v5",
-  SETTINGS: "techno_cms_settings_v5",
+  SETTINGS: "techno_cms_settings_v6",
   TESTIMONIALS: "techno_cms_testimonials_v5",
   DELETED_IDS: "techno_cms_deleted_ids_v1",
   CLIENT_UPDATED_AT: "techno_cms_client_updated_at",
@@ -196,6 +207,7 @@ export async function syncToServer(payload: {
   githubRepo?: string;
   upstashUrl?: string;
   upstashToken?: string;
+  forceGitHubCommit?: boolean;
 }): Promise<{
   success: boolean;
   updatedAt?: string;
@@ -565,6 +577,24 @@ export function CMSProvider({
         setServerStorageInfo(data._storageInfo);
       }
 
+      // CRITICAL: NEVER overwrite state while user is actively typing in any input/textarea
+      // or if any debounced local edits are currently pending in-flight.
+      if (typeof document !== "undefined") {
+        const active = document.activeElement;
+        if (
+          active &&
+          (active.tagName === "INPUT" ||
+            active.tagName === "TEXTAREA" ||
+            (active as HTMLElement).isContentEditable)
+        ) {
+          return;
+        }
+      }
+
+      if (syncTimersRef.current.size > 0) {
+        return;
+      }
+
       // Check if client has pending uncommitted local edits
       let hasUnsavedEdits = false;
       try {
@@ -724,6 +754,11 @@ export function CMSProvider({
   };
 
   const debouncedSyncToServer = useCallback((entity: string, data: any, currentDeleted?: string[]) => {
+    touchClientUpdate();
+    try {
+      localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "true");
+    } catch (_) {}
+
     const existing = syncTimersRef.current.get(entity);
     if (existing) {
       clearTimeout(existing);
@@ -739,7 +774,7 @@ export function CMSProvider({
           }
         } catch (_) {}
       }
-    }, 600);
+    }, 1500);
     syncTimersRef.current.set(entity, timer);
   }, [deletedIds]);
 

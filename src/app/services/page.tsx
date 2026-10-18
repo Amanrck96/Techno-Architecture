@@ -14,8 +14,6 @@ import {
   Hammer,
   Lightbulb,
   Maximize2,
-  Users2,
-  FileCheck,
   ShieldAlert,
 } from "lucide-react";
 
@@ -32,8 +30,6 @@ export default function ServicesPage() {
   const archService = services.find((s) => s.slug === "architecture") || services[0];
   const structuralService = services.find((s) => s.slug === "structural-design") || services[1];
   const interiorService = services.find((s) => s.slug === "interior-design") || services[2];
-  const specialistService =
-    services.find((s) => s.slug === "specialist-consultant-introductions") || services[3];
 
   const scrollTo = (id: string) => {
     setActiveTab(id);
@@ -65,7 +61,6 @@ export default function ServicesPage() {
             { id: "architecture", label: "01 / Architecture" },
             { id: "structural-design", label: "02 / Structural Design" },
             { id: "interior-design", label: "03 / Interior Design" },
-            { id: "specialist-consultant-introductions", label: "04 / Specialist Introductions" },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -371,123 +366,7 @@ export default function ServicesPage() {
         </section>
       )}
 
-      {/* ========================================================================= */}
-      {/* CATEGORY 04: SPECIALIST CONSULTANTS (Advisory Network & Coordination Grid) */}
-      {/* ========================================================================= */}
-      {specialistService && (
-        <section
-          id="specialist-consultant-introductions"
-          className="scroll-mt-24 pt-12 border-t border-neutral-200 space-y-10"
-        >
-          {/* Category Header */}
-          <div>
-            <span className="text-xs font-mono text-neutral-400 uppercase tracking-widest block font-semibold">
-              04 / MULTI-DISCIPLINARY COLLABORATION
-            </span>
-            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light uppercase tracking-tight text-neutral-900 mt-1">
-              {specialistService.title}
-            </h2>
-          </div>
-
-          {/* Two-Column Advisory Banner */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-7 space-y-4">
-              <p className="text-base sm:text-lg text-neutral-900 font-light leading-relaxed border-l-2 border-neutral-900 pl-6">
-                {specialistService.detailedDescription}
-              </p>
-
-              {/* Specialist Disciplines Grid */}
-              <div className="pt-4 space-y-2">
-                <span className="text-[10px] uppercase font-mono tracking-widest text-neutral-400 block font-semibold">
-                  DISCIPLINES INTRODUCED & COORDINATED
-                </span>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs text-neutral-800">
-                  <div className="p-3 bg-neutral-50 border border-neutral-200">
-                    <span className="font-semibold block text-neutral-900">MEP Services</span>
-                    <span className="text-[10px] text-neutral-500">HVAC, PHE & Electrical</span>
-                  </div>
-                  <div className="p-3 bg-neutral-50 border border-neutral-200">
-                    <span className="font-semibold block text-neutral-900">Lighting Design</span>
-                    <span className="text-[10px] text-neutral-500">Daylight & Night Scenarios</span>
-                  </div>
-                  <div className="p-3 bg-neutral-50 border border-neutral-200">
-                    <span className="font-semibold block text-neutral-900">Landscape Architecture</span>
-                    <span className="text-[10px] text-neutral-500">Ecological Planting & Water</span>
-                  </div>
-                  <div className="p-3 bg-neutral-50 border border-neutral-200">
-                    <span className="font-semibold block text-neutral-900">Acoustic Engineering</span>
-                    <span className="text-[10px] text-neutral-500">Theatres & Sound Privacy</span>
-                  </div>
-                  <div className="p-3 bg-neutral-50 border border-neutral-200">
-                    <span className="font-semibold block text-neutral-900">Sustainability & Solar</span>
-                    <span className="text-[10px] text-neutral-500">Net-zero & Rain Harvesting</span>
-                  </div>
-                  <div className="p-3 bg-neutral-50 border border-neutral-200">
-                    <span className="font-semibold block text-neutral-900">Cost & Quantity Survey</span>
-                    <span className="text-[10px] text-neutral-500">Bill of Quantities (BOQ)</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Notice Card */}
-            <div className="lg:col-span-5 p-6 sm:p-8 bg-neutral-100 border border-neutral-300 space-y-4">
-              <div className="flex items-center gap-2 text-neutral-900">
-                <Users2 size={18} />
-                <h4 className="text-xs uppercase font-mono tracking-wider font-semibold">
-                  CLIENT DIRECT APPOINTMENT
-                </h4>
-              </div>
-              <p className="text-xs text-neutral-600 leading-relaxed font-light">
-                Specialist consultants are appointed directly by the client. Their scope, fees and deliverables are defined separately according to the project&apos;s requirements, while Techno Architecture coordinates and integrates all design information seamlessly.
-              </p>
-              <div className="pt-2">
-                <Link
-                  href="/contact"
-                  className="inline-flex items-center gap-2 py-2 px-4 bg-black text-white text-[10px] uppercase font-mono tracking-widest hover:bg-neutral-800 transition-colors"
-                >
-                  <span>Inquire for Project Scope</span>
-                  <ArrowUpRight size={12} />
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          {/* 6 Coordination Phases */}
-          <div className="space-y-4 pt-4">
-            <div className="flex items-center justify-between border-b border-neutral-200 pb-3">
-              <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-neutral-900 font-semibold">
-                COORDINATION PROTOCOL (ALL 6 STAGES FROM PDF)
-              </span>
-              <span className="text-[10px] font-mono text-neutral-400">INTEGRATION MILESTONES</span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {specialistService.process.map((step, idx) => (
-                <div
-                  key={idx}
-                  className="p-5 bg-white border border-neutral-200 hover:border-black transition-all duration-200 space-y-2 group shadow-2xs hover:shadow-md"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-mono font-semibold text-neutral-400 group-hover:text-black">
-                      {step.step} / COORDINATION
-                    </span>
-                    <FileCheck size={13} className="text-neutral-400 group-hover:text-black" />
-                  </div>
-                  <h4 className="text-xs sm:text-sm font-semibold text-neutral-900">
-                    {step.title}
-                  </h4>
-                  <p className="text-xs text-neutral-500 font-light leading-relaxed">
-                    {step.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* 5. Bottom Engagement CTA Banner */}
+      {/* 4. Bottom Engagement CTA Banner */}
       <div className="mt-16 p-8 md:p-12 bg-neutral-950 text-white flex flex-col md:flex-row md:items-center justify-between gap-8 rounded-xs shadow-2xl">
         <div className="space-y-2">
           <span className="text-[9.5px] uppercase tracking-[0.3em] font-mono text-neutral-400 block">

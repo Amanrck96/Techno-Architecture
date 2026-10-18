@@ -15,7 +15,8 @@ export default function Footer() {
   const email = siteSettings?.contact?.email || "technoarchitecture@gmail.com";
   const phone = siteSettings?.contact?.phone || "+91 80 4210 3764";
   const phoneBsnl = siteSettings?.contact?.phoneBsnl || "+91 80 2991 4561";
-  const hours = siteSettings?.operatingHours || "Mon - Fri: 10:00 AM - 6:30 PM";
+  const rawHours = siteSettings?.operatingHours || "Monday to Friday, 10:00 AM to 6:30 PM";
+  const hours = rawHours.replace(/;\s*Saturday\s*closed/gi, "").trim();
   const address =
     siteSettings?.studios?.[0]?.address
       ? `${siteSettings.studios[0].address}, Bengaluru, ${siteSettings.studios[0].postalCode || "Karnataka 560004"}`

@@ -97,7 +97,7 @@ export const initialSiteSettings: SiteSettings = {
       handle: "TechnoArchitecture Basavanagudi",
     }
   ],
-  operatingHours: "Monday to Friday, 10:00 AM to 6:30 PM; Saturday closed",
+  operatingHours: "Monday to Friday, 10:00 AM to 6:30 PM",
   copyrightNotice: "TECHNO ARCHITECTURE. ALL RIGHTS RESERVED.",
   milestones: [
     { value: "2006", label: "Established Studio", detail: "Rooted in Basavanagudi" },

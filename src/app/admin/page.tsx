@@ -516,6 +516,7 @@ export default function AdminCMSPage() {
         allData,
         githubToken: githubTokenInput.trim(),
         githubRepo: githubRepoInput.trim() || "Kima1011/Techno-Architecture",
+        forceGitHubCommit: true,
       });
 
       if (res.success && res.storageStatus?.github) {
@@ -1507,6 +1508,18 @@ export default function AdminCMSPage() {
                           const updated = [...projects];
                           updated[idx].slug = e.target.value;
                           saveProjects(updated);
+                        }}
+                        onBlur={(e) => {
+                          const updated = [...projects];
+                          const sanitizedSlug = e.target.value
+                            .trim()
+                            .toLowerCase()
+                            .replace(/[\s_]+/g, "-")
+                            .replace(/[^a-z0-9-]/g, "");
+                          if (sanitizedSlug && sanitizedSlug !== e.target.value) {
+                            updated[idx].slug = sanitizedSlug;
+                            saveProjects(updated);
+                          }
                         }}
                         className="w-full p-2 border border-neutral-300 rounded text-xs font-mono focus:border-black focus:outline-none"
                       />

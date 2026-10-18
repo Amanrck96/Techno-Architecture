@@ -453,10 +453,10 @@ export async function writeStore(
       }
     })(),
 
-    // Tier 3: GitHub direct commit (enabled in Vercel or when forceGitHubCommit provided)
+    // Tier 3: GitHub direct commit (ONLY when explicitly requested via forceGitHubCommit or manual Save to Cloud)
+    // NEVER run on automatic debounced background typing saves to prevent spamming GitHub commits and redeployments.
     (async () => {
-      const isVercel = Boolean(process.env.VERCEL);
-      if (!isVercel && !options?.forceGitHubCommit) {
+      if (!options?.forceGitHubCommit) {
         return;
       }
 

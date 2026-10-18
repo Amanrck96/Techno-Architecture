@@ -291,8 +291,7 @@ export default function ContactPage() {
             <div className="space-y-1 pt-3 border-t border-neutral-200">
               <span className="text-[9px] uppercase font-mono tracking-wider text-neutral-400 block">Business Hours</span>
               <p className="text-neutral-700 leading-relaxed">
-                {siteSettings?.operatingHours || "Monday to Friday, 10:00 AM to 6:30 PM"}<br />
-                <span className="text-neutral-500">Saturday closed</span>
+                {(siteSettings?.operatingHours || "Monday to Friday, 10:00 AM to 6:30 PM").replace(/;\s*Saturday\s*closed/gi, "")}
               </p>
             </div>
 

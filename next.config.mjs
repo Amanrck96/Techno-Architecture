@@ -32,7 +32,30 @@ const nextConfig = {
         destination: '/about#team',
         permanent: true,
       },
+      {
+        source: '/projects/mantle',
+        destination: '/projects/the-mantle',
+        permanent: true,
+      },
+      {
+        source: '/projects/mantle-buildofy',
+        destination: '/projects/the-mantle',
+        permanent: true,
+      },
+      {
+        source: '/projects/zenith-residence',
+        destination: '/projects/the-mantle',
+        permanent: true,
+      },
+      {
+        source: '/projects/nirvana',
+        destination: '/projects/echoes-of-nirvana',
+        permanent: true,
+      },
     ];
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 

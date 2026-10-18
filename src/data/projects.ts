@@ -37,6 +37,11 @@ export interface Project {
     lightingConsultant?: string;
     generalContractor?: string;
     photography?: string;
+    mepConsultant?: string;
+    landscapeUrbanist?: string;
+    facadeConsultant?: string;
+    sustainabilityConsultant?: string;
+    [key: string]: string | undefined;
   };
   featured: boolean;
   relatedSlugs: string[];
@@ -612,8 +617,8 @@ export const initialProjects: Project[] = [
   },
   {
     id: "proj-12",
-    slug: "mantle-buildofy",
-    title: "MANTLE BUILDOFY",
+    slug: "the-mantle",
+    title: "THE MANTLE",
     category: "Residential",
     status: "completed",
     location: "Banashankari, Bengaluru",
@@ -677,6 +682,69 @@ export const initialProjects: Project[] = [
       clientName: "Pradeep & Shweta Nair",
       designation: "Patrons",
       company: "The Mantle Residence",
+    },
+  },
+  {
+    id: "proj-13",
+    slug: "echoes-of-nirvana",
+    title: "ECHOES OF NIRVANA",
+    category: "Residential",
+    status: "completed",
+    location: "Bengaluru, India",
+    year: 2024,
+    client: "Private Residential Client",
+    area: "7,800 sq.ft",
+    description: "A contemplative residential sanctuary balancing bold fair-faced concrete cantilevers with textured granite masonry, sheltered open-to-sky verandas, and double-height light courts.",
+    processNarrative: "Echoes of Nirvana is envisioned as a timeless dwelling that breathes in sync with Bengaluru's tropical microclimate. Defined by sweeping exposed concrete roof slabs under-clad in rich teak timber, the residence alternates between monumental masonry walls and transparent glazed apertures. Deep cantilevered overhangs shade the internal living pavilions from direct solar gain while an elevated timber veranda merges outdoor lounge seating with lush perimeter foliage and sculptural lightwells.",
+    mainImage: "/projects/echoes-of-nirvana/echoes-of-nirvana-cantilever-sky-elevation.jpg",
+    gallery: [
+      {
+        url: "/projects/echoes-of-nirvana/echoes-of-nirvana-cantilever-sky-elevation.jpg",
+        caption: "Signature exterior cantilevered concrete roof slabs under-clad in warm teak timber against the open sky",
+        aspect: "landscape",
+      },
+      {
+        url: "/projects/echoes-of-nirvana/echoes-of-nirvana-stone-clad-courtyard.jpg",
+        caption: "Courtyard composition highlighting coursed granite masonry, raw concrete soffits, and tropical broadleaf landscaping",
+        aspect: "landscape",
+      },
+      {
+        url: "/projects/echoes-of-nirvana/echoes-of-nirvana-double-height-living-atrium.jpg",
+        caption: "Dramatic double-height living atrium with reflective Tom Dixon style copper and chrome cluster pendant light installation",
+        aspect: "portrait",
+      },
+      {
+        url: "/projects/echoes-of-nirvana/echoes-of-nirvana-timber-veranda-lounge.jpg",
+        caption: "Covered outdoor veranda and terrace lounge framed by a slatted timber ceiling, designer seating, and flourishing gardens",
+        aspect: "landscape",
+      },
+    ],
+    servicesInvolved: [
+      "Architectural Design",
+      "Interior Architecture",
+      "Landscape Architecture",
+      "Lighting & Materiality Strategy",
+    ],
+    teamMembers: [
+      "Ar. Rajesh Shivaram",
+      "Technoarchitecture Design Studio",
+    ],
+    credits: {
+      principalArchitect: "Ar. Rajesh Shivaram",
+      projectArchitect: "Techno Architecture",
+      projectLead: "Techno Architecture Studio Team",
+      team: "Ar. Rajesh Shivaram & Studio Team",
+      photography: "Shamanth Patil Photography",
+      landscapeArchitect: "Verdant Studio",
+      lightingConsultant: "Lumen Praxis",
+    },
+    featured: true,
+    relatedSlugs: ["the-mantle", "aikya", "kanasu", "between-two-trees"],
+    testimonial: {
+      quote: "Echoes of Nirvana captures tranquility and architectural discipline in equal measure. The cantilevered forms and open verandas create an enduring sanctuary for our family.",
+      clientName: "Private Client",
+      designation: "Homeowner",
+      company: "Echoes of Nirvana Residence",
     },
   },
 {
@@ -1100,6 +1168,227 @@ export const initialProjects: Project[] = [
     "sneha-residence",
     "anandam-residence",
     "brindavan"
+  ]
+},
+{
+  "id": "proj-ongoing-8",
+  "slug": "vidyanidhi-campus",
+  "title": "VIDYANIDHI EDUCATIONAL CAMPUS",
+  "category": "Commercial",
+  "status": "ongoing",
+  "location": "Bengaluru, India",
+  "year": 2026,
+  "client": "Vidyanidhi Education Trust",
+  "area": "85,000 sq.ft",
+  "description": "A forward-thinking educational campus characterized by cantilevered rectilinear volumes, terracotta reveals, expressive V-pilotis, and shaded communal breezeway plazas that foster interactive learning.",
+  "processNarrative": "Conceived as an academic ecosystem rather than a monolithic institution, Vidyanidhi Campus elevates classroom blocks on angled pilotis to liberate the ground plane for open-air amphitheaters, shaded courts, and cross-ventilated gathering plazas. Terracotta louvers regulate solar gain while maintaining visual connection with surrounding green corridors.",
+  "mainImage": "/projects/vidyanidhi-campus/vidyanidhi-atrium-dusk-cantilever.jpg",
+  "gallery": [
+    {
+      "url": "/projects/vidyanidhi-campus/vidyanidhi-atrium-dusk-cantilever.jpg",
+      "caption": "Dusk illumination of the elevated cantilevered academic wings and central light-filled atrium",
+      "aspect": "landscape"
+    },
+    {
+      "url": "/projects/vidyanidhi-campus/vidyanidhi-courtyard-facade-elevation.jpg",
+      "caption": "Geometric facade elevation highlighting rhythm of terracotta reveals and angled V-pilotis",
+      "aspect": "landscape"
+    },
+    {
+      "url": "/projects/vidyanidhi-campus/vidyanidhi-cantilever-entrance-plaza.jpg",
+      "caption": "Main entrance plaza featuring shaded landscaped steps and stepped seating breezeway",
+      "aspect": "landscape"
+    }
+  ],
+  "servicesInvolved": [
+    "Campus Master Planning",
+    "Architectural Design",
+    "Structural Expression",
+    "Sustainable Engineering"
+  ],
+  "teamMembers": [
+    "Ar. Rajesh Shivaram",
+    "Technoarchitecture Design Studio"
+  ],
+  "credits": {
+    "principalArchitect": "Ar. Rajesh Shivaram",
+    "projectArchitect": "Technoarchitecture Studio",
+    "team": "Ar. Rajesh Shivaram & Studio Team",
+    "structuralEngineer": "Base Consultants",
+    "mepConsultant": "Synergy MEP Systems",
+    "landscapeArchitect": "Verdant Studio",
+    "lightingConsultant": "Lumen Praxis"
+  },
+  "featured": true,
+  "relatedSlugs": [
+    "maddur-commercial-retreat",
+    "urvi-commercial-hub",
+    "prana-commercial-commons"
+  ]
+},
+{
+  "id": "proj-ongoing-9",
+  "slug": "maddur-commercial-retreat",
+  "title": "MADDUR COMMERCIAL & WELLNESS RETREAT",
+  "category": "Commercial",
+  "status": "ongoing",
+  "location": "Maddur, Karnataka, India",
+  "year": 2026,
+  "client": "Maddur Agri-Tourism & Wellness Ventures",
+  "area": "120,000 sq.ft (12-Acre Master Plan)",
+  "description": "A comprehensive 12-acre master-planned commercial and agro-wellness retreat featuring 32 integrated zones including reception pavilions, eco-villas, open-air amphitheaters, bio-ponds, and wellness commons.",
+  "processNarrative": "The Maddur master plan synthesizes agrarian landscapes with contemporary vernacular hospitality architecture. Anchored by a monolithic arched portal and curved bamboo welcome pavilion, the design arranges private wellness suites, all-day dining decks, and recreation zones along natural water rills and bio-retention ponds, celebrating Karnataka's rural topography.",
+  "mainImage": "/projects/maddur-retreat/maddur-entrance-pavilion.jpg",
+  "gallery": [
+    {
+      "url": "/projects/maddur-retreat/maddur-entrance-pavilion.jpg",
+      "caption": "Grand entrance portal and arched welcome pavilion with reflecting lotus pool at dusk",
+      "aspect": "landscape"
+    },
+    {
+      "url": "/projects/maddur-retreat/maddur-master-plan-layout.jpg",
+      "caption": "Comprehensive 32-zone master plan layout encompassing wellness suites, sports commons, and bio-lakes",
+      "aspect": "full"
+    },
+    {
+      "url": "/projects/maddur-retreat/maddur-wellness-lagoon.jpg",
+      "caption": "Elevated bamboo dining pavilion and boardwalk overlooking natural bio-lagoon",
+      "aspect": "landscape"
+    }
+  ],
+  "servicesInvolved": [
+    "Master Planning",
+    "Eco-Hospitality Architecture",
+    "Landscape Urbanism",
+    "Vernacular Engineering"
+  ],
+  "teamMembers": [
+    "Ar. Rajesh Shivaram",
+    "Technoarchitecture Design Studio"
+  ],
+  "credits": {
+    "principalArchitect": "Ar. Rajesh Shivaram",
+    "projectArchitect": "Technoarchitecture Studio",
+    "team": "Ar. Rajesh Shivaram & Studio Team",
+    "landscapeUrbanist": "Verdant Studio",
+    "lightingConsultant": "Lumen Praxis",
+    "sustainabilityConsultant": "Green Terra Systems"
+  },
+  "featured": true,
+  "relatedSlugs": [
+    "vidyanidhi-campus",
+    "urvi-commercial-hub",
+    "praana-villas"
+  ]
+},
+{
+  "id": "proj-ongoing-10",
+  "slug": "urvi-commercial-hub",
+  "title": "URVI COMMERCIAL HUB",
+  "category": "Commercial",
+  "status": "ongoing",
+  "location": "Bengaluru, India",
+  "year": 2026,
+  "client": "Urvi Retail & Infrastructure Ltd.",
+  "area": "42,000 sq.ft",
+  "description": "A boutique urban commercial destination fusing fair-faced board-marked concrete massing with warm teak brise-soleil, biophilic cantilevered gardens, and ground-level luxury retail colonnades.",
+  "processNarrative": "URVI redefines the contemporary commercial street edge in Bengaluru. By carving stepped volumetric recesses and deep cantilevered overhangs, the structure introduces passive solar protection while creating dramatic multi-story vertical gardens. The interior features a central biophilic lightwell that brings natural daylight down through every level of workspace and gallery retail.",
+  "mainImage": "/projects/urvi-commercial/urvi-facade-dusk.jpg",
+  "gallery": [
+    {
+      "url": "/projects/urvi-commercial/urvi-facade-dusk.jpg",
+      "caption": "Twilight facade view featuring rhythmic board-formed concrete volumes, teak louvers, and retail showcase",
+      "aspect": "landscape"
+    },
+    {
+      "url": "/projects/urvi-commercial/urvi-atrium-terrace.jpg",
+      "caption": "Triple-height skylit biophilic central atrium with floating stairs and lush interior planting",
+      "aspect": "landscape"
+    },
+    {
+      "url": "/projects/urvi-commercial/urvi-retail-plaza.jpg",
+      "caption": "Pedestrian entrance colonnade with cantilevered waffle slab, dark bronze glazing, and reflecting water feature",
+      "aspect": "landscape"
+    }
+  ],
+  "servicesInvolved": [
+    "Commercial Architecture",
+    "Facade Engineering",
+    "Interior Architecture",
+    "Biophilic Workplace Design"
+  ],
+  "teamMembers": [
+    "Ar. Rajesh Shivaram",
+    "Technoarchitecture Design Studio"
+  ],
+  "credits": {
+    "principalArchitect": "Ar. Rajesh Shivaram",
+    "projectArchitect": "Technoarchitecture Studio",
+    "team": "Ar. Rajesh Shivaram & Studio Team",
+    "facadeConsultant": "Glass & Steel Engineering",
+    "landscapeArchitect": "Verdant Studio",
+    "lightingConsultant": "Lumen Praxis"
+  },
+  "featured": true,
+  "relatedSlugs": [
+    "vidyanidhi-campus",
+    "prana-commercial-commons",
+    "maddur-commercial-retreat"
+  ]
+},
+{
+  "id": "proj-ongoing-11",
+  "slug": "prana-commercial-commons",
+  "title": "PRAANA COMMERCIAL COMMONS",
+  "category": "Commercial",
+  "status": "ongoing",
+  "location": "Bengaluru, India",
+  "year": 2026,
+  "client": "Praana Commercial Developments",
+  "area": "68,000 sq.ft",
+  "description": "An innovative commercial campus balancing sculpted raw concrete architecture with perforated brass sunscreens, verdant courtyard promenades, and an expansive rooftop collaborative pavilion.",
+  "processNarrative": "Designed around the ethos of well-being in the modern workspace, Praana Commercial Commons alternates enclosed high-performance office floors with semi-open landscaped meeting decks and perimeter reflection pools. Jali-inspired perforated brass screens modulate daylight while maintaining high transparency to the surrounding cityscape.",
+  "mainImage": "/projects/prana-commercial/prana-commercial-facade.jpg",
+  "gallery": [
+    {
+      "url": "/projects/prana-commercial/prana-commercial-facade.jpg",
+      "caption": "Golden hour perspective of the staggered concrete volumes, brass battens, and landscaped perimeter water rills",
+      "aspect": "landscape"
+    },
+    {
+      "url": "/projects/prana-commercial/prana-plaza-promenade.jpg",
+      "caption": "Pedestrian courtyard promenade featuring perforated brass sunscreens, water features, and meeting pergolas",
+      "aspect": "landscape"
+    },
+    {
+      "url": "/projects/prana-commercial/prana-rooftop-pavilion.jpg",
+      "caption": "Panoramic rooftop collaborative pavilion and sky lounge framed by cantilevered steel-and-teak pergola",
+      "aspect": "landscape"
+    }
+  ],
+  "servicesInvolved": [
+    "Master Planning",
+    "Commercial Architecture",
+    "Workplace Strategy",
+    "Landscape Architecture"
+  ],
+  "teamMembers": [
+    "Ar. Rajesh Shivaram",
+    "Technoarchitecture Design Studio"
+  ],
+  "credits": {
+    "principalArchitect": "Ar. Rajesh Shivaram",
+    "projectArchitect": "Technoarchitecture Studio",
+    "team": "Ar. Rajesh Shivaram & Studio Team",
+    "structuralEngineer": "Base Consultants",
+    "landscapeArchitect": "Verdant Studio",
+    "lightingConsultant": "Lumen Praxis"
+  },
+  "featured": true,
+  "relatedSlugs": [
+    "urvi-commercial-hub",
+    "vidyanidhi-campus",
+    "praana-villas"
   ]
 }
 ];

@@ -38,7 +38,7 @@ export const initialServices: Service[] = [
       "Working drawings and specifications",
       "Construction-stage design review",
     ],
-    relatedProjectSlugs: ["mantle-buildofy", "aikya", "between-two-trees", "kanasu"],
+    relatedProjectSlugs: ["the-mantle", "aikya", "between-two-trees", "kanasu"],
   },
   {
     id: "serv-2",
@@ -63,7 +63,7 @@ export const initialServices: Service[] = [
       "Integration with architectural and services drawings",
       "Construction-stage structural coordination",
     ],
-    relatedProjectSlugs: ["mantle-buildofy", "belaku", "kripa"],
+    relatedProjectSlugs: ["the-mantle", "belaku", "kripa"],
   },
   {
     id: "serv-3",
@@ -89,30 +89,5 @@ export const initialServices: Service[] = [
       "Detailed drawings and site review",
     ],
     relatedProjectSlugs: ["salut", "brindavan", "far-site-buildofy"],
-  },
-  {
-    id: "serv-4",
-    slug: "specialist-consultant-introductions",
-    title: "Specialist Consultant Introductions",
-    shortDescription: "Introducing clients to appropriate specialist consultants and coordinating design information within our architectural scope.",
-    detailedDescription: "Depending on the project's scale and technical requirements, we introduce clients to appropriate specialist consultants. These may include structural, services, sustainability, lighting, acoustic or other professionals required for the project. Each specialist is appointed separately by the client, while our team coordinates relevant design information within our architectural scope. Specialist consultants are appointed directly by the client. Their scope, fees and deliverables are defined separately according to the project's requirements.",
-    image: "/projects/belaku/belaku-elevation-dusk-frontal.jpg",
-    process: [
-      { step: "01", title: "Identify Specialist Disciplines Required", description: "Assess project scale and technical needs across MEP, acoustics, lighting, and landscape." },
-      { step: "02", title: "Introduce Suitable Consultants", description: "Introduce vetted, qualified engineering and technical specialists matching scale." },
-      { step: "03", title: "Share Architectural Information", description: "Transmit base drawings, spatial models, and technical load requirements." },
-      { step: "04", title: "Coordinate Specialist Recommendations", description: "Harmonize specialist inputs and engineering solutions with core design intent." },
-      { step: "05", title: "Clarify Interfaces Between Work", description: "Resolve overlaps, connections, and service shafts between architectural and technical disciplines." },
-      { step: "06", title: "Review Coordinated Information", description: "Conduct consolidated drawing reviews and milestone sign-offs prior to execution." },
-    ],
-    deliverables: [
-      "Identify the specialist disciplines required for the project",
-      "Introduce suitable consultants according to project scale",
-      "Share architectural information needed for specialist inputs",
-      "Coordinate specialist recommendations with the design intent",
-      "Clarify interfaces between architectural and specialist work",
-      "Review coordinated information at agreed project stages",
-    ],
-    relatedProjectSlugs: ["aikya", "kanasu", "mantle-buildofy"],
   },
 ];

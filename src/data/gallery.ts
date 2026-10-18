@@ -183,8 +183,8 @@ export const initialGalleryItems: GalleryItem[] = [
   {
     id: "gal-16",
     title: "Double-Height Atrium with Cylindrical Glass Chandeliers",
-    projectTitle: "MANTLE BUILDOFY",
-    projectSlug: "mantle-buildofy",
+    projectTitle: "THE MANTLE",
+    projectSlug: "the-mantle",
     category: "Interiors",
     imageUrl: "/projects/mantle-buildofy/mantle-buildofy-double-height-living-atrium.jpg",
     year: 2021,

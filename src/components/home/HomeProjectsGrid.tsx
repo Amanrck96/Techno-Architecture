@@ -6,12 +6,12 @@ import Link from "next/link";
 import { useCMSStore } from "@/lib/cmsStore";
 import { Project } from "@/data/projects";
 
-const HOME_COMPLETED_LIMIT = 10;
+const HOME_COMPLETED_LIMIT = 12;
 
 export default function HomeProjectsGrid() {
   const { projects } = useCMSStore();
 
-  // Show ONLY completed projects, capped at 10
+  // Show completed projects (up to 12 to cleanly fill 3-column architectural grid)
   const completedProjects = projects
     .filter((p) => p.status === "completed")
     .slice(0, HOME_COMPLETED_LIMIT);

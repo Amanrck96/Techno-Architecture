@@ -8,26 +8,69 @@ import { useCMSStore } from "@/lib/cmsStore";
 import { ArrowLeft, ArrowRight, ArrowUpRight, ArrowUp, Maximize2 } from "lucide-react";
 import ProjectImageLightbox from "@/components/projects/ProjectImageLightbox";
 
+const normalizeSlug = (s: string) =>
+  (s || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_]+/g, "-");
+
+const projectAliases: Record<string, string[]> = {
+  "proj-1": ["aikya", "monolith-house"],
+  "proj-2": ["belaku", "corten-pavilion"],
+  "proj-3": ["between-two-trees", "dune-sanctuary"],
+  "proj-4": ["brindavan", "atelier-basavanagudi"],
+  "proj-5": ["far-site-buildofy", "shadow-house"],
+  "proj-6": ["house-in-the-air", "urban-veranda"],
+  "proj-7": ["kanasu", "kavya-residence"],
+  "proj-8": ["kripa", "timber-terrace"],
+  "proj-10": ["salut", "serene-penthouse"],
+  "proj-12": ["the-mantle", "mantle", "the mantle", "mantle-buildofy", "the-mantle-residence", "zenith-residence"],
+  "proj-13": ["echoes-of-nirvana", "echoes", "nirvana", "echoes of nirvana"],
+  "proj-ongoing-1": ["jagan-residence"],
+  "proj-ongoing-2": ["anandam-residence"],
+  "proj-ongoing-3": ["suhas-residence"],
+  "proj-ongoing-4": ["sneha-residence"],
+  "proj-ongoing-5": ["smrithi-residence"],
+  "proj-ongoing-6": ["ruchi-sharma-residence"],
+  "proj-ongoing-7": ["praana-villas"],
+  "proj-ongoing-8": ["vidyanidhi-campus", "vidyanidhi", "college"],
+  "proj-ongoing-9": ["maddur-commercial-retreat", "maddur", "maddur-retreat"],
+  "proj-ongoing-10": ["urvi-commercial-hub", "urvi", "urvi-commercial"],
+  "proj-ongoing-11": ["prana-commercial-commons", "prana-commercial", "prana", "praana-commercial"],
+};
+
+const matchesProjectSlug = (p: { id?: string; slug?: string; title?: string }, targetSlug: string) => {
+  if (!p) return false;
+  const pSlugNorm = normalizeSlug(p.slug || "");
+  const targetNorm = normalizeSlug(decodeURIComponent(targetSlug || ""));
+
+  if (!targetNorm) return false;
+  if (p.slug === targetSlug || pSlugNorm === targetNorm) return true;
+
+  // Check alias groups
+  for (const [projId, aliasList] of Object.entries(projectAliases)) {
+    const allKnownSlugs = aliasList.map(normalizeSlug);
+    const isTargetInGroup = allKnownSlugs.includes(targetNorm);
+    const isProjectInGroup =
+      p.id === projId ||
+      allKnownSlugs.includes(pSlugNorm) ||
+      (projId === "proj-12" && (p.title?.toLowerCase().includes("mantle") || p.id === "proj-12"));
+
+    if (isTargetInGroup && isProjectInGroup) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 export default function ProjectDetailPage() {
   const params = useParams();
-  const slug = params?.slug as string;
+  const rawSlug = params?.slug as string;
+  const slug = decodeURIComponent(rawSlug || "").trim();
   const { projects, testimonials } = useCMSStore();
 
-  const currentIndex = projects.findIndex(
-    (p) =>
-      p.slug === slug ||
-      (slug === "monolith-house" && p.slug === "aikya") ||
-      (slug === "corten-pavilion" && p.slug === "belaku") ||
-      (slug === "dune-sanctuary" && p.slug === "between-two-trees") ||
-      (slug === "atelier-basavanagudi" && p.slug === "brindavan") ||
-      (slug === "shadow-house" && p.slug === "far-site-buildofy") ||
-      (slug === "urban-veranda" && p.slug === "house-in-the-air") ||
-      (slug === "kavya-residence" && p.slug === "kanasu") ||
-      (slug === "timber-terrace" && p.slug === "kripa") ||
-      (slug === "serene-penthouse" && p.slug === "salut") ||
-      (slug === "zenith-residence" && p.slug === "mantle-buildofy") ||
-      (slug === "mantle-buildofy" && p.slug === "zenith-residence")
-  );
+  const currentIndex = projects.findIndex((p) => matchesProjectSlug(p, slug));
   if (currentIndex === -1) {
     // If not found in current store, return 404
     return notFound();
@@ -48,7 +91,12 @@ export default function ProjectDetailPage() {
       p.id === "proj-7" ? "/projects/kanasu/kanasu-rooftop-pool-timber-canopy.jpg" :
       p.id === "proj-8" ? "/projects/kripa/kripa-dining-room-indoor-outdoor-veranda.jpg" :
       p.id === "proj-10" ? "/projects/salut/salut-terracotta-jali-bar-atrium.jpg" :
-      p.id === "proj-12" ? "/projects/mantle-buildofy/mantle-buildofy-double-height-living-atrium.jpg" :
+      (p.id === "proj-12" || matchesProjectSlug(p, "the-mantle")) ? "/projects/mantle-buildofy/mantle-buildofy-double-height-living-atrium.jpg" :
+      (p.id === "proj-13" || matchesProjectSlug(p, "echoes-of-nirvana")) ? "/projects/echoes-of-nirvana/echoes-of-nirvana-cantilever-sky-elevation.jpg" :
+      p.id === "proj-ongoing-8" ? "/projects/vidyanidhi-campus/vidyanidhi-atrium-dusk-cantilever.jpg" :
+      p.id === "proj-ongoing-9" ? "/projects/maddur-retreat/maddur-entrance-pavilion.jpg" :
+      p.id === "proj-ongoing-10" ? "/projects/urvi-commercial/urvi-facade-dusk.jpg" :
+      p.id === "proj-ongoing-11" ? "/projects/prana-commercial/prana-commercial-facade.jpg" :
       "/projects/aikya/elevation-east.jpg";
 
     return {
@@ -78,87 +126,33 @@ export default function ProjectDetailPage() {
     projects[(currentIndex + 1) % projects.length]
   );
 
-  // Related projects with guaranteed fresh Aikya, Belaku, Between Two Trees, Brindavan & Far Site Buildofy metadata and image
+  // Related projects with guaranteed fresh metadata and alias handling
   const related = projects
     .filter((p) => {
       // Don't show self in related
       if (p.slug === project.slug || p.id === project.id) return false;
-      if (
-        (project.slug === "aikya" || project.id === "proj-1" || project.slug === "monolith-house") &&
-        (p.slug === "aikya" || p.slug === "monolith-house" || p.id === "proj-1")
-      ) {
-        return false;
-      }
-      if (
-        (project.slug === "belaku" || project.id === "proj-2" || project.slug === "corten-pavilion") &&
-        (p.slug === "belaku" || p.slug === "corten-pavilion" || p.id === "proj-2")
-      ) {
-        return false;
-      }
-      if (
-        (project.slug === "between-two-trees" || project.id === "proj-3" || project.slug === "dune-sanctuary") &&
-        (p.slug === "between-two-trees" || p.slug === "dune-sanctuary" || p.id === "proj-3")
-      ) {
-        return false;
-      }
-      if (
-        (project.slug === "brindavan" || project.id === "proj-4" || project.slug === "atelier-basavanagudi") &&
-        (p.slug === "brindavan" || p.slug === "atelier-basavanagudi" || p.id === "proj-4")
-      ) {
-        return false;
-      }
-      if (
-        (project.slug === "far-site-buildofy" || project.id === "proj-5" || project.slug === "shadow-house") &&
-        (p.slug === "far-site-buildofy" || p.slug === "shadow-house" || p.id === "proj-5")
-      ) {
-        return false;
-      }
-      if (
-        (project.slug === "house-in-the-air" || project.id === "proj-6" || project.slug === "urban-veranda") &&
-        (p.slug === "house-in-the-air" || p.slug === "urban-veranda" || p.id === "proj-6")
-      ) {
-        return false;
-      }
-      if (
-        (project.slug === "kanasu" || project.id === "proj-7" || project.slug === "kavya-residence") &&
-        (p.slug === "kanasu" || p.slug === "kavya-residence" || p.id === "proj-7")
-      ) {
-        return false;
-      }
-      if (
-        (project.slug === "kripa" || project.id === "proj-8" || project.slug === "timber-terrace") &&
-        (p.slug === "kripa" || p.slug === "timber-terrace" || p.id === "proj-8")
-      ) {
-        return false;
-      }
-      if (
-        (project.slug === "mantle-buildofy" || project.id === "proj-12" || project.slug === "zenith-residence") &&
-        (p.slug === "mantle-buildofy" || p.slug === "zenith-residence" || p.id === "proj-12")
-      ) {
-        return false;
+
+      // Group self-exclusion check: don't show the same project under an alias
+      for (const [projId, aliasList] of Object.entries(projectAliases)) {
+        const normalizedAliases = aliasList.map(normalizeSlug);
+        const isProjectInGroup =
+          project.id === projId ||
+          normalizedAliases.includes(normalizeSlug(project.slug)) ||
+          (projId === "proj-12" && (project.title?.toLowerCase().includes("mantle") || project.id === "proj-12"));
+        const isCandidateInGroup =
+          p.id === projId ||
+          normalizedAliases.includes(normalizeSlug(p.slug)) ||
+          (projId === "proj-12" && (p.title?.toLowerCase().includes("mantle") || p.id === "proj-12"));
+
+        if (isProjectInGroup && isCandidateInGroup) return false;
       }
 
-      return (
-        project.relatedSlugs?.includes(p.slug) ||
-        (project.relatedSlugs?.includes("monolith-house") && (p.slug === "aikya" || p.id === "proj-1")) ||
-        (project.relatedSlugs?.includes("aikya") && (p.slug === "monolith-house" || p.id === "proj-1")) ||
-        (project.relatedSlugs?.includes("corten-pavilion") && (p.slug === "belaku" || p.id === "proj-2")) ||
-        (project.relatedSlugs?.includes("belaku") && (p.slug === "corten-pavilion" || p.id === "proj-2")) ||
-        (project.relatedSlugs?.includes("dune-sanctuary") && (p.slug === "between-two-trees" || p.id === "proj-3")) ||
-        (project.relatedSlugs?.includes("between-two-trees") && (p.slug === "dune-sanctuary" || p.id === "proj-3")) ||
-        (project.relatedSlugs?.includes("atelier-basavanagudi") && (p.slug === "brindavan" || p.id === "proj-4")) ||
-        (project.relatedSlugs?.includes("brindavan") && (p.slug === "atelier-basavanagudi" || p.id === "proj-4")) ||
-        (project.relatedSlugs?.includes("shadow-house") && (p.slug === "far-site-buildofy" || p.id === "proj-5")) ||
-        (project.relatedSlugs?.includes("far-site-buildofy") && (p.slug === "shadow-house" || p.id === "proj-5")) ||
-        (project.relatedSlugs?.includes("urban-veranda") && (p.slug === "house-in-the-air" || p.id === "proj-6")) ||
-        (project.relatedSlugs?.includes("house-in-the-air") && (p.slug === "urban-veranda" || p.id === "proj-6")) ||
-        (project.relatedSlugs?.includes("kavya-residence") && (p.slug === "kanasu" || p.id === "proj-7")) ||
-        (project.relatedSlugs?.includes("kanasu") && (p.slug === "kavya-residence" || p.id === "proj-7")) ||
-        (project.relatedSlugs?.includes("timber-terrace") && (p.slug === "kripa" || p.id === "proj-8")) ||
-        (project.relatedSlugs?.includes("kripa") && (p.slug === "timber-terrace" || p.id === "proj-8")) ||
-        (project.relatedSlugs?.includes("zenith-residence") && (p.slug === "mantle-buildofy" || p.id === "proj-12")) ||
-        (project.relatedSlugs?.includes("mantle-buildofy") && (p.slug === "zenith-residence" || p.id === "proj-12"))
-      );
+      // Match relatedSlugs
+      if (Array.isArray(project.relatedSlugs) && project.relatedSlugs.length > 0) {
+        return project.relatedSlugs.some((relSlug) => matchesProjectSlug(p, relSlug));
+      }
+
+      return false;
     })
     .map(sanitizeProject);
 
