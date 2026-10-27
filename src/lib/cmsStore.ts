@@ -481,6 +481,10 @@ export function CMSProvider({
 
   const lastServerUpdatedRef = useRef<string>(initialData?.updatedAt || (staticCmsContent as any)?.updatedAt || "");
   const syncTimersRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
+  // Tracks timestamp of the last local edit — used to block server overwrites for a grace period
+  const lastLocalEditTimestampRef = useRef<number>(0);
+  // How long (ms) to block server data after a local edit (prevents revert of order changes)
+  const EDIT_LOCKOUT_MS = 10_000;
 
   // Function to apply complete dataset to state & local cache
   const applyDataset = useCallback((data: any) => {
@@ -592,6 +596,14 @@ export function CMSProvider({
       }
 
       if (syncTimersRef.current.size > 0) {
+        return;
+      }
+
+      // CRITICAL FIX: Block server data from overwriting local state during the edit lockout
+      // window. This prevents the background poll from reverting order changes (e.g. Kanasu
+      // position) that the user just made but the debounced sync hasn't confirmed yet.
+      const msSinceLastEdit = Date.now() - lastLocalEditTimestampRef.current;
+      if (lastLocalEditTimestampRef.current > 0 && msSinceLastEdit < EDIT_LOCKOUT_MS) {
         return;
       }
 
@@ -755,6 +767,8 @@ export function CMSProvider({
 
   const debouncedSyncToServer = useCallback((entity: string, data: any, currentDeleted?: string[]) => {
     touchClientUpdate();
+    // Record local edit timestamp to block server overwrites during the grace period
+    lastLocalEditTimestampRef.current = Date.now();
     try {
       localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "true");
     } catch (_) {}
@@ -816,6 +830,8 @@ export function CMSProvider({
 
       // If items were removed, sync IMMEDIATELY with 0ms delay to eliminate any window for stale data
       if (removed.length > 0) {
+        // Also set edit lockout so background poll doesn't immediately overwrite
+        lastLocalEditTimestampRef.current = Date.now();
         syncToServer({ entity: "projects", data: sanitized, deletedIds: nextDeleted });
       } else {
         debouncedSyncToServer("projects", sanitized, nextDeleted);
