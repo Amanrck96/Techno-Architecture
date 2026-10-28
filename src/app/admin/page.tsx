@@ -2911,8 +2911,9 @@ export default function AdminCMSPage() {
                       type="text"
                       value={m.name}
                       onChange={(e) => {
-                        const updated = [...team];
-                        updated[idx].name = e.target.value;
+                        const updated = team.map((item, i) =>
+                          i === idx ? { ...item, name: e.target.value } : item
+                        );
                         saveTeam(updated);
                       }}
                       className="w-full font-semibold text-sm border-b border-neutral-300 focus:border-black focus:outline-none pb-0.5"
@@ -2921,8 +2922,9 @@ export default function AdminCMSPage() {
                       type="text"
                       value={m.role}
                       onChange={(e) => {
-                        const updated = [...team];
-                        updated[idx].role = e.target.value;
+                        const updated = team.map((item, i) =>
+                          i === idx ? { ...item, role: e.target.value } : item
+                        );
                         saveTeam(updated);
                       }}
                       className="w-full text-xs text-neutral-600 mt-1 border-b border-neutral-200 focus:border-black focus:outline-none"
@@ -2934,10 +2936,11 @@ export default function AdminCMSPage() {
                   <div>
                     <label className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">Discipline</label>
                     <select
-                      value={m.discipline}
+                      value={m.discipline === "BIM & Technical" ? "Office Administration" : m.discipline}
                       onChange={(e) => {
-                        const updated = [...team];
-                        updated[idx].discipline = e.target.value as any;
+                        const updated = team.map((item, i) =>
+                          i === idx ? { ...item, discipline: e.target.value as any } : item
+                        );
                         saveTeam(updated);
                       }}
                       className="w-full p-1.5 border border-neutral-300 rounded text-xs bg-white"
@@ -2945,7 +2948,7 @@ export default function AdminCMSPage() {
                       <option value="Leadership">Leadership</option>
                       <option value="Architecture">Architecture</option>
                       <option value="Interiors">Interiors</option>
-                      <option value="BIM & Technical">BIM & Technical</option>
+                      <option value="Office Administration">Office Administration</option>
                       <option value="Research & Sustainability">Research & Sustainability</option>
                     </select>
                   </div>
@@ -2955,8 +2958,9 @@ export default function AdminCMSPage() {
                       type="text"
                       value={m.credentials}
                       onChange={(e) => {
-                        const updated = [...team];
-                        updated[idx].credentials = e.target.value;
+                        const updated = team.map((item, i) =>
+                          i === idx ? { ...item, credentials: e.target.value } : item
+                        );
                         saveTeam(updated);
                       }}
                       className="w-full p-1.5 border border-neutral-300 rounded text-xs"
@@ -2976,8 +2980,9 @@ export default function AdminCMSPage() {
                       type="text"
                       value={m.image}
                       onChange={(e) => {
-                        const updated = [...team];
-                        updated[idx].image = e.target.value;
+                        const updated = team.map((item, i) =>
+                          i === idx ? { ...item, image: e.target.value } : item
+                        );
                         saveTeam(updated);
                       }}
                       placeholder="Photo URL or upload from laptop"
@@ -3004,8 +3009,9 @@ export default function AdminCMSPage() {
                           if (file) {
                             setUploadingTargetId(m.id);
                             handleUploadPhoto(file, (url) => {
-                              const updated = [...team];
-                              updated[idx].image = url;
+                              const updated = team.map((item, i) =>
+                                i === idx ? { ...item, image: url } : item
+                              );
                               saveTeam(updated);
                             }, "team");
                           }
@@ -3020,8 +3026,9 @@ export default function AdminCMSPage() {
                       <button
                         type="button"
                         onClick={() => {
-                          const updated = [...team];
-                          updated[idx].image = "";
+                          const updated = team.map((item, i) =>
+                            i === idx ? { ...item, image: "" } : item
+                          );
                           saveTeam(updated);
                           showToast(`Cleared photo for ${m.name}`);
                         }}
@@ -3039,8 +3046,9 @@ export default function AdminCMSPage() {
                     rows={3}
                     value={m.bio}
                     onChange={(e) => {
-                      const updated = [...team];
-                      updated[idx].bio = e.target.value;
+                      const updated = team.map((item, i) =>
+                        i === idx ? { ...item, bio: e.target.value } : item
+                      );
                       saveTeam(updated);
                     }}
                     className="w-full p-2 border border-neutral-300 rounded text-xs leading-relaxed"

@@ -63,6 +63,21 @@ export function sanitizeProjectsList(list: any[]): Project[] {
   });
 }
 
+export function sanitizeTeamDiscipline(discipline: any): any {
+  if (discipline === "BIM & Technical" || discipline === "BIM") {
+    return "Office Administration";
+  }
+  return discipline || "Architecture";
+}
+
+export function sanitizeTeamList(list: any[]): TeamMember[] {
+  if (!Array.isArray(list)) return [];
+  return list.map((m) => ({
+    ...m,
+    discipline: sanitizeTeamDiscipline(m?.discipline),
+  }));
+}
+
 const seedData = (staticCmsContent as any) || {};
 const initialSeedDeletedIds: string[] = Array.isArray(seedData.deletedIds) ? seedData.deletedIds : [];
 
@@ -77,7 +92,7 @@ export const defaultServices: Service[] = filterOutDeletedItems(
   initialSeedDeletedIds
 );
 export const defaultTeam: TeamMember[] = filterOutDeletedItems(
-  Array.isArray(seedData.team) && seedData.team.length > 0 ? seedData.team : initialTeam,
+  sanitizeTeamList(Array.isArray(seedData.team) && seedData.team.length > 0 ? seedData.team : initialTeam),
   initialSeedDeletedIds
 );
 export const defaultBlog: BlogPost[] = filterOutDeletedItems(
@@ -369,17 +384,17 @@ export function CMSProvider({
 
   const [team, setTeam] = useState<TeamMember[]>(() => {
     if (initialData?.team && Array.isArray(initialData.team)) {
-      return filterOutDeletedItems(initialData.team, initialData.deletedIds || []);
+      return filterOutDeletedItems(sanitizeTeamList(initialData.team), initialData.deletedIds || []);
     }
     if (typeof window !== "undefined") {
       try {
         const stored = localStorage.getItem(STORAGE_KEYS.TEAM);
         const storedDeleted = localStorage.getItem(STORAGE_KEYS.DELETED_IDS);
         const dIds: string[] = storedDeleted ? JSON.parse(storedDeleted) : initialSeedDeletedIds;
-        if (stored) return filterOutDeletedItems(JSON.parse(stored), dIds);
+        if (stored) return filterOutDeletedItems(sanitizeTeamList(JSON.parse(stored)), dIds);
       } catch (_) {}
     }
-    return filterOutDeletedItems(defaultTeam, initialSeedDeletedIds);
+    return filterOutDeletedItems(sanitizeTeamList(defaultTeam), initialSeedDeletedIds);
   });
 
   const [blog, setBlog] = useState<BlogPost[]>(() => {
@@ -514,7 +529,7 @@ export function CMSProvider({
     }
     if (Array.isArray(data.team) && data.team.length > 0) {
       const sanitizedTeam = filterOutDeletedItems<TeamMember>(
-        data.team.map((m: any) => {
+        sanitizeTeamList(data.team).map((m: any) => {
           const fallback = initialTeam.find((it) => it.id === m.id || it.name === m.name);
           let img = m.image;
           let hoverImg = m.hoverImage;
@@ -581,14 +596,15 @@ export function CMSProvider({
         setServerStorageInfo(data._storageInfo);
       }
 
-      // CRITICAL: NEVER overwrite state while user is actively typing in any input/textarea
-      // or if any debounced local edits are currently pending in-flight.
+      // CRITICAL: NEVER overwrite state while user is actively typing in any input/textarea,
+      // selecting from a dropdown (<select>), or interacting with form controls.
       if (typeof document !== "undefined") {
         const active = document.activeElement;
         if (
           active &&
           (active.tagName === "INPUT" ||
             active.tagName === "TEXTAREA" ||
+            active.tagName === "SELECT" ||
             (active as HTMLElement).isContentEditable)
         ) {
           return;
@@ -596,6 +612,13 @@ export function CMSProvider({
       }
 
       if (syncTimersRef.current.size > 0) {
+        return;
+      }
+
+      // CRITICAL: In /admin route, user is actively managing content.
+      // NEVER allow background polling to overwrite state while on /admin.
+      const isAdminRoute = typeof window !== "undefined" && window.location.pathname.startsWith("/admin");
+      if (isAdminRoute && lastLocalEditTimestampRef.current > 0) {
         return;
       }
 
@@ -627,7 +650,12 @@ export function CMSProvider({
         return;
       }
 
-      if (data.updatedAt && data.updatedAt === lastServerUpdatedRef.current) {
+      // STRICT MONOTONICITY CHECK:
+      // Reject any server data that is NOT strictly NEWER than what client currently has!
+      // This eliminates data flapping between different serverless lambdas, cold starts, or stale cache reads.
+      const serverTime = data.updatedAt ? new Date(data.updatedAt).getTime() : 0;
+      const currentKnownTime = lastServerUpdatedRef.current ? new Date(lastServerUpdatedRef.current).getTime() : 0;
+      if (serverTime <= currentKnownTime) {
         return;
       }
 
@@ -721,14 +749,24 @@ export function CMSProvider({
     };
     window.addEventListener(SYNC_EVENT_NAME, handleLocalUpdate);
 
-    const handleFocus = () => {
-      fetchFromServer();
-    };
-    window.addEventListener("focus", handleFocus);
+    const isAdmin = typeof window !== "undefined" && window.location.pathname.startsWith("/admin");
 
-    const intervalId = setInterval(() => {
-      fetchFromServer();
-    }, 15000);
+    // In the admin studio (/admin), NEVER run background interval polling or window focus refetches.
+    // The admin is actively viewing, reordering, typing, or editing fields.
+    // Background polling while on /admin causes data flapping and overwrites form state.
+    let intervalId: NodeJS.Timeout | null = null;
+    const handleFocus = () => {
+      if (!isAdmin) {
+        fetchFromServer();
+      }
+    };
+
+    if (!isAdmin) {
+      window.addEventListener("focus", handleFocus);
+      intervalId = setInterval(() => {
+        fetchFromServer();
+      }, 60000);
+    }
 
     const handleBeforeUnload = () => {
       if (syncTimersRef.current.size > 0) {
@@ -743,9 +781,11 @@ export function CMSProvider({
     return () => {
       if (channel) channel.close();
       window.removeEventListener(SYNC_EVENT_NAME, handleLocalUpdate);
-      window.removeEventListener("focus", handleFocus);
+      if (!isAdmin) {
+        window.removeEventListener("focus", handleFocus);
+        if (intervalId) clearInterval(intervalId);
+      }
       window.removeEventListener("beforeunload", handleBeforeUnload);
-      clearInterval(intervalId);
       syncTimersRef.current.forEach((t) => clearTimeout(t));
       syncTimersRef.current.clear();
     };
@@ -895,7 +935,7 @@ export function CMSProvider({
         } catch (_) {}
       }
 
-      const sanitized = filterOutDeletedItems(newTeam, nextDeleted);
+      const sanitized = filterOutDeletedItems(sanitizeTeamList(newTeam), nextDeleted);
       setTeam(sanitized);
       try {
         localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(sanitized));

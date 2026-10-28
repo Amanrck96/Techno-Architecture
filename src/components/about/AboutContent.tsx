@@ -17,10 +17,13 @@ export default function AboutContent() {
     displayTeam.find((m) => m.name.toLowerCase().includes("rajesh")) ||
     defaultTeam[0];
 
-  const disciplines = ["All", "Leadership", "Architecture", "Interiors", "BIM & Technical", "Research & Sustainability"];
+  const disciplines = ["All", "Leadership", "Architecture", "Interiors", "Office Administration", "Research & Sustainability"];
   const filteredTeam = selectedDiscipline === "All"
     ? displayTeam
-    : displayTeam.filter((m) => m.discipline === selectedDiscipline);
+    : displayTeam.filter((m) =>
+        m.discipline === selectedDiscipline ||
+        (selectedDiscipline === "Office Administration" && m.discipline === ("BIM & Technical" as any))
+      );
 
   const tagline = siteSettings?.tagline || "Architecture shaped around people, place and purpose.";
   const foundedYear = siteSettings?.foundedYear || 2006;

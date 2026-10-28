@@ -1,8 +1,16 @@
+export type TeamDiscipline =
+  | "Leadership"
+  | "Architecture"
+  | "Interiors"
+  | "Office Administration"
+  | "Research & Sustainability"
+  | "BIM & Technical";
+
 export interface TeamMember {
   id: string;
   name: string;
   role: string;
-  discipline: "Leadership" | "Architecture" | "Interiors" | "BIM & Technical" | "Research & Sustainability";
+  discipline: TeamDiscipline;
   bio: string;
   credentials: string;
   image: string;
@@ -64,7 +72,7 @@ export const initialTeam: TeamMember[] = [
     id: "team-veerendra",
     name: "Veerendra",
     role: "Technical Lead & Site Execution",
-    discipline: "BIM & Technical",
+    discipline: "Office Administration",
     credentials: "B.E. (Civil) / Technical Coordination",
     bio: "Bridges architectural schematics with on-site structural reality, supervising MEP integration, vendor fabrication reviews, and strict construction tolerances.",
     image: "/team/veerendra-2.jpg",
@@ -86,7 +94,7 @@ export const initialTeam: TeamMember[] = [
     id: "team-prashant",
     name: "Prashant",
     role: "BIM & Technical Delivery Lead",
-    discipline: "BIM & Technical",
+    discipline: "Office Administration",
     credentials: "B.Arch / BIM Certified",
     bio: "Spearheads Building Information Modeling, digital clash detection, structural coordination, and comprehensive tender documentation.",
     image: "/team/prashant-1.jpg",
@@ -108,7 +116,7 @@ export const initialTeam: TeamMember[] = [
     id: "team-darshan",
     name: "Darshan",
     role: "Senior Technical Architect",
-    discipline: "BIM & Technical",
+    discipline: "Office Administration",
     credentials: "B.Arch",
     bio: "Develops precise architectural working drawings, structural interface details, and oversees site execution quality compliance.",
     image: "/team/darshan-2.jpg",
@@ -240,7 +248,7 @@ export const initialTeam: TeamMember[] = [
     id: "team-sujay",
     name: "Sujay",
     role: "Technical Architect & Site Coordinator",
-    discipline: "BIM & Technical",
+    discipline: "Office Administration",
     credentials: "B.Arch",
     bio: "Oversees site progress benchmarks, material mockup evaluations, and architectural detail fidelity throughout construction.",
     image: "/team/sujay-1.jpg",
@@ -273,7 +281,7 @@ export const initialTeam: TeamMember[] = [
     id: "team-1791709754708",
     name: "AMAN SAH",
     role: "Project Architect",
-    discipline: "BIM & Technical",
+    discipline: "Office Administration",
     credentials: "B.Arch",
     bio: "Practitioner contributing to innovative spatial planning and craftsmanship.",
     image: "https://firebasestorage.googleapis.com/v0/b/technoarchitecture-7d718.firebasestorage.app/o/team%2Ftechno_aman_sah_1791731289408.jpg?alt=media&token=f54d2888-1e6f-4f1c-aeb1-d0a70bb842a1",

@@ -38,13 +38,25 @@ export function filterOutDeletedItems<T = any>(
   });
 }
 
+export function sanitizeTeamList(list: any[]): any[] {
+  if (!Array.isArray(list)) return [];
+  return list.map((m) => {
+    if (!m) return m;
+    let disc = m.discipline;
+    if (disc === "BIM & Technical" || disc === "BIM") {
+      disc = "Office Administration";
+    }
+    return { ...m, discipline: disc || "Architecture" };
+  });
+}
+
 export function getDefaultData(): any {
   const seed = (staticCmsContent as any) || {};
   const deletedIds: string[] = Array.isArray(seed.deletedIds) ? seed.deletedIds : [];
   return {
     projects: filterOutDeletedItems(seed.projects || initialProjects, deletedIds),
     services: filterOutDeletedItems(seed.services || initialServices, deletedIds),
-    team: filterOutDeletedItems(seed.team || initialTeam, deletedIds),
+    team: sanitizeTeamList(filterOutDeletedItems(seed.team || initialTeam, deletedIds)),
     blog: filterOutDeletedItems(seed.blog || initialBlogPosts, deletedIds),
     faq: filterOutDeletedItems(seed.faq || initialFAQs, deletedIds),
     gallery: filterOutDeletedItems(seed.gallery || initialGalleryItems, deletedIds),
@@ -345,7 +357,7 @@ export async function readStore(
     deletedIds: mergedDeletedIds,
     projects: filterOutDeletedItems(bestData.projects || [], mergedDeletedIds),
     services: filterOutDeletedItems(bestData.services || [], mergedDeletedIds),
-    team: filterOutDeletedItems(bestData.team || [], mergedDeletedIds),
+    team: sanitizeTeamList(filterOutDeletedItems(bestData.team || [], mergedDeletedIds)),
     blog: filterOutDeletedItems(bestData.blog || [], mergedDeletedIds),
     faq: filterOutDeletedItems(bestData.faq || [], mergedDeletedIds),
     gallery: filterOutDeletedItems(bestData.gallery || [], mergedDeletedIds),
@@ -392,7 +404,7 @@ export async function writeStore(
     deletedIds: mergedDeletedIds,
     projects: filterOutDeletedItems(data.projects || [], mergedDeletedIds),
     services: filterOutDeletedItems(data.services || [], mergedDeletedIds),
-    team: filterOutDeletedItems(data.team || [], mergedDeletedIds),
+    team: sanitizeTeamList(filterOutDeletedItems(data.team || [], mergedDeletedIds)),
     blog: filterOutDeletedItems(data.blog || [], mergedDeletedIds),
     faq: filterOutDeletedItems(data.faq || [], mergedDeletedIds),
     gallery: filterOutDeletedItems(data.gallery || [], mergedDeletedIds),
