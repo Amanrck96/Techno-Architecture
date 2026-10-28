@@ -688,8 +688,13 @@ export function CMSProvider({
       }
     } catch (_) {}
 
-    // Fetch authoritative server data
-    fetchFromServer();
+    // Fetch authoritative server data:
+    // SSR already injects initialData in layout.tsx. Only fetch on client if initialData was absent
+    // or if the user is loading the /admin studio to verify live persistence.
+    const isAdmin = typeof window !== "undefined" && window.location.pathname.startsWith("/admin");
+    if (!initialData || isAdmin) {
+      fetchFromServer();
+    }
 
     // BroadcastChannel for instant inter-tab live sync
     let channel: BroadcastChannel | null = null;
@@ -749,24 +754,9 @@ export function CMSProvider({
     };
     window.addEventListener(SYNC_EVENT_NAME, handleLocalUpdate);
 
-    const isAdmin = typeof window !== "undefined" && window.location.pathname.startsWith("/admin");
-
-    // In the admin studio (/admin), NEVER run background interval polling or window focus refetches.
-    // The admin is actively viewing, reordering, typing, or editing fields.
-    // Background polling while on /admin causes data flapping and overwrites form state.
-    let intervalId: NodeJS.Timeout | null = null;
-    const handleFocus = () => {
-      if (!isAdmin) {
-        fetchFromServer();
-      }
-    };
-
-    if (!isAdmin) {
-      window.addEventListener("focus", handleFocus);
-      intervalId = setInterval(() => {
-        fetchFromServer();
-      }, 60000);
-    }
+    // ZERO BACKGROUND POLLING:
+    // Background polling on visitor tabs exhausted Vercel CPU hours and Fast Origin Transfer.
+    // Instant sync is handled locally via BroadcastChannel and window events without network loops.
 
     const handleBeforeUnload = () => {
       if (syncTimersRef.current.size > 0) {
@@ -781,10 +771,6 @@ export function CMSProvider({
     return () => {
       if (channel) channel.close();
       window.removeEventListener(SYNC_EVENT_NAME, handleLocalUpdate);
-      if (!isAdmin) {
-        window.removeEventListener("focus", handleFocus);
-        if (intervalId) clearInterval(intervalId);
-      }
       window.removeEventListener("beforeunload", handleBeforeUnload);
       syncTimersRef.current.forEach((t) => clearTimeout(t));
       syncTimersRef.current.clear();

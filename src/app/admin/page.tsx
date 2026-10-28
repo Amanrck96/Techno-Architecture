@@ -643,9 +643,29 @@ export default function AdminCMSPage() {
         }
       }
 
-      setUploadProgress(40);
+      setUploadProgress(25);
 
-      // 2. Upload via Next.js server /api/upload endpoint with full authentication & cookies
+      // 2. Direct Upload to Firebase Cloud Storage (technoarchitecture-7d718.firebasestorage.app)
+      // Uploading directly from client to Firebase Storage completely bypasses Vercel Origin,
+      // saving Fast Origin Transfer and Fluid Active CPU hours.
+      try {
+        const fbResult = await uploadToFirebaseStorage(
+          uploadFile,
+          folder,
+          undefined,
+          (pct) => setUploadProgress(25 + Math.round(pct * 0.7))
+        );
+        if (fbResult?.url) {
+          setUploadProgress(100);
+          onSuccess(fbResult.url);
+          showToast("✅ " + (isVideo ? "Video" : "Photo") + " uploaded to Firebase Storage successfully!");
+          return;
+        }
+      } catch (fbErr) {
+        console.warn("Direct Firebase Storage client upload error, attempting server fallback:", fbErr);
+      }
+
+      // 3. Fallback: Upload via Next.js server /api/upload endpoint with full authentication & cookies
       try {
         const fd = new FormData();
         fd.append("file", uploadFile);

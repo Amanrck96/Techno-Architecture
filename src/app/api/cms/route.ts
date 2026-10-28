@@ -33,6 +33,11 @@ export async function GET(request: Request) {
       localDiskWritable: process.env.NODE_ENV !== "production" || !process.env.VERCEL,
     };
 
+    const hasCustomCreds = Boolean(customUpstashUrl || customGithubToken);
+    const cacheControlHeader = hasCustomCreds
+      ? "no-store, no-cache, must-revalidate"
+      : "public, s-maxage=120, stale-while-revalidate=600";
+
     return NextResponse.json(
       {
         ...data,
@@ -40,9 +45,7 @@ export async function GET(request: Request) {
       },
       {
         headers: {
-          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
-          Pragma: "no-cache",
-          Expires: "0",
+          "Cache-Control": cacheControlHeader,
         },
       }
     );
