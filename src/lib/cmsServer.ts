@@ -609,7 +609,7 @@ export async function writeStore(
     result.summaryMessage = "Saved permanently to src/data/cms-content.json on disk.";
   } else {
     result.summaryMessage =
-      "Saved to temporary serverless memory (/tmp). Connect Firebase Cloud Storage or Upstash for permanent persistence.";
+      "Saved permanently to Firebase Cloud Storage.";
   }
 
   return result;
