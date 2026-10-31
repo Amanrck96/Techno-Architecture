@@ -145,7 +145,20 @@ export default function AdminCMSPage() {
 
   // Storage & Persistence Configuration
   const [githubTokenInput, setGithubTokenInput] = useState<string>("");
-  const [githubRepoInput, setGithubRepoInput] = useState<string>("Kima1011/Techno-Architecture");
+  const [githubRepoInput, setGithubRepoInput] = useState<string>("Amanrck96/Techno-Architecture");
+  const [savingEntityId, setSavingEntityId] = useState<string | null>(null);
+
+  const handleSaveItem = async (id: string, label: string) => {
+    setSavingEntityId(id);
+    try {
+      await saveAllToCloud();
+      showToast(`Saved "${label}" to Cloud Archive ✅`);
+    } catch (err) {
+      showToast(`Failed to save "${label}".`);
+    } finally {
+      setSavingEntityId(null);
+    }
+  };
   const [upstashUrlInput, setUpstashUrlInput] = useState<string>("");
   const [upstashTokenInput, setUpstashTokenInput] = useState<string>("");
   const [isCommittingGit, setIsCommittingGit] = useState<boolean>(false);
@@ -1478,6 +1491,25 @@ export default function AdminCMSPage() {
                         <ExternalLink size={11} />
                       </Link>
                       <button
+                        type="button"
+                        onClick={() => handleSaveItem(p.id, p.title)}
+                        disabled={savingEntityId === p.id}
+                        className="px-2.5 py-1 text-xs bg-black text-white hover:bg-neutral-800 disabled:opacity-60 rounded transition-colors flex items-center gap-1 font-medium cursor-pointer shadow-2xs"
+                        title={`Save "${p.title}" to Cloud Archive`}
+                      >
+                        {savingEntityId === p.id ? (
+                          <>
+                            <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+                            <span>Saving...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Save size={12} />
+                            <span>Save</span>
+                          </>
+                        )}
+                      </button>
+                      <button
                         onClick={() => setExpandedProjectId(isExpanded ? null : p.id)}
                         type="button"
                         className="px-2.5 py-1 text-xs border border-neutral-200 hover:border-black rounded transition-colors flex items-center gap-1"
@@ -2356,6 +2388,31 @@ export default function AdminCMSPage() {
                           ))}
                         </div>
                       </div>
+
+                      {/* Project Card Bottom Save Bar */}
+                      <div className="pt-4 border-t border-neutral-200 flex items-center justify-between">
+                        <span className="text-[11px] font-mono text-neutral-400">
+                          Editing Project: <strong className="text-neutral-700">{p.title}</strong>
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleSaveItem(p.id, p.title)}
+                          disabled={savingEntityId === p.id}
+                          className="inline-flex items-center gap-1.5 px-4 py-2 bg-black text-white hover:bg-neutral-800 disabled:opacity-60 text-xs font-semibold rounded transition-colors shadow-xs cursor-pointer"
+                        >
+                          {savingEntityId === p.id ? (
+                            <>
+                              <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                              <span>Saving to Cloud...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Save size={13} />
+                              <span>Save Project Changes</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -2381,14 +2438,21 @@ export default function AdminCMSPage() {
               </div>
               <button
                 type="button"
-                onClick={() => {
-                  saveSiteSettings(siteSettings);
-                  showToast("Services page header settings updated.");
-                }}
-                className="inline-flex items-center gap-1 px-3 py-1.5 bg-black text-white text-xs uppercase tracking-wider font-medium hover:bg-neutral-800 transition-colors rounded self-start sm:self-auto"
+                onClick={() => handleSaveItem("services-header", "Services Header Settings")}
+                disabled={savingEntityId === "services-header"}
+                className="inline-flex items-center gap-1 px-3 py-1.5 bg-black text-white text-xs uppercase tracking-wider font-medium hover:bg-neutral-800 disabled:opacity-60 transition-colors rounded self-start sm:self-auto cursor-pointer"
               >
-                <Save size={12} />
-                <span>Save Header</span>
+                {savingEntityId === "services-header" ? (
+                  <>
+                    <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save size={12} />
+                    <span>Save Header</span>
+                  </>
+                )}
               </button>
             </div>
 
@@ -2528,6 +2592,20 @@ export default function AdminCMSPage() {
                     >
                       View Live →
                     </Link>
+                    <button
+                      type="button"
+                      onClick={() => handleSaveItem(s.id, s.title)}
+                      disabled={savingEntityId === s.id}
+                      className="px-2.5 py-1 text-xs bg-black text-white hover:bg-neutral-800 disabled:opacity-60 rounded transition-colors flex items-center gap-1 font-medium cursor-pointer shadow-2xs"
+                      title={`Save service "${s.title}"`}
+                    >
+                      {savingEntityId === s.id ? (
+                        <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Save size={12} />
+                      )}
+                      <span>Save</span>
+                    </button>
                     <button
                       onClick={() => {
                         if (confirm(`Delete service "${s.title}"?`)) {
@@ -2815,6 +2893,29 @@ export default function AdminCMSPage() {
                       </div>
                     ))}
                   </div>
+
+                  {/* Service Card Bottom Save Bar */}
+                  <div className="pt-3 border-t border-neutral-200 flex items-center justify-between">
+                    <span className="text-[11px] font-mono text-neutral-400">0{idx + 1} · {s.title}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleSaveItem(s.id, s.title)}
+                      disabled={savingEntityId === s.id}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-black text-white hover:bg-neutral-800 disabled:opacity-60 text-xs font-semibold rounded transition-colors cursor-pointer"
+                    >
+                      {savingEntityId === s.id ? (
+                        <>
+                          <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+                          <span>Saving...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Save size={13} />
+                          <span>Save Service</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -2906,6 +3007,20 @@ export default function AdminCMSPage() {
                     </button>
                   </div>
 
+                  <button
+                    type="button"
+                    onClick={() => handleSaveItem(m.id, m.name)}
+                    disabled={savingEntityId === m.id}
+                    className="px-2 py-1 text-xs bg-black text-white hover:bg-neutral-800 disabled:opacity-60 rounded transition-colors flex items-center gap-1 font-medium cursor-pointer shadow-2xs"
+                    title={`Save practitioner "${m.name}"`}
+                  >
+                    {savingEntityId === m.id ? (
+                      <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Save size={11} />
+                    )}
+                    <span>Save</span>
+                  </button>
                   <button
                     type="button"
                     onClick={() => {
@@ -3114,6 +3229,29 @@ export default function AdminCMSPage() {
                     className="w-full p-2 border border-neutral-300 rounded text-xs leading-relaxed"
                   />
                 </div>
+
+                {/* Team Card Bottom Save Bar */}
+                <div className="pt-2 flex items-center justify-between border-t border-neutral-100">
+                  <span className="text-[10px] font-mono text-neutral-400">{m.discipline}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleSaveItem(m.id, m.name)}
+                    disabled={savingEntityId === m.id}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-black text-white hover:bg-neutral-800 disabled:opacity-60 text-xs font-semibold rounded transition-colors cursor-pointer"
+                  >
+                    {savingEntityId === m.id ? (
+                      <>
+                        <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+                        <span>Saving...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Save size={12} />
+                        <span>Save Member</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -3199,6 +3337,20 @@ export default function AdminCMSPage() {
                     >
                       Read Live →
                     </Link>
+                    <button
+                      type="button"
+                      onClick={() => handleSaveItem(b.id, b.title)}
+                      disabled={savingEntityId === b.id}
+                      className="px-2.5 py-0.5 text-xs bg-black text-white hover:bg-neutral-800 disabled:opacity-60 rounded transition-colors flex items-center gap-1 font-medium cursor-pointer shadow-2xs"
+                      title={`Save monograph "${b.title}"`}
+                    >
+                      {savingEntityId === b.id ? (
+                        <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Save size={11} />
+                      )}
+                      <span>Save</span>
+                    </button>
                     <button
                       onClick={() => {
                         if (confirm(`Delete monograph "${b.title}"?`)) {
@@ -3463,6 +3615,31 @@ export default function AdminCMSPage() {
                           className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
                         />
                       </div>
+
+                      {/* Monograph Card Bottom Save Bar */}
+                      <div className="pt-3 border-t border-neutral-200 flex items-center justify-between">
+                        <span className="text-[11px] font-mono text-neutral-400">
+                          Monograph: <strong className="text-neutral-700">{b.title}</strong>
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleSaveItem(b.id, b.title)}
+                          disabled={savingEntityId === b.id}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-black text-white hover:bg-neutral-800 disabled:opacity-60 text-xs font-semibold rounded transition-colors cursor-pointer"
+                        >
+                          {savingEntityId === b.id ? (
+                            <>
+                              <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+                              <span>Saving...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Save size={13} />
+                              <span>Save Post Changes</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -3537,6 +3714,20 @@ export default function AdminCMSPage() {
                       <option value="Sustainability">Sustainability</option>
                       <option value="Technical & BIM">Technical & BIM</option>
                     </select>
+                    <button
+                      type="button"
+                      onClick={() => handleSaveItem(item.id, `FAQ Q${idx + 1}`)}
+                      disabled={savingEntityId === item.id}
+                      className="px-2 py-1 text-xs bg-black text-white hover:bg-neutral-800 disabled:opacity-60 rounded transition-colors flex items-center gap-1 font-medium shrink-0 cursor-pointer shadow-2xs"
+                      title="Save this FAQ to Cloud"
+                    >
+                      {savingEntityId === item.id ? (
+                        <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Save size={11} />
+                      )}
+                      <span>Save</span>
+                    </button>
                     <button
                       onClick={() => {
                         saveFaq(faq.filter((f) => f.id !== item.id));
@@ -3713,6 +3904,22 @@ export default function AdminCMSPage() {
                     className="p-1 border border-neutral-300 rounded text-[10px]"
                   />
                 </div>
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => handleSaveItem(g.id, g.title || "Gallery Photo")}
+                    disabled={savingEntityId === g.id}
+                    className="w-full inline-flex items-center justify-center gap-1.5 py-1.5 bg-black text-white hover:bg-neutral-800 disabled:opacity-60 text-[11px] font-semibold rounded transition-colors cursor-pointer shadow-2xs"
+                    title="Save this photo to Cloud"
+                  >
+                    {savingEntityId === g.id ? (
+                      <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Save size={11} />
+                    )}
+                    <span>Save Photo</span>
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -3764,15 +3971,31 @@ export default function AdminCMSPage() {
                     <span className="font-bold text-sm text-neutral-900">{r.year}</span>
                     <span className="text-[10px] font-mono text-neutral-400 uppercase">({r.category})</span>
                   </div>
-                  <button
-                    onClick={() => {
-                      saveRecognitions(recognitions.filter((x) => x.id !== r.id));
-                      showToast("Recognition deleted.");
-                    }}
-                    className="text-neutral-400 hover:text-red-500 p-1"
-                  >
-                    <Trash2 size={13} />
-                  </button>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      type="button"
+                      onClick={() => handleSaveItem(r.id, r.title)}
+                      disabled={savingEntityId === r.id}
+                      className="px-2.5 py-1 text-xs bg-black text-white hover:bg-neutral-800 disabled:opacity-60 rounded transition-colors flex items-center gap-1 font-medium cursor-pointer shadow-2xs"
+                      title="Save this recognition citation to Cloud"
+                    >
+                      {savingEntityId === r.id ? (
+                        <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Save size={11} />
+                      )}
+                      <span>Save</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        saveRecognitions(recognitions.filter((x) => x.id !== r.id));
+                        showToast("Recognition deleted.");
+                      }}
+                      className="text-neutral-400 hover:text-red-500 p-1"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -3867,15 +4090,31 @@ export default function AdminCMSPage() {
                     <span className="text-neutral-400">·</span>
                     <span className="text-neutral-500">{t.designation}</span>
                   </div>
-                  <button
-                    onClick={() => {
-                      saveTestimonials(testimonials.filter((x) => x.id !== t.id));
-                      showToast("Testimonial removed.");
-                    }}
-                    className="text-neutral-400 hover:text-red-500 p-1"
-                  >
-                    <Trash2 size={13} />
-                  </button>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      type="button"
+                      onClick={() => handleSaveItem(t.id, t.clientName)}
+                      disabled={savingEntityId === t.id}
+                      className="px-2.5 py-1 text-xs bg-black text-white hover:bg-neutral-800 disabled:opacity-60 rounded transition-colors flex items-center gap-1 font-medium cursor-pointer shadow-2xs"
+                      title="Save this testimonial to Cloud"
+                    >
+                      {savingEntityId === t.id ? (
+                        <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Save size={11} />
+                      )}
+                      <span>Save</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        saveTestimonials(testimonials.filter((x) => x.id !== t.id));
+                        showToast("Testimonial removed.");
+                      }}
+                      className="text-neutral-400 hover:text-red-500 p-1"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -3954,14 +4193,21 @@ export default function AdminCMSPage() {
               </p>
             </div>
             <button
-              onClick={() => {
-                saveSiteSettings(siteSettings);
-                showToast("All studio settings saved and published.");
-              }}
-              className="inline-flex items-center gap-1.5 px-4 py-2 bg-black text-white text-xs uppercase tracking-wider font-medium hover:bg-neutral-800 transition-colors rounded shadow-sm"
+              onClick={() => handleSaveItem("settings-top", "Studio Settings")}
+              disabled={savingEntityId === "settings-top"}
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-black text-white text-xs uppercase tracking-wider font-medium hover:bg-neutral-800 disabled:opacity-60 transition-colors rounded shadow-sm cursor-pointer"
             >
-              <Save size={13} />
-              <span>Save Settings</span>
+              {savingEntityId === "settings-top" ? (
+                <>
+                  <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Saving...</span>
+                </>
+              ) : (
+                <>
+                  <Save size={13} />
+                  <span>Save Settings</span>
+                </>
+              )}
             </button>
           </div>
 
@@ -5009,14 +5255,21 @@ export default function AdminCMSPage() {
           {/* Save Action Footer */}
           <div className="pt-4 border-t border-neutral-200 flex justify-end">
             <button
-              onClick={() => {
-                saveSiteSettings(siteSettings);
-                showToast("All settings saved and published.");
-              }}
-              className="inline-flex items-center gap-2 px-6 py-2.5 bg-black text-white text-xs uppercase tracking-widest font-medium hover:bg-neutral-800 transition-colors rounded shadow"
+              onClick={() => handleSaveItem("settings-bottom", "All Studio Settings")}
+              disabled={savingEntityId === "settings-bottom"}
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-black text-white text-xs uppercase tracking-widest font-medium hover:bg-neutral-800 disabled:opacity-60 transition-colors rounded shadow cursor-pointer"
             >
-              <Save size={14} />
-              <span>Save & Publish All Settings</span>
+              {savingEntityId === "settings-bottom" ? (
+                <>
+                  <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Saving...</span>
+                </>
+              ) : (
+                <>
+                  <Save size={14} />
+                  <span>Save & Publish All Settings</span>
+                </>
+              )}
             </button>
           </div>
         </div>
