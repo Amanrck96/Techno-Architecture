@@ -142,17 +142,22 @@ const SYNC_EVENT_NAME = "techno_cms_local_update";
 
 export function getStorageCredentials() {
   if (typeof window === "undefined") {
-    return { githubToken: "", githubRepo: "Kima1011/Techno-Architecture", upstashUrl: "", upstashToken: "" };
+    return { githubToken: "", githubRepo: "Amanrck96/Techno-Architecture", upstashUrl: "", upstashToken: "" };
   }
   try {
+    let repo = localStorage.getItem(STORAGE_KEYS.GITHUB_REPO);
+    if (!repo || repo.includes("Kima1011")) {
+      repo = "Amanrck96/Techno-Architecture";
+      try { localStorage.setItem(STORAGE_KEYS.GITHUB_REPO, repo); } catch (_) {}
+    }
     return {
       githubToken: localStorage.getItem(STORAGE_KEYS.GITHUB_TOKEN) || "",
-      githubRepo: localStorage.getItem(STORAGE_KEYS.GITHUB_REPO) || "Kima1011/Techno-Architecture",
+      githubRepo: repo,
       upstashUrl: localStorage.getItem(STORAGE_KEYS.UPSTASH_URL) || "",
       upstashToken: localStorage.getItem(STORAGE_KEYS.UPSTASH_TOKEN) || "",
     };
   } catch (_) {
-    return { githubToken: "", githubRepo: "Kima1011/Techno-Architecture", upstashUrl: "", upstashToken: "" };
+    return { githubToken: "", githubRepo: "Amanrck96/Techno-Architecture", upstashUrl: "", upstashToken: "" };
   }
 }
 

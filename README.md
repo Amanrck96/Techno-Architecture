@@ -63,7 +63,7 @@ This repository hosts the complete source code for **Techno**, an architectural 
 
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/Kima1011/Techno-Architecture.git
+git clone https://github.com/Amanrck96/Techno-Architecture.git
 cd Techno-Architecture
 npm install
 ```

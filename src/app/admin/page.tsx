@@ -485,7 +485,7 @@ export default function AdminCMSPage() {
   const handleSaveStorageCredentials = () => {
     saveStorageCredentials({
       githubToken: githubTokenInput.trim(),
-      githubRepo: githubRepoInput.trim() || "Kima1011/Techno-Architecture",
+      githubRepo: githubRepoInput.trim() || "Amanrck96/Techno-Architecture",
       upstashUrl: upstashUrlInput.trim(),
       upstashToken: upstashTokenInput.trim(),
     });
@@ -510,7 +510,7 @@ export default function AdminCMSPage() {
       // Save credentials first
       saveStorageCredentials({
         githubToken: githubTokenInput.trim(),
-        githubRepo: githubRepoInput.trim() || "Kima1011/Techno-Architecture",
+        githubRepo: githubRepoInput.trim() || "Amanrck96/Techno-Architecture",
       });
 
       const allData = {
@@ -528,7 +528,7 @@ export default function AdminCMSPage() {
       const res = await syncToServer({
         allData,
         githubToken: githubTokenInput.trim(),
-        githubRepo: githubRepoInput.trim() || "Kima1011/Techno-Architecture",
+        githubRepo: githubRepoInput.trim() || "Amanrck96/Techno-Architecture",
         forceGitHubCommit: true,
       });
 
@@ -4301,7 +4301,7 @@ export default function AdminCMSPage() {
                       type="text"
                       value={githubRepoInput}
                       onChange={(e) => setGithubRepoInput(e.target.value)}
-                      placeholder="Kima1011/Techno-Architecture"
+                      placeholder="Amanrck96/Techno-Architecture"
                       className="w-full p-2 bg-black/40 border border-white/20 rounded font-mono text-xs text-white placeholder-neutral-500"
                     />
                   </div>
