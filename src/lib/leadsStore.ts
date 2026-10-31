@@ -30,7 +30,7 @@ declare global {
  */
 async function getLeadsFromGitHub(): Promise<{ leads: EnquiryLead[]; sha?: string } | null> {
   const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
-  const repo = process.env.GITHUB_REPOSITORY || "Kima1011/Techno-Architecture";
+  const repo = process.env.GITHUB_REPOSITORY || "Amanrck96/Techno-Architecture";
   const filePath = "src/data/enquiries.json";
 
   if (!token) return null;
@@ -63,7 +63,7 @@ async function getLeadsFromGitHub(): Promise<{ leads: EnquiryLead[]; sha?: strin
  */
 async function saveLeadsToGitHub(leads: EnquiryLead[]): Promise<boolean> {
   const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
-  const repo = process.env.GITHUB_REPOSITORY || "Kima1011/Techno-Architecture";
+  const repo = process.env.GITHUB_REPOSITORY || "Amanrck96/Techno-Architecture";
   const filePath = "src/data/enquiries.json";
 
   if (!token) return false;

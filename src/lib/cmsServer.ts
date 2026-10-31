@@ -128,7 +128,7 @@ let pendingGitHubCommit: { data: any; token?: string; repo?: string } | null = n
 
 export async function getFromGitHub(explicitToken?: string, explicitRepo?: string): Promise<any | null> {
   const token = explicitToken || process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
-  const repo = explicitRepo || process.env.GITHUB_REPOSITORY || "Kima1011/Techno-Architecture";
+  const repo = explicitRepo || process.env.GITHUB_REPOSITORY || "Amanrck96/Techno-Architecture";
   const filePath = "src/data/cms-content.json";
   if (!token) return null;
 
@@ -170,7 +170,7 @@ export async function saveToGitHub(
   explicitRepo?: string
 ): Promise<{ success: boolean; sha?: string; error?: string }> {
   const token = explicitToken || process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
-  const repo = explicitRepo || process.env.GITHUB_REPOSITORY || "Kima1011/Techno-Architecture";
+  const repo = explicitRepo || process.env.GITHUB_REPOSITORY || "Amanrck96/Techno-Architecture";
   const filePath = "src/data/cms-content.json";
   if (!token) return { success: false, error: "GitHub Personal Access Token not provided." };
 
