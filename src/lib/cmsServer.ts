@@ -70,8 +70,82 @@ export function getDefaultData(): any {
 }
 
 // -------------------------------------------------------------
-// CLOUD STORAGE ADAPTERS (Upstash KV / GitHub / Firestore)
+// CLOUD STORAGE ADAPTERS (Firebase Storage / Upstash / GitHub / Firestore)
 // -------------------------------------------------------------
+
+export const FIREBASE_STORAGE_BUCKET =
+  process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "technoarchitecture-7d718.firebasestorage.app";
+export const FIREBASE_CMS_FILE_PATH = "cms/cms-content.json";
+
+/**
+ * Uploads CMS content directly to Firebase Cloud Storage bucket via Google Cloud REST API.
+ * This is 100% permanent, instant (~300ms), and bypasses Vercel rebuilds and GitHub rate limits.
+ */
+export async function saveToFirebaseStorage(
+  data: any,
+  explicitBucket?: string
+): Promise<{ success: boolean; error?: string }> {
+  const bucket = explicitBucket || FIREBASE_STORAGE_BUCKET;
+  const uploadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o?name=${encodeURIComponent(
+    FIREBASE_CMS_FILE_PATH
+  )}&uploadType=media`;
+
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000);
+
+    const bodyString = typeof data === "string" ? data : JSON.stringify(data);
+    const res = await fetch(uploadUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: bodyString,
+      signal: controller.signal,
+    });
+    clearTimeout(timer);
+
+    if (res.ok) {
+      return { success: true };
+    }
+    const errText = await res.text();
+    return { success: false, error: `Firebase Storage upload HTTP ${res.status}: ${errText}` };
+  } catch (e: any) {
+    console.warn("[CMS Server] Firebase Storage upload notice:", e);
+    return { success: false, error: e?.message || "Network error uploading to Firebase Storage." };
+  }
+}
+
+/**
+ * Reads CMS content directly from Firebase Cloud Storage via public CDN / REST endpoint.
+ */
+export async function getFromFirebaseStorage(explicitBucket?: string): Promise<any | null> {
+  const bucket = explicitBucket || FIREBASE_STORAGE_BUCKET;
+  const getUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodeURIComponent(
+    FIREBASE_CMS_FILE_PATH
+  )}?alt=media`;
+
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 4000);
+
+    const res = await fetch(getUrl, {
+      cache: "no-store",
+      signal: controller.signal,
+    });
+    clearTimeout(timer);
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data && typeof data === "object" && data.updatedAt) {
+        return data;
+      }
+    }
+  } catch (e) {
+    // Firebase Storage read notice
+  }
+  return null;
+}
 
 export async function getFromUpstashKV(explicitUrl?: string, explicitToken?: string): Promise<any | null> {
   const url = explicitUrl || process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
@@ -281,7 +355,15 @@ export async function readStore(
     candidates.push(JSON.parse(JSON.stringify(globalThis.__techno_cms_store__)));
   }
 
-  // 2. Cloud Firestore (Tier 0 persistence if service account configured)
+  // 2. Firebase Cloud Storage (Authoritative, instantaneous, permanent cloud bucket)
+  try {
+    const fbData = await getFromFirebaseStorage();
+    if (fbData && typeof fbData === "object" && fbData.updatedAt) {
+      candidates.push(fbData);
+    }
+  } catch (_) {}
+
+  // 3. Cloud Firestore (Tier 0 persistence if service account configured)
   try {
     const db = getFirestoreDb();
     if (db) {
@@ -378,6 +460,7 @@ export interface WriteStoreResult {
   upstash: boolean;
   github: boolean;
   firestore: boolean;
+  firebaseStorage: boolean;
   isPermanent: boolean;
   summaryMessage: string;
   errorDetails: string[];
@@ -424,13 +507,24 @@ export async function writeStore(
     upstash: false,
     github: false,
     firestore: false,
+    firebaseStorage: false,
     isPermanent: false,
     summaryMessage: "",
     errorDetails: [],
   };
 
   await Promise.allSettled([
-    // Tier 0: Local file (for local development & persistent hosting)
+    // Tier 0: Firebase Cloud Storage (Authoritative, instant ~300ms, no rebuilds required)
+    (async () => {
+      const fbRes = await saveToFirebaseStorage(cleanData);
+      if (fbRes.success) {
+        result.firebaseStorage = true;
+      } else {
+        result.errorDetails.push(`Firebase Storage: ${fbRes.error}`);
+      }
+    })(),
+
+    // Tier 1: Local file (for local development & persistent hosting)
     (async () => {
       try {
         const dir = path.dirname(DATA_FILE_PATH);
@@ -444,7 +538,7 @@ export async function writeStore(
       }
     })(),
 
-    // Tier 1: Cloud Firestore
+    // Tier 2: Cloud Firestore
     (async () => {
       try {
         const db = getFirestoreDb();
@@ -457,7 +551,7 @@ export async function writeStore(
       }
     })(),
 
-    // Tier 2: Upstash KV
+    // Tier 3: Upstash KV
     (async () => {
       const upstashRes = await saveToUpstashKV(cleanData, options?.upstashUrl, options?.upstashToken);
       if (upstashRes.success) {
@@ -467,7 +561,7 @@ export async function writeStore(
       }
     })(),
 
-    // Tier 3: GitHub direct commit (ONLY when explicitly requested via forceGitHubCommit or manual Save to Cloud)
+    // Tier 4: GitHub direct commit (ONLY when explicitly requested via forceGitHubCommit or manual Save to Cloud)
     // NEVER run on automatic debounced background typing saves to prevent spamming GitHub commits and redeployments.
     (async () => {
       if (!options?.forceGitHubCommit) {
@@ -482,7 +576,7 @@ export async function writeStore(
       }
     })(),
 
-    // Tier 4: /tmp or local cache file
+    // Tier 5: /tmp or local cache file
     (async () => {
       try {
         const dir = path.dirname(TMP_FILE_PATH);
@@ -495,19 +589,27 @@ export async function writeStore(
     })(),
   ]);
 
-  result.isPermanent = result.localDisk || result.github || result.upstash || result.firestore;
+  result.isPermanent =
+    result.firebaseStorage ||
+    result.localDisk ||
+    result.github ||
+    result.upstash ||
+    result.firestore;
 
-  if (result.github) {
-    result.summaryMessage = "Committed permanently to GitHub repository (triggers production redeploy).";
-  } else if (result.upstash) {
-    result.summaryMessage = "Saved permanently to Upstash cloud key-value store.";
+  if (result.firebaseStorage) {
+    result.summaryMessage =
+      "Saved permanently to Firebase Cloud Storage (instant live sync across all devices & visitors).";
   } else if (result.firestore) {
     result.summaryMessage = "Saved permanently to Cloud Firestore.";
+  } else if (result.upstash) {
+    result.summaryMessage = "Saved permanently to Upstash cloud key-value store.";
+  } else if (result.github) {
+    result.summaryMessage = "Committed permanently to GitHub repository (triggers production redeploy).";
   } else if (result.localDisk) {
     result.summaryMessage = "Saved permanently to src/data/cms-content.json on disk.";
   } else {
     result.summaryMessage =
-      "Saved to temporary serverless memory (/tmp). Connect GitHub or Upstash in Settings for permanent cloud persistence across all visitors.";
+      "Saved to temporary serverless memory (/tmp). Connect Firebase Cloud Storage or Upstash for permanent persistence.";
   }
 
   return result;

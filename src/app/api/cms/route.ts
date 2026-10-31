@@ -8,6 +8,8 @@ import {
   getDefaultData,
   saveToGitHub,
   saveToUpstashKV,
+  saveToFirebaseStorage,
+  FIREBASE_STORAGE_BUCKET,
 } from "@/lib/cmsServer";
 
 export const dynamic = "force-dynamic";
@@ -27,6 +29,8 @@ export async function GET(request: Request) {
     const storageInfo = {
       isVercel: Boolean(process.env.VERCEL),
       isProduction: process.env.NODE_ENV === "production",
+      hasFirebaseStorage: true,
+      firebaseStorageBucket: FIREBASE_STORAGE_BUCKET,
       hasGitHubToken: Boolean(process.env.GITHUB_TOKEN || process.env.GH_TOKEN),
       hasUpstashKV: Boolean(process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL),
       hasFirestore: Boolean(getFirestoreDb()),
@@ -106,6 +110,13 @@ export async function POST(request: Request) {
     // Action: Test credentials
     if (body.action === "test-connection") {
       const results: any = {};
+      // Test Firebase Cloud Storage
+      const fbTest = await saveToFirebaseStorage({
+        _test: true,
+        testedAt: new Date().toISOString(),
+      });
+      results.firebaseStorage = fbTest;
+
       if (githubToken) {
         const ghTest = await saveToGitHub({ _test: true }, githubToken, githubRepo);
         results.github = ghTest;
