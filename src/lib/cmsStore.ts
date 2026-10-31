@@ -531,10 +531,9 @@ export function CMSProvider({
       const sanitizedTeam = filterOutDeletedItems<TeamMember>(
         sanitizeTeamList(data.team).map((m: any) => {
           const fallback = initialTeam.find((it) => it.id === m.id || it.name === m.name);
-          let img = m.image;
-          let hoverImg = m.hoverImage;
-          if (!img && fallback?.image) img = fallback.image;
-          if (!hoverImg && fallback?.hoverImage) hoverImg = fallback.hoverImage;
+          // Preserve empty string when photo was removed; only fallback if property is undefined
+          const img = m.image !== undefined ? m.image : (fallback?.image || "");
+          const hoverImg = m.hoverImage !== undefined ? m.hoverImage : (fallback?.hoverImage || "");
           return { ...m, image: img, hoverImage: hoverImg };
         }),
         activeDeletedIds
@@ -618,7 +617,7 @@ export function CMSProvider({
       // CRITICAL: In /admin route, user is actively managing content.
       // NEVER allow background polling to overwrite state while on /admin.
       const isAdminRoute = typeof window !== "undefined" && window.location.pathname.startsWith("/admin");
-      if (isAdminRoute && lastLocalEditTimestampRef.current > 0) {
+      if (isAdminRoute) {
         return;
       }
 
@@ -673,11 +672,52 @@ export function CMSProvider({
     }
   }, [applyDataset, deletedIds]);
 
+  // Debounced LocalStorage write timers to prevent main-thread UI lag during rapid edits
+  const storageTimersRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
+
+  // Broadcast to other open browser tabs (avoids echoing to self)
+  const broadcastChange = useCallback((entity: string, data: any, activeDeleted?: string[]) => {
+    if (typeof window !== "undefined") {
+      try {
+        const payload = { entity, data, deletedIds: activeDeleted || deletedIds };
+        if ("BroadcastChannel" in window) {
+          const ch = new BroadcastChannel(SYNC_CHANNEL_NAME);
+          ch.postMessage({ type: "CMS_UPDATE", ...payload });
+          ch.close();
+        }
+      } catch (_) {}
+    }
+  }, [deletedIds]);
+
+  // High-performance debounced LocalStorage writer & cross-tab broadcaster
+  const persistToStorageAndBroadcast = useCallback(
+    (key: string, entity: string, sanitized: any, nextDeleted: string[]) => {
+      touchClientUpdate();
+      try {
+        localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "true");
+      } catch (_) {}
+
+      const existing = storageTimersRef.current.get(key);
+      if (existing) clearTimeout(existing);
+
+      const timer = setTimeout(() => {
+        storageTimersRef.current.delete(key);
+        try {
+          localStorage.setItem(key, JSON.stringify(sanitized));
+        } catch (_) {}
+        broadcastChange(entity, sanitized, nextDeleted);
+      }, 200);
+
+      storageTimersRef.current.set(key, timer);
+    },
+    [broadcastChange]
+  );
+
   // Initial mount & live event listeners
   useEffect(() => {
     setIsClient(true);
 
-    // Sync from local cache if available without clearing
+    // 1. Sync deletedIds from local storage
     try {
       const sd = localStorage.getItem(STORAGE_KEYS.DELETED_IDS);
       if (sd) {
@@ -688,11 +728,69 @@ export function CMSProvider({
       }
     } catch (_) {}
 
-    // Fetch authoritative server data:
-    // SSR already injects initialData in layout.tsx. Only fetch on client if initialData was absent
-    // or if the user is loading the /admin studio to verify live persistence.
+    // 2. Hydrate from localStorage if user is on /admin OR client has newer edits
+    try {
+      const clientUpdatedStr = localStorage.getItem(STORAGE_KEYS.CLIENT_UPDATED_AT);
+      const serverUpdatedStr = initialData?.updatedAt;
+      const clientTime = clientUpdatedStr ? new Date(clientUpdatedStr).getTime() : 0;
+      const serverTime = serverUpdatedStr ? new Date(serverUpdatedStr).getTime() : 0;
+      const isAdmin = typeof window !== "undefined" && window.location.pathname.startsWith("/admin");
+
+      if (isAdmin || clientTime > serverTime) {
+        const sd = localStorage.getItem(STORAGE_KEYS.DELETED_IDS);
+        const curDeleted: string[] = sd ? JSON.parse(sd) : deletedIds;
+
+        const sp = localStorage.getItem(STORAGE_KEYS.PROJECTS);
+        if (sp) {
+          const parsed = JSON.parse(sp);
+          if (Array.isArray(parsed) && parsed.length > 0) setProjects(filterOutDeletedItems(sanitizeProjectsList(parsed), curDeleted));
+        }
+        const st = localStorage.getItem(STORAGE_KEYS.TEAM);
+        if (st) {
+          const parsed = JSON.parse(st);
+          if (Array.isArray(parsed) && parsed.length > 0) setTeam(filterOutDeletedItems(sanitizeTeamList(parsed), curDeleted));
+        }
+        const ss = localStorage.getItem(STORAGE_KEYS.SERVICES);
+        if (ss) {
+          const parsed = JSON.parse(ss);
+          if (Array.isArray(parsed) && parsed.length > 0) setServices(filterOutDeletedItems(parsed, curDeleted));
+        }
+        const sb = localStorage.getItem(STORAGE_KEYS.BLOG);
+        if (sb) {
+          const parsed = JSON.parse(sb);
+          if (Array.isArray(parsed) && parsed.length > 0) setBlog(filterOutDeletedItems(parsed, curDeleted));
+        }
+        const sf = localStorage.getItem(STORAGE_KEYS.FAQ);
+        if (sf) {
+          const parsed = JSON.parse(sf);
+          if (Array.isArray(parsed) && parsed.length > 0) setFaq(filterOutDeletedItems(parsed, curDeleted));
+        }
+        const sg = localStorage.getItem(STORAGE_KEYS.GALLERY);
+        if (sg) {
+          const parsed = JSON.parse(sg);
+          if (Array.isArray(parsed) && parsed.length > 0) setGallery(filterOutDeletedItems(parsed, curDeleted));
+        }
+        const sr = localStorage.getItem(STORAGE_KEYS.RECOGNITIONS);
+        if (sr) {
+          const parsed = JSON.parse(sr);
+          if (Array.isArray(parsed) && parsed.length > 0) setRecognitions(filterOutDeletedItems(parsed, curDeleted));
+        }
+        const sset = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+        if (sset) {
+          const parsed = JSON.parse(sset);
+          if (parsed && typeof parsed === "object") setSiteSettings(parsed);
+        }
+        const stm = localStorage.getItem(STORAGE_KEYS.TESTIMONIALS);
+        if (stm) {
+          const parsed = JSON.parse(stm);
+          if (Array.isArray(parsed) && parsed.length > 0) setTestimonials(filterOutDeletedItems(parsed, curDeleted));
+        }
+      }
+    } catch (_) {}
+
+    // 3. Only fetch from server if initialData was absent AND we are NOT on /admin
     const isAdmin = typeof window !== "undefined" && window.location.pathname.startsWith("/admin");
-    if (!initialData || isAdmin) {
+    if (!initialData && !isAdmin) {
       fetchFromServer();
     }
 
@@ -727,38 +825,10 @@ export function CMSProvider({
       } catch (_) {}
     }
 
-    // Custom window event listener for same-tab instant sync
-    const handleLocalUpdate = (e: Event) => {
-      const customEvent = e as CustomEvent;
-      if (customEvent.detail) {
-        const { entity, data, deletedIds: incomingDeleted } = customEvent.detail;
-        if (Array.isArray(incomingDeleted)) {
-          setDeletedIds((prev) => {
-            const combined = Array.from(new Set([...prev, ...incomingDeleted]));
-            try { localStorage.setItem(STORAGE_KEYS.DELETED_IDS, JSON.stringify(combined)); } catch (_) {}
-            return combined;
-          });
-        }
-
-        if (entity === "projects") setProjects(filterOutDeletedItems(sanitizeProjectsList(data), incomingDeleted || deletedIds));
-        else if (entity === "services") setServices(filterOutDeletedItems(data, incomingDeleted || deletedIds));
-        else if (entity === "team") setTeam(filterOutDeletedItems(data, incomingDeleted || deletedIds));
-        else if (entity === "blog") setBlog(filterOutDeletedItems(data, incomingDeleted || deletedIds));
-        else if (entity === "faq") setFaq(filterOutDeletedItems(data, incomingDeleted || deletedIds));
-        else if (entity === "gallery") setGallery(filterOutDeletedItems(data, incomingDeleted || deletedIds));
-        else if (entity === "recognitions") setRecognitions(filterOutDeletedItems(data, incomingDeleted || deletedIds));
-        else if (entity === "siteSettings") setSiteSettings(data);
-        else if (entity === "testimonials") setTestimonials(filterOutDeletedItems(data, incomingDeleted || deletedIds));
-        else if (entity === "ALL_DATA") applyDataset(data);
-      }
-    };
-    window.addEventListener(SYNC_EVENT_NAME, handleLocalUpdate);
-
-    // ZERO BACKGROUND POLLING:
-    // Background polling on visitor tabs exhausted Vercel CPU hours and Fast Origin Transfer.
-    // Instant sync is handled locally via BroadcastChannel and window events without network loops.
-
     const handleBeforeUnload = () => {
+      // Flush pending storage writes immediately
+      storageTimersRef.current.forEach((t) => clearTimeout(t));
+      storageTimersRef.current.clear();
       if (syncTimersRef.current.size > 0) {
         const localData = getLocalDataset();
         if (Object.keys(localData).length > 0) {
@@ -770,26 +840,13 @@ export function CMSProvider({
 
     return () => {
       if (channel) channel.close();
-      window.removeEventListener(SYNC_EVENT_NAME, handleLocalUpdate);
       window.removeEventListener("beforeunload", handleBeforeUnload);
+      storageTimersRef.current.forEach((t) => clearTimeout(t));
+      storageTimersRef.current.clear();
       syncTimersRef.current.forEach((t) => clearTimeout(t));
       syncTimersRef.current.clear();
     };
   }, [fetchFromServer, applyDataset, deletedIds]);
-
-  const broadcastChange = (entity: string, data: any, activeDeleted?: string[]) => {
-    if (typeof window !== "undefined") {
-      try {
-        const payload = { entity, data, deletedIds: activeDeleted || deletedIds };
-        window.dispatchEvent(new CustomEvent(SYNC_EVENT_NAME, { detail: payload }));
-        if ("BroadcastChannel" in window) {
-          const ch = new BroadcastChannel(SYNC_CHANNEL_NAME);
-          ch.postMessage({ type: "CMS_UPDATE", ...payload });
-          ch.close();
-        }
-      } catch (_) {}
-    }
-  };
 
   const debouncedSyncToServer = useCallback((entity: string, data: any, currentDeleted?: string[]) => {
     touchClientUpdate();
@@ -847,23 +904,23 @@ export function CMSProvider({
       }
 
       const sanitized = filterOutDeletedItems(sanitizeProjectsList(newProjects), nextDeleted);
+      // Instant React UI update (60fps typing)
       setProjects(sanitized);
-      try {
-        localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(sanitized));
-        touchClientUpdate();
-      } catch (_) {}
-      broadcastChange("projects", sanitized, nextDeleted);
 
-      // If items were removed, sync IMMEDIATELY with 0ms delay to eliminate any window for stale data
       if (removed.length > 0) {
-        // Also set edit lockout so background poll doesn't immediately overwrite
         lastLocalEditTimestampRef.current = Date.now();
+        try {
+          localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(sanitized));
+          touchClientUpdate();
+        } catch (_) {}
+        broadcastChange("projects", sanitized, nextDeleted);
         syncToServer({ entity: "projects", data: sanitized, deletedIds: nextDeleted });
       } else {
+        persistToStorageAndBroadcast(STORAGE_KEYS.PROJECTS, "projects", sanitized, nextDeleted);
         debouncedSyncToServer("projects", sanitized, nextDeleted);
       }
     },
-    [projects, deletedIds, debouncedSyncToServer]
+    [projects, deletedIds, debouncedSyncToServer, broadcastChange, persistToStorageAndBroadcast]
   );
 
   const saveServices = useCallback(
@@ -887,19 +944,21 @@ export function CMSProvider({
 
       const sanitized = filterOutDeletedItems(newServices, nextDeleted);
       setServices(sanitized);
-      try {
-        localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(sanitized));
-        touchClientUpdate();
-      } catch (_) {}
-      broadcastChange("services", sanitized, nextDeleted);
 
       if (removed.length > 0) {
+        lastLocalEditTimestampRef.current = Date.now();
+        try {
+          localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(sanitized));
+          touchClientUpdate();
+        } catch (_) {}
+        broadcastChange("services", sanitized, nextDeleted);
         syncToServer({ entity: "services", data: sanitized, deletedIds: nextDeleted });
       } else {
+        persistToStorageAndBroadcast(STORAGE_KEYS.SERVICES, "services", sanitized, nextDeleted);
         debouncedSyncToServer("services", sanitized, nextDeleted);
       }
     },
-    [services, deletedIds, debouncedSyncToServer]
+    [services, deletedIds, debouncedSyncToServer, broadcastChange, persistToStorageAndBroadcast]
   );
 
   const saveTeam = useCallback(
@@ -923,19 +982,21 @@ export function CMSProvider({
 
       const sanitized = filterOutDeletedItems(sanitizeTeamList(newTeam), nextDeleted);
       setTeam(sanitized);
-      try {
-        localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(sanitized));
-        touchClientUpdate();
-      } catch (_) {}
-      broadcastChange("team", sanitized, nextDeleted);
 
       if (removed.length > 0) {
+        lastLocalEditTimestampRef.current = Date.now();
+        try {
+          localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(sanitized));
+          touchClientUpdate();
+        } catch (_) {}
+        broadcastChange("team", sanitized, nextDeleted);
         syncToServer({ entity: "team", data: sanitized, deletedIds: nextDeleted });
       } else {
+        persistToStorageAndBroadcast(STORAGE_KEYS.TEAM, "team", sanitized, nextDeleted);
         debouncedSyncToServer("team", sanitized, nextDeleted);
       }
     },
-    [team, deletedIds, debouncedSyncToServer]
+    [team, deletedIds, debouncedSyncToServer, broadcastChange, persistToStorageAndBroadcast]
   );
 
   const saveBlog = useCallback(
@@ -964,19 +1025,21 @@ export function CMSProvider({
 
       const sanitized = filterOutDeletedItems(newBlog, nextDeleted);
       setBlog(sanitized);
-      try {
-        localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(sanitized));
-        touchClientUpdate();
-      } catch (_) {}
-      broadcastChange("blog", sanitized, nextDeleted);
 
       if (removed.length > 0) {
+        lastLocalEditTimestampRef.current = Date.now();
+        try {
+          localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(sanitized));
+          touchClientUpdate();
+        } catch (_) {}
+        broadcastChange("blog", sanitized, nextDeleted);
         syncToServer({ entity: "blog", data: sanitized, deletedIds: nextDeleted });
       } else {
+        persistToStorageAndBroadcast(STORAGE_KEYS.BLOG, "blog", sanitized, nextDeleted);
         debouncedSyncToServer("blog", sanitized, nextDeleted);
       }
     },
-    [blog, deletedIds, debouncedSyncToServer]
+    [blog, deletedIds, debouncedSyncToServer, broadcastChange, persistToStorageAndBroadcast]
   );
 
   const saveFaq = useCallback(
@@ -1000,19 +1063,21 @@ export function CMSProvider({
 
       const sanitized = filterOutDeletedItems(newFaq, nextDeleted);
       setFaq(sanitized);
-      try {
-        localStorage.setItem(STORAGE_KEYS.FAQ, JSON.stringify(sanitized));
-        touchClientUpdate();
-      } catch (_) {}
-      broadcastChange("faq", sanitized, nextDeleted);
 
       if (removed.length > 0) {
+        lastLocalEditTimestampRef.current = Date.now();
+        try {
+          localStorage.setItem(STORAGE_KEYS.FAQ, JSON.stringify(sanitized));
+          touchClientUpdate();
+        } catch (_) {}
+        broadcastChange("faq", sanitized, nextDeleted);
         syncToServer({ entity: "faq", data: sanitized, deletedIds: nextDeleted });
       } else {
+        persistToStorageAndBroadcast(STORAGE_KEYS.FAQ, "faq", sanitized, nextDeleted);
         debouncedSyncToServer("faq", sanitized, nextDeleted);
       }
     },
-    [faq, deletedIds, debouncedSyncToServer]
+    [faq, deletedIds, debouncedSyncToServer, broadcastChange, persistToStorageAndBroadcast]
   );
 
   const saveGallery = useCallback(
@@ -1036,19 +1101,21 @@ export function CMSProvider({
 
       const sanitized = filterOutDeletedItems(newGallery, nextDeleted);
       setGallery(sanitized);
-      try {
-        localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(sanitized));
-        touchClientUpdate();
-      } catch (_) {}
-      broadcastChange("gallery", sanitized, nextDeleted);
 
       if (removed.length > 0) {
+        lastLocalEditTimestampRef.current = Date.now();
+        try {
+          localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(sanitized));
+          touchClientUpdate();
+        } catch (_) {}
+        broadcastChange("gallery", sanitized, nextDeleted);
         syncToServer({ entity: "gallery", data: sanitized, deletedIds: nextDeleted });
       } else {
+        persistToStorageAndBroadcast(STORAGE_KEYS.GALLERY, "gallery", sanitized, nextDeleted);
         debouncedSyncToServer("gallery", sanitized, nextDeleted);
       }
     },
-    [gallery, deletedIds, debouncedSyncToServer]
+    [gallery, deletedIds, debouncedSyncToServer, broadcastChange, persistToStorageAndBroadcast]
   );
 
   const saveRecognitions = useCallback(
@@ -1072,32 +1139,30 @@ export function CMSProvider({
 
       const sanitized = filterOutDeletedItems(newRecognitions, nextDeleted);
       setRecognitions(sanitized);
-      try {
-        localStorage.setItem(STORAGE_KEYS.RECOGNITIONS, JSON.stringify(sanitized));
-        touchClientUpdate();
-      } catch (_) {}
-      broadcastChange("recognitions", sanitized, nextDeleted);
 
       if (removed.length > 0) {
+        lastLocalEditTimestampRef.current = Date.now();
+        try {
+          localStorage.setItem(STORAGE_KEYS.RECOGNITIONS, JSON.stringify(sanitized));
+          touchClientUpdate();
+        } catch (_) {}
+        broadcastChange("recognitions", sanitized, nextDeleted);
         syncToServer({ entity: "recognitions", data: sanitized, deletedIds: nextDeleted });
       } else {
+        persistToStorageAndBroadcast(STORAGE_KEYS.RECOGNITIONS, "recognitions", sanitized, nextDeleted);
         debouncedSyncToServer("recognitions", sanitized, nextDeleted);
       }
     },
-    [recognitions, deletedIds, debouncedSyncToServer]
+    [recognitions, deletedIds, debouncedSyncToServer, broadcastChange, persistToStorageAndBroadcast]
   );
 
   const saveSiteSettings = useCallback(
     (newSettings: SiteSettings) => {
       setSiteSettings(newSettings);
-      try {
-        localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(newSettings));
-        touchClientUpdate();
-      } catch (_) {}
-      broadcastChange("siteSettings", newSettings);
+      persistToStorageAndBroadcast(STORAGE_KEYS.SETTINGS, "siteSettings", newSettings, deletedIds);
       debouncedSyncToServer("siteSettings", newSettings);
     },
-    [debouncedSyncToServer]
+    [debouncedSyncToServer, deletedIds, persistToStorageAndBroadcast]
   );
 
   const saveTestimonials = useCallback(
@@ -1121,19 +1186,21 @@ export function CMSProvider({
 
       const sanitized = filterOutDeletedItems(newTestimonials, nextDeleted);
       setTestimonials(sanitized);
-      try {
-        localStorage.setItem(STORAGE_KEYS.TESTIMONIALS, JSON.stringify(sanitized));
-        touchClientUpdate();
-      } catch (_) {}
-      broadcastChange("testimonials", sanitized, nextDeleted);
 
       if (removed.length > 0) {
+        lastLocalEditTimestampRef.current = Date.now();
+        try {
+          localStorage.setItem(STORAGE_KEYS.TESTIMONIALS, JSON.stringify(sanitized));
+          touchClientUpdate();
+        } catch (_) {}
+        broadcastChange("testimonials", sanitized, nextDeleted);
         syncToServer({ entity: "testimonials", data: sanitized, deletedIds: nextDeleted });
       } else {
+        persistToStorageAndBroadcast(STORAGE_KEYS.TESTIMONIALS, "testimonials", sanitized, nextDeleted);
         debouncedSyncToServer("testimonials", sanitized, nextDeleted);
       }
     },
-    [testimonials, deletedIds, debouncedSyncToServer]
+    [testimonials, deletedIds, debouncedSyncToServer, broadcastChange, persistToStorageAndBroadcast]
   );
 
   // Dedicated explicit delete method
@@ -1195,9 +1262,23 @@ export function CMSProvider({
   );
 
   const saveAllToCloud = useCallback(async () => {
+    storageTimersRef.current.forEach((t) => clearTimeout(t));
+    storageTimersRef.current.clear();
     syncTimersRef.current.forEach((t) => clearTimeout(t));
     syncTimersRef.current.clear();
     touchClientUpdate();
+    try {
+      localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects));
+      localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(services));
+      localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(team));
+      localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(blog));
+      localStorage.setItem(STORAGE_KEYS.FAQ, JSON.stringify(faq));
+      localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(gallery));
+      localStorage.setItem(STORAGE_KEYS.RECOGNITIONS, JSON.stringify(recognitions));
+      localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(siteSettings));
+      localStorage.setItem(STORAGE_KEYS.TESTIMONIALS, JSON.stringify(testimonials));
+      localStorage.setItem(STORAGE_KEYS.DELETED_IDS, JSON.stringify(deletedIds));
+    } catch (_) {}
     const allData = {
       projects,
       services,

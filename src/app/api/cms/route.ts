@@ -33,10 +33,15 @@ export async function GET(request: Request) {
       localDiskWritable: process.env.NODE_ENV !== "production" || !process.env.VERCEL,
     };
 
+    const cookieStore = cookies();
+    const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME);
+    const authHeader = request.headers.get("authorization") || request.headers.get("x-admin-token");
+    const isAdmin = Boolean(sessionCookie || authHeader);
+
     const hasCustomCreds = Boolean(customUpstashUrl || customGithubToken);
-    const cacheControlHeader = hasCustomCreds
-      ? "no-store, no-cache, must-revalidate"
-      : "public, s-maxage=120, stale-while-revalidate=600";
+    const cacheControlHeader = isAdmin || hasCustomCreds
+      ? "no-store, no-cache, must-revalidate, proxy-revalidate"
+      : "public, s-maxage=30, stale-while-revalidate=60";
 
     return NextResponse.json(
       {

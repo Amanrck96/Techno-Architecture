@@ -1595,8 +1595,10 @@ export default function AdminCMSPage() {
                         type="text"
                         value={p.mainImage}
                         onChange={(e) => {
-                          const updated = [...projects];
-                          updated[idx].mainImage = e.target.value;
+                          const val = e.target.value;
+                          const updated = projects.map((item, i) =>
+                            i === idx ? { ...item, mainImage: val } : item
+                          );
                           saveProjects(updated);
                         }}
                         placeholder="Image URL or upload file below"
@@ -1613,8 +1615,9 @@ export default function AdminCMSPage() {
                             const file = e.target.files?.[0];
                             if (file) {
                               handleUploadPhoto(file, (url) => {
-                                const updated = [...projects];
-                                updated[idx].mainImage = url;
+                                const updated = projects.map((item, i) =>
+                                  i === idx ? { ...item, mainImage: url } : item
+                                );
                                 saveProjects(updated);
                               });
                             }
@@ -2206,13 +2209,16 @@ export default function AdminCMSPage() {
                             <button
                               type="button"
                               onClick={() => {
-                                const updated = [...projects];
                                 const newImg: ProjectImage = {
                                   url: "/projects/aikya/elevation-evening.jpg",
                                   caption: "New interior photograph",
                                   aspect: "full",
                                 };
-                                updated[idx].gallery = [...(updated[idx].gallery || []), newImg];
+                                const updated = projects.map((item, i) =>
+                                  i === idx
+                                    ? { ...item, gallery: [...(item.gallery || []), newImg] }
+                                    : item
+                                );
                                 saveProjects(updated);
                                 showToast("New image slot added to project gallery.");
                               }}
@@ -2248,8 +2254,16 @@ export default function AdminCMSPage() {
                                       const file = e.target.files?.[0];
                                       if (file) {
                                         handleUploadPhoto(file, (url) => {
-                                          const updated = [...projects];
-                                          updated[idx].gallery[gIdx].url = url;
+                                          const updated = projects.map((item, i) =>
+                                            i === idx
+                                              ? {
+                                                  ...item,
+                                                  gallery: (item.gallery || []).map((g, gi) =>
+                                                    gi === gIdx ? { ...g, url } : g
+                                                  ),
+                                                }
+                                              : item
+                                          );
                                           saveProjects(updated);
                                         });
                                       }
@@ -2263,8 +2277,17 @@ export default function AdminCMSPage() {
                                     type="text"
                                     value={img.url}
                                     onChange={(e) => {
-                                      const updated = [...projects];
-                                      updated[idx].gallery[gIdx].url = e.target.value;
+                                      const val = e.target.value;
+                                      const updated = projects.map((item, i) =>
+                                        i === idx
+                                          ? {
+                                              ...item,
+                                              gallery: (item.gallery || []).map((g, gi) =>
+                                                gi === gIdx ? { ...g, url: val } : g
+                                              ),
+                                            }
+                                          : item
+                                      );
                                       saveProjects(updated);
                                     }}
                                     placeholder="Image URL"
@@ -2293,8 +2316,17 @@ export default function AdminCMSPage() {
                                   type="text"
                                   value={img.caption}
                                   onChange={(e) => {
-                                    const updated = [...projects];
-                                    updated[idx].gallery[gIdx].caption = e.target.value;
+                                    const val = e.target.value;
+                                    const updated = projects.map((item, i) =>
+                                      i === idx
+                                        ? {
+                                            ...item,
+                                            gallery: (item.gallery || []).map((g, gi) =>
+                                              gi === gIdx ? { ...g, caption: val } : g
+                                            ),
+                                          }
+                                        : item
+                                    );
                                     saveProjects(updated);
                                   }}
                                   placeholder="Photo caption"
@@ -2304,9 +2336,16 @@ export default function AdminCMSPage() {
                               <button
                                 type="button"
                                 onClick={() => {
-                                  const updated = [...projects];
-                                  updated[idx].gallery = updated[idx].gallery.filter((_, i) => i !== gIdx);
+                                  const updated = projects.map((item, i) =>
+                                    i === idx
+                                      ? {
+                                          ...item,
+                                          gallery: (item.gallery || []).filter((_, gi) => gi !== gIdx),
+                                        }
+                                      : item
+                                  );
                                   saveProjects(updated);
+                                  showToast("Removed photo from gallery.");
                                 }}
                                 className="text-neutral-400 hover:text-red-500 p-1"
                                 title="Remove photo"
@@ -2916,8 +2955,9 @@ export default function AdminCMSPage() {
                           if (file) {
                             setUploadingTargetId(m.id);
                             handleUploadPhoto(file, (url) => {
-                              const updated = [...team];
-                              updated[idx].image = url;
+                              const updated = team.map((item, i) =>
+                                i === idx ? { ...item, image: url } : item
+                              );
                               saveTeam(updated);
                             }, "team");
                           }
