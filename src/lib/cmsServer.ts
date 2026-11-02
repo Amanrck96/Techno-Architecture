@@ -10,7 +10,7 @@ import { initialGalleryItems } from "@/data/gallery";
 import { initialRecognitions } from "@/data/recognitions";
 import { initialSiteSettings } from "@/data/siteSettings";
 import { initialTestimonials } from "@/data/testimonials";
-import { getFirestoreDb } from "@/lib/firebaseAdmin";
+import { getFirestoreDb, getFirebaseStorageBucket } from "@/lib/firebaseAdmin";
 
 export const DATA_FILE_PATH = path.join(process.cwd(), "src", "data", "cms-content.json");
 export const TMP_FILE_PATH = process.env.VERCEL
@@ -186,50 +186,68 @@ export const FIREBASE_STORAGE_BUCKET =
 export const FIREBASE_CMS_FILE_PATH = "cms/cms-content.json";
 
 /**
- * Uploads CMS content directly to Firebase Cloud Storage bucket via Google Cloud REST API.
- * This is 100% permanent, instant (~300ms), and bypasses Vercel rebuilds and GitHub rate limits.
+ * Uploads CMS content directly to Firebase Cloud Storage bucket via authenticated Firebase Admin SDK.
+ * This is 100% permanent, instantaneous, and operates securely with admin privileges.
  */
 export async function saveToFirebaseStorage(
   data: any,
   explicitBucket?: string
 ): Promise<{ success: boolean; error?: string }> {
-  const bucket = explicitBucket || FIREBASE_STORAGE_BUCKET;
-  const uploadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o?name=${encodeURIComponent(
-    FIREBASE_CMS_FILE_PATH
-  )}&uploadType=media`;
-
   try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 8000);
-
-    const bodyString = typeof data === "string" ? data : JSON.stringify(data);
-    const res = await fetch(uploadUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: bodyString,
-      signal: controller.signal,
-    });
-    clearTimeout(timer);
-
-    if (res.ok) {
-      return { success: true };
+    const bucket = getFirebaseStorageBucket(explicitBucket);
+    if (!bucket) {
+      return {
+        success: false,
+        error:
+          "Firebase Admin credentials missing. Configure FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, and FIREBASE_PRIVATE_KEY (or FIREBASE_SERVICE_ACCOUNT_KEY).",
+      };
     }
-    const errText = await res.text();
-    return { success: false, error: `Firebase Storage upload HTTP ${res.status}: ${errText}` };
+
+    const file = bucket.file(FIREBASE_CMS_FILE_PATH);
+    const content = typeof data === "string" ? data : JSON.stringify(data, null, 2);
+    await file.save(content, {
+      contentType: "application/json",
+      resumable: false,
+      metadata: {
+        cacheControl: "no-cache, no-store, max-age=0, must-revalidate",
+      },
+    });
+
+    return { success: true };
   } catch (e: any) {
-    console.warn("[CMS Server] Firebase Storage upload notice:", e);
-    return { success: false, error: e?.message || "Network error uploading to Firebase Storage." };
+    console.warn("[CMS Server] Firebase Storage upload error via Admin SDK:", e);
+    return {
+      success: false,
+      error: e?.message || "Failed to save to Firebase Storage via Admin SDK.",
+    };
   }
 }
 
 /**
- * Reads CMS content directly from Firebase Cloud Storage via public CDN / REST endpoint.
+ * Reads CMS content directly from Firebase Cloud Storage via Admin SDK (with public CDN fallback).
  */
 export async function getFromFirebaseStorage(explicitBucket?: string): Promise<any | null> {
-  const bucket = explicitBucket || FIREBASE_STORAGE_BUCKET;
-  const getUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodeURIComponent(
+  // 1. Try Firebase Admin Storage download first (bypasses CDN cache & public permissions)
+  try {
+    const bucket = getFirebaseStorageBucket(explicitBucket);
+    if (bucket) {
+      const file = bucket.file(FIREBASE_CMS_FILE_PATH);
+      const [exists] = await file.exists();
+      if (exists) {
+        const [contents] = await file.download();
+        const data = JSON.parse(contents.toString("utf-8"));
+        if (data && typeof data === "object" && data.updatedAt) {
+          return data;
+        }
+      }
+    }
+  } catch (adminErr) {
+    // Fall back to public REST endpoint below
+  }
+
+  // 2. Fallback to public CDN / REST endpoint
+  const bucketName = explicitBucket || FIREBASE_STORAGE_BUCKET;
+  const getUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(
     FIREBASE_CMS_FILE_PATH
   )}?alt=media`;
 
@@ -574,6 +592,8 @@ export interface WriteStoreResult {
   errorDetails: string[];
 }
 
+let hasLoggedEROFSWarning = false;
+
 export async function writeStore(
   data: any,
   options?: {
@@ -640,7 +660,13 @@ export async function writeStore(
         await fs.writeFile(DATA_FILE_PATH, JSON.stringify(cleanData, null, 2), "utf-8");
         result.localDisk = true;
       } catch (err: any) {
-        if (err?.code !== "EROFS") {
+        if (err?.code === "EROFS") {
+          if (!hasLoggedEROFSWarning) {
+            console.warn("[CMS Server] Read-only filesystem (EROFS) detected; local disk writes disabled.");
+            hasLoggedEROFSWarning = true;
+          }
+          result.errorDetails.push("Local disk: read-only filesystem (EROFS).");
+        } else {
           result.errorDetails.push(`Local disk error: ${err?.message}`);
         }
       }
@@ -716,8 +742,11 @@ export async function writeStore(
   } else if (result.localDisk) {
     result.summaryMessage = "Saved permanently to src/data/cms-content.json on disk.";
   } else {
-    result.summaryMessage =
-      "Saved permanently to Firebase Cloud Storage.";
+    const errorSummary =
+      result.errorDetails.length > 0
+        ? result.errorDetails.join(" | ")
+        : "No durable cloud storage tier configured.";
+    result.summaryMessage = `Changes were NOT saved permanently. ${errorSummary}`;
   }
 
   return result;

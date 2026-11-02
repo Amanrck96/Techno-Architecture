@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { verifySessionToken, SESSION_COOKIE_NAME } from "@/lib/auth";
-import { getFirestoreDb } from "@/lib/firebaseAdmin";
+import { getFirestoreDb, getFirebaseStorageBucket } from "@/lib/firebaseAdmin";
 import {
   readStore,
   writeStore,
@@ -29,7 +29,7 @@ export async function GET(request: Request) {
     const storageInfo = {
       isVercel: Boolean(process.env.VERCEL),
       isProduction: process.env.NODE_ENV === "production",
-      hasFirebaseStorage: true,
+      hasFirebaseStorage: Boolean(getFirebaseStorageBucket()),
       firebaseStorageBucket: FIREBASE_STORAGE_BUCKET,
       hasGitHubToken: Boolean(process.env.GITHUB_TOKEN || process.env.GH_TOKEN),
       hasUpstashKV: Boolean(process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL),
@@ -141,6 +141,20 @@ export async function POST(request: Request) {
       delete (defaultData as any).isDefault;
       delete (defaultData as any)._storageInfo;
       const storageStatus = await writeStore(defaultData, storageOptions);
+      if (!storageStatus.isPermanent) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: storageStatus.summaryMessage,
+            storageStatus,
+            error: storageStatus.summaryMessage,
+            errorDetails: storageStatus.errorDetails,
+            data: defaultData,
+            updatedAt: defaultData.updatedAt,
+          },
+          { status: 502 }
+        );
+      }
       return NextResponse.json({
         success: true,
         message: "All data reset to initial seed defaults.",
@@ -160,6 +174,20 @@ export async function POST(request: Request) {
       delete (updated as any).isDefault;
       delete (updated as any)._storageInfo;
       const storageStatus = await writeStore(updated, storageOptions);
+      if (!storageStatus.isPermanent) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: storageStatus.summaryMessage,
+            storageStatus,
+            error: storageStatus.summaryMessage,
+            errorDetails: storageStatus.errorDetails,
+            data: updated,
+            updatedAt: updated.updatedAt,
+          },
+          { status: 502 }
+        );
+      }
       return NextResponse.json({
         success: true,
         message: storageStatus.summaryMessage,
@@ -175,6 +203,21 @@ export async function POST(request: Request) {
       delete (current as any).isDefault;
       delete (current as any)._storageInfo;
       const storageStatus = await writeStore(current, storageOptions);
+      if (!storageStatus.isPermanent) {
+        return NextResponse.json(
+          {
+            success: false,
+            entity: body.entity,
+            data: current,
+            message: storageStatus.summaryMessage,
+            storageStatus,
+            error: storageStatus.summaryMessage,
+            errorDetails: storageStatus.errorDetails,
+            updatedAt: current.updatedAt,
+          },
+          { status: 502 }
+        );
+      }
       return NextResponse.json({
         success: true,
         entity: body.entity,

@@ -714,13 +714,6 @@ export function CMSProvider({
         return;
       }
 
-      // CRITICAL: In /admin route, user is actively managing content.
-      // NEVER allow background polling to overwrite state while on /admin.
-      const isAdminRoute = typeof window !== "undefined" && window.location.pathname.startsWith("/admin");
-      if (isAdminRoute) {
-        return;
-      }
-
       // CRITICAL FIX: Block server data from overwriting local state during the edit lockout
       // window. This prevents the background poll from reverting order changes (e.g. Kanasu
       // position) that the user just made but the debounced sync hasn't confirmed yet.
@@ -833,15 +826,15 @@ export function CMSProvider({
       }
     } catch (_) {}
 
-    // 2. Hydrate from localStorage if user is on /admin OR client has newer edits
+    // 2. Hydrate from localStorage if client has uncommitted edits newer than server
     try {
       const clientUpdatedStr = localStorage.getItem(STORAGE_KEYS.CLIENT_UPDATED_AT);
       const serverUpdatedStr = initialData?.updatedAt;
       const clientTime = clientUpdatedStr ? new Date(clientUpdatedStr).getTime() : 0;
       const serverTime = serverUpdatedStr ? new Date(serverUpdatedStr).getTime() : 0;
-      const isAdmin = typeof window !== "undefined" && window.location.pathname.startsWith("/admin");
+      const hasUnsavedEdits = typeof window !== "undefined" && localStorage.getItem(STORAGE_KEYS.HAS_UNSAVED_EDITS) === "true";
 
-      if (isAdmin || clientTime > serverTime) {
+      if (hasUnsavedEdits && clientTime > serverTime) {
         const sd = localStorage.getItem(STORAGE_KEYS.DELETED_IDS);
         const curDeleted: string[] = sd ? JSON.parse(sd) : deletedIds;
 
@@ -890,12 +883,29 @@ export function CMSProvider({
           const parsed = JSON.parse(stm);
           if (Array.isArray(parsed) && parsed.length > 0) setTestimonials(filterOutDeletedItems(parsed, curDeleted));
         }
+      } else if (initialData && typeof initialData === "object") {
+        // Authoritative server data: sync to localStorage so local caches never drift
+        try {
+          if (Array.isArray(initialData.projects)) localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(initialData.projects));
+          if (Array.isArray(initialData.services)) localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(initialData.services));
+          if (Array.isArray(initialData.team)) localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(initialData.team));
+          if (Array.isArray(initialData.blog)) localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(initialData.blog));
+          if (Array.isArray(initialData.faq)) localStorage.setItem(STORAGE_KEYS.FAQ, JSON.stringify(initialData.faq));
+          if (Array.isArray(initialData.gallery)) localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(initialData.gallery));
+          if (Array.isArray(initialData.recognitions)) localStorage.setItem(STORAGE_KEYS.RECOGNITIONS, JSON.stringify(initialData.recognitions));
+          if (initialData.siteSettings) localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(initialData.siteSettings));
+          if (Array.isArray(initialData.testimonials)) localStorage.setItem(STORAGE_KEYS.TESTIMONIALS, JSON.stringify(initialData.testimonials));
+          if (initialData.updatedAt) {
+            localStorage.setItem(STORAGE_KEYS.SERVER_SYNCED_AT, initialData.updatedAt);
+            localStorage.setItem(STORAGE_KEYS.CLIENT_UPDATED_AT, initialData.updatedAt);
+            localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "false");
+          }
+        } catch (_) {}
       }
     } catch (_) {}
 
-    // 3. Only fetch from server if initialData was absent AND we are NOT on /admin
-    const isAdmin = typeof window !== "undefined" && window.location.pathname.startsWith("/admin");
-    if (!initialData && !isAdmin) {
+    // 3. Only fetch from server if initialData was absent
+    if (!initialData) {
       fetchFromServer();
     }
 

@@ -151,19 +151,22 @@ export default function AdminCMSPage() {
     setSavingEntityId(id);
     try {
       const res = await saveAllToCloud();
-      if (res && res.success) {
-        if (res.storageStatus && res.storageStatus.isPermanent === false) {
-          showToast(`Saved "${label}" to memory & local cache. (Cloud Archive pending)`);
-        } else {
-          showToast(`Saved "${label}" to Cloud Archive ✅`);
-        }
+      if (res && res.success && res.storageStatus?.isPermanent !== false) {
+        showToast(`Saved "${label}" to Cloud Archive ✅`);
       } else {
         const errorMsg =
+          (Array.isArray(res?.error?.errorDetails) && res.error.errorDetails.length > 0
+            ? res.error.errorDetails.join(" | ")
+            : null) ||
           res?.error?.error ||
           res?.error?.message ||
           (typeof res?.error === "string" ? res.error : null) ||
           res?.message ||
-          "Backend update failed. Please verify credentials or network.";
+          (Array.isArray(res?.storageStatus?.errorDetails) && res.storageStatus.errorDetails.length > 0
+            ? res.storageStatus.errorDetails.join(" | ")
+            : null) ||
+          res?.storageStatus?.summaryMessage ||
+          "Save failed: Changes were NOT saved permanently. Please verify cloud credentials.";
         showToast(`Save failed for "${label}": ${errorMsg}`);
       }
     } catch (err: any) {
@@ -463,19 +466,26 @@ export default function AdminCMSPage() {
     setIsSyncingCloud(true);
     try {
       const res = await saveAllToCloud();
-      if (res && res.success) {
+      if (res && res.success && res.storageStatus?.isPermanent !== false) {
         showToast(res.message || "All changes saved & synced permanently.");
       } else {
         const errorMsg =
+          (Array.isArray(res?.error?.errorDetails) && res.error.errorDetails.length > 0
+            ? res.error.errorDetails.join(" | ")
+            : null) ||
           res?.error?.error ||
           res?.error?.message ||
           (typeof res?.error === "string" ? res.error : null) ||
           res?.message ||
-          "Server rejected save request.";
+          (Array.isArray(res?.storageStatus?.errorDetails) && res.storageStatus.errorDetails.length > 0
+            ? res.storageStatus.errorDetails.join(" | ")
+            : null) ||
+          res?.storageStatus?.summaryMessage ||
+          "Save failed: Changes were NOT saved permanently. Please verify cloud credentials.";
         showToast("Save failed: " + errorMsg);
       }
     } catch (e: any) {
-      showToast("Saved locally. Network error reaching server.");
+      showToast("Save failed: Network error reaching server.");
     } finally {
       setIsSyncingCloud(false);
     }
@@ -2256,8 +2266,7 @@ export default function AdminCMSPage() {
                                         const file = e.target.files?.[0];
                                         if (file) {
                                           handleUploadPhoto(file, (url) => {
-                                            const updated = [...projects];
-                                            updated[idx].gallery[gIdx].url = url;
+                                            const updated = projects.map((item) => item.id === p.id ? { ...item, gallery: (item.gallery || []).map((g, gi) => gi === gIdx ? { ...g, url } : g) } : item);
                                             saveProjects(updated);
                                           });
                                         }

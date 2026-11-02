@@ -82,6 +82,39 @@ npm run start
 
 ---
 
+## 🔐 Required Environment Variables for Production (Vercel)
+
+On Vercel, the local serverless filesystem is read-only (`EROFS`) and `/tmp` is ephemeral and not shared across serverless function instances. To ensure CMS edits in `/admin` persist durably and synchronize instantly across all devices and visitors, configure the following environment variables in your Vercel Project Settings (`Settings` -> `Environment Variables`):
+
+### 1. Admin Authentication & Session Security (Required)
+| Variable | Description |
+|---|---|
+| `ADMIN_PASSWORD` | Strong password required for `/admin` studio login. Endpoints fail closed if missing. |
+| `ADMIN_SESSION_SECRET` | Cryptographically random secret key (32+ chars) used for HMAC session tokens. |
+| `ADMIN_USERNAME` | Admin username (defaults to `admin` if omitted). |
+
+### 2. Firebase Cloud Storage & Admin SDK (Required for CMS Persistence)
+| Variable | Description | Example / Recommended Value |
+|---|---|---|
+| `FIREBASE_PROJECT_ID` | Google Cloud / Firebase project identifier | `technoarchitecture-7d718` |
+| `FIREBASE_CLIENT_EMAIL` | Service Account email address | `firebase-adminsdk-...@technoarchitecture-7d718.iam.gserviceaccount.com` |
+| `FIREBASE_PRIVATE_KEY` | Service Account private key with newline escapes | `"-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"` |
+| `FIREBASE_STORAGE_BUCKET` | Default Google Cloud Storage bucket name | `technoarchitecture-7d718.firebasestorage.app` |
+
+*(Alternatively, you can provide the full JSON string via `FIREBASE_SERVICE_ACCOUNT_KEY`).*
+
+### 3. Firebase Client SDK (Web)
+| Variable | Description |
+|---|---|
+| `NEXT_PUBLIC_FIREBASE_API_KEY` | Public Firebase Web API Key |
+| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | `technoarchitecture-7d718.firebaseapp.com` |
+| `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | `technoarchitecture-7d718` |
+| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` | `technoarchitecture-7d718.firebasestorage.app` |
+| `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | `361435214203` |
+| `NEXT_PUBLIC_FIREBASE_APP_ID` | Web application App ID |
+
+---
+
 ## 📁 Repository Structure
 
 ```

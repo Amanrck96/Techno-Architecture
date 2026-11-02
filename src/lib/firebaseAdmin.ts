@@ -29,7 +29,10 @@ export function initFirebaseAdmin(): App | null {
   }
 
   const credentials = getServiceAccount();
-  const bucketName = process.env.FIREBASE_STORAGE_BUCKET || (credentials?.projectId ? `${credentials.projectId}.appspot.com` : undefined);
+  const bucketName =
+    process.env.FIREBASE_STORAGE_BUCKET ||
+    process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ||
+    (credentials?.projectId ? `${credentials.projectId}.firebasestorage.app` : undefined);
 
   if (credentials) {
     return initializeApp({
@@ -53,8 +56,12 @@ export function getFirestoreDb(): Firestore | null {
   return getFirestore(app);
 }
 
-export function getFirebaseStorageBucket() {
+export function getFirebaseStorageBucket(explicitBucket?: string) {
   const app = initFirebaseAdmin();
   if (!app) return null;
-  return getStorage(app).bucket();
+  const bucketName =
+    explicitBucket ||
+    process.env.FIREBASE_STORAGE_BUCKET ||
+    process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
+  return bucketName ? getStorage(app).bucket(bucketName) : getStorage(app).bucket();
 }

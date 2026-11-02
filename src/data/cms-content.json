@@ -171,7 +171,8 @@
         "platform": "Film",
         "actionText": "Watch Architectural Film"
       },
-      "sortOrder": 1
+      "sortOrder": 1,
+      "tagline": "Contemporary Architectural Masterpiece [Verified 2026-11-02T12:25:10.971Z]"
     },
     {
       "id": "proj-8",
@@ -2919,18 +2920,6 @@
       "sortOrder": 21
     },
     {
-      "id": "team-vaishnavi",
-      "name": "Vaishnavi",
-      "role": "Architectural Designer & Spatial Curator",
-      "discipline": "Architecture",
-      "credentials": "B.Arch",
-      "bio": "Develops spatial layout schemes, moodboards, and material compositions, supporting project architects across residential projects.",
-      "image": "/team/vaishnavi.jpg",
-      "hoverImage": "/team/vaishnavi.jpg",
-      "socials": [],
-      "sortOrder": 22
-    },
-    {
       "id": "team-harsan",
       "name": "Harsan",
       "role": "Visualization Specialist & Architect",
@@ -2940,7 +2929,7 @@
       "image": "/team/harsan-1.jpg",
       "hoverImage": "/team/harsan-2.jpg",
       "socials": [],
-      "sortOrder": 23
+      "sortOrder": 22
     }
   ],
   "blog": [
@@ -5191,6 +5180,9 @@
       "sortOrder": 4
     }
   ],
-  "updatedAt": "2026-10-31T11:58:40.469Z",
-  "deletedIds": []
+  "updatedAt": "2026-11-02T12:25:14.903Z",
+  "deletedIds": [
+    "team-1793451364578",
+    "team-vaishnavi"
+  ]
 }

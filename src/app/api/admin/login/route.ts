@@ -90,8 +90,22 @@ export async function POST(request: Request) {
     }
 
     // 2. Handle Traditional Admin Username / Password Authentication
+    if (!process.env.ADMIN_PASSWORD) {
+      return NextResponse.json(
+        { error: "Server configuration error: ADMIN_PASSWORD environment variable is not configured." },
+        { status: 500 }
+      );
+    }
+
+    if (!process.env.ADMIN_SESSION_SECRET) {
+      return NextResponse.json(
+        { error: "Server configuration error: ADMIN_SESSION_SECRET environment variable is not configured." },
+        { status: 500 }
+      );
+    }
+
     const expectedUsername = (process.env.ADMIN_USERNAME || "admin").trim();
-    const expectedPassword = (process.env.ADMIN_PASSWORD || "TechnoArchitecture#2026").trim();
+    const expectedPassword = process.env.ADMIN_PASSWORD.trim();
 
     if (!username || !password) {
       return NextResponse.json(
@@ -103,13 +117,7 @@ export async function POST(request: Request) {
     const trimmedUser = String(username).trim();
     const trimmedPass = String(password).trim();
 
-    const validPasswords = [
-      expectedPassword,
-      "TechnoArchitecture#2026",
-      "TechnoArchitecture",
-    ].filter(Boolean);
-
-    if (trimmedUser !== expectedUsername || !validPasswords.includes(trimmedPass)) {
+    if (trimmedUser !== expectedUsername || trimmedPass !== expectedPassword) {
       return NextResponse.json(
         { error: "Invalid username or password. Access denied." },
         { status: 401 }

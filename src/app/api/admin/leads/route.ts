@@ -19,14 +19,11 @@ function isAdminAuthorized(request: Request): boolean {
   const tokenToVerify = sessionCookie || tokenFromHeader;
   if (!tokenToVerify) return false;
 
-  // 1. Direct password match fallback
-  const validPasswords = [
-    process.env.ADMIN_PASSWORD,
-    "TechnoArchitecture#2026",
-    "TechnoArchitecture",
-  ].filter(Boolean) as string[];
-
-  if (validPasswords.includes(tokenToVerify)) return true;
+  // 1. Direct password match fallback (only if ADMIN_PASSWORD is set in env)
+  const adminPassword = process.env.ADMIN_PASSWORD?.trim();
+  if (adminPassword && tokenToVerify === adminPassword) {
+    return true;
+  }
 
   // 2. HMAC session token verification
   const { valid } = verifySessionToken(tokenToVerify);
