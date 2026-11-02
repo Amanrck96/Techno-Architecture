@@ -74,8 +74,7 @@ export function sanitizeProjectsList(list: any[]): Project[] {
 
 export function sanitizeTeamDiscipline(discipline: any): string {
   if (discipline === undefined || discipline === null) return "Architecture";
-  const trimmed = String(discipline).trim();
-  return trimmed || "Architecture";
+  return String(discipline);
 }
 
 export function sanitizeServicesList(list: any[]): Service[] {
@@ -432,6 +431,11 @@ export function CMSProvider({
   initialData?: any;
 }) {
   const [isClient, setIsClient] = useState(false);
+  const clientIdRef = useRef<string>(
+    typeof window !== "undefined"
+      ? `${Date.now()}_${Math.random().toString(36).substring(2, 9)}`
+      : "server"
+  );
 
   // 1. Authoritative Deleted IDs tracking
   const [deletedIds, setDeletedIds] = useState<string[]>(() => {
@@ -775,7 +779,12 @@ export function CMSProvider({
   const broadcastChange = useCallback((entity: string, data: any, activeDeleted?: string[]) => {
     if (typeof window !== "undefined") {
       try {
-        const payload = { entity, data, deletedIds: activeDeleted || deletedIds };
+        const payload = {
+          entity,
+          data,
+          deletedIds: activeDeleted || deletedIds,
+          senderId: clientIdRef.current,
+        };
         if ("BroadcastChannel" in window) {
           const ch = new BroadcastChannel(SYNC_CHANNEL_NAME);
           ch.postMessage({ type: "CMS_UPDATE", ...payload });
@@ -896,6 +905,9 @@ export function CMSProvider({
       try {
         channel = new BroadcastChannel(SYNC_CHANNEL_NAME);
         channel.onmessage = (event) => {
+          if (event.data?.senderId && event.data.senderId === clientIdRef.current) {
+            return;
+          }
           if (event.data?.type === "CMS_UPDATE") {
             const { entity, data, deletedIds: incomingDeleted } = event.data;
             if (Array.isArray(incomingDeleted)) {
@@ -1411,7 +1423,7 @@ export function CMSProvider({
       testimonials,
       deletedIds,
     };
-    const res = await syncToServer({ allData, deletedIds });
+    const res = await syncToServer({ allData, deletedIds, forceGitHubCommit: true });
     if (res.success && res.updatedAt) {
       lastServerUpdatedRef.current = res.updatedAt;
       try {

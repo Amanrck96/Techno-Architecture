@@ -3052,8 +3052,8 @@ export default function AdminCMSPage() {
                           if (file) {
                             setUploadingTargetId(m.id);
                             handleUploadPhoto(file, (url) => {
-                              const updated = team.map((item, i) =>
-                                i === idx ? { ...item, image: url } : item
+                              const updated = team.map((item) =>
+                                item.id === m.id ? { ...item, image: url } : item
                               );
                               saveTeam(updated);
                             }, "team");
@@ -3066,10 +3066,10 @@ export default function AdminCMSPage() {
                   <div className="flex-1">
                     <input
                       type="text"
-                      value={m.name}
+                      value={m.name || ""}
                       onChange={(e) => {
-                        const updated = team.map((item, i) =>
-                          i === idx ? { ...item, name: e.target.value } : item
+                        const updated = team.map((item) =>
+                          item.id === m.id ? { ...item, name: e.target.value } : item
                         );
                         saveTeam(updated);
                       }}
@@ -3077,10 +3077,10 @@ export default function AdminCMSPage() {
                     />
                     <input
                       type="text"
-                      value={m.role}
+                      value={m.role || ""}
                       onChange={(e) => {
-                        const updated = team.map((item, i) =>
-                          i === idx ? { ...item, role: e.target.value } : item
+                        const updated = team.map((item) =>
+                          item.id === m.id ? { ...item, role: e.target.value } : item
                         );
                         saveTeam(updated);
                       }}
@@ -3101,8 +3101,8 @@ export default function AdminCMSPage() {
                       value={m.discipline || ""}
                       onChange={(e) => {
                         const val = e.target.value;
-                        const updated = team.map((item, i) =>
-                          i === idx ? { ...item, discipline: val } : item
+                        const updated = team.map((item) =>
+                          item.id === m.id ? { ...item, discipline: val } : item
                         );
                         saveTeam(updated);
                       }}
@@ -3126,10 +3126,10 @@ export default function AdminCMSPage() {
                     <label className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">Credentials</label>
                     <input
                       type="text"
-                      value={m.credentials}
+                      value={m.credentials || ""}
                       onChange={(e) => {
-                        const updated = team.map((item, i) =>
-                          i === idx ? { ...item, credentials: e.target.value } : item
+                        const updated = team.map((item) =>
+                          item.id === m.id ? { ...item, credentials: e.target.value } : item
                         );
                         saveTeam(updated);
                       }}
@@ -3148,10 +3148,10 @@ export default function AdminCMSPage() {
                   <div className="flex gap-1.5 items-center">
                     <input
                       type="text"
-                      value={m.image}
+                      value={m.image || ""}
                       onChange={(e) => {
-                        const updated = team.map((item, i) =>
-                          i === idx ? { ...item, image: e.target.value } : item
+                        const updated = team.map((item) =>
+                          item.id === m.id ? { ...item, image: e.target.value } : item
                         );
                         saveTeam(updated);
                       }}
@@ -3179,8 +3179,8 @@ export default function AdminCMSPage() {
                           if (file) {
                             setUploadingTargetId(m.id);
                             handleUploadPhoto(file, (url) => {
-                              const updated = team.map((item, i) =>
-                                i === idx ? { ...item, image: url } : item
+                              const updated = team.map((item) =>
+                                item.id === m.id ? { ...item, image: url } : item
                               );
                               saveTeam(updated);
                             }, "team");
@@ -3196,8 +3196,8 @@ export default function AdminCMSPage() {
                       <button
                         type="button"
                         onClick={() => {
-                          const updated = team.map((item, i) =>
-                            i === idx ? { ...item, image: "" } : item
+                          const updated = team.map((item) =>
+                            item.id === m.id ? { ...item, image: "" } : item
                           );
                           saveTeam(updated);
                           showToast(`Cleared photo for ${m.name}`);
@@ -3214,10 +3214,10 @@ export default function AdminCMSPage() {
                   <label className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">Biography</label>
                   <textarea
                     rows={3}
-                    value={m.bio}
+                    value={m.bio || ""}
                     onChange={(e) => {
-                      const updated = team.map((item, i) =>
-                        i === idx ? { ...item, bio: e.target.value } : item
+                      const updated = team.map((item) =>
+                        item.id === m.id ? { ...item, bio: e.target.value } : item
                       );
                       saveTeam(updated);
                     }}
