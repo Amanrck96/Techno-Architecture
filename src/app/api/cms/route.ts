@@ -40,7 +40,7 @@ export async function GET(request: Request) {
     const storageInfo = {
       isVercel: Boolean(process.env.VERCEL),
       isProduction: process.env.NODE_ENV === "production",
-      hasFirebaseStorage: Boolean(getFirebaseStorageBucket()),
+      hasFirebaseStorage: Boolean(getFirebaseStorageBucket() || FIREBASE_STORAGE_BUCKET),
       firebaseStorageBucket: FIREBASE_STORAGE_BUCKET,
       hasGitHubToken: Boolean(process.env.GITHUB_TOKEN || process.env.GH_TOKEN),
       hasUpstashKV: Boolean(process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL),

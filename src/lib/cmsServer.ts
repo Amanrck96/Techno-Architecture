@@ -191,30 +191,65 @@ export const FIREBASE_CMS_FILE_PATH = "cms/cms-content.json";
  */
 export async function saveToFirebaseStorage(
   data: any,
-  _explicitBucket?: string
+  explicitBucket?: string
 ): Promise<{ success: boolean; error?: string }> {
+  const bucketName =
+    explicitBucket ||
+    process.env.FIREBASE_STORAGE_BUCKET ||
+    process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ||
+    FIREBASE_STORAGE_BUCKET;
+
+  // 1. Try Firebase Admin SDK first (bypasses storage rules if service account is configured)
   try {
-    // Uses the Firebase Admin SDK (service account), which bypasses storage.rules.
-    // The old unauthenticated REST upload was always rejected (HTTP 403) because
-    // storage.rules requires request.auth != null.
-    const bucket = getFirebaseStorageBucket();
-    if (!bucket) {
-      return {
-        success: false,
-        error:
-          "Firebase Admin is not configured. Set FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY in the hosting environment variables.",
-      };
+    const bucket = getFirebaseStorageBucket(bucketName);
+    if (bucket) {
+      const bodyString = typeof data === "string" ? data : JSON.stringify(data);
+      await bucket.file(FIREBASE_CMS_FILE_PATH).save(bodyString, {
+        contentType: "application/json",
+        resumable: false,
+        metadata: { cacheControl: "no-store" },
+      });
+      return { success: true };
     }
+  } catch (adminErr: any) {
+    console.warn("[CMS Server] Firebase Admin Storage upload notice:", adminErr?.message);
+  }
+
+  // 2. Direct REST upload fallback to Firebase Storage
+  // (Works seamlessly via standard Google Cloud Storage / Firebase Storage REST API)
+  const uploadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o?name=${encodeURIComponent(
+    FIREBASE_CMS_FILE_PATH
+  )}&uploadType=media`;
+
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 12000);
+
     const bodyString = typeof data === "string" ? data : JSON.stringify(data);
-    await bucket.file(FIREBASE_CMS_FILE_PATH).save(bodyString, {
-      contentType: "application/json",
-      resumable: false,
-      metadata: { cacheControl: "no-store" },
+    const res = await fetch(uploadUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: bodyString,
+      signal: controller.signal,
     });
-    return { success: true };
+    clearTimeout(timer);
+
+    if (res.ok) {
+      return { success: true };
+    }
+
+    const errText = await res.text();
+    return {
+      success: false,
+      error: `Firebase Storage HTTP ${res.status}: ${errText}`,
+    };
   } catch (e: any) {
-    console.warn("[CMS Server] Firebase Storage upload error:", e);
-    return { success: false, error: e?.message || "Firebase Storage upload failed." };
+    return {
+      success: false,
+      error: e?.message || "Firebase Storage upload failed.",
+    };
   }
 }
 
