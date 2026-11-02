@@ -15,6 +15,17 @@ import {
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+function persistenceFailure(storageStatus: any) {
+  return NextResponse.json(
+    {
+      success: false,
+      error: storageStatus?.summaryMessage || "Changes could not be saved permanently.",
+      storageStatus,
+    },
+    { status: 502 }
+  );
+}
+
 // GET: Public endpoint for live website data hydration
 export async function GET(request: Request) {
   try {
@@ -141,20 +152,7 @@ export async function POST(request: Request) {
       delete (defaultData as any).isDefault;
       delete (defaultData as any)._storageInfo;
       const storageStatus = await writeStore(defaultData, storageOptions);
-      if (!storageStatus.isPermanent) {
-        return NextResponse.json(
-          {
-            success: false,
-            message: storageStatus.summaryMessage,
-            storageStatus,
-            error: storageStatus.summaryMessage,
-            errorDetails: storageStatus.errorDetails,
-            data: defaultData,
-            updatedAt: defaultData.updatedAt,
-          },
-          { status: 502 }
-        );
-      }
+      if (!storageStatus.isPermanent) return persistenceFailure(storageStatus);
       return NextResponse.json({
         success: true,
         message: "All data reset to initial seed defaults.",
@@ -174,20 +172,7 @@ export async function POST(request: Request) {
       delete (updated as any).isDefault;
       delete (updated as any)._storageInfo;
       const storageStatus = await writeStore(updated, storageOptions);
-      if (!storageStatus.isPermanent) {
-        return NextResponse.json(
-          {
-            success: false,
-            message: storageStatus.summaryMessage,
-            storageStatus,
-            error: storageStatus.summaryMessage,
-            errorDetails: storageStatus.errorDetails,
-            data: updated,
-            updatedAt: updated.updatedAt,
-          },
-          { status: 502 }
-        );
-      }
+      if (!storageStatus.isPermanent) return persistenceFailure(storageStatus);
       return NextResponse.json({
         success: true,
         message: storageStatus.summaryMessage,
@@ -203,21 +188,7 @@ export async function POST(request: Request) {
       delete (current as any).isDefault;
       delete (current as any)._storageInfo;
       const storageStatus = await writeStore(current, storageOptions);
-      if (!storageStatus.isPermanent) {
-        return NextResponse.json(
-          {
-            success: false,
-            entity: body.entity,
-            data: current,
-            message: storageStatus.summaryMessage,
-            storageStatus,
-            error: storageStatus.summaryMessage,
-            errorDetails: storageStatus.errorDetails,
-            updatedAt: current.updatedAt,
-          },
-          { status: 502 }
-        );
-      }
+      if (!storageStatus.isPermanent) return persistenceFailure(storageStatus);
       return NextResponse.json({
         success: true,
         entity: body.entity,

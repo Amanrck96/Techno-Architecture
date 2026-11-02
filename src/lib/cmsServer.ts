@@ -191,35 +191,30 @@ export const FIREBASE_CMS_FILE_PATH = "cms/cms-content.json";
  */
 export async function saveToFirebaseStorage(
   data: any,
-  explicitBucket?: string
+  _explicitBucket?: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const bucket = getFirebaseStorageBucket(explicitBucket);
+    // Uses the Firebase Admin SDK (service account), which bypasses storage.rules.
+    // The old unauthenticated REST upload was always rejected (HTTP 403) because
+    // storage.rules requires request.auth != null.
+    const bucket = getFirebaseStorageBucket();
     if (!bucket) {
       return {
         success: false,
         error:
-          "Firebase Admin credentials missing. Configure FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, and FIREBASE_PRIVATE_KEY (or FIREBASE_SERVICE_ACCOUNT_KEY).",
+          "Firebase Admin is not configured. Set FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY in the hosting environment variables.",
       };
     }
-
-    const file = bucket.file(FIREBASE_CMS_FILE_PATH);
-    const content = typeof data === "string" ? data : JSON.stringify(data, null, 2);
-    await file.save(content, {
+    const bodyString = typeof data === "string" ? data : JSON.stringify(data);
+    await bucket.file(FIREBASE_CMS_FILE_PATH).save(bodyString, {
       contentType: "application/json",
       resumable: false,
-      metadata: {
-        cacheControl: "no-cache, no-store, max-age=0, must-revalidate",
-      },
+      metadata: { cacheControl: "no-store" },
     });
-
     return { success: true };
   } catch (e: any) {
-    console.warn("[CMS Server] Firebase Storage upload error via Admin SDK:", e);
-    return {
-      success: false,
-      error: e?.message || "Failed to save to Firebase Storage via Admin SDK.",
-    };
+    console.warn("[CMS Server] Firebase Storage upload error:", e);
+    return { success: false, error: e?.message || "Firebase Storage upload failed." };
   }
 }
 
@@ -742,11 +737,11 @@ export async function writeStore(
   } else if (result.localDisk) {
     result.summaryMessage = "Saved permanently to src/data/cms-content.json on disk.";
   } else {
-    const errorSummary =
-      result.errorDetails.length > 0
+    result.summaryMessage =
+      "NOT saved permanently. " +
+      (result.errorDetails.length
         ? result.errorDetails.join(" | ")
-        : "No durable cloud storage tier configured.";
-    result.summaryMessage = `Changes were NOT saved permanently. ${errorSummary}`;
+        : "No persistent storage is configured (set FIREBASE_* env vars).");
   }
 
   return result;

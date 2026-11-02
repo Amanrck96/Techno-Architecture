@@ -4,7 +4,7 @@ export const SESSION_COOKIE_NAME = "techno_admin_session";
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7; // 7 days
 
 function getSecretKey(): string {
-  const secret = process.env.ADMIN_SESSION_SECRET;
+  const secret = process.env.ADMIN_SESSION_SECRET || process.env.SESSION_SECRET;
   if (!secret) {
     throw new Error(
       "Server security error: ADMIN_SESSION_SECRET is not configured in environment variables."

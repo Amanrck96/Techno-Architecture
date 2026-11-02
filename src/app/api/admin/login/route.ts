@@ -90,22 +90,24 @@ export async function POST(request: Request) {
     }
 
     // 2. Handle Traditional Admin Username / Password Authentication
-    if (!process.env.ADMIN_PASSWORD) {
+    const configuredPassword = (process.env.ADMIN_PASSWORD || process.env.ADMIN_PASS || "").trim();
+    if (!configuredPassword) {
       return NextResponse.json(
         { error: "Server configuration error: ADMIN_PASSWORD environment variable is not configured." },
         { status: 500 }
       );
     }
 
-    if (!process.env.ADMIN_SESSION_SECRET) {
+    const configuredSessionSecret = (process.env.ADMIN_SESSION_SECRET || process.env.SESSION_SECRET || "").trim();
+    if (!configuredSessionSecret) {
       return NextResponse.json(
         { error: "Server configuration error: ADMIN_SESSION_SECRET environment variable is not configured." },
         { status: 500 }
       );
     }
 
-    const expectedUsername = (process.env.ADMIN_USERNAME || "admin").trim();
-    const expectedPassword = process.env.ADMIN_PASSWORD.trim();
+    const expectedUsername = (process.env.ADMIN_USERNAME || process.env.ADMIN_USERNAM || "admin").trim();
+    const expectedPassword = configuredPassword;
 
     if (!username || !password) {
       return NextResponse.json(
