@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 import { useCMSStore, defaultProjects } from "@/lib/cmsStore";
-import { initialProjects } from "@/data/projects";
+import { initialProjects, Project, ProjectImage } from "@/data/projects";
 import { ArrowLeft, ArrowRight, ArrowUpRight, ArrowUp, Maximize2 } from "lucide-react";
 import ProjectImageLightbox from "@/components/projects/ProjectImageLightbox";
 
@@ -106,7 +106,7 @@ export default function ProjectDetailPage({
 
   const rawProject = sourceList[currentIndex];
 
-  const sanitizeProject = (p: (typeof projects)[0] | any) => {
+  const sanitizeProject = (p: Project | any): Project | null => {
     if (!p) return null;
     const defaultImage =
       p.id === "proj-1" ? "/projects/aikya/elevation-east.jpg" :
@@ -136,10 +136,10 @@ export default function ProjectDetailPage({
       teamMembers: Array.isArray(p.teamMembers) ? p.teamMembers : ["Ar. Rajesh Shivaram"],
       relatedSlugs: Array.isArray(p.relatedSlugs) ? p.relatedSlugs : [],
       credits: p.credits || { principalArchitect: "Ar. Rajesh Shivaram" },
-    };
+    } as Project;
   };
 
-  const project = sanitizeProject(rawProject)!;
+  const project: Project = sanitizeProject(rawProject)!;
 
   const testimonial =
     project.testimonial ||
@@ -158,7 +158,7 @@ export default function ProjectDetailPage({
   );
 
   // Related projects with guaranteed fresh metadata and alias handling
-  const related = sourceList
+  const related: Project[] = sourceList
     .filter((p) => {
       if (!p) return false;
       // Don't show self in related
@@ -187,7 +187,7 @@ export default function ProjectDetailPage({
       return false;
     })
     .map(sanitizeProject)
-    .filter(Boolean);
+    .filter((p): p is Project => p !== null);
 
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -214,7 +214,7 @@ export default function ProjectDetailPage({
       caption: `${project.title} — Main Architectural Vista (${project.location})`,
       aspect: "full" as const,
     },
-    ...(project.gallery || []).map((img) => ({
+    ...(project.gallery || []).map((img: ProjectImage) => ({
       url: img.url,
       caption: img.caption,
       aspect: img.aspect,
@@ -293,7 +293,7 @@ export default function ProjectDetailPage({
               DISCIPLINES ENGAGED
             </span>
             <div className="flex flex-wrap gap-2">
-              {project.servicesInvolved.map((serv, idx) => (
+              {project.servicesInvolved.map((serv: string, idx: number) => (
                 <span
                   key={idx}
                   className="text-[10px] tracking-wider uppercase bg-neutral-100 text-neutral-700 px-2.5 py-1"
@@ -459,7 +459,7 @@ export default function ProjectDetailPage({
         </div>
 
         <div className="space-y-6">
-          {project.gallery.map((img, idx) => {
+          {project.gallery.map((img: ProjectImage, idx: number) => {
             const galleryIndex = idx + 1;
             if (img.aspect === "portrait") {
               return (
@@ -526,7 +526,7 @@ export default function ProjectDetailPage({
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {related.map((rel) => (
+            {related.map((rel: Project) => (
               <Link
                 key={rel.id}
                 href={`/projects/${rel.slug}`}

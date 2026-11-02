@@ -152,7 +152,11 @@ export default function AdminCMSPage() {
     try {
       const res = await saveAllToCloud();
       if (res && res.success) {
-        showToast(`Saved "${label}" to Cloud Archive ✅`);
+        if (res.storageStatus && res.storageStatus.isPermanent === false) {
+          showToast(`Saved "${label}" to memory & local cache. (Cloud Archive pending)`);
+        } else {
+          showToast(`Saved "${label}" to Cloud Archive ✅`);
+        }
       } else {
         const errorMsg =
           res?.error?.error ||
@@ -2494,14 +2498,67 @@ export default function AdminCMSPage() {
                       type="text"
                       value={s.title}
                       onChange={(e) => {
-                        const updated = [...services];
-                        updated[idx].title = e.target.value;
+                        const updated = services.map((item, i) =>
+                          i === idx ? { ...item, title: e.target.value } : item
+                        );
                         saveServices(updated);
                       }}
                       className="font-display text-base font-semibold text-neutral-900 border-b border-transparent hover:border-neutral-300 focus:border-black focus:outline-none px-1"
                     />
                   </div>
                   <div className="flex items-center space-x-2">
+                    {/* ORDER CONTROLS */}
+                    <div className="inline-flex items-center border border-neutral-200 rounded overflow-hidden bg-white shadow-2xs mr-1">
+                      <span className="text-[9px] font-mono uppercase px-1.5 text-neutral-400 font-semibold bg-neutral-50 border-r border-neutral-200 select-none">
+                        ORDER
+                      </span>
+                      <button
+                        type="button"
+                        disabled={idx === 0}
+                        onClick={() => {
+                          if (idx === 0) return;
+                          const updated = [...services];
+                          const temp = updated[idx];
+                          updated[idx] = updated[idx - 1];
+                          updated[idx - 1] = temp;
+                          const resequenced = updated.map((item, i) => ({
+                            ...item,
+                            sortOrder: i + 1,
+                          }));
+                          saveServices(resequenced);
+                          showToast(`Moved "${s.title}" up to position #${idx}. Click Save to persist.`);
+                        }}
+                        className="p-1 hover:bg-neutral-100 text-neutral-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
+                        title="Move discipline UP"
+                      >
+                        <ArrowUp size={12} />
+                      </button>
+                      <span className="text-[10px] font-mono px-2 text-neutral-900 font-bold select-none border-x border-neutral-200 bg-neutral-50/50">
+                        #{idx + 1}
+                      </span>
+                      <button
+                        type="button"
+                        disabled={idx === services.length - 1}
+                        onClick={() => {
+                          if (idx === services.length - 1) return;
+                          const updated = [...services];
+                          const temp = updated[idx];
+                          updated[idx] = updated[idx + 1];
+                          updated[idx + 1] = temp;
+                          const resequenced = updated.map((item, i) => ({
+                            ...item,
+                            sortOrder: i + 1,
+                          }));
+                          saveServices(resequenced);
+                          showToast(`Moved "${s.title}" down to position #${idx + 2}. Click Save to persist.`);
+                        }}
+                        className="p-1 hover:bg-neutral-100 text-neutral-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
+                        title="Move discipline DOWN"
+                      >
+                        <ArrowDown size={12} />
+                      </button>
+                    </div>
+
                     <Link
                       href={`/services#${s.slug}`}
                       target="_blank"
@@ -3629,19 +3686,73 @@ export default function AdminCMSPage() {
                       type="text"
                       value={item.question}
                       onChange={(e) => {
-                        const updated = [...faq];
-                        updated[idx].question = e.target.value;
+                        const updated = faq.map((f, i) =>
+                          i === idx ? { ...f, question: e.target.value } : f
+                        );
                         saveFaq(updated);
                       }}
                       className="w-full p-1 font-semibold text-neutral-900 border-b border-transparent hover:border-neutral-300 focus:border-black focus:outline-none"
                     />
                   </div>
                   <div className="flex items-center space-x-2">
+                    {/* ORDER CONTROLS */}
+                    <div className="inline-flex items-center border border-neutral-200 rounded overflow-hidden bg-white shadow-2xs mr-1">
+                      <span className="text-[9px] font-mono uppercase px-1.5 text-neutral-400 font-semibold bg-neutral-50 border-r border-neutral-200 select-none">
+                        ORDER
+                      </span>
+                      <button
+                        type="button"
+                        disabled={idx === 0}
+                        onClick={() => {
+                          if (idx === 0) return;
+                          const updated = [...faq];
+                          const temp = updated[idx];
+                          updated[idx] = updated[idx - 1];
+                          updated[idx - 1] = temp;
+                          const resequenced = updated.map((f, i) => ({
+                            ...f,
+                            sortOrder: i + 1,
+                          }));
+                          saveFaq(resequenced);
+                          showToast(`Moved FAQ up to position #${idx}. Click Save to persist.`);
+                        }}
+                        className="p-1 hover:bg-neutral-100 text-neutral-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
+                        title="Move FAQ UP"
+                      >
+                        <ArrowUp size={12} />
+                      </button>
+                      <span className="text-[10px] font-mono px-2 text-neutral-900 font-bold select-none border-x border-neutral-200 bg-neutral-50/50">
+                        #{idx + 1}
+                      </span>
+                      <button
+                        type="button"
+                        disabled={idx === faq.length - 1}
+                        onClick={() => {
+                          if (idx === faq.length - 1) return;
+                          const updated = [...faq];
+                          const temp = updated[idx];
+                          updated[idx] = updated[idx + 1];
+                          updated[idx + 1] = temp;
+                          const resequenced = updated.map((f, i) => ({
+                            ...f,
+                            sortOrder: i + 1,
+                          }));
+                          saveFaq(resequenced);
+                          showToast(`Moved FAQ down to position #${idx + 2}. Click Save to persist.`);
+                        }}
+                        className="p-1 hover:bg-neutral-100 text-neutral-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
+                        title="Move FAQ DOWN"
+                      >
+                        <ArrowDown size={12} />
+                      </button>
+                    </div>
+
                     <select
                       value={item.category}
                       onChange={(e) => {
-                        const updated = [...faq];
-                        updated[idx].category = e.target.value as any;
+                        const updated = faq.map((f, i) =>
+                          i === idx ? { ...f, category: e.target.value as any } : f
+                        );
                         saveFaq(updated);
                       }}
                       className="p-1 border border-neutral-300 rounded text-[11px] bg-white"
@@ -3910,6 +4021,58 @@ export default function AdminCMSPage() {
                     <span className="text-[10px] font-mono text-neutral-400 uppercase">({r.category})</span>
                   </div>
                   <div className="flex items-center space-x-2">
+                    {/* ORDER CONTROLS */}
+                    <div className="inline-flex items-center border border-neutral-200 rounded overflow-hidden bg-white shadow-2xs mr-1">
+                      <span className="text-[9px] font-mono uppercase px-1.5 text-neutral-400 font-semibold bg-neutral-50 border-r border-neutral-200 select-none">
+                        ORDER
+                      </span>
+                      <button
+                        type="button"
+                        disabled={idx === 0}
+                        onClick={() => {
+                          if (idx === 0) return;
+                          const updated = [...recognitions];
+                          const temp = updated[idx];
+                          updated[idx] = updated[idx - 1];
+                          updated[idx - 1] = temp;
+                          const resequenced = updated.map((item, i) => ({
+                            ...item,
+                            sortOrder: i + 1,
+                          }));
+                          saveRecognitions(resequenced);
+                          showToast(`Moved "${r.title}" up to position #${idx}. Click Save to persist.`);
+                        }}
+                        className="p-1 hover:bg-neutral-100 text-neutral-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
+                        title="Move citation UP"
+                      >
+                        <ArrowUp size={12} />
+                      </button>
+                      <span className="text-[10px] font-mono px-2 text-neutral-900 font-bold select-none border-x border-neutral-200 bg-neutral-50/50">
+                        #{idx + 1}
+                      </span>
+                      <button
+                        type="button"
+                        disabled={idx === recognitions.length - 1}
+                        onClick={() => {
+                          if (idx === recognitions.length - 1) return;
+                          const updated = [...recognitions];
+                          const temp = updated[idx];
+                          updated[idx] = updated[idx + 1];
+                          updated[idx + 1] = temp;
+                          const resequenced = updated.map((item, i) => ({
+                            ...item,
+                            sortOrder: i + 1,
+                          }));
+                          saveRecognitions(resequenced);
+                          showToast(`Moved "${r.title}" down to position #${idx + 2}. Click Save to persist.`);
+                        }}
+                        className="p-1 hover:bg-neutral-100 text-neutral-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
+                        title="Move citation DOWN"
+                      >
+                        <ArrowDown size={12} />
+                      </button>
+                    </div>
+
                     <button
                       type="button"
                       onClick={() => handleSaveItem(r.id, r.title)}
@@ -4029,6 +4192,58 @@ export default function AdminCMSPage() {
                     <span className="text-neutral-500">{t.designation}</span>
                   </div>
                   <div className="flex items-center space-x-2">
+                    {/* ORDER CONTROLS */}
+                    <div className="inline-flex items-center border border-neutral-200 rounded overflow-hidden bg-white shadow-2xs mr-1">
+                      <span className="text-[9px] font-mono uppercase px-1.5 text-neutral-400 font-semibold bg-neutral-50 border-r border-neutral-200 select-none">
+                        ORDER
+                      </span>
+                      <button
+                        type="button"
+                        disabled={idx === 0}
+                        onClick={() => {
+                          if (idx === 0) return;
+                          const updated = [...testimonials];
+                          const temp = updated[idx];
+                          updated[idx] = updated[idx - 1];
+                          updated[idx - 1] = temp;
+                          const resequenced = updated.map((item, i) => ({
+                            ...item,
+                            sortOrder: i + 1,
+                          }));
+                          saveTestimonials(resequenced);
+                          showToast(`Moved "${t.clientName}" up to position #${idx}. Click Save to persist.`);
+                        }}
+                        className="p-1 hover:bg-neutral-100 text-neutral-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
+                        title="Move testimonial UP"
+                      >
+                        <ArrowUp size={12} />
+                      </button>
+                      <span className="text-[10px] font-mono px-2 text-neutral-900 font-bold select-none border-x border-neutral-200 bg-neutral-50/50">
+                        #{idx + 1}
+                      </span>
+                      <button
+                        type="button"
+                        disabled={idx === testimonials.length - 1}
+                        onClick={() => {
+                          if (idx === testimonials.length - 1) return;
+                          const updated = [...testimonials];
+                          const temp = updated[idx];
+                          updated[idx] = updated[idx + 1];
+                          updated[idx + 1] = temp;
+                          const resequenced = updated.map((item, i) => ({
+                            ...item,
+                            sortOrder: i + 1,
+                          }));
+                          saveTestimonials(resequenced);
+                          showToast(`Moved "${t.clientName}" down to position #${idx + 2}. Click Save to persist.`);
+                        }}
+                        className="p-1 hover:bg-neutral-100 text-neutral-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
+                        title="Move testimonial DOWN"
+                      >
+                        <ArrowDown size={12} />
+                      </button>
+                    </div>
+
                     <button
                       type="button"
                       onClick={() => handleSaveItem(t.id, t.clientName)}

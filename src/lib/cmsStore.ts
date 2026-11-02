@@ -73,12 +73,81 @@ export function sanitizeProjectsList(list: any[]): Project[] {
 }
 
 export function sanitizeTeamDiscipline(discipline: any): string {
-  if (!discipline) return "Architecture";
+  if (discipline === undefined || discipline === null) return "Architecture";
   const trimmed = String(discipline).trim();
-  if (trimmed === "BIM & Technical" || trimmed === "BIM") {
-    return "Office Administration";
-  }
   return trimmed || "Architecture";
+}
+
+export function sanitizeServicesList(list: any[]): Service[] {
+  if (!Array.isArray(list)) return [];
+  const normalized = list.map((s, idx) => {
+    if (!s) return s;
+    const rawOrder = Number(s.sortOrder);
+    const sortOrder = !isNaN(rawOrder) && rawOrder > 0 ? rawOrder : idx + 1;
+    return {
+      ...s,
+      sortOrder,
+    };
+  });
+  normalized.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  return normalized.map((s, idx) => ({
+    ...s,
+    sortOrder: idx + 1,
+  }));
+}
+
+export function sanitizeFaqList(list: any[]): FAQItem[] {
+  if (!Array.isArray(list)) return [];
+  const normalized = list.map((f, idx) => {
+    if (!f) return f;
+    const rawOrder = Number(f.sortOrder);
+    const sortOrder = !isNaN(rawOrder) && rawOrder > 0 ? rawOrder : idx + 1;
+    return {
+      ...f,
+      sortOrder,
+    };
+  });
+  normalized.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  return normalized.map((f, idx) => ({
+    ...f,
+    sortOrder: idx + 1,
+  }));
+}
+
+export function sanitizeRecognitionsList(list: any[]): Recognition[] {
+  if (!Array.isArray(list)) return [];
+  const normalized = list.map((r, idx) => {
+    if (!r) return r;
+    const rawOrder = Number(r.sortOrder);
+    const sortOrder = !isNaN(rawOrder) && rawOrder > 0 ? rawOrder : idx + 1;
+    return {
+      ...r,
+      sortOrder,
+    };
+  });
+  normalized.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  return normalized.map((r, idx) => ({
+    ...r,
+    sortOrder: idx + 1,
+  }));
+}
+
+export function sanitizeTestimonialsList(list: any[]): Testimonial[] {
+  if (!Array.isArray(list)) return [];
+  const normalized = list.map((t, idx) => {
+    if (!t) return t;
+    const rawOrder = Number(t.sortOrder);
+    const sortOrder = !isNaN(rawOrder) && rawOrder > 0 ? rawOrder : idx + 1;
+    return {
+      ...t,
+      sortOrder,
+    };
+  });
+  normalized.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  return normalized.map((t, idx) => ({
+    ...t,
+    sortOrder: idx + 1,
+  }));
 }
 
 export function sanitizeTeamList(list: any[]): TeamMember[] {
@@ -110,7 +179,7 @@ export const defaultProjects: Project[] = filterOutDeletedItems(
   initialSeedDeletedIds
 );
 export const defaultServices: Service[] = filterOutDeletedItems(
-  Array.isArray(seedData.services) && seedData.services.length > 0 ? seedData.services : initialServices,
+  sanitizeServicesList(Array.isArray(seedData.services) && seedData.services.length > 0 ? seedData.services : initialServices),
   initialSeedDeletedIds
 );
 export const defaultTeam: TeamMember[] = filterOutDeletedItems(
@@ -122,7 +191,7 @@ export const defaultBlog: BlogPost[] = filterOutDeletedItems(
   initialSeedDeletedIds
 );
 export const defaultFaq: FAQItem[] = filterOutDeletedItems(
-  Array.isArray(seedData.faq) && seedData.faq.length > 0 ? seedData.faq : initialFAQs,
+  sanitizeFaqList(Array.isArray(seedData.faq) && seedData.faq.length > 0 ? seedData.faq : initialFAQs),
   initialSeedDeletedIds
 );
 export const defaultGallery: GalleryItem[] = filterOutDeletedItems(
@@ -130,12 +199,12 @@ export const defaultGallery: GalleryItem[] = filterOutDeletedItems(
   initialSeedDeletedIds
 );
 export const defaultRecognitions: Recognition[] = filterOutDeletedItems(
-  Array.isArray(seedData.recognitions) && seedData.recognitions.length > 0 ? seedData.recognitions : initialRecognitions,
+  sanitizeRecognitionsList(Array.isArray(seedData.recognitions) && seedData.recognitions.length > 0 ? seedData.recognitions : initialRecognitions),
   initialSeedDeletedIds
 );
 export const defaultSiteSettings: SiteSettings = seedData.siteSettings || initialSiteSettings;
 export const defaultTestimonials: Testimonial[] = filterOutDeletedItems(
-  Array.isArray(seedData.testimonials) && seedData.testimonials.length > 0 ? seedData.testimonials : initialTestimonials,
+  sanitizeTestimonialsList(Array.isArray(seedData.testimonials) && seedData.testimonials.length > 0 ? seedData.testimonials : initialTestimonials),
   initialSeedDeletedIds
 );
 
@@ -973,7 +1042,11 @@ export function CMSProvider({
         } catch (_) {}
       }
 
-      const sanitized = filterOutDeletedItems(newServices, nextDeleted);
+      const sequencedServices = newServices.map((s, i) => ({
+        ...s,
+        sortOrder: i + 1,
+      }));
+      const sanitized = filterOutDeletedItems(sanitizeServicesList(sequencedServices), nextDeleted);
       setServices(sanitized);
 
       if (removed.length > 0) {
@@ -1096,7 +1169,11 @@ export function CMSProvider({
         } catch (_) {}
       }
 
-      const sanitized = filterOutDeletedItems(newFaq, nextDeleted);
+      const sequencedFaq = newFaq.map((f, i) => ({
+        ...f,
+        sortOrder: i + 1,
+      }));
+      const sanitized = filterOutDeletedItems(sanitizeFaqList(sequencedFaq), nextDeleted);
       setFaq(sanitized);
 
       if (removed.length > 0) {
@@ -1172,7 +1249,11 @@ export function CMSProvider({
         } catch (_) {}
       }
 
-      const sanitized = filterOutDeletedItems(newRecognitions, nextDeleted);
+      const sequencedRecognitions = newRecognitions.map((r, i) => ({
+        ...r,
+        sortOrder: i + 1,
+      }));
+      const sanitized = filterOutDeletedItems(sanitizeRecognitionsList(sequencedRecognitions), nextDeleted);
       setRecognitions(sanitized);
 
       if (removed.length > 0) {
@@ -1219,7 +1300,11 @@ export function CMSProvider({
         } catch (_) {}
       }
 
-      const sanitized = filterOutDeletedItems(newTestimonials, nextDeleted);
+      const sequencedTestimonials = newTestimonials.map((t, i) => ({
+        ...t,
+        sortOrder: i + 1,
+      }));
+      const sanitized = filterOutDeletedItems(sanitizeTestimonialsList(sequencedTestimonials), nextDeleted);
       setTestimonials(sanitized);
 
       if (removed.length > 0) {

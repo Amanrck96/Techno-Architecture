@@ -68,10 +68,7 @@ export function sanitizeTeamList(list: any[]): any[] {
   if (!Array.isArray(list)) return [];
   const normalized = list.map((m, idx) => {
     if (!m) return m;
-    let disc = typeof m.discipline === "string" ? m.discipline.trim() : "";
-    if (disc === "BIM & Technical" || disc === "BIM") {
-      disc = "Office Administration";
-    }
+    const disc = typeof m.discipline === "string" ? m.discipline.trim() : "";
     const rawOrder = Number(m.sortOrder);
     const sortOrder = !isNaN(rawOrder) && rawOrder > 0 ? rawOrder : idx + 1;
     return {
@@ -89,19 +86,91 @@ export function sanitizeTeamList(list: any[]): any[] {
   }));
 }
 
+export function sanitizeServicesList(list: any[]): any[] {
+  if (!Array.isArray(list)) return [];
+  const normalized = list.map((s, idx) => {
+    if (!s) return s;
+    const rawOrder = Number(s.sortOrder);
+    const sortOrder = !isNaN(rawOrder) && rawOrder > 0 ? rawOrder : idx + 1;
+    return {
+      ...s,
+      sortOrder,
+    };
+  });
+  normalized.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  return normalized.map((s, idx) => ({
+    ...s,
+    sortOrder: idx + 1,
+  }));
+}
+
+export function sanitizeFaqList(list: any[]): any[] {
+  if (!Array.isArray(list)) return [];
+  const normalized = list.map((f, idx) => {
+    if (!f) return f;
+    const rawOrder = Number(f.sortOrder);
+    const sortOrder = !isNaN(rawOrder) && rawOrder > 0 ? rawOrder : idx + 1;
+    return {
+      ...f,
+      sortOrder,
+    };
+  });
+  normalized.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  return normalized.map((f, idx) => ({
+    ...f,
+    sortOrder: idx + 1,
+  }));
+}
+
+export function sanitizeRecognitionsList(list: any[]): any[] {
+  if (!Array.isArray(list)) return [];
+  const normalized = list.map((r, idx) => {
+    if (!r) return r;
+    const rawOrder = Number(r.sortOrder);
+    const sortOrder = !isNaN(rawOrder) && rawOrder > 0 ? rawOrder : idx + 1;
+    return {
+      ...r,
+      sortOrder,
+    };
+  });
+  normalized.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  return normalized.map((r, idx) => ({
+    ...r,
+    sortOrder: idx + 1,
+  }));
+}
+
+export function sanitizeTestimonialsList(list: any[]): any[] {
+  if (!Array.isArray(list)) return [];
+  const normalized = list.map((t, idx) => {
+    if (!t) return t;
+    const rawOrder = Number(t.sortOrder);
+    const sortOrder = !isNaN(rawOrder) && rawOrder > 0 ? rawOrder : idx + 1;
+    return {
+      ...t,
+      sortOrder,
+    };
+  });
+  normalized.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  return normalized.map((t, idx) => ({
+    ...t,
+    sortOrder: idx + 1,
+  }));
+}
+
 export function getDefaultData(): any {
   const seed = (staticCmsContent as any) || {};
   const deletedIds: string[] = Array.isArray(seed.deletedIds) ? seed.deletedIds : [];
   return {
     projects: sanitizeProjectsList(filterOutDeletedItems(seed.projects || initialProjects, deletedIds)),
-    services: filterOutDeletedItems(seed.services || initialServices, deletedIds),
+    services: sanitizeServicesList(filterOutDeletedItems(seed.services || initialServices, deletedIds)),
     team: sanitizeTeamList(filterOutDeletedItems(seed.team || initialTeam, deletedIds)),
     blog: filterOutDeletedItems(seed.blog || initialBlogPosts, deletedIds),
-    faq: filterOutDeletedItems(seed.faq || initialFAQs, deletedIds),
+    faq: sanitizeFaqList(filterOutDeletedItems(seed.faq || initialFAQs, deletedIds)),
     gallery: filterOutDeletedItems(seed.gallery || initialGalleryItems, deletedIds),
-    recognitions: filterOutDeletedItems(seed.recognitions || initialRecognitions, deletedIds),
+    recognitions: sanitizeRecognitionsList(filterOutDeletedItems(seed.recognitions || initialRecognitions, deletedIds)),
     siteSettings: seed.siteSettings || initialSiteSettings,
-    testimonials: filterOutDeletedItems(seed.testimonials || initialTestimonials, deletedIds),
+    testimonials: sanitizeTestimonialsList(filterOutDeletedItems(seed.testimonials || initialTestimonials, deletedIds)),
     deletedIds,
     updatedAt: seed.updatedAt || "2024-01-01T00:00:00.000Z",
     isDefault: true,
@@ -527,14 +596,14 @@ export async function writeStore(
     ...data,
     deletedIds: mergedDeletedIds,
     projects: sanitizeProjectsList(filterOutDeletedItems(data.projects || [], mergedDeletedIds)),
-    services: filterOutDeletedItems(data.services || [], mergedDeletedIds),
+    services: sanitizeServicesList(filterOutDeletedItems(data.services || [], mergedDeletedIds)),
     team: sanitizeTeamList(filterOutDeletedItems(data.team || [], mergedDeletedIds)),
     blog: filterOutDeletedItems(data.blog || [], mergedDeletedIds),
-    faq: filterOutDeletedItems(data.faq || [], mergedDeletedIds),
+    faq: sanitizeFaqList(filterOutDeletedItems(data.faq || [], mergedDeletedIds)),
     gallery: filterOutDeletedItems(data.gallery || [], mergedDeletedIds),
-    recognitions: filterOutDeletedItems(data.recognitions || [], mergedDeletedIds),
+    recognitions: sanitizeRecognitionsList(filterOutDeletedItems(data.recognitions || [], mergedDeletedIds)),
     siteSettings: data.siteSettings || initialSiteSettings,
-    testimonials: filterOutDeletedItems(data.testimonials || [], mergedDeletedIds),
+    testimonials: sanitizeTestimonialsList(filterOutDeletedItems(data.testimonials || [], mergedDeletedIds)),
   };
 
   // Always update in-memory store immediately

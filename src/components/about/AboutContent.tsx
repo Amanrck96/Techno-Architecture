@@ -38,9 +38,7 @@ export default function AboutContent() {
     const target = selectedDiscipline.toLowerCase().trim();
     return displayTeam.filter((m) => {
       const disc = (m.discipline || "").toLowerCase().trim();
-      if (disc === target) return true;
-      if (target === "office administration" && (disc === "bim & technical" || disc === "bim")) return true;
-      return false;
+      return disc === target;
     });
   }, [displayTeam, selectedDiscipline]);
 
@@ -431,9 +429,7 @@ export default function AboutContent() {
                   : displayTeam.filter((m) => {
                       const disc = (m.discipline || "").toLowerCase().trim();
                       const target = d.toLowerCase().trim();
-                      if (disc === target) return true;
-                      if (target === "office administration" && (disc === "bim & technical" || disc === "bim")) return true;
-                      return false;
+                      return disc === target;
                     }).length;
                 if (count === 0) return null;
                 const isSelected = selectedDiscipline === d;
