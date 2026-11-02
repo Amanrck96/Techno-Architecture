@@ -38,23 +38,62 @@ export function filterOutDeletedItems<T = any>(
   });
 }
 
+export function sanitizeProjectsList(list: any[]): any[] {
+  if (!Array.isArray(list)) return [];
+  const normalized = list.map((p, idx) => {
+    if (!p) return p;
+    let cleanSlug = (p?.slug || "").trim().toLowerCase().replace(/[\s_]+/g, "-");
+    if (
+      (!p?.slug || cleanSlug === "zenith-residence" || cleanSlug === "mantle-buildofy") &&
+      p?.id === "proj-12"
+    ) {
+      cleanSlug = "the-mantle";
+    }
+    const rawOrder = Number(p.sortOrder);
+    const sortOrder = !isNaN(rawOrder) && rawOrder > 0 ? rawOrder : idx + 1;
+    return {
+      ...p,
+      slug: cleanSlug || p?.slug,
+      sortOrder,
+    };
+  });
+  normalized.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  return normalized.map((p, idx) => ({
+    ...p,
+    sortOrder: idx + 1,
+  }));
+}
+
 export function sanitizeTeamList(list: any[]): any[] {
   if (!Array.isArray(list)) return [];
-  return list.map((m) => {
+  const normalized = list.map((m, idx) => {
     if (!m) return m;
-    let disc = m.discipline;
+    let disc = typeof m.discipline === "string" ? m.discipline.trim() : "";
     if (disc === "BIM & Technical" || disc === "BIM") {
       disc = "Office Administration";
     }
-    return { ...m, discipline: disc || "Architecture" };
+    const rawOrder = Number(m.sortOrder);
+    const sortOrder = !isNaN(rawOrder) && rawOrder > 0 ? rawOrder : idx + 1;
+    return {
+      ...m,
+      discipline: disc || "Architecture",
+      sortOrder,
+    };
   });
+
+  normalized.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+
+  return normalized.map((m, idx) => ({
+    ...m,
+    sortOrder: idx + 1,
+  }));
 }
 
 export function getDefaultData(): any {
   const seed = (staticCmsContent as any) || {};
   const deletedIds: string[] = Array.isArray(seed.deletedIds) ? seed.deletedIds : [];
   return {
-    projects: filterOutDeletedItems(seed.projects || initialProjects, deletedIds),
+    projects: sanitizeProjectsList(filterOutDeletedItems(seed.projects || initialProjects, deletedIds)),
     services: filterOutDeletedItems(seed.services || initialServices, deletedIds),
     team: sanitizeTeamList(filterOutDeletedItems(seed.team || initialTeam, deletedIds)),
     blog: filterOutDeletedItems(seed.blog || initialBlogPosts, deletedIds),
@@ -439,7 +478,7 @@ export async function readStore(
   const cleanData = {
     ...bestData,
     deletedIds: mergedDeletedIds,
-    projects: filterOutDeletedItems(bestData.projects || [], mergedDeletedIds),
+    projects: sanitizeProjectsList(filterOutDeletedItems(bestData.projects || [], mergedDeletedIds)),
     services: filterOutDeletedItems(bestData.services || [], mergedDeletedIds),
     team: sanitizeTeamList(filterOutDeletedItems(bestData.team || [], mergedDeletedIds)),
     blog: filterOutDeletedItems(bestData.blog || [], mergedDeletedIds),
@@ -487,7 +526,7 @@ export async function writeStore(
   const cleanData = {
     ...data,
     deletedIds: mergedDeletedIds,
-    projects: filterOutDeletedItems(data.projects || [], mergedDeletedIds),
+    projects: sanitizeProjectsList(filterOutDeletedItems(data.projects || [], mergedDeletedIds)),
     services: filterOutDeletedItems(data.services || [], mergedDeletedIds),
     team: sanitizeTeamList(filterOutDeletedItems(data.team || [], mergedDeletedIds)),
     blog: filterOutDeletedItems(data.blog || [], mergedDeletedIds),

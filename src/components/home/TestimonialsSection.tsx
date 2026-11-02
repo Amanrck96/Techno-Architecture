@@ -9,17 +9,21 @@ export default function TestimonialsSection() {
   const { testimonials } = useCMSStore();
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  if (!testimonials || testimonials.length === 0) return null;
+  const displayTestimonials = React.useMemo(() => {
+    return [...testimonials].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  }, [testimonials]);
+
+  if (!displayTestimonials || displayTestimonials.length === 0) return null;
 
   const prev = () => {
-    setCurrentIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
+    setCurrentIndex((prev) => (prev === 0 ? displayTestimonials.length - 1 : prev - 1));
   };
 
   const next = () => {
-    setCurrentIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
+    setCurrentIndex((prev) => (prev === displayTestimonials.length - 1 ? 0 : prev + 1));
   };
 
-  const current = testimonials[currentIndex];
+  const current = displayTestimonials[currentIndex];
 
   return (
     <section id="testimonials" className="w-full py-16 md:py-24 px-6 md:px-12 bg-white border-b border-neutral-200 scroll-mt-20">

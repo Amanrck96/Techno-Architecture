@@ -170,7 +170,8 @@
         "url": "/projects/brindavan/brindavan.mp4",
         "platform": "Film",
         "actionText": "Watch Architectural Film"
-      }
+      },
+      "sortOrder": 1
     },
     {
       "id": "proj-8",
@@ -356,7 +357,8 @@
         "clientName": "Mr.Arun Charanthimanth",
         "designation": "Homeowners",
         "company": "Kripa Residence"
-      }
+      },
+      "sortOrder": 2
     },
     {
       "id": "proj-12",
@@ -558,7 +560,8 @@
         "clientName": "Mr. Chandrashekhar and Mrs. Mangala",
         "designation": "Homeowners",
         "company": "The Mantle Residence"
-      }
+      },
+      "sortOrder": 3
     },
     {
       "id": "proj-7",
@@ -735,7 +738,8 @@
         "clientName": "Mrs.Usha Subramanya and Mr.Subramanya",
         "designation": "Homeowners ",
         "company": "Kanasu Residence"
-      }
+      },
+      "sortOrder": 4
     },
     {
       "id": "proj-3",
@@ -936,7 +940,8 @@
         "clientName": "Dr. Sandeep & Deepa Rao",
         "designation": "Homeowners",
         "company": "Between Two Trees Residence"
-      }
+      },
+      "sortOrder": 5
     },
     {
       "id": "proj-5",
@@ -1136,7 +1141,8 @@
         "clientName": "Dr. Arvind Natarajan",
         "designation": "Homeowners",
         "company": "Natarajan Medical Group"
-      }
+      },
+      "sortOrder": 6
     },
     {
       "id": "proj-2",
@@ -1312,7 +1318,8 @@
         "clientName": "Suresh & Anitha Gowda",
         "designation": "Homeowners",
         "company": "Belaku Residence"
-      }
+      },
+      "sortOrder": 7
     },
     {
       "id": "proj-1",
@@ -1406,7 +1413,8 @@
         "clientName": "Mrs.Divya Murthy and Mr.Mohan Malligappa",
         "designation": "Homeowners",
         "company": "Private Residence"
-      }
+      },
+      "sortOrder": 8
     },
     {
       "id": "proj-6",
@@ -1540,7 +1548,8 @@
         "clientName": "Rahul & Meera Krishnan",
         "designation": "Homeowners",
         "company": "House in the Air"
-      }
+      },
+      "sortOrder": 9
     },
     {
       "id": "proj-10",
@@ -1758,7 +1767,8 @@
         "clientName": "Salut Hospitality Ventures",
         "designation": "Patrons",
         "company": "Salut Craft Brewery"
-      }
+      },
+      "sortOrder": 10
     },
     {
       "id": "proj-13",
@@ -1826,7 +1836,8 @@
         "clientName": "Private Client",
         "designation": "Homeowner",
         "company": "Echoes of Nirvana Residence"
-      }
+      },
+      "sortOrder": 11
     },
     {
       "id": "proj-ongoing-1",
@@ -1880,7 +1891,8 @@
         "anandam-residence",
         "suhas-residence",
         "aikya"
-      ]
+      ],
+      "sortOrder": 12
     },
     {
       "id": "proj-ongoing-2",
@@ -1944,7 +1956,8 @@
         "jagan-residence",
         "sneha-residence",
         "belaku"
-      ]
+      ],
+      "sortOrder": 13
     },
     {
       "id": "proj-ongoing-3",
@@ -1993,7 +2006,8 @@
         "jagan-residence",
         "smrithi-residence",
         "kanasu"
-      ]
+      ],
+      "sortOrder": 14
     },
     {
       "id": "proj-ongoing-4",
@@ -2072,7 +2086,8 @@
         "anandam-residence",
         "praana-villas",
         "between-two-trees"
-      ]
+      ],
+      "sortOrder": 15
     },
     {
       "id": "proj-ongoing-5",
@@ -2146,7 +2161,8 @@
         "suhas-residence",
         "ruchi-sharma-residence",
         "aikya"
-      ]
+      ],
+      "sortOrder": 16
     },
     {
       "id": "proj-ongoing-6",
@@ -2195,7 +2211,8 @@
         "smrithi-residence",
         "jagan-residence",
         "kripa"
-      ]
+      ],
+      "sortOrder": 17
     },
     {
       "id": "proj-ongoing-7",
@@ -2249,7 +2266,8 @@
         "sneha-residence",
         "anandam-residence",
         "brindavan"
-      ]
+      ],
+      "sortOrder": 18
     },
     {
       "id": "proj-ongoing-8",
@@ -2305,7 +2323,8 @@
         "maddur-commercial-retreat",
         "urvi-commercial-hub",
         "prana-commercial-commons"
-      ]
+      ],
+      "sortOrder": 19
     },
     {
       "id": "proj-ongoing-9",
@@ -2360,7 +2379,8 @@
         "vidyanidhi-campus",
         "urvi-commercial-hub",
         "praana-villas"
-      ]
+      ],
+      "sortOrder": 20
     },
     {
       "id": "proj-ongoing-10",
@@ -2415,7 +2435,8 @@
         "vidyanidhi-campus",
         "prana-commercial-commons",
         "maddur-commercial-retreat"
-      ]
+      ],
+      "sortOrder": 21
     },
     {
       "id": "proj-ongoing-11",
@@ -2470,7 +2491,8 @@
         "urvi-commercial-hub",
         "vidyanidhi-campus",
         "praana-villas"
-      ]
+      ],
+      "sortOrder": 22
     }
   ],
   "services": [
@@ -2526,7 +2548,8 @@
         "aikya",
         "between-two-trees",
         "kanasu"
-      ]
+      ],
+      "sortOrder": 1
     },
     {
       "id": "serv-2",
@@ -2579,7 +2602,8 @@
         "mantle-buildofy",
         "belaku",
         "kripa"
-      ]
+      ],
+      "sortOrder": 2
     },
     {
       "id": "serv-3",
@@ -2632,7 +2656,8 @@
         "salut",
         "brindavan",
         "far-site-buildofy"
-      ]
+      ],
+      "sortOrder": 3
     }
   ],
   "team": [
@@ -2650,7 +2675,8 @@
           "platform": "Instagram",
           "url": "https://www.instagram.com/technoarchitecture_rajesh/"
         }
-      ]
+      ],
+      "sortOrder": 1
     },
     {
       "id": "team-dheemanth",
@@ -2661,7 +2687,8 @@
       "bio": "Directs luxury residential and mixed-use commissions, integrating passive climate strategies, volumetric daylighting, and monolithic structural coordination.",
       "image": "/team/dheemanth-1.jpg",
       "hoverImage": "/team/dheemanth-2.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 2
     },
     {
       "id": "team-anoop",
@@ -2672,7 +2699,8 @@
       "bio": "Specializes in contemporary spatial sequencing, climate-responsive building envelopes, and vernacular masonry detailing from concept to handover.",
       "image": "/team/anoop-1.jpg",
       "hoverImage": "/team/anoop-2.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 3
     },
     {
       "id": "team-chaya",
@@ -2683,7 +2711,8 @@
       "bio": "Coordinates multidisciplinary studio operations, client partnerships, and design execution standards across architecture and interior commissions.",
       "image": "/team/chaya-1.jpg",
       "hoverImage": "/team/chaya-2.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 4
     },
     {
       "id": "team-veerendra",
@@ -2694,7 +2723,8 @@
       "bio": "Bridges architectural schematics with on-site structural reality, supervising MEP integration, vendor fabrication reviews, and strict construction tolerances.",
       "image": "/team/veerendra-2.jpg",
       "hoverImage": "/team/veerendra-1.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 5
     },
     {
       "id": "team-bipin",
@@ -2705,7 +2735,8 @@
       "bio": "Directs spatial curation, bespoke millwork, acoustic textures, artisanal lighting schemes, and luxury residential interior fit-outs.",
       "image": "/team/bipin-1.jpg",
       "hoverImage": "/team/bipin-2.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 6
     },
     {
       "id": "team-prashant",
@@ -2716,7 +2747,8 @@
       "bio": "Spearheads Building Information Modeling, digital clash detection, structural coordination, and comprehensive tender documentation.",
       "image": "/team/prashant-1.jpg",
       "hoverImage": "/team/prashant-2.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 7
     },
     {
       "id": "team-suma",
@@ -2727,7 +2759,8 @@
       "bio": "Focuses on residential masterplanning, internal courtyard microclimates, and sustainable material assemblies with sensitivity to site contours.",
       "image": "/team/suma-2.jpg",
       "hoverImage": "/team/suma-1.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 8
     },
     {
       "id": "team-darshan",
@@ -2738,7 +2771,8 @@
       "bio": "Develops precise architectural working drawings, structural interface details, and oversees site execution quality compliance.",
       "image": "/team/darshan-2.jpg",
       "hoverImage": "/team/darshan-1.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 9
     },
     {
       "id": "team-apeksh",
@@ -2749,7 +2783,8 @@
       "bio": "Focuses on parametric solar shading facades, computational geometry, daylight simulations, and contemporary envelope detailing.",
       "image": "/team/apeksh-1.jpg",
       "hoverImage": "/team/apeksh-2.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 10
     },
     {
       "id": "team-mohit",
@@ -2760,7 +2795,8 @@
       "bio": "Translates architectural narratives into crafted living spaces, emphasizing ergonomic joinery, bespoke hardware, and tailored finishes.",
       "image": "/team/mohit-2.jpg",
       "hoverImage": "/team/mohit-1.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 11
     },
     {
       "id": "team-padmavathi",
@@ -2771,7 +2807,8 @@
       "bio": "Leads research in passive cooling techniques, vernacular materials, and low-carbon construction systems across the studio's portfolio.",
       "image": "/team/padmavathi-1.jpg",
       "hoverImage": "/team/padmavathi-2.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 12
     },
     {
       "id": "team-nikhil",
@@ -2782,7 +2819,8 @@
       "bio": "Specializes in contemporary residential detailing, structural steel junctions, and continuous indoor-outdoor spatial connections.",
       "image": "/team/nikhil-1.jpg",
       "hoverImage": "/team/nikhil-2.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 13
     },
     {
       "id": "team-sanjana",
@@ -2793,7 +2831,8 @@
       "bio": "Curates holistic interior environments, custom furniture design, and tactile color and textile palettes aligned with architectural concepts.",
       "image": "/team/sanjana-2.jpg",
       "hoverImage": "/team/sanjana-1.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 14
     },
     {
       "id": "team-rajvardhan",
@@ -2804,7 +2843,8 @@
       "bio": "Coordinates schematic design iterations, 3D spatial studies, statutory compliance packages, and client presentations.",
       "image": "/team/rajvardhan-1.jpg",
       "hoverImage": "/team/rajvardhan-2.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 15
     },
     {
       "id": "team-prarthana",
@@ -2815,7 +2855,8 @@
       "bio": "Specializes in natural stone curation, artisanal metalwork, customized lighting fixtures, and sensory surface finishes.",
       "image": "/team/prarthana-1.jpg",
       "hoverImage": "/team/prarthana-2.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 16
     },
     {
       "id": "team-aditya",
@@ -2826,7 +2867,8 @@
       "bio": "Directs digital spatial modeling, daylight rendering, and evocative 3D visual storytelling for client reviews and design iterations.",
       "image": "/team/aditya-1.jpg",
       "hoverImage": "/team/aditya-2.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 17
     },
     {
       "id": "team-ritika",
@@ -2837,7 +2879,8 @@
       "bio": "Integrates native micro-habitats, rainwater percolation channels, and biophilic landscape zones within architectural footprints.",
       "image": "/team/ritika-2.jpg",
       "hoverImage": "/team/ritika-1.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 18
     },
     {
       "id": "team-varun",
@@ -2848,7 +2891,8 @@
       "bio": "Focuses on comprehensive architectural working drawings, structural coordination, and periodic site inspection for private residences.",
       "image": "/team/varun-1.jpg",
       "hoverImage": "/team/varun-2.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 19
     },
     {
       "id": "team-sahana",
@@ -2859,7 +2903,8 @@
       "bio": "Contributes to early-stage concept development, space planning studies, and physical and digital presentation graphics.",
       "image": "/team/sahana-1.jpg",
       "hoverImage": "/team/sahana-2.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 20
     },
     {
       "id": "team-sujay",
@@ -2870,7 +2915,8 @@
       "bio": "Oversees site progress benchmarks, material mockup evaluations, and architectural detail fidelity throughout construction.",
       "image": "/team/sujay-1.jpg",
       "hoverImage": "/team/sujay-2.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 21
     },
     {
       "id": "team-vaishnavi",
@@ -2881,7 +2927,8 @@
       "bio": "Develops spatial layout schemes, moodboards, and material compositions, supporting project architects across residential projects.",
       "image": "/team/vaishnavi.jpg",
       "hoverImage": "/team/vaishnavi.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 22
     },
     {
       "id": "team-harsan",
@@ -2892,7 +2939,8 @@
       "bio": "Creates atmospheric lighting renderings, realistic material shaders, and architectural animations to visualize design proposals.",
       "image": "/team/harsan-1.jpg",
       "hoverImage": "/team/harsan-2.jpg",
-      "socials": []
+      "socials": [],
+      "sortOrder": 23
     }
   ],
   "blog": [
@@ -3072,73 +3120,85 @@
       "id": "faq-1",
       "question": "What types of projects does Techno Architecture undertake",
       "answer": "We provide end to end architecture, interior design and structural design services. Our portfolio includes residential, commercial, hospitality and bespoke interior architecture projects. Where additional expertise is required, we can introduce clients to suitable specialist consultants according to the project's scale and technical needs.",
-      "category": "Design Philosophy"
+      "category": "Design Philosophy",
+      "sortOrder": 1
     },
     {
       "id": "faq-2",
       "question": "When should we appoint an architect",
       "answer": "The best time is before major decisions are made about planning, area, budget or construction. Early involvement allows the design team to study the site, clarify priorities and identify constraints before they become costly to change.",
-      "category": "Engagement & Process"
+      "category": "Engagement & Process",
+      "sortOrder": 2
     },
     {
       "id": "faq-3",
       "question": "What information should we share for an initial discussion",
       "answer": "Please share your name, email address and contact number. A senior architect will get in touch directly to understand the requirements and discuss taking up the new project.",
-      "category": "Engagement & Process"
+      "category": "Engagement & Process",
+      "sortOrder": 3
     },
     {
       "id": "faq-4",
       "question": "Can you provide architecture and interiors together",
       "answer": "Yes. An integrated appointment can help the building, interiors, lighting, materials and furniture develop as one coordinated design. The exact scope will be defined in the project proposal.",
-      "category": "Design Philosophy"
+      "category": "Design Philosophy",
+      "sortOrder": 4
     },
     {
       "id": "faq-5",
       "question": "Do you work on renovations",
       "answer": "Renovation and adaptive reuse projects can be considered after reviewing the existing building, required changes and available documentation. A site assessment may be needed before the scope and feasibility can be confirmed.",
-      "category": "Engagement & Process"
+      "category": "Engagement & Process",
+      "sortOrder": 5
     },
     {
       "id": "faq-6",
       "question": "How does the design process begin",
       "answer": "The process usually begins with a consultation, brief development and review of the site information. We then define the scope, deliverables, stages and professional fees before design work starts.",
-      "category": "Engagement & Process"
+      "category": "Engagement & Process",
+      "sortOrder": 6
     },
     {
       "id": "faq-7",
       "question": "How long does a project take",
       "answer": "Timelines vary with project scale, approvals, design decisions, consultant coordination and construction conditions. We provide a stage-based programme after understanding the project requirements.",
-      "category": "Fees & Timelines"
+      "category": "Fees & Timelines",
+      "sortOrder": 7
     },
     {
       "id": "faq-8",
       "question": "How are professional fees calculated",
       "answer": "Fees depend on the project type, size, complexity, location and scope of services. A detailed proposal is issued after the initial project discussion.",
-      "category": "Fees & Timelines"
+      "category": "Fees & Timelines",
+      "sortOrder": 8
     },
     {
       "id": "faq-9",
       "question": "Do you supervise construction",
       "answer": "Construction-stage involvement depends on the agreed appointment. It may include periodic site reviews, drawing clarifications, consultant coordination and review of design intent. This is different from continuous site supervision unless specifically included.",
-      "category": "Technical & BIM"
+      "category": "Technical & BIM",
+      "sortOrder": 9
     },
     {
       "id": "faq-10",
       "question": "How do you approach sustainable design",
       "answer": "We begin with practical measures such as orientation, daylight, ventilation, shading, efficient planning, durable materials and resource-conscious structural systems. Appropriate strategies are selected for the site, climate, budget and project goals.",
-      "category": "Sustainability"
+      "category": "Sustainability",
+      "sortOrder": 10
     },
     {
       "id": "faq-11",
       "question": "Can you work outside your home city",
       "answer": "Projects in other locations may be undertaken depending on their scope, programme and travel requirements. Please share the site location during the initial enquiry so the appropriate service structure can be discussed.",
-      "category": "Engagement & Process"
+      "category": "Engagement & Process",
+      "sortOrder": 11
     },
     {
       "id": "faq-12",
       "question": "How can we start a project with Techno Architecture",
       "answer": "Use the project enquiry form or contact the studio directly. A senior architect will get in touch to understand the requirements, confirm availability and discuss the next steps for taking up the project.",
-      "category": "Engagement & Process"
+      "category": "Engagement & Process",
+      "sortOrder": 12
     }
   ],
   "gallery": [
@@ -4977,7 +5037,8 @@
       "projectAssociated": "AIKYA",
       "projectSlug": "aikya",
       "description": "Conferred for outstanding mastery over passive climatic engineering, contemporary tropical craftsmanship, and timeless residential spatial planning.",
-      "badge": "Gold Medalist"
+      "badge": "Gold Medalist",
+      "sortOrder": 1
     },
     {
       "id": "rec-2",
@@ -4986,7 +5047,8 @@
       "category": "Publication",
       "organization": "Architectural Digest South Asia",
       "description": "Selected in the annual AD100 definitive index of leading visionary architecture practices defining the subcontinent's built landscape.",
-      "badge": "Honoree"
+      "badge": "Honoree",
+      "sortOrder": 2
     },
     {
       "id": "rec-3",
@@ -4997,7 +5059,8 @@
       "projectAssociated": "BETWEEN TWO TREES",
       "projectSlug": "between-two-trees",
       "description": "Recognized for non-invasive preservation of centenary heritage trees and biophilic integration of traditional mandapa water courtyards.",
-      "badge": "International Longlist"
+      "badge": "International Longlist",
+      "sortOrder": 3
     },
     {
       "id": "rec-4",
@@ -5008,7 +5071,8 @@
       "projectAssociated": "KRIPA",
       "projectSlug": "kripa",
       "description": "Awarded for pioneering urban biophilic microclimates, porous breeze-block jaali shading, and cascading vertical garden integration.",
-      "badge": "Citation Award"
+      "badge": "Citation Award",
+      "sortOrder": 4
     },
     {
       "id": "rec-5",
@@ -5017,7 +5081,8 @@
       "category": "Biennale / Exhibition",
       "organization": "La Biennale di Venezia (18th International Exhibition)",
       "description": "Invited installation titled 'Tropical Tectonics & Thermodynamic Voids' examining subterranean courtyards as climate resilience prototypes.",
-      "badge": "Biennale Exhibitor"
+      "badge": "Biennale Exhibitor",
+      "sortOrder": 5
     },
     {
       "id": "rec-6",
@@ -5028,7 +5093,8 @@
       "projectAssociated": "BELAKU",
       "projectSlug": "belaku",
       "description": "Selected by both the honorary jury and member ratings for cantilevered spatial composition, climatic timber louvers, and warm corten steel articulation.",
-      "badge": "WA Winner"
+      "badge": "WA Winner",
+      "sortOrder": 6
     },
     {
       "id": "rec-8",
@@ -5039,7 +5105,8 @@
       "projectAssociated": "BRINDAVAN",
       "projectSlug": "brindavan",
       "description": "Commended for innovative urban biophilic architecture, tactile brick craftsmanship, and vertical greenery integration.",
-      "badge": "Citation Award"
+      "badge": "Citation Award",
+      "sortOrder": 7
     }
   ],
   "siteSettings": {
@@ -5090,7 +5157,8 @@
       "company": "Private Residence",
       "projectAssociated": "AIKYA",
       "quote": "Living in Aikya has transformed our daily relationship with light and nature. Even during the peak of summer, the serene water courts and double-height living areas create an astonishingly cool, harmonious atmosphere. Techno's obsession with every millimeter of craft is evident everywhere you look.",
-      "year": 2023
+      "year": 2023,
+      "sortOrder": 1
     },
     {
       "id": "test-2",
@@ -5099,7 +5167,8 @@
       "company": "Belaku Residence",
       "projectAssociated": "BELAKU",
       "quote": "Techno created a private urban sanctuary that dances with natural light throughout the day. The interplay of cantilevered concrete, corten steel, and sculptural timber screens makes Belaku an architectural masterwork we are proud to call home.",
-      "year": 2023
+      "year": 2023,
+      "sortOrder": 2
     },
     {
       "id": "test-3",
@@ -5108,7 +5177,8 @@
       "company": "Between Two Trees Residence",
       "projectAssociated": "BETWEEN TWO TREES",
       "quote": "Techno designed a home that feels like a sacred sanctuary cradled by our centenary trees. The four-pillared inner mandapa courtyard and brick jali light create a living experience of timeless elegance.",
-      "year": 2024
+      "year": 2024,
+      "sortOrder": 3
     },
     {
       "id": "test-4",
@@ -5117,7 +5187,8 @@
       "company": "Natarajan Medical Group",
       "projectAssociated": "FAR SITE BUILDOFY",
       "quote": "The play of shadows cast by the terracotta jali and the lush cantilevered terraces make this home feel like a personal sanctuary in the city. Techno Architecture's vision featured on Buildofy is truly exemplary.",
-      "year": 2023
+      "year": 2023,
+      "sortOrder": 4
     }
   ],
   "updatedAt": "2026-10-31T11:58:40.469Z",

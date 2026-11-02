@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
-import { useCMSStore } from "@/lib/cmsStore";
+import { useCMSStore, defaultProjects } from "@/lib/cmsStore";
+import { initialProjects } from "@/data/projects";
 import { ArrowLeft, ArrowRight, ArrowUpRight, ArrowUp, Maximize2 } from "lucide-react";
 import ProjectImageLightbox from "@/components/projects/ProjectImageLightbox";
 
@@ -46,11 +47,13 @@ const matchesProjectSlug = (p: { id?: string; slug?: string; title?: string }, t
 
   if (!targetNorm) return false;
   if (p.slug === targetSlug || pSlugNorm === targetNorm) return true;
+  if (p.id && (p.id.toLowerCase() === targetNorm || normalizeSlug(p.id) === targetNorm)) return true;
+  if (p.title && normalizeSlug(p.title) === targetNorm) return true;
 
   // Check alias groups
   for (const [projId, aliasList] of Object.entries(projectAliases)) {
     const allKnownSlugs = aliasList.map(normalizeSlug);
-    const isTargetInGroup = allKnownSlugs.includes(targetNorm);
+    const isTargetInGroup = allKnownSlugs.includes(targetNorm) || normalizeSlug(projId) === targetNorm;
     const isProjectInGroup =
       p.id === projId ||
       allKnownSlugs.includes(pSlugNorm) ||
@@ -64,23 +67,47 @@ const matchesProjectSlug = (p: { id?: string; slug?: string; title?: string }, t
   return false;
 };
 
-export default function ProjectDetailPage() {
-  const params = useParams();
-  const rawSlug = params?.slug as string;
-  const slug = decodeURIComponent(rawSlug || "").trim();
+export default function ProjectDetailPage({
+  params,
+}: {
+  params?: { slug?: string };
+}) {
+  const routeParams = useParams();
+  const rawSlug = (params?.slug || routeParams?.slug) as string | string[] | undefined;
+  const slug = decodeURIComponent(Array.isArray(rawSlug) ? rawSlug[0] : (rawSlug || "")).trim();
   const { projects, testimonials } = useCMSStore();
 
-  const currentIndex = projects.findIndex((p) => matchesProjectSlug(p, slug));
+  const primaryList = Array.isArray(projects) && projects.length > 0 ? projects : defaultProjects;
+  let currentIndex = primaryList.findIndex((p) => matchesProjectSlug(p, slug));
+  let sourceList = primaryList;
+
+  if (currentIndex === -1 && Array.isArray(defaultProjects) && defaultProjects.length > 0) {
+    currentIndex = defaultProjects.findIndex((p) => matchesProjectSlug(p, slug));
+    if (currentIndex !== -1) sourceList = defaultProjects;
+  }
+
+  if (currentIndex === -1 && Array.isArray(initialProjects) && initialProjects.length > 0) {
+    currentIndex = initialProjects.findIndex((p) => matchesProjectSlug(p, slug));
+    if (currentIndex !== -1) sourceList = initialProjects;
+  }
+
   if (currentIndex === -1) {
-    // If not found in current store, return 404
+    if (!slug) {
+      return (
+        <div className="min-h-[60vh] flex items-center justify-center">
+          <div className="animate-pulse text-xs uppercase tracking-widest font-mono text-neutral-400">
+            Loading architectural dossier...
+          </div>
+        </div>
+      );
+    }
     return notFound();
   }
 
-  const rawProject = projects[currentIndex];
+  const rawProject = sourceList[currentIndex];
 
-  const sanitizeProject = (p: (typeof projects)[0]) => {
-    if (!p) return p;
-    // Fallback images only if an individual project record has an empty mainImage:
+  const sanitizeProject = (p: (typeof projects)[0] | any) => {
+    if (!p) return null;
     const defaultImage =
       p.id === "proj-1" ? "/projects/aikya/elevation-east.jpg" :
       p.id === "proj-2" ? "/projects/belaku/belaku-central-courtyard-entrance-vista.jpg" :
@@ -102,13 +129,17 @@ export default function ProjectDetailPage() {
     return {
       ...p,
       title: p.title || "Untitled Project",
-      slug: p.slug,
+      slug: p.slug || normalizeSlug(p.title || p.id),
       mainImage: p.mainImage || defaultImage,
       gallery: Array.isArray(p.gallery) ? p.gallery : [],
+      servicesInvolved: Array.isArray(p.servicesInvolved) ? p.servicesInvolved : ["Architectural Design"],
+      teamMembers: Array.isArray(p.teamMembers) ? p.teamMembers : ["Ar. Rajesh Shivaram"],
+      relatedSlugs: Array.isArray(p.relatedSlugs) ? p.relatedSlugs : [],
+      credits: p.credits || { principalArchitect: "Ar. Rajesh Shivaram" },
     };
   };
 
-  const project = sanitizeProject(rawProject);
+  const project = sanitizeProject(rawProject)!;
 
   const testimonial =
     project.testimonial ||
@@ -118,17 +149,18 @@ export default function ProjectDetailPage() {
         t.projectAssociated?.toLowerCase().trim() === project.slug.toLowerCase().trim()
     );
 
-  // Calculate Previous and Next project
+  // Calculate Previous and Next project safely
   const prevProject = sanitizeProject(
-    projects[(currentIndex - 1 + projects.length) % projects.length]
+    sourceList[(currentIndex - 1 + sourceList.length) % sourceList.length]
   );
   const nextProject = sanitizeProject(
-    projects[(currentIndex + 1) % projects.length]
+    sourceList[(currentIndex + 1) % sourceList.length]
   );
 
   // Related projects with guaranteed fresh metadata and alias handling
-  const related = projects
+  const related = sourceList
     .filter((p) => {
+      if (!p) return false;
       // Don't show self in related
       if (p.slug === project.slug || p.id === project.id) return false;
 
@@ -149,12 +181,13 @@ export default function ProjectDetailPage() {
 
       // Match relatedSlugs
       if (Array.isArray(project.relatedSlugs) && project.relatedSlugs.length > 0) {
-        return project.relatedSlugs.some((relSlug) => matchesProjectSlug(p, relSlug));
+        return project.relatedSlugs.some((relSlug: string) => matchesProjectSlug(p, relSlug));
       }
 
       return false;
     })
-    .map(sanitizeProject);
+    .map(sanitizeProject)
+    .filter(Boolean);
 
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -524,14 +557,16 @@ export default function ProjectDetailPage() {
 
       {/* 6. Previous / Next Project Navigation Bar */}
       <nav aria-label="Project pager" className="pt-8 border-t border-neutral-300 flex items-center justify-between text-xs tracking-[0.2em] uppercase font-medium">
-        <Link
-          href={`/projects/${prevProject.slug}`}
-          className="flex items-center gap-2 text-neutral-600 hover:text-black transition-colors py-2 group"
-        >
-          <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
-          <span className="hidden sm:inline text-neutral-400">PREVIOUS:</span>
-          <span>{prevProject.title}</span>
-        </Link>
+        {prevProject?.slug ? (
+          <Link
+            href={`/projects/${prevProject.slug}`}
+            className="flex items-center gap-2 text-neutral-600 hover:text-black transition-colors py-2 group"
+          >
+            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+            <span className="hidden sm:inline text-neutral-400">PREVIOUS:</span>
+            <span>{prevProject.title}</span>
+          </Link>
+        ) : <div />}
 
         <Link
           href="/projects"
@@ -540,14 +575,16 @@ export default function ProjectDetailPage() {
           ALL PROJECTS
         </Link>
 
-        <Link
-          href={`/projects/${nextProject.slug}`}
-          className="flex items-center gap-2 text-neutral-600 hover:text-black transition-colors py-2 group text-right"
-        >
-          <span className="hidden sm:inline text-neutral-400">NEXT:</span>
-          <span>{nextProject.title}</span>
-          <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-        </Link>
+        {nextProject?.slug ? (
+          <Link
+            href={`/projects/${nextProject.slug}`}
+            className="flex items-center gap-2 text-neutral-600 hover:text-black transition-colors py-2 group text-right"
+          >
+            <span className="hidden sm:inline text-neutral-400">NEXT:</span>
+            <span>{nextProject.title}</span>
+            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+          </Link>
+        ) : <div />}
       </nav>
 
       {/* 7. Bottom Direct "Back to Top" Button */}

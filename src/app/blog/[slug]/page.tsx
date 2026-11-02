@@ -5,18 +5,67 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 import { useCMSStore } from "@/lib/cmsStore";
+import { initialBlogPosts, BlogPost } from "@/data/blog";
+import staticCmsContent from "@/data/cms-content.json";
 import { formatDate } from "@/lib/utils";
 import { ArrowLeft, ArrowUpRight, Clock } from "lucide-react";
 
-export default function BlogArticlePage() {
-  const params = useParams();
-  const slug = params?.slug as string;
+const normalizeSlug = (s: string) =>
+  (s || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_]+/g, "-");
+
+export default function BlogArticlePage({
+  params,
+}: {
+  params?: { slug?: string };
+}) {
+  const routeParams = useParams();
+  const rawSlug = (params?.slug || routeParams?.slug) as string | string[] | undefined;
+  const slug = decodeURIComponent(Array.isArray(rawSlug) ? rawSlug[0] : (rawSlug || "")).trim();
+  const targetNorm = normalizeSlug(slug);
+
   const { blog } = useCMSStore();
 
-  const post = blog.find((p) => p.slug === slug);
-  if (!post) return notFound();
+  const sourceBlog: BlogPost[] =
+    Array.isArray(blog) && blog.length > 0
+      ? blog
+      : (staticCmsContent as any)?.blog && Array.isArray((staticCmsContent as any).blog)
+      ? (staticCmsContent as any).blog
+      : initialBlogPosts;
 
-  const related = blog.filter((p) => post.relatedSlugs?.includes(p.slug));
+  const matchesPost = (p: BlogPost) => {
+    if (!p || !targetNorm) return false;
+    if (normalizeSlug(p.slug) === targetNorm) return true;
+    if (normalizeSlug(p.id) === targetNorm) return true;
+    if (normalizeSlug(p.title) === targetNorm) return true;
+    return false;
+  };
+
+  let post = sourceBlog.find(matchesPost);
+
+  if (!post && initialBlogPosts && initialBlogPosts.length > 0) {
+    post = initialBlogPosts.find(matchesPost);
+  }
+
+  if (!post) {
+    if (!slug) {
+      return (
+        <div className="min-h-[60vh] flex items-center justify-center">
+          <div className="animate-pulse text-xs uppercase tracking-widest font-mono text-neutral-400">
+            Loading monograph...
+          </div>
+        </div>
+      );
+    }
+    return notFound();
+  }
+
+  const related = sourceBlog.filter((p) =>
+    Array.isArray(post?.relatedSlugs) &&
+    post.relatedSlugs.some((relSlug) => normalizeSlug(relSlug) === normalizeSlug(p.slug))
+  );
 
   return (
     <article className="w-full pt-10 sm:pt-12 md:pt-14 pb-16 px-6 sm:px-10 lg:px-16 max-w-7xl mx-auto space-y-12">
@@ -49,51 +98,59 @@ export default function BlogArticlePage() {
         </h1>
 
         {/* Author Bio Snippet */}
-        <div className="flex items-center space-x-3 pt-3">
-          <div className="relative w-10 h-10 rounded-full overflow-hidden bg-neutral-200">
-            <Image
-              src={post.author.avatar}
-              alt={post.author.name}
-              fill
-              className="object-cover"
-            />
+        {post.author && (
+          <div className="flex items-center space-x-3 pt-3">
+            {post.author.avatar && (
+              <div className="relative w-10 h-10 rounded-full overflow-hidden bg-neutral-200">
+                <Image
+                  src={post.author.avatar}
+                  alt={post.author.name || "Author"}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            )}
+            <div>
+              <div className="text-xs font-semibold text-neutral-900">{post.author.name || "Techno Architecture"}</div>
+              <div className="text-[10px] text-neutral-500 font-mono">{post.author.role || "Principal Architect"}</div>
+            </div>
           </div>
-          <div>
-            <div className="text-xs font-semibold text-neutral-900">{post.author.name}</div>
-            <div className="text-[10px] text-neutral-500 font-mono">{post.author.role}</div>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Hero Image */}
-      <div className="relative w-full aspect-[16/9] bg-neutral-100 overflow-hidden">
-        <Image
-          src={post.heroImage}
-          alt={post.title}
-          fill
-          priority
-          sizes="100vw"
-          unoptimized={post.heroImage.startsWith("data:")}
-          className="object-cover"
-          style={{
-            objectPosition: `${post.imagePositionX ?? 50}% ${post.imagePositionY ?? 50}%`,
-            transform: post.imageScale && post.imageScale !== 1 ? `scale(${post.imageScale})` : undefined,
-          }}
-        />
-      </div>
+      {post.heroImage && (
+        <div className="relative w-full aspect-[16/9] bg-neutral-100 overflow-hidden">
+          <Image
+            src={post.heroImage}
+            alt={post.title}
+            fill
+            priority
+            sizes="100vw"
+            unoptimized={post.heroImage.startsWith("data:")}
+            className="object-cover"
+            style={{
+              objectPosition: `${post.imagePositionX ?? 50}% ${post.imagePositionY ?? 50}%`,
+              transform: post.imageScale && post.imageScale !== 1 ? `scale(${post.imageScale})` : undefined,
+            }}
+          />
+        </div>
+      )}
 
       {/* Article Body Content */}
       <div className="space-y-8 text-neutral-800 font-light leading-relaxed text-sm md:text-base">
-        <p className="text-base md:text-lg text-neutral-900 leading-relaxed font-normal border-l-2 border-black pl-4 my-6 italic">
-          {post.content.introduction}
-        </p>
+        {post.content?.introduction && (
+          <p className="text-base md:text-lg text-neutral-900 leading-relaxed font-normal border-l-2 border-black pl-4 my-6 italic">
+            {post.content.introduction}
+          </p>
+        )}
 
-        {post.content.sections.map((sec, idx) => (
+        {Array.isArray(post.content?.sections) && post.content.sections.map((sec: any, idx: number) => (
           <section key={idx} className="space-y-4 pt-4">
             <h2 className="font-display text-xl sm:text-2xl font-medium text-neutral-900 tracking-tight">
               {sec.heading}
             </h2>
-            {sec.body.map((p, pIdx) => (
+            {Array.isArray(sec.body) && sec.body.map((p: string, pIdx: number) => (
               <p key={pIdx} className="leading-relaxed">
                 {p}
               </p>
@@ -128,23 +185,27 @@ export default function BlogArticlePage() {
           </section>
         ))}
 
-        <div className="pt-6 border-t border-neutral-200">
-          <p className="font-medium text-neutral-900">
-            {post.content.conclusion}
-          </p>
-        </div>
+        {post.content?.conclusion && (
+          <div className="pt-6 border-t border-neutral-200">
+            <p className="font-medium text-neutral-900">
+              {post.content.conclusion}
+            </p>
+          </div>
+        )}
 
         {/* Tags */}
-        <div className="pt-6 flex flex-wrap gap-2">
-          {post.tags.map((t, idx) => (
-            <span
-              key={idx}
-              className="text-[9px] uppercase tracking-wider bg-neutral-100 text-neutral-600 px-2.5 py-1"
-            >
-              #{t}
-            </span>
-          ))}
-        </div>
+        {Array.isArray(post.tags) && post.tags.length > 0 && (
+          <div className="pt-6 flex flex-wrap gap-2">
+            {post.tags.map((t: string, idx: number) => (
+              <span
+                key={idx}
+                className="text-[9px] uppercase tracking-wider bg-neutral-100 text-neutral-600 px-2.5 py-1"
+              >
+                #{t}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Related Essays */}
@@ -154,7 +215,7 @@ export default function BlogArticlePage() {
             RELATED RESEARCH MONOGRAPHS
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {related.map((rel) => (
+            {related.map((rel: any) => (
               <Link
                 key={rel.id}
                 href={`/blog/${rel.slug}`}

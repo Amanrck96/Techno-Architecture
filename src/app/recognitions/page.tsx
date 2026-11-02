@@ -19,9 +19,11 @@ export default function RecognitionsPage() {
     "Biennale / Exhibition",
   ];
 
-  const filtered = recognitions.filter((r) =>
-    selectedCategory === "All" ? true : r.category === selectedCategory
-  );
+  const filtered = [...recognitions]
+    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+    .filter((r) =>
+      selectedCategory === "All" ? true : r.category === selectedCategory
+    );
 
   return (
     <div className="w-full pt-10 sm:pt-12 md:pt-14 pb-16 px-6 sm:px-10 lg:px-16 max-w-7xl mx-auto space-y-12 sm:space-y-16">

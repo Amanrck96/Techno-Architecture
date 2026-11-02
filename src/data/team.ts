@@ -4,7 +4,8 @@ export type TeamDiscipline =
   | "Interiors"
   | "Office Administration"
   | "Research & Sustainability"
-  | "BIM & Technical";
+  | "BIM & Technical"
+  | string;
 
 export interface TeamMember {
   id: string;
@@ -15,13 +16,14 @@ export interface TeamMember {
   credentials: string;
   image: string;
   hoverImage?: string;
+  sortOrder?: number;
   socials?: {
     platform: string;
     url: string;
   }[];
 }
 
-export const initialTeam: TeamMember[] = [
+const rawInitialTeam: TeamMember[] = [
   {
     id: "team-rajesh",
     name: "Ar. Rajesh Shivaram",
@@ -288,3 +290,8 @@ export const initialTeam: TeamMember[] = [
     socials: [],
   },
 ];
+
+export const initialTeam: TeamMember[] = rawInitialTeam.map((m, idx) => ({
+  ...m,
+  sortOrder: typeof m.sortOrder === "number" && !isNaN(m.sortOrder) ? m.sortOrder : idx + 1,
+}));

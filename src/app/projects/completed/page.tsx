@@ -8,7 +8,9 @@ import { Project } from "@/data/projects";
 
 export default function CompletedProjectsPage() {
   const { projects } = useCMSStore();
-  const completed = projects.filter((p) => p.status === "completed");
+  const completed = [...projects]
+    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+    .filter((p) => p.status === "completed");
 
   return (
     <div className="w-full pt-10 sm:pt-12 md:pt-14 pb-16 px-6 sm:px-10 lg:px-16 max-w-7xl mx-auto space-y-12">

@@ -5,6 +5,7 @@ export interface Service {
   shortDescription: string;
   detailedDescription: string;
   image: string;
+  sortOrder?: number;
   process: {
     step: string;
     title: string;
@@ -17,6 +18,7 @@ export interface Service {
 export const initialServices: Service[] = [
   {
     id: "serv-1",
+    sortOrder: 1,
     slug: "architecture",
     title: "Architecture",
     shortDescription: "We develop architecture from the first site study and spatial brief through design, documentation and construction-stage coordination.",
@@ -42,6 +44,7 @@ export const initialServices: Service[] = [
   },
   {
     id: "serv-2",
+    sortOrder: 2,
     slug: "structural-design",
     title: "Structural Design",
     shortDescription: "We coordinate the structural system with the architectural concept from early design stages for safe, efficient, and buildable buildings.",
@@ -67,6 +70,7 @@ export const initialServices: Service[] = [
   },
   {
     id: "serv-3",
+    sortOrder: 3,
     slug: "interior-design",
     title: "Interior Design",
     shortDescription: "Our interior work extends the architectural idea into spaces that are comfortable, functional and materially refined.",

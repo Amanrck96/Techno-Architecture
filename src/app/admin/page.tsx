@@ -150,10 +150,20 @@ export default function AdminCMSPage() {
   const handleSaveItem = async (id: string, label: string) => {
     setSavingEntityId(id);
     try {
-      await saveAllToCloud();
-      showToast(`Saved "${label}" to Cloud Archive ✅`);
-    } catch (err) {
-      showToast(`Failed to save "${label}".`);
+      const res = await saveAllToCloud();
+      if (res && res.success) {
+        showToast(`Saved "${label}" to Cloud Archive ✅`);
+      } else {
+        const errorMsg =
+          res?.error?.error ||
+          res?.error?.message ||
+          (typeof res?.error === "string" ? res.error : null) ||
+          res?.message ||
+          "Backend update failed. Please verify credentials or network.";
+        showToast(`Save failed for "${label}": ${errorMsg}`);
+      }
+    } catch (err: any) {
+      showToast(`Failed to save "${label}": ${err?.message || "Network error"}`);
     } finally {
       setSavingEntityId(null);
     }
@@ -452,7 +462,13 @@ export default function AdminCMSPage() {
       if (res && res.success) {
         showToast(res.message || "All changes saved & synced permanently.");
       } else {
-        showToast("Saved locally. Notice: " + (res?.error?.message || "Server returned warning."));
+        const errorMsg =
+          res?.error?.error ||
+          res?.error?.message ||
+          (typeof res?.error === "string" ? res.error : null) ||
+          res?.message ||
+          "Server rejected save request.";
+        showToast("Save failed: " + errorMsg);
       }
     } catch (e: any) {
       showToast("Saved locally. Network error reaching server.");
@@ -1345,8 +1361,12 @@ export default function AdminCMSPage() {
                             const temp = updated[idx];
                             updated[idx] = updated[idx - 1];
                             updated[idx - 1] = temp;
-                            saveProjects(updated);
-                            showToast(`Moved "${p.title}" up to position #${idx}.`);
+                            const resequenced = updated.map((item, i) => ({
+                              ...item,
+                              sortOrder: i + 1,
+                            }));
+                            saveProjects(resequenced);
+                            showToast(`Moved "${p.title}" up to position #${idx}. Click Save to persist.`);
                           }}
                           className="p-1.5 hover:bg-neutral-100 text-neutral-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
                           title="Move project UP"
@@ -1365,8 +1385,12 @@ export default function AdminCMSPage() {
                             const temp = updated[idx];
                             updated[idx] = updated[idx + 1];
                             updated[idx + 1] = temp;
-                            saveProjects(updated);
-                            showToast(`Moved "${p.title}" down to position #${idx + 2}.`);
+                            const resequenced = updated.map((item, i) => ({
+                              ...item,
+                              sortOrder: i + 1,
+                            }));
+                            saveProjects(resequenced);
+                            showToast(`Moved "${p.title}" down to position #${idx + 2}. Click Save to persist.`);
                           }}
                           className="p-1.5 hover:bg-neutral-100 text-neutral-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
                           title="Move project DOWN"
@@ -2870,8 +2894,12 @@ export default function AdminCMSPage() {
                         const temp = updated[idx];
                         updated[idx] = updated[idx - 1];
                         updated[idx - 1] = temp;
-                        saveTeam(updated);
-                        showToast(`Moved "${m.name}" up to position #${idx}.`);
+                        const resequenced = updated.map((item, i) => ({
+                          ...item,
+                          sortOrder: i + 1,
+                        }));
+                        saveTeam(resequenced);
+                        showToast(`Moved "${m.name}" up to position #${idx}. Click Save to persist.`);
                       }}
                       className="p-1 hover:bg-neutral-100 text-neutral-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
                       title="Move practitioner UP"
@@ -2890,8 +2918,12 @@ export default function AdminCMSPage() {
                         const temp = updated[idx];
                         updated[idx] = updated[idx + 1];
                         updated[idx + 1] = temp;
-                        saveTeam(updated);
-                        showToast(`Moved "${m.name}" down to position #${idx + 2}.`);
+                        const resequenced = updated.map((item, i) => ({
+                          ...item,
+                          sortOrder: i + 1,
+                        }));
+                        saveTeam(resequenced);
+                        showToast(`Moved "${m.name}" down to position #${idx + 2}. Click Save to persist.`);
                       }}
                       className="p-1 hover:bg-neutral-100 text-neutral-700 disabled:opacity-25 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
                       title="Move practitioner DOWN"
@@ -3002,23 +3034,36 @@ export default function AdminCMSPage() {
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">Discipline</label>
-                    <select
-                      value={m.discipline === "BIM & Technical" ? "Office Administration" : m.discipline}
+                    <div className="flex justify-between items-center mb-0.5">
+                      <label className="text-[9px] uppercase font-mono text-neutral-400 block">Discipline</label>
+                      <span className="text-[8px] font-mono text-neutral-400 uppercase">Autocomplete</span>
+                    </div>
+                    <input
+                      type="text"
+                      list={`discipline-suggestions-${m.id}`}
+                      value={m.discipline || ""}
                       onChange={(e) => {
+                        const val = e.target.value;
                         const updated = team.map((item, i) =>
-                          i === idx ? { ...item, discipline: e.target.value as any } : item
+                          i === idx ? { ...item, discipline: val } : item
                         );
                         saveTeam(updated);
                       }}
-                      className="w-full p-1.5 border border-neutral-300 rounded text-xs bg-white"
-                    >
-                      <option value="Leadership">Leadership</option>
-                      <option value="Architecture">Architecture</option>
-                      <option value="Interiors">Interiors</option>
-                      <option value="Office Administration">Office Administration</option>
-                      <option value="Research & Sustainability">Research & Sustainability</option>
-                    </select>
+                      placeholder="e.g. Architecture"
+                      className="w-full p-1.5 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none"
+                    />
+                    <datalist id={`discipline-suggestions-${m.id}`}>
+                      <option value="Architecture" />
+                      <option value="Architectural" />
+                      <option value="Architects" />
+                      <option value="Leadership" />
+                      <option value="Interiors" />
+                      <option value="Office Administration" />
+                      <option value="Research & Sustainability" />
+                      <option value="BIM & Technical" />
+                      <option value="Landscape Architecture" />
+                      <option value="Urban Design" />
+                    </datalist>
                   </div>
                   <div>
                     <label className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">Credentials</label>
@@ -3125,7 +3170,7 @@ export default function AdminCMSPage() {
 
                 {/* Team Card Bottom Save Bar */}
                 <div className="pt-2 flex items-center justify-between border-t border-neutral-100">
-                  <span className="text-[10px] font-mono text-neutral-400">{m.discipline}</span>
+                  <span className="text-[10px] font-mono text-neutral-500 font-medium">{m.discipline || "Architecture"} · #{m.sortOrder || idx + 1}</span>
                   <button
                     type="button"
                     onClick={() => handleSaveItem(m.id, m.name)}

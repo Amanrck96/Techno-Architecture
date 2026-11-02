@@ -12,7 +12,8 @@ export default function HomeProjectsGrid() {
   const { projects } = useCMSStore();
 
   // Show completed projects (up to 12 to cleanly fill 3-column architectural grid)
-  const completedProjects = projects
+  const completedProjects = [...projects]
+    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
     .filter((p) => p.status === "completed")
     .slice(0, HOME_COMPLETED_LIMIT);
 

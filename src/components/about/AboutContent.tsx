@@ -12,18 +12,37 @@ export default function AboutContent() {
   const [activeValueIndex, setActiveValueIndex] = useState<number | null>(null);
   const [selectedDiscipline, setSelectedDiscipline] = useState<string>("All");
 
-  const displayTeam = (team && team.length > 0) ? team : defaultTeam;
+  const rawTeam = (team && team.length > 0) ? team : defaultTeam;
+  const displayTeam = React.useMemo(() => {
+    return [...rawTeam].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  }, [rawTeam]);
+
   const rajesh =
     displayTeam.find((m) => m.name.toLowerCase().includes("rajesh")) ||
     defaultTeam[0];
 
-  const disciplines = ["All", "Leadership", "Architecture", "Interiors", "Office Administration", "Research & Sustainability"];
-  const filteredTeam = selectedDiscipline === "All"
-    ? displayTeam
-    : displayTeam.filter((m) =>
-        m.discipline === selectedDiscipline ||
-        (selectedDiscipline === "Office Administration" && m.discipline === ("BIM & Technical" as any))
-      );
+  const disciplines = React.useMemo(() => {
+    const defaultDiscs = ["Leadership", "Architecture", "Interiors", "Office Administration", "Research & Sustainability"];
+    const set = new Set<string>(["All"]);
+    defaultDiscs.forEach((d) => set.add(d));
+    displayTeam.forEach((m) => {
+      if (m.discipline) {
+        set.add(m.discipline.trim());
+      }
+    });
+    return Array.from(set);
+  }, [displayTeam]);
+
+  const filteredTeam = React.useMemo(() => {
+    if (selectedDiscipline === "All") return displayTeam;
+    const target = selectedDiscipline.toLowerCase().trim();
+    return displayTeam.filter((m) => {
+      const disc = (m.discipline || "").toLowerCase().trim();
+      if (disc === target) return true;
+      if (target === "office administration" && (disc === "bim & technical" || disc === "bim")) return true;
+      return false;
+    });
+  }, [displayTeam, selectedDiscipline]);
 
   const tagline = siteSettings?.tagline || "Architecture shaped around people, place and purpose.";
   const foundedYear = siteSettings?.foundedYear || 2006;
@@ -407,7 +426,15 @@ export default function AboutContent() {
             {/* Discipline Filter Tabs */}
             <div className="flex flex-wrap items-center gap-2 pt-2">
               {disciplines.map((d) => {
-                const count = d === "All" ? displayTeam.length : displayTeam.filter((m) => m.discipline === d).length;
+                const count = d === "All"
+                  ? displayTeam.length
+                  : displayTeam.filter((m) => {
+                      const disc = (m.discipline || "").toLowerCase().trim();
+                      const target = d.toLowerCase().trim();
+                      if (disc === target) return true;
+                      if (target === "office administration" && (disc === "bim & technical" || disc === "bim")) return true;
+                      return false;
+                    }).length;
                 if (count === 0) return null;
                 const isSelected = selectedDiscipline === d;
                 return (

@@ -1,5 +1,6 @@
 export interface Recognition {
   id: string;
+  sortOrder?: number;
   year: number;
   title: string;
   category: "Award" | "Publication" | "Certification" | "Biennale / Exhibition";
@@ -14,6 +15,7 @@ export interface Recognition {
 export const initialRecognitions: Recognition[] = [
   {
     id: "rec-1",
+    sortOrder: 1,
     year: 2024,
     title: "National Architectural Excellence Award — Residential",
     category: "Award",
@@ -25,6 +27,7 @@ export const initialRecognitions: Recognition[] = [
   },
   {
     id: "rec-2",
+    sortOrder: 2,
     year: 2024,
     title: "AD100 — Most Influential Architectural Studios",
     category: "Publication",
@@ -34,6 +37,7 @@ export const initialRecognitions: Recognition[] = [
   },
   {
     id: "rec-3",
+    sortOrder: 3,
     year: 2024,
     title: "Dezeen Awards Longlist — Sustainable Residential Architecture",
     category: "Award",
@@ -45,6 +49,7 @@ export const initialRecognitions: Recognition[] = [
   },
   {
     id: "rec-4",
+    sortOrder: 4,
     year: 2024,
     title: "IIA National Citation — Biophilic Residential Architecture",
     category: "Award",
@@ -56,6 +61,7 @@ export const initialRecognitions: Recognition[] = [
   },
   {
     id: "rec-5",
+    sortOrder: 5,
     year: 2022,
     title: "Venice Architecture Biennale — Collaborative Pavilion Showcase",
     category: "Biennale / Exhibition",
@@ -65,6 +71,7 @@ export const initialRecognitions: Recognition[] = [
   },
   {
     id: "rec-6",
+    sortOrder: 6,
     year: 2023,
     title: "WAC World Architecture Community Award Winner",
     category: "Award",
@@ -76,6 +83,7 @@ export const initialRecognitions: Recognition[] = [
   },
   {
     id: "rec-8",
+    sortOrder: 7,
     year: 2020,
     title: "Council of Architecture — Best Conservation & Heritage Practice",
     category: "Award",

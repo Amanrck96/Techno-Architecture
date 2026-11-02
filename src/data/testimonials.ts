@@ -1,5 +1,6 @@
 export interface Testimonial {
   id: string;
+  sortOrder?: number;
   clientName: string;
   designation: string;
   company?: string;
@@ -11,6 +12,7 @@ export interface Testimonial {
 export const initialTestimonials: Testimonial[] = [
   {
     id: "test-1",
+    sortOrder: 1,
     clientName: "Siddharth & Ananya Rao",
     designation: "Homeowners",
     company: "Private Residence",
@@ -20,6 +22,7 @@ export const initialTestimonials: Testimonial[] = [
   },
   {
     id: "test-2",
+    sortOrder: 2,
     clientName: "Suresh & Anitha Gowda",
     designation: "Homeowners",
     company: "Belaku Residence",
@@ -29,6 +32,7 @@ export const initialTestimonials: Testimonial[] = [
   },
   {
     id: "test-3",
+    sortOrder: 3,
     clientName: "Dr. Sandeep & Deepa Rao",
     designation: "Homeowners",
     company: "Between Two Trees Residence",
@@ -38,6 +42,7 @@ export const initialTestimonials: Testimonial[] = [
   },
   {
     id: "test-4",
+    sortOrder: 4,
     clientName: "Dr. Arvind Natarajan",
     designation: "Founder",
     company: "Natarajan Medical Group",

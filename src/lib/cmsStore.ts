@@ -46,7 +46,7 @@ export function filterOutDeletedItems<T = any>(
 
 export function sanitizeProjectsList(list: any[]): Project[] {
   if (!Array.isArray(list)) return [];
-  return list.map((p) => {
+  const normalized = list.map((p, idx) => {
     let cleanSlug = (p?.slug || "").trim().toLowerCase().replace(/[\s_]+/g, "-");
     if (
       (!p?.slug || cleanSlug === "zenith-residence" || cleanSlug === "mantle-buildofy") &&
@@ -55,26 +55,48 @@ export function sanitizeProjectsList(list: any[]): Project[] {
       cleanSlug = "the-mantle";
     }
 
+    const rawOrder = Number(p?.sortOrder);
+    const sortOrder = !isNaN(rawOrder) && rawOrder > 0 ? rawOrder : idx + 1;
+
     return {
       ...p,
       slug: cleanSlug || p?.slug,
       category: sanitizeProjectCategory(p?.category),
+      sortOrder,
     };
   });
+  normalized.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  return normalized.map((p, idx) => ({
+    ...p,
+    sortOrder: idx + 1,
+  }));
 }
 
-export function sanitizeTeamDiscipline(discipline: any): any {
-  if (discipline === "BIM & Technical" || discipline === "BIM") {
+export function sanitizeTeamDiscipline(discipline: any): string {
+  if (!discipline) return "Architecture";
+  const trimmed = String(discipline).trim();
+  if (trimmed === "BIM & Technical" || trimmed === "BIM") {
     return "Office Administration";
   }
-  return discipline || "Architecture";
+  return trimmed || "Architecture";
 }
 
 export function sanitizeTeamList(list: any[]): TeamMember[] {
   if (!Array.isArray(list)) return [];
-  return list.map((m) => ({
+  const normalized = list.map((m, idx) => {
+    if (!m) return m;
+    const rawOrder = Number(m.sortOrder);
+    const sortOrder = !isNaN(rawOrder) && rawOrder > 0 ? rawOrder : idx + 1;
+    return {
+      ...m,
+      discipline: sanitizeTeamDiscipline(m?.discipline),
+      sortOrder,
+    };
+  });
+  normalized.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  return normalized.map((m, idx) => ({
     ...m,
-    discipline: sanitizeTeamDiscipline(m?.discipline),
+    sortOrder: idx + 1,
   }));
 }
 
@@ -908,7 +930,11 @@ export function CMSProvider({
         } catch (_) {}
       }
 
-      const sanitized = filterOutDeletedItems(sanitizeProjectsList(newProjects), nextDeleted);
+      const sequencedProjects = newProjects.map((p, i) => ({
+        ...p,
+        sortOrder: i + 1,
+      }));
+      const sanitized = filterOutDeletedItems(sanitizeProjectsList(sequencedProjects), nextDeleted);
       // Instant React UI update (60fps typing)
       setProjects(sanitized);
 
@@ -985,7 +1011,11 @@ export function CMSProvider({
         } catch (_) {}
       }
 
-      const sanitized = filterOutDeletedItems(sanitizeTeamList(newTeam), nextDeleted);
+      const sequencedTeam = newTeam.map((m, i) => ({
+        ...m,
+        sortOrder: i + 1,
+      }));
+      const sanitized = filterOutDeletedItems(sanitizeTeamList(sequencedTeam), nextDeleted);
       setTeam(sanitized);
 
       if (removed.length > 0) {

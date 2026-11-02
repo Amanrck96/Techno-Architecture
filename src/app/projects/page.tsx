@@ -22,12 +22,14 @@ export default function ProjectsDirectoryPage() {
   ];
 
   const displayedProjects = useMemo(() => {
-    return projects.filter((p) => {
-      if (activeFilter === "all") return true;
-      if (activeFilter === "completed") return p.status === "completed";
-      if (activeFilter === "ongoing") return p.status === "ongoing";
-      return p.category === activeFilter;
-    });
+    return [...projects]
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+      .filter((p) => {
+        if (activeFilter === "all") return true;
+        if (activeFilter === "completed") return p.status === "completed";
+        if (activeFilter === "ongoing") return p.status === "ongoing";
+        return p.category === activeFilter;
+      });
   }, [projects, activeFilter]);
 
   return (

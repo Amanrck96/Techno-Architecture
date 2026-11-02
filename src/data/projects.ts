@@ -17,6 +17,7 @@ export interface Project {
   title: string;
   category: "Residential" | "Commercial" | "Interior" | "Hospitality";
   status: "completed" | "ongoing";
+  sortOrder?: number;
   location: string;
   year: number;
   client: string;

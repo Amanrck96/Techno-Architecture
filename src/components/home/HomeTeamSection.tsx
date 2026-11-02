@@ -9,7 +9,8 @@ import { TeamMember } from "@/data/team";
 
 export default function HomeTeamSection() {
   const { team } = useCMSStore();
-  const displayTeam: TeamMember[] = (team && team.length > 0) ? team : defaultTeam;
+  const rawList: TeamMember[] = (team && team.length > 0) ? team : defaultTeam;
+  const displayTeam: TeamMember[] = [...rawList].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
 
   return (
     <section id="team" className="w-full py-14 md:py-20 px-6 sm:px-10 lg:px-16 bg-neutral-50/60 border-b border-neutral-200 scroll-mt-20">
