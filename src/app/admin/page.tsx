@@ -1914,12 +1914,9 @@ export default function AdminCMSPage() {
                             placeholder="Ar. Rajesh Shivaram"
                             value={p.credits?.principalArchitect || "Ar. Rajesh Shivaram"}
                             onChange={(e) => {
-                              const updated = [...projects];
-                              updated[idx].credits = {
-                                ...updated[idx].credits,
-                                principalArchitect: e.target.value,
-                              };
-                              saveProjects(updated);
+                              saveProjects(projects.map((item, i) =>
+                                i === idx ? { ...item, credits: { ...item.credits, principalArchitect: e.target.value } } : item
+                              ));
                             }}
                             className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
                           />
@@ -1933,13 +1930,16 @@ export default function AdminCMSPage() {
                             placeholder="e.g. Vikramaditya Shenoy"
                             value={p.credits?.projectArchitect || p.credits?.projectLead || ""}
                             onChange={(e) => {
-                              const updated = [...projects];
-                              updated[idx].credits = {
-                                ...updated[idx].credits,
-                                projectArchitect: e.target.value,
-                                projectLead: e.target.value,
-                              };
-                              saveProjects(updated);
+                              saveProjects(projects.map((item, i) =>
+                                i === idx ? {
+                                  ...item,
+                                  credits: {
+                                    ...item.credits,
+                                    projectArchitect: e.target.value,
+                                    projectLead: e.target.value,
+                                  }
+                                } : item
+                              ));
                             }}
                             className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
                           />
@@ -1953,12 +1953,9 @@ export default function AdminCMSPage() {
                             placeholder="e.g. Verdant Studio"
                             value={p.credits?.landscapeArchitect || ""}
                             onChange={(e) => {
-                              const updated = [...projects];
-                              updated[idx].credits = {
-                                ...updated[idx].credits,
-                                landscapeArchitect: e.target.value,
-                              };
-                              saveProjects(updated);
+                              saveProjects(projects.map((item, i) =>
+                                i === idx ? { ...item, credits: { ...item.credits, landscapeArchitect: e.target.value } } : item
+                              ));
                             }}
                             className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
                           />
@@ -1972,12 +1969,9 @@ export default function AdminCMSPage() {
                             placeholder="e.g. Shamanth Patil Photography"
                             value={p.credits?.photography || ""}
                             onChange={(e) => {
-                              const updated = [...projects];
-                              updated[idx].credits = {
-                                ...updated[idx].credits,
-                                photography: e.target.value,
-                              };
-                              saveProjects(updated);
+                              saveProjects(projects.map((item, i) =>
+                                i === idx ? { ...item, credits: { ...item.credits, photography: e.target.value } } : item
+                              ));
                             }}
                             className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
                           />
@@ -1991,12 +1985,9 @@ export default function AdminCMSPage() {
                             placeholder="e.g. Karthik Sundaram, Divya Raghavan"
                             value={p.credits?.team || ""}
                             onChange={(e) => {
-                              const updated = [...projects];
-                              updated[idx].credits = {
-                                ...updated[idx].credits,
-                                team: e.target.value,
-                              };
-                              saveProjects(updated);
+                              saveProjects(projects.map((item, i) =>
+                                i === idx ? { ...item, credits: { ...item.credits, team: e.target.value } } : item
+                              ));
                             }}
                             className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
                           />
@@ -2011,9 +2002,9 @@ export default function AdminCMSPage() {
                                 type="checkbox"
                                 checked={p.featured}
                                 onChange={(e) => {
-                                  const updated = [...projects];
-                                  updated[idx].featured = e.target.checked;
-                                  saveProjects(updated);
+                                  saveProjects(projects.map((item, i) =>
+                                    i === idx ? { ...item, featured: e.target.checked } : item
+                                  ));
                                 }}
                                 className="accent-black w-4 h-4"
                               />
@@ -2048,9 +2039,12 @@ export default function AdminCMSPage() {
                               type="button"
                               onClick={() => {
                                 if (confirm(`Remove the video tour link from "${p.title}"?`)) {
-                                  const updated = [...projects];
-                                  delete updated[idx].videoTour;
-                                  saveProjects(updated);
+                                  saveProjects(projects.map((item, i) => {
+                                    if (i !== idx) return item;
+                                    const copy = { ...item };
+                                    delete copy.videoTour;
+                                    return copy;
+                                  }));
                                   showToast("Video tour link removed.");
                                 }
                               }}
@@ -2063,14 +2057,17 @@ export default function AdminCMSPage() {
                             <button
                               type="button"
                               onClick={() => {
-                                const updated = [...projects];
-                                updated[idx].videoTour = {
-                                  title: `${p.title} | Architectural House Tour`,
-                                  url: "https://www.youtube.com/results?search_query=" + encodeURIComponent(p.title + " Techno Architecture House Tour"),
-                                  platform: "YouTube",
-                                  actionText: "Watch Video Tour →",
-                                };
-                                saveProjects(updated);
+                                saveProjects(projects.map((item, i) =>
+                                  i === idx ? {
+                                    ...item,
+                                    videoTour: {
+                                      title: `${p.title} | Architectural House Tour`,
+                                      url: "https://www.youtube.com/results?search_query=" + encodeURIComponent(p.title + " Techno Architecture House Tour"),
+                                      platform: "YouTube",
+                                      actionText: "Watch Video Tour →",
+                                    }
+                                  } : item
+                                ));
                                 showToast(`Video tour added to "${p.title}".`);
                               }}
                               className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider font-semibold text-black hover:underline"
@@ -2092,11 +2089,12 @@ export default function AdminCMSPage() {
                                   type="text"
                                   value={p.videoTour.title || ""}
                                   onChange={(e) => {
-                                    const updated = [...projects];
-                                    if (updated[idx].videoTour) {
-                                      updated[idx].videoTour = { ...updated[idx].videoTour!, title: e.target.value };
-                                      saveProjects(updated);
-                                    }
+                                    saveProjects(projects.map((item, i) =>
+                                      i === idx && item.videoTour ? {
+                                        ...item,
+                                        videoTour: { ...item.videoTour, title: e.target.value }
+                                      } : item
+                                    ));
                                   }}
                                   placeholder="e.g. Echoes of Nirvana | A 4000 Sq. Ft. Modern Courtyard Home"
                                   className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
@@ -2112,11 +2110,12 @@ export default function AdminCMSPage() {
                                     type="url"
                                     value={p.videoTour.url || ""}
                                     onChange={(e) => {
-                                      const updated = [...projects];
-                                      if (updated[idx].videoTour) {
-                                        updated[idx].videoTour = { ...updated[idx].videoTour!, url: e.target.value };
-                                        saveProjects(updated);
-                                      }
+                                      saveProjects(projects.map((item, i) =>
+                                        i === idx && item.videoTour ? {
+                                          ...item,
+                                          videoTour: { ...item.videoTour, url: e.target.value }
+                                        } : item
+                                      ));
                                     }}
                                     placeholder="https://... or upload video file below"
                                     className="flex-1 w-full p-2 border border-neutral-300 rounded text-xs font-mono bg-white"
@@ -2132,15 +2131,16 @@ export default function AdminCMSPage() {
                                         const file = e.target.files?.[0];
                                         if (file) {
                                           handleUploadPhoto(file, (url) => {
-                                            const updated = [...projects];
-                                            if (updated[idx].videoTour) {
-                                              updated[idx].videoTour = {
-                                                ...updated[idx].videoTour!,
-                                                url,
-                                                platform: "Firebase Storage" as any,
-                                              };
-                                              saveProjects(updated);
-                                            }
+                                            saveProjects(projects.map((item, i) =>
+                                              i === idx && item.videoTour ? {
+                                                ...item,
+                                                videoTour: {
+                                                  ...item.videoTour,
+                                                  url,
+                                                  platform: "Firebase Storage" as any,
+                                                }
+                                              } : item
+                                            ));
                                           }, "videos");
                                         }
                                       }}
@@ -2169,11 +2169,12 @@ export default function AdminCMSPage() {
                                   <select
                                     value={p.videoTour.platform || "YouTube"}
                                     onChange={(e) => {
-                                      const updated = [...projects];
-                                      if (updated[idx].videoTour) {
-                                        updated[idx].videoTour = { ...updated[idx].videoTour!, platform: e.target.value as any };
-                                        saveProjects(updated);
-                                      }
+                                      saveProjects(projects.map((item, i) =>
+                                        i === idx && item.videoTour ? {
+                                          ...item,
+                                          videoTour: { ...item.videoTour, platform: e.target.value as any }
+                                        } : item
+                                      ));
                                     }}
                                     className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
                                   >
@@ -2193,11 +2194,12 @@ export default function AdminCMSPage() {
                                     type="text"
                                     value={p.videoTour.actionText || "Watch Video Tour →"}
                                     onChange={(e) => {
-                                      const updated = [...projects];
-                                      if (updated[idx].videoTour) {
-                                        updated[idx].videoTour = { ...updated[idx].videoTour!, actionText: e.target.value };
-                                        saveProjects(updated);
-                                      }
+                                      saveProjects(projects.map((item, i) =>
+                                        i === idx && item.videoTour ? {
+                                          ...item,
+                                          videoTour: { ...item.videoTour, actionText: e.target.value }
+                                        } : item
+                                      ));
                                     }}
                                     placeholder="Watch Video Tour →"
                                     className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
@@ -2227,14 +2229,14 @@ export default function AdminCMSPage() {
                                   const file = e.target.files?.[0];
                                   if (file) {
                                     handleUploadPhoto(file, (url) => {
-                                      const updated = [...projects];
                                       const newImg: ProjectImage = {
                                         url,
                                         caption: file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " "),
                                         aspect: "full",
                                       };
-                                      updated[idx].gallery = [...(updated[idx].gallery || []), newImg];
-                                      saveProjects(updated);
+                                      saveProjects(projects.map((item, i) =>
+                                        i === idx ? { ...item, gallery: [...(item.gallery || []), newImg] } : item
+                                      ));
                                     });
                                   }
                                 }}
@@ -2683,9 +2685,7 @@ export default function AdminCMSPage() {
                       type="text"
                       value={s.slug}
                       onChange={(e) => {
-                        const updated = [...services];
-                        updated[idx].slug = e.target.value;
-                        saveServices(updated);
+                        saveServices(services.map((item, i) => i === idx ? { ...item, slug: e.target.value } : item));
                       }}
                       className="w-full p-2 border border-neutral-300 rounded font-mono"
                     />
@@ -2699,9 +2699,7 @@ export default function AdminCMSPage() {
                         type="text"
                         value={s.image}
                         onChange={(e) => {
-                          const updated = [...services];
-                          updated[idx].image = e.target.value;
-                          saveServices(updated);
+                          saveServices(services.map((item, i) => i === idx ? { ...item, image: e.target.value } : item));
                         }}
                         placeholder="Image URL or upload from laptop"
                         className="flex-1 min-w-0 p-2 border border-neutral-300 rounded font-mono text-xs focus:border-black focus:outline-none"
@@ -2720,9 +2718,7 @@ export default function AdminCMSPage() {
                             const file = e.target.files?.[0];
                             if (file) {
                               handleUploadPhoto(file, (url) => {
-                                const updated = [...services];
-                                updated[idx].image = url;
-                                saveServices(updated);
+                                saveServices(services.map((item, i) => i === idx ? { ...item, image: url } : item));
                               }, "services");
                             }
                           }}
@@ -2740,9 +2736,7 @@ export default function AdminCMSPage() {
                     type="text"
                     value={s.shortDescription}
                     onChange={(e) => {
-                      const updated = [...services];
-                      updated[idx].shortDescription = e.target.value;
-                      saveServices(updated);
+                      saveServices(services.map((item, i) => i === idx ? { ...item, shortDescription: e.target.value } : item));
                     }}
                     className="w-full p-2 border border-neutral-300 rounded text-xs"
                   />
@@ -2756,9 +2750,7 @@ export default function AdminCMSPage() {
                     rows={3}
                     value={s.detailedDescription}
                     onChange={(e) => {
-                      const updated = [...services];
-                      updated[idx].detailedDescription = e.target.value;
-                      saveServices(updated);
+                      saveServices(services.map((item, i) => i === idx ? { ...item, detailedDescription: e.target.value } : item));
                     }}
                     className="w-full p-2 border border-neutral-300 rounded text-xs leading-relaxed"
                   />
@@ -2773,9 +2765,9 @@ export default function AdminCMSPage() {
                     <button
                       type="button"
                       onClick={() => {
-                        const updated = [...services];
-                        updated[idx].deliverables = [...(updated[idx].deliverables || []), "New deliverable scope item"];
-                        saveServices(updated);
+                        saveServices(services.map((item, i) =>
+                          i === idx ? { ...item, deliverables: [...(item.deliverables || []), "New deliverable scope item"] } : item
+                        ));
                       }}
                       className="text-[10px] uppercase font-semibold text-black hover:underline inline-flex items-center gap-1"
                     >
@@ -2790,18 +2782,25 @@ export default function AdminCMSPage() {
                           type="text"
                           value={del}
                           onChange={(e) => {
-                            const updated = [...services];
-                            updated[idx].deliverables[dIdx] = e.target.value;
-                            saveServices(updated);
+                            saveServices(services.map((item, i) => {
+                              if (i !== idx) return item;
+                              const deliverables = [...(item.deliverables || [])];
+                              deliverables[dIdx] = e.target.value;
+                              return { ...item, deliverables };
+                            }));
                           }}
                           className="flex-1 bg-transparent text-xs focus:outline-none"
                         />
                         <button
                           type="button"
                           onClick={() => {
-                            const updated = [...services];
-                            updated[idx].deliverables = updated[idx].deliverables.filter((_, i) => i !== dIdx);
-                            saveServices(updated);
+                            saveServices(services.map((item, i) => {
+                              if (i !== idx) return item;
+                              return {
+                                ...item,
+                                deliverables: (item.deliverables || []).filter((_, dI) => dI !== dIdx),
+                              };
+                            }));
                           }}
                           className="text-neutral-400 hover:text-red-500 p-0.5"
                         >
@@ -2824,15 +2823,15 @@ export default function AdminCMSPage() {
                     <button
                       type="button"
                       onClick={() => {
-                        const updated = [...services];
-                        const nextStepNum = String((updated[idx].process?.length || 0) + 1).padStart(2, "0");
+                        const nextStepNum = String((s.process?.length || 0) + 1).padStart(2, "0");
                         const newStep = {
                           step: nextStepNum,
                           title: `New Phase ${nextStepNum}`,
                           description: "Comprehensive deliverables, technical drawings, and coordination protocols.",
                         };
-                        updated[idx].process = [...(updated[idx].process || []), newStep];
-                        saveServices(updated);
+                        saveServices(services.map((item, i) =>
+                          i === idx ? { ...item, process: [...(item.process || []), newStep] } : item
+                        ));
                         showToast(`Phase ${nextStepNum} added to "${s.title}".`);
                       }}
                       className="text-[10px] uppercase font-semibold text-black hover:underline inline-flex items-center gap-1"
@@ -2857,9 +2856,13 @@ export default function AdminCMSPage() {
                               type="text"
                               value={phase.step}
                               onChange={(e) => {
-                                const updated = [...services];
-                                updated[idx].process[pIdx].step = e.target.value;
-                                saveServices(updated);
+                                saveServices(services.map((item, i) => {
+                                  if (i !== idx) return item;
+                                  const process = (item.process || []).map((p, pI) =>
+                                    pI === pIdx ? { ...p, step: e.target.value } : p
+                                  );
+                                  return { ...item, process };
+                                }));
                               }}
                               className="w-14 p-1 border border-neutral-300 rounded font-mono text-xs bg-white text-center font-bold"
                               placeholder="01"
@@ -2868,9 +2871,13 @@ export default function AdminCMSPage() {
                               type="text"
                               value={phase.title}
                               onChange={(e) => {
-                                const updated = [...services];
-                                updated[idx].process[pIdx].title = e.target.value;
-                                saveServices(updated);
+                                saveServices(services.map((item, i) => {
+                                  if (i !== idx) return item;
+                                  const process = (item.process || []).map((p, pI) =>
+                                    pI === pIdx ? { ...p, title: e.target.value } : p
+                                  );
+                                  return { ...item, process };
+                                }));
                               }}
                               className="flex-1 p-1 border border-neutral-300 rounded font-medium text-xs bg-white"
                               placeholder="Phase Title"
@@ -2883,11 +2890,14 @@ export default function AdminCMSPage() {
                               <button
                                 type="button"
                                 onClick={() => {
-                                  const updated = [...services];
-                                  const temp = updated[idx].process[pIdx - 1];
-                                  updated[idx].process[pIdx - 1] = updated[idx].process[pIdx];
-                                  updated[idx].process[pIdx] = temp;
-                                  saveServices(updated);
+                                  saveServices(services.map((item, i) => {
+                                    if (i !== idx) return item;
+                                    const process = [...(item.process || [])];
+                                    const temp = process[pIdx - 1];
+                                    process[pIdx - 1] = process[pIdx];
+                                    process[pIdx] = temp;
+                                    return { ...item, process };
+                                  }));
                                 }}
                                 className="p-1 text-neutral-400 hover:text-black"
                                 title="Move Phase Up"
@@ -2901,11 +2911,14 @@ export default function AdminCMSPage() {
                               <button
                                 type="button"
                                 onClick={() => {
-                                  const updated = [...services];
-                                  const temp = updated[idx].process[pIdx + 1];
-                                  updated[idx].process[pIdx + 1] = updated[idx].process[pIdx];
-                                  updated[idx].process[pIdx] = temp;
-                                  saveServices(updated);
+                                  saveServices(services.map((item, i) => {
+                                    if (i !== idx) return item;
+                                    const process = [...(item.process || [])];
+                                    const temp = process[pIdx + 1];
+                                    process[pIdx + 1] = process[pIdx];
+                                    process[pIdx] = temp;
+                                    return { ...item, process };
+                                  }));
                                 }}
                                 className="p-1 text-neutral-400 hover:text-black"
                                 title="Move Phase Down"
@@ -2919,9 +2932,13 @@ export default function AdminCMSPage() {
                               type="button"
                               onClick={() => {
                                 if (confirm(`Delete phase "${phase.title}"?`)) {
-                                  const updated = [...services];
-                                  updated[idx].process = updated[idx].process.filter((_, i) => i !== pIdx);
-                                  saveServices(updated);
+                                  saveServices(services.map((item, i) => {
+                                    if (i !== idx) return item;
+                                    return {
+                                      ...item,
+                                      process: (item.process || []).filter((_, pI) => pI !== pIdx),
+                                    };
+                                  }));
                                   showToast("Phase removed.");
                                 }
                               }}
@@ -2937,9 +2954,13 @@ export default function AdminCMSPage() {
                           rows={2}
                           value={phase.description}
                           onChange={(e) => {
-                            const updated = [...services];
-                            updated[idx].process[pIdx].description = e.target.value;
-                            saveServices(updated);
+                            saveServices(services.map((item, i) => {
+                              if (i !== idx) return item;
+                              const process = (item.process || []).map((p, pI) =>
+                                pI === pIdx ? { ...p, description: e.target.value } : p
+                              );
+                              return { ...item, process };
+                            }));
                           }}
                           placeholder="Phase deliverables, milestones, and scope summary"
                           className="w-full p-2 border border-neutral-300 rounded text-xs bg-white leading-relaxed"
@@ -3497,9 +3518,7 @@ export default function AdminCMSPage() {
                       type="text"
                       value={b.title}
                       onChange={(e) => {
-                        const updated = [...blog];
-                        updated[idx].title = e.target.value;
-                        saveBlog(updated);
+                        saveBlog(blog.map((item, i) => i === idx ? { ...item, title: e.target.value } : item));
                       }}
                       className="w-full p-2 border border-neutral-300 rounded font-medium"
                     />
@@ -3510,9 +3529,7 @@ export default function AdminCMSPage() {
                       type="text"
                       value={b.slug}
                       onChange={(e) => {
-                        const updated = [...blog];
-                        updated[idx].slug = e.target.value;
-                        saveBlog(updated);
+                        saveBlog(blog.map((item, i) => i === idx ? { ...item, slug: e.target.value } : item));
                       }}
                       className="w-full p-2 border border-neutral-300 rounded font-mono"
                     />
@@ -3527,14 +3544,16 @@ export default function AdminCMSPage() {
                   scale={b.imageScale ?? 1.0}
                   label="Hero Image, Upload & Mouse Alignment"
                   onChange={({ imageUrl: newUrl, positionX, positionY, scale }) => {
-                    const updated = [...blog];
-                    if (newUrl !== undefined) {
-                      updated[idx].heroImage = newUrl;
-                    }
-                    updated[idx].imagePositionX = positionX;
-                    updated[idx].imagePositionY = positionY;
-                    updated[idx].imageScale = scale;
-                    saveBlog(updated);
+                    saveBlog(blog.map((item, i) => {
+                      if (i !== idx) return item;
+                      return {
+                        ...item,
+                        ...(newUrl !== undefined ? { heroImage: newUrl } : {}),
+                        imagePositionX: positionX,
+                        imagePositionY: positionY,
+                        imageScale: scale,
+                      };
+                    }));
                   }}
                   onToast={showToast}
                 />
@@ -3545,9 +3564,7 @@ export default function AdminCMSPage() {
                     rows={2}
                     value={b.excerpt}
                     onChange={(e) => {
-                      const updated = [...blog];
-                      updated[idx].excerpt = e.target.value;
-                      saveBlog(updated);
+                      saveBlog(blog.map((item, i) => i === idx ? { ...item, excerpt: e.target.value } : item));
                     }}
                     className="w-full p-2 border border-neutral-300 rounded text-xs leading-relaxed"
                   />
@@ -3559,9 +3576,7 @@ export default function AdminCMSPage() {
                     <select
                       value={b.category}
                       onChange={(e) => {
-                        const updated = [...blog];
-                        updated[idx].category = e.target.value as any;
-                        saveBlog(updated);
+                        saveBlog(blog.map((item, i) => i === idx ? { ...item, category: e.target.value as any } : item));
                       }}
                       className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
                     >
@@ -3579,9 +3594,7 @@ export default function AdminCMSPage() {
                       id={`featured-${b.id}`}
                       checked={b.featured}
                       onChange={(e) => {
-                        const updated = [...blog];
-                        updated[idx].featured = e.target.checked;
-                        saveBlog(updated);
+                        saveBlog(blog.map((item, i) => i === idx ? { ...item, featured: e.target.checked } : item));
                       }}
                       className="w-4 h-4 accent-black rounded"
                     />
@@ -3613,12 +3626,11 @@ export default function AdminCMSPage() {
                           rows={3}
                           value={b.content?.introduction || ""}
                           onChange={(e) => {
-                            const updated = [...blog];
-                            if (!updated[idx].content) {
-                              updated[idx].content = { introduction: "", sections: [], conclusion: "" };
-                            }
-                            updated[idx].content.introduction = e.target.value;
-                            saveBlog(updated);
+                            saveBlog(blog.map((item, i) => {
+                              if (i !== idx) return item;
+                              const content = item.content || { introduction: "", sections: [], conclusion: "" };
+                              return { ...item, content: { ...content, introduction: e.target.value } };
+                            }));
                           }}
                           className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
                         />
@@ -3633,15 +3645,15 @@ export default function AdminCMSPage() {
                           <button
                             type="button"
                             onClick={() => {
-                              const updated = [...blog];
-                              if (!updated[idx].content) {
-                                updated[idx].content = { introduction: "", sections: [], conclusion: "" };
-                              }
-                              updated[idx].content.sections.push({
-                                heading: "New Section",
-                                body: ["Write section paragraph here..."],
-                              });
-                              saveBlog(updated);
+                              saveBlog(blog.map((item, i) => {
+                                if (i !== idx) return item;
+                                const content = item.content || { introduction: "", sections: [], conclusion: "" };
+                                const sections = [...(content.sections || []), {
+                                  heading: "New Section",
+                                  body: ["Write section paragraph here..."],
+                                }];
+                                return { ...item, content: { ...content, sections } };
+                              }));
                               showToast("Added new section to monograph.");
                             }}
                             className="inline-flex items-center gap-1 px-2 py-1 bg-black text-white text-[10px] uppercase font-mono rounded"
@@ -3658,9 +3670,12 @@ export default function AdminCMSPage() {
                               <button
                                 type="button"
                                 onClick={() => {
-                                  const updated = [...blog];
-                                  updated[idx].content.sections = updated[idx].content.sections.filter((_, i) => i !== sIdx);
-                                  saveBlog(updated);
+                                  saveBlog(blog.map((item, i) => {
+                                    if (i !== idx) return item;
+                                    const content = item.content || { introduction: "", sections: [], conclusion: "" };
+                                    const sections = (content.sections || []).filter((_, i2) => i2 !== sIdx);
+                                    return { ...item, content: { ...content, sections } };
+                                  }));
                                   showToast("Section removed.");
                                 }}
                                 className="text-neutral-400 hover:text-red-500 p-0.5"
@@ -3674,9 +3689,14 @@ export default function AdminCMSPage() {
                               value={sec.heading}
                               placeholder="Section Heading"
                               onChange={(e) => {
-                                const updated = [...blog];
-                                updated[idx].content.sections[sIdx].heading = e.target.value;
-                                saveBlog(updated);
+                                saveBlog(blog.map((item, i) => {
+                                  if (i !== idx) return item;
+                                  const content = item.content || { introduction: "", sections: [], conclusion: "" };
+                                  const sections = (content.sections || []).map((secItem, sI) =>
+                                    sI === sIdx ? { ...secItem, heading: e.target.value } : secItem
+                                  );
+                                  return { ...item, content: { ...content, sections } };
+                                }));
                               }}
                               className="w-full p-1.5 border border-neutral-300 rounded text-xs font-medium"
                             />
@@ -3686,9 +3706,15 @@ export default function AdminCMSPage() {
                               value={sec.body?.join("\n\n") || ""}
                               placeholder="Paragraph text (separate paragraphs with blank line)"
                               onChange={(e) => {
-                                const updated = [...blog];
-                                updated[idx].content.sections[sIdx].body = e.target.value.split("\n\n").filter(Boolean);
-                                saveBlog(updated);
+                                const newBody = e.target.value.split("\n\n");
+                                saveBlog(blog.map((item, i) => {
+                                  if (i !== idx) return item;
+                                  const content = item.content || { introduction: "", sections: [], conclusion: "" };
+                                  const sections = (content.sections || []).map((secItem, sI) =>
+                                    sI === sIdx ? { ...secItem, body: newBody } : secItem
+                                  );
+                                  return { ...item, content: { ...content, sections } };
+                                }));
                               }}
                               className="w-full p-1.5 border border-neutral-300 rounded text-xs leading-relaxed"
                             />
@@ -3700,20 +3726,20 @@ export default function AdminCMSPage() {
                               positionY={sec.imagePositionY ?? 50}
                               label={`Section ${sIdx + 1} Image (Optional)`}
                               onChange={({ imageUrl: newSecImg, positionX, positionY }) => {
-                                const updated = [...blog];
-                                if (!updated[idx].content) {
-                                  updated[idx].content = { introduction: "", sections: [], conclusion: "" };
-                                }
-                                if (!updated[idx].content.sections) {
-                                  updated[idx].content.sections = [];
-                                }
-                                if (!updated[idx].content.sections[sIdx]) return;
-                                if (newSecImg !== undefined) {
-                                  updated[idx].content.sections[sIdx].image = newSecImg;
-                                }
-                                updated[idx].content.sections[sIdx].imagePositionX = positionX;
-                                updated[idx].content.sections[sIdx].imagePositionY = positionY;
-                                saveBlog(updated);
+                                saveBlog(blog.map((item, i) => {
+                                  if (i !== idx) return item;
+                                  const content = item.content || { introduction: "", sections: [], conclusion: "" };
+                                  const sections = (content.sections || []).map((secItem, sI) => {
+                                    if (sI !== sIdx) return secItem;
+                                    return {
+                                      ...secItem,
+                                      ...(newSecImg !== undefined ? { image: newSecImg } : {}),
+                                      imagePositionX: positionX,
+                                      imagePositionY: positionY,
+                                    };
+                                  });
+                                  return { ...item, content: { ...content, sections } };
+                                }));
                               }}
                               onToast={showToast}
                             />
@@ -3730,12 +3756,11 @@ export default function AdminCMSPage() {
                           rows={2}
                           value={b.content?.conclusion || ""}
                           onChange={(e) => {
-                            const updated = [...blog];
-                            if (!updated[idx].content) {
-                              updated[idx].content = { introduction: "", sections: [], conclusion: "" };
-                            }
-                            updated[idx].content.conclusion = e.target.value;
-                            saveBlog(updated);
+                            saveBlog(blog.map((item, i) => {
+                              if (i !== idx) return item;
+                              const content = item.content || { introduction: "", sections: [], conclusion: "" };
+                              return { ...item, content: { ...content, conclusion: e.target.value } };
+                            }));
                           }}
                           className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
                         />
@@ -3922,9 +3947,7 @@ export default function AdminCMSPage() {
                   rows={3}
                   value={item.answer}
                   onChange={(e) => {
-                    const updated = [...faq];
-                    updated[idx].answer = e.target.value;
-                    saveFaq(updated);
+                    saveFaq(faq.map((f, i) => i === idx ? { ...f, answer: e.target.value } : f));
                   }}
                   className="w-full p-2 border border-neutral-300 rounded text-xs leading-relaxed focus:border-black focus:outline-none"
                 />
@@ -4000,9 +4023,7 @@ export default function AdminCMSPage() {
                     type="text"
                     value={g.title}
                     onChange={(e) => {
-                      const updated = [...gallery];
-                      updated[idx].title = e.target.value;
-                      saveGallery(updated);
+                      saveGallery(gallery.map((item, i) => i === idx ? { ...item, title: e.target.value } : item));
                     }}
                     className="w-full p-1.5 border border-neutral-300 rounded font-semibold text-xs"
                     placeholder="Photo title"
@@ -4011,9 +4032,7 @@ export default function AdminCMSPage() {
                     type="text"
                     value={g.caption}
                     onChange={(e) => {
-                      const updated = [...gallery];
-                      updated[idx].caption = e.target.value;
-                      saveGallery(updated);
+                      saveGallery(gallery.map((item, i) => i === idx ? { ...item, caption: e.target.value } : item));
                     }}
                     className="w-full p-1.5 border border-neutral-300 rounded text-xs"
                     placeholder="Caption"
@@ -4023,9 +4042,7 @@ export default function AdminCMSPage() {
                       type="text"
                       value={g.imageUrl}
                       onChange={(e) => {
-                        const updated = [...gallery];
-                        updated[idx].imageUrl = e.target.value;
-                        saveGallery(updated);
+                        saveGallery(gallery.map((item, i) => i === idx ? { ...item, imageUrl: e.target.value } : item));
                       }}
                       className="flex-1 min-w-0 p-1.5 border border-neutral-300 rounded text-[11px] font-mono focus:border-black focus:outline-none"
                       placeholder="Image URL or upload from laptop"
@@ -4044,9 +4061,7 @@ export default function AdminCMSPage() {
                           const file = e.target.files?.[0];
                           if (file) {
                             handleUploadPhoto(file, (url) => {
-                              const updated = [...gallery];
-                              updated[idx].imageUrl = url;
-                              saveGallery(updated);
+                              saveGallery(gallery.map((item, i) => i === idx ? { ...item, imageUrl: url } : item));
                             }, "gallery");
                           }
                         }}
@@ -4059,9 +4074,7 @@ export default function AdminCMSPage() {
                   <select
                     value={g.category}
                     onChange={(e) => {
-                      const updated = [...gallery];
-                      updated[idx].category = e.target.value as any;
-                      saveGallery(updated);
+                      saveGallery(gallery.map((item, i) => i === idx ? { ...item, category: e.target.value as any } : item));
                     }}
                     className="p-1 border border-neutral-300 rounded text-[10px] bg-white"
                   >
@@ -4075,9 +4088,7 @@ export default function AdminCMSPage() {
                     type="text"
                     value={g.projectTitle}
                     onChange={(e) => {
-                      const updated = [...gallery];
-                      updated[idx].projectTitle = e.target.value;
-                      saveGallery(updated);
+                      saveGallery(gallery.map((item, i) => i === idx ? { ...item, projectTitle: e.target.value } : item));
                     }}
                     placeholder="Associated Project"
                     className="p-1 border border-neutral-300 rounded text-[10px]"
@@ -4812,8 +4823,9 @@ export default function AdminCMSPage() {
                     type="text"
                     value={st.city}
                     onChange={(e) => {
-                      const updated = [...siteSettings.studios];
-                      updated[sIdx].city = e.target.value;
+                      const updated = (siteSettings.studios || []).map((s, i) =>
+                        i === sIdx ? { ...s, city: e.target.value } : s
+                      );
                       saveSiteSettings({ ...siteSettings, studios: updated });
                     }}
                     className="w-full p-2 border border-neutral-300 rounded bg-white"
@@ -4827,8 +4839,9 @@ export default function AdminCMSPage() {
                     type="text"
                     value={st.address}
                     onChange={(e) => {
-                      const updated = [...siteSettings.studios];
-                      updated[sIdx].address = e.target.value;
+                      const updated = (siteSettings.studios || []).map((s, i) =>
+                        i === sIdx ? { ...s, address: e.target.value } : s
+                      );
                       saveSiteSettings({ ...siteSettings, studios: updated });
                     }}
                     className="w-full p-2 border border-neutral-300 rounded bg-white"
