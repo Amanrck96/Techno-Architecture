@@ -107,6 +107,36 @@ interface EnquiryLead {
   createdAt: string;
 }
 
+const STANDARD_TEAM_ROLES = [
+  "Principal Architect & Founder",
+  "Partner & Director",
+  "Senior Associate",
+  "Senior Project Architect",
+  "Project Architect",
+  "Associate Architect",
+  "Architect",
+  "Junior Architect",
+  "Senior Interior Designer",
+  "Interior Designer",
+  "3D Visualizer & BIM Modeler",
+  "BIM Coordinator",
+  "Landscape Architect",
+  "Office Administrator & HR",
+  "Studio Manager",
+  "Intern Architect",
+] as const;
+
+const STANDARD_TEAM_DISCIPLINES = [
+  "Leadership",
+  "Architecture",
+  "Interiors",
+  "Office Administration",
+  "Research & Sustainability",
+  "BIM & Technical",
+  "Landscape Architecture",
+  "Urban Design",
+] as const;
+
 export default function AdminCMSPage() {
   const {
     projects,
@@ -1473,8 +1503,10 @@ export default function AdminCMSPage() {
                         type="text"
                         value={p.title}
                         onChange={(e) => {
-                          const updated = [...projects];
-                          updated[idx].title = e.target.value;
+                          const val = e.target.value;
+                          const updated = projects.map((item, i) =>
+                            i === idx ? { ...item, title: val } : item
+                          );
                           saveProjects(updated);
                         }}
                         className="w-full p-2 border border-neutral-300 rounded text-xs focus:border-black focus:outline-none"
@@ -1488,19 +1520,22 @@ export default function AdminCMSPage() {
                         type="text"
                         value={p.slug}
                         onChange={(e) => {
-                          const updated = [...projects];
-                          updated[idx].slug = e.target.value;
+                          const val = e.target.value;
+                          const updated = projects.map((item, i) =>
+                            i === idx ? { ...item, slug: val } : item
+                          );
                           saveProjects(updated);
                         }}
                         onBlur={(e) => {
-                          const updated = [...projects];
                           const sanitizedSlug = e.target.value
                             .trim()
                             .toLowerCase()
                             .replace(/[\s_]+/g, "-")
                             .replace(/[^a-z0-9-]/g, "");
                           if (sanitizedSlug && sanitizedSlug !== e.target.value) {
-                            updated[idx].slug = sanitizedSlug;
+                            const updated = projects.map((item, i) =>
+                              i === idx ? { ...item, slug: sanitizedSlug } : item
+                            );
                             saveProjects(updated);
                           }
                         }}
@@ -1518,8 +1553,10 @@ export default function AdminCMSPage() {
                             : "Residential"
                         }
                         onChange={(e) => {
-                          const updated = [...projects];
-                          updated[idx].category = e.target.value as any;
+                          const val = e.target.value as any;
+                          const updated = projects.map((item, i) =>
+                            i === idx ? { ...item, category: val } : item
+                          );
                           saveProjects(updated);
                         }}
                         className="w-full p-2 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none"
@@ -1537,8 +1574,10 @@ export default function AdminCMSPage() {
                       <select
                         value={p.status}
                         onChange={(e) => {
-                          const updated = [...projects];
-                          updated[idx].status = e.target.value as any;
+                          const val = e.target.value as any;
+                          const updated = projects.map((item, i) =>
+                            i === idx ? { ...item, status: val } : item
+                          );
                           saveProjects(updated);
                         }}
                         className="w-full p-2 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none"
@@ -1598,8 +1637,10 @@ export default function AdminCMSPage() {
                       rows={2}
                       value={p.description}
                       onChange={(e) => {
-                        const updated = [...projects];
-                        updated[idx].description = e.target.value;
+                        const val = e.target.value;
+                        const updated = projects.map((item, i) =>
+                          i === idx ? { ...item, description: val } : item
+                        );
                         saveProjects(updated);
                       }}
                       className="w-full p-2 border border-neutral-300 rounded text-xs leading-relaxed focus:border-black focus:outline-none"
@@ -1628,8 +1669,14 @@ export default function AdminCMSPage() {
                         <button
                           type="button"
                           onClick={() => {
-                            const updated = [...projects];
-                            delete updated[idx].testimonial;
+                            const updated = projects.map((item, i) => {
+                              if (i === idx) {
+                                const copy = { ...item };
+                                delete copy.testimonial;
+                                return copy;
+                              }
+                              return item;
+                            });
                             saveProjects(updated);
                             showToast(`Removed testimonial from "${p.title}".`);
                           }}
@@ -1641,13 +1688,19 @@ export default function AdminCMSPage() {
                         <button
                           type="button"
                           onClick={() => {
-                            const updated = [...projects];
-                            updated[idx].testimonial = {
-                              quote: `Working with Techno Architecture on ${p.title} was an extraordinary experience. Their obsession with light, craftsmanship, and spatial clarity exceeded our expectations.`,
-                              clientName: p.client && p.client !== "Confidential" && p.client !== "Private Client" ? p.client : "Homeowner",
-                              designation: "Client",
-                              company: p.title,
-                            };
+                            const updated = projects.map((item, i) =>
+                              i === idx
+                                ? {
+                                    ...item,
+                                    testimonial: {
+                                      quote: `Working with Techno Architecture on ${p.title} was an extraordinary experience. Their obsession with light, craftsmanship, and spatial clarity exceeded our expectations.`,
+                                      clientName: p.client && p.client !== "Confidential" && p.client !== "Private Client" ? p.client : "Homeowner",
+                                      designation: "Client",
+                                      company: p.title,
+                                    },
+                                  }
+                                : item
+                            );
                             saveProjects(updated);
                             showToast(`Testimonial added to "${p.title}".`);
                           }}
@@ -1669,11 +1722,13 @@ export default function AdminCMSPage() {
                             rows={3}
                             value={p.testimonial.quote || ""}
                             onChange={(e) => {
-                              const updated = [...projects];
-                              if (updated[idx].testimonial) {
-                                updated[idx].testimonial = { ...updated[idx].testimonial!, quote: e.target.value };
-                                saveProjects(updated);
-                              }
+                              const val = e.target.value;
+                              const updated = projects.map((item, i) =>
+                                i === idx && item.testimonial
+                                  ? { ...item, testimonial: { ...item.testimonial, quote: val } }
+                                  : item
+                              );
+                              saveProjects(updated);
                             }}
                             placeholder="Client testimonial or reflection quote..."
                             className="w-full p-2 border border-neutral-300 rounded text-xs bg-white leading-relaxed focus:border-black focus:outline-none"
@@ -1689,11 +1744,13 @@ export default function AdminCMSPage() {
                               type="text"
                               value={p.testimonial.clientName || ""}
                               onChange={(e) => {
-                                const updated = [...projects];
-                                if (updated[idx].testimonial) {
-                                  updated[idx].testimonial = { ...updated[idx].testimonial!, clientName: e.target.value };
-                                  saveProjects(updated);
-                                }
+                                const val = e.target.value;
+                                const updated = projects.map((item, i) =>
+                                  i === idx && item.testimonial
+                                    ? { ...item, testimonial: { ...item.testimonial, clientName: val } }
+                                    : item
+                                );
+                                saveProjects(updated);
                               }}
                               placeholder="e.g. Suresh & Anitha Gowda"
                               className="w-full p-2 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none"
@@ -1708,11 +1765,13 @@ export default function AdminCMSPage() {
                               type="text"
                               value={p.testimonial.designation || ""}
                               onChange={(e) => {
-                                const updated = [...projects];
-                                if (updated[idx].testimonial) {
-                                  updated[idx].testimonial = { ...updated[idx].testimonial!, designation: e.target.value };
-                                  saveProjects(updated);
-                                }
+                                const val = e.target.value;
+                                const updated = projects.map((item, i) =>
+                                  i === idx && item.testimonial
+                                    ? { ...item, testimonial: { ...item.testimonial, designation: val } }
+                                    : item
+                                );
+                                saveProjects(updated);
                               }}
                               placeholder="e.g. Homeowner / Founder"
                               className="w-full p-2 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none"
@@ -1727,11 +1786,13 @@ export default function AdminCMSPage() {
                               type="text"
                               value={p.testimonial.company || ""}
                               onChange={(e) => {
-                                const updated = [...projects];
-                                if (updated[idx].testimonial) {
-                                  updated[idx].testimonial = { ...updated[idx].testimonial!, company: e.target.value };
-                                  saveProjects(updated);
-                                }
+                                const val = e.target.value;
+                                const updated = projects.map((item, i) =>
+                                  i === idx && item.testimonial
+                                    ? { ...item, testimonial: { ...item.testimonial, company: val } }
+                                    : item
+                                );
+                                saveProjects(updated);
                               }}
                               placeholder="e.g. Belaku Residence"
                               className="w-full p-2 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none"
@@ -1762,8 +1823,10 @@ export default function AdminCMSPage() {
                             type="text"
                             value={p.location}
                             onChange={(e) => {
-                              const updated = [...projects];
-                              updated[idx].location = e.target.value;
+                              const val = e.target.value;
+                              const updated = projects.map((item, i) =>
+                                i === idx ? { ...item, location: val } : item
+                              );
                               saveProjects(updated);
                             }}
                             className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
@@ -1777,8 +1840,10 @@ export default function AdminCMSPage() {
                             type="number"
                             value={p.year}
                             onChange={(e) => {
-                              const updated = [...projects];
-                              updated[idx].year = parseInt(e.target.value) || 2024;
+                              const val = parseInt(e.target.value) || 2024;
+                              const updated = projects.map((item, i) =>
+                                i === idx ? { ...item, year: val } : item
+                              );
                               saveProjects(updated);
                             }}
                             className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
@@ -1792,8 +1857,10 @@ export default function AdminCMSPage() {
                             type="text"
                             value={p.area}
                             onChange={(e) => {
-                              const updated = [...projects];
-                              updated[idx].area = e.target.value;
+                              const val = e.target.value;
+                              const updated = projects.map((item, i) =>
+                                i === idx ? { ...item, area: val } : item
+                              );
                               saveProjects(updated);
                             }}
                             className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
@@ -1807,8 +1874,10 @@ export default function AdminCMSPage() {
                             type="text"
                             value={p.client}
                             onChange={(e) => {
-                              const updated = [...projects];
-                              updated[idx].client = e.target.value;
+                              const val = e.target.value;
+                              const updated = projects.map((item, i) =>
+                                i === idx ? { ...item, client: val } : item
+                              );
                               saveProjects(updated);
                             }}
                             className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
@@ -1824,8 +1893,10 @@ export default function AdminCMSPage() {
                           rows={3}
                           value={p.processNarrative}
                           onChange={(e) => {
-                            const updated = [...projects];
-                            updated[idx].processNarrative = e.target.value;
+                            const val = e.target.value;
+                            const updated = projects.map((item, i) =>
+                              i === idx ? { ...item, processNarrative: val } : item
+                            );
                             saveProjects(updated);
                           }}
                           className="w-full p-2 border border-neutral-300 rounded text-xs leading-relaxed bg-white"
@@ -3072,77 +3143,127 @@ export default function AdminCMSPage() {
                       />
                     </label>
                   </div>
-                  <div className="flex-1">
-                    <input
-                      type="text"
-                      value={m.name || ""}
-                      onChange={(e) => {
-                        const updated = team.map((item) =>
-                          item.id === m.id ? { ...item, name: e.target.value } : item
-                        );
-                        saveTeam(updated);
-                      }}
-                      className="w-full font-semibold text-sm border-b border-neutral-300 focus:border-black focus:outline-none pb-0.5"
-                    />
-                    <input
-                      type="text"
-                      value={m.role || ""}
-                      onChange={(e) => {
-                        const updated = team.map((item) =>
-                          item.id === m.id ? { ...item, role: e.target.value } : item
-                        );
-                        saveTeam(updated);
-                      }}
-                      className="w-full text-xs text-neutral-600 mt-1 border-b border-neutral-200 focus:border-black focus:outline-none"
-                    />
+                  <div className="flex-1 space-y-1.5">
+                    <div>
+                      <label className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">
+                        Practitioner Full Name
+                      </label>
+                      <input
+                        type="text"
+                        value={m.name || ""}
+                        placeholder="e.g. Ar. Rajesh Shivaram"
+                        onChange={(e) => {
+                          const updated = team.map((item) =>
+                            item.id === m.id ? { ...item, name: e.target.value } : item
+                          );
+                          saveTeam(updated);
+                        }}
+                        className="w-full font-semibold text-xs border border-neutral-300 rounded p-1.5 focus:border-black focus:outline-none bg-white text-neutral-900"
+                      />
+                    </div>
                   </div>
+                </div>
+
+                {/* Designation / Role Selector with real Dropdown & Custom input */}
+                <div className="space-y-1">
+                  <div className="flex justify-between items-center">
+                    <label className="text-[9px] uppercase font-mono text-neutral-500 font-semibold block">
+                      Designation / Role
+                    </label>
+                    <span className="text-[8px] font-mono text-neutral-400 uppercase">Dropdown + Custom</span>
+                  </div>
+                  <select
+                    value={STANDARD_TEAM_ROLES.includes(m.role as any) ? m.role : "__custom__"}
+                    onChange={(e) => {
+                      const selected = e.target.value;
+                      if (selected !== "__custom__") {
+                        const updated = team.map((item) =>
+                          item.id === m.id ? { ...item, role: selected } : item
+                        );
+                        saveTeam(updated);
+                      }
+                    }}
+                    className="w-full p-1.5 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none cursor-pointer font-medium text-neutral-800"
+                  >
+                    <option value="" disabled>-- Select Designation --</option>
+                    {STANDARD_TEAM_ROLES.map((role) => (
+                      <option key={role} value={role}>{role}</option>
+                    ))}
+                    {!STANDARD_TEAM_ROLES.includes(m.role as any) && m.role && (
+                      <option value={m.role}>Current: {m.role}</option>
+                    )}
+                    <option value="__custom__">Custom / Type your own...</option>
+                  </select>
+                  <input
+                    type="text"
+                    value={m.role || ""}
+                    placeholder="Type or customize designation..."
+                    onChange={(e) => {
+                      const updated = team.map((item) =>
+                        item.id === m.id ? { ...item, role: e.target.value } : item
+                      );
+                      saveTeam(updated);
+                    }}
+                    className="w-full text-xs text-neutral-700 p-1.5 border border-neutral-200 rounded focus:border-black focus:outline-none bg-neutral-50/50"
+                  />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <div className="flex justify-between items-center mb-0.5">
-                      <label className="text-[9px] uppercase font-mono text-neutral-400 block">Discipline</label>
-                      <span className="text-[8px] font-mono text-neutral-400 uppercase">Autocomplete</span>
+                      <label className="text-[9px] uppercase font-mono text-neutral-500 font-semibold block">Discipline</label>
+                      <span className="text-[8px] font-mono text-neutral-400 uppercase">Dropdown</span>
                     </div>
-                    <input
-                      type="text"
-                      list={`discipline-suggestions-${m.id}`}
-                      value={m.discipline || ""}
+                    <select
+                      value={STANDARD_TEAM_DISCIPLINES.includes(m.discipline as any) ? m.discipline : "__custom__"}
                       onChange={(e) => {
-                        const val = e.target.value;
-                        const updated = team.map((item) =>
-                          item.id === m.id ? { ...item, discipline: val } : item
-                        );
-                        saveTeam(updated);
+                        const selected = e.target.value;
+                        if (selected !== "__custom__") {
+                          const updated = team.map((item) =>
+                            item.id === m.id ? { ...item, discipline: selected } : item
+                          );
+                          saveTeam(updated);
+                        }
                       }}
-                      placeholder="e.g. Architecture"
-                      className="w-full p-1.5 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none"
-                    />
-                    <datalist id={`discipline-suggestions-${m.id}`}>
-                      <option value="Architecture" />
-                      <option value="Architectural" />
-                      <option value="Architects" />
-                      <option value="Leadership" />
-                      <option value="Interiors" />
-                      <option value="Office Administration" />
-                      <option value="Research & Sustainability" />
-                      <option value="BIM & Technical" />
-                      <option value="Landscape Architecture" />
-                      <option value="Urban Design" />
-                    </datalist>
+                      className="w-full p-1.5 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none cursor-pointer font-medium text-neutral-800 mb-1"
+                    >
+                      <option value="" disabled>-- Select Discipline --</option>
+                      {STANDARD_TEAM_DISCIPLINES.map((disc) => (
+                        <option key={disc} value={disc}>{disc}</option>
+                      ))}
+                      {!STANDARD_TEAM_DISCIPLINES.includes(m.discipline as any) && m.discipline && (
+                        <option value={m.discipline}>Current: {m.discipline}</option>
+                      )}
+                      <option value="__custom__">Custom Discipline...</option>
+                    </select>
+                    {(!STANDARD_TEAM_DISCIPLINES.includes(m.discipline as any) || !m.discipline) && (
+                      <input
+                        type="text"
+                        value={m.discipline || ""}
+                        placeholder="Type custom discipline..."
+                        onChange={(e) => {
+                          const updated = team.map((item) =>
+                            item.id === m.id ? { ...item, discipline: e.target.value } : item
+                          );
+                          saveTeam(updated);
+                        }}
+                        className="w-full text-xs text-neutral-700 p-1 border border-neutral-200 rounded focus:border-black focus:outline-none bg-neutral-50/50"
+                      />
+                    )}
                   </div>
                   <div>
-                    <label className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">Credentials</label>
+                    <label className="text-[9px] uppercase font-mono text-neutral-500 font-semibold block mb-0.5">Credentials</label>
                     <input
                       type="text"
                       value={m.credentials || ""}
+                      placeholder="e.g. B.Arch, COA"
                       onChange={(e) => {
                         const updated = team.map((item) =>
                           item.id === m.id ? { ...item, credentials: e.target.value } : item
                         );
                         saveTeam(updated);
                       }}
-                      className="w-full p-1.5 border border-neutral-300 rounded text-xs"
+                      className="w-full p-1.5 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none"
                     />
                   </div>
                 </div>
@@ -4115,11 +4236,12 @@ export default function AdminCMSPage() {
                       type="text"
                       value={r.title}
                       onChange={(e) => {
-                        const updated = [...recognitions];
-                        updated[idx].title = e.target.value;
+                        const updated = recognitions.map((item, i) =>
+                          i === idx ? { ...item, title: e.target.value } : item
+                        );
                         saveRecognitions(updated);
                       }}
-                      className="w-full p-1.5 border border-neutral-300 rounded font-semibold"
+                      className="w-full p-1.5 border border-neutral-300 rounded font-semibold text-xs"
                     />
                   </div>
                   <div>
@@ -4128,11 +4250,77 @@ export default function AdminCMSPage() {
                       type="text"
                       value={r.organization}
                       onChange={(e) => {
-                        const updated = [...recognitions];
-                        updated[idx].organization = e.target.value;
+                        const updated = recognitions.map((item, i) =>
+                          i === idx ? { ...item, organization: e.target.value } : item
+                        );
                         saveRecognitions(updated);
                       }}
-                      className="w-full p-1.5 border border-neutral-300 rounded"
+                      className="w-full p-1.5 border border-neutral-300 rounded text-xs"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 border-t border-neutral-100">
+                  <div>
+                    <label className="text-[10px] uppercase font-mono text-neutral-400 block mb-0.5">Year</label>
+                    <input
+                      type="number"
+                      value={r.year || 2024}
+                      onChange={(e) => {
+                        const updated = recognitions.map((item, i) =>
+                          i === idx ? { ...item, year: parseInt(e.target.value) || 2024 } : item
+                        );
+                        saveRecognitions(updated);
+                      }}
+                      className="w-full p-1.5 border border-neutral-300 rounded text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] uppercase font-mono text-neutral-400 block mb-0.5">Category</label>
+                    <select
+                      value={r.category || "Award"}
+                      onChange={(e) => {
+                        const updated = recognitions.map((item, i) =>
+                          i === idx ? { ...item, category: e.target.value as any } : item
+                        );
+                        saveRecognitions(updated);
+                      }}
+                      className="w-full p-1.5 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none cursor-pointer"
+                    >
+                      <option value="Award">Award</option>
+                      <option value="Publication">Publication</option>
+                      <option value="Certification">Certification</option>
+                      <option value="Biennale / Exhibition">Biennale / Exhibition</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[10px] uppercase font-mono text-neutral-400 block mb-0.5">Badge / Honor</label>
+                    <input
+                      type="text"
+                      value={r.badge || ""}
+                      placeholder="e.g. Gold Medalist"
+                      onChange={(e) => {
+                        const updated = recognitions.map((item, i) =>
+                          i === idx ? { ...item, badge: e.target.value } : item
+                        );
+                        saveRecognitions(updated);
+                      }}
+                      className="w-full p-1.5 border border-neutral-300 rounded text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] uppercase font-mono text-neutral-400 block mb-0.5">Associated Project</label>
+                    <input
+                      type="text"
+                      value={r.projectAssociated || ""}
+                      placeholder="e.g. AIKYA"
+                      onChange={(e) => {
+                        const updated = recognitions.map((item, i) =>
+                          i === idx ? { ...item, projectAssociated: e.target.value } : item
+                        );
+                        saveRecognitions(updated);
+                      }}
+                      className="w-full p-1.5 border border-neutral-300 rounded text-xs"
                     />
                   </div>
                 </div>
@@ -4143,8 +4331,9 @@ export default function AdminCMSPage() {
                     rows={2}
                     value={r.description}
                     onChange={(e) => {
-                      const updated = [...recognitions];
-                      updated[idx].description = e.target.value;
+                      const updated = recognitions.map((item, i) =>
+                        i === idx ? { ...item, description: e.target.value } : item
+                      );
                       saveRecognitions(updated);
                     }}
                     className="w-full p-2 border border-neutral-300 rounded text-xs leading-relaxed"
@@ -4279,18 +4468,19 @@ export default function AdminCMSPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                   <div>
                     <label className="text-[10px] uppercase font-mono text-neutral-400 block mb-0.5">Client Name</label>
                     <input
                       type="text"
                       value={t.clientName}
                       onChange={(e) => {
-                        const updated = [...testimonials];
-                        updated[idx].clientName = e.target.value;
+                        const updated = testimonials.map((item, i) =>
+                          i === idx ? { ...item, clientName: e.target.value } : item
+                        );
                         saveTestimonials(updated);
                       }}
-                      className="w-full p-1.5 border border-neutral-300 rounded font-medium"
+                      className="w-full p-1.5 border border-neutral-300 rounded font-medium text-xs"
                     />
                   </div>
                   <div>
@@ -4298,12 +4488,29 @@ export default function AdminCMSPage() {
                     <input
                       type="text"
                       value={t.designation}
+                      placeholder="e.g. Homeowner / Founder"
                       onChange={(e) => {
-                        const updated = [...testimonials];
-                        updated[idx].designation = e.target.value;
+                        const updated = testimonials.map((item, i) =>
+                          i === idx ? { ...item, designation: e.target.value } : item
+                        );
                         saveTestimonials(updated);
                       }}
-                      className="w-full p-1.5 border border-neutral-300 rounded"
+                      className="w-full p-1.5 border border-neutral-300 rounded text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] uppercase font-mono text-neutral-400 block mb-0.5">Company / Residence</label>
+                    <input
+                      type="text"
+                      value={t.company || ""}
+                      placeholder="e.g. Private Residence"
+                      onChange={(e) => {
+                        const updated = testimonials.map((item, i) =>
+                          i === idx ? { ...item, company: e.target.value } : item
+                        );
+                        saveTestimonials(updated);
+                      }}
+                      className="w-full p-1.5 border border-neutral-300 rounded text-xs"
                     />
                   </div>
                   <div>
@@ -4311,12 +4518,14 @@ export default function AdminCMSPage() {
                     <input
                       type="text"
                       value={t.projectAssociated}
+                      placeholder="e.g. AIKYA"
                       onChange={(e) => {
-                        const updated = [...testimonials];
-                        updated[idx].projectAssociated = e.target.value;
+                        const updated = testimonials.map((item, i) =>
+                          i === idx ? { ...item, projectAssociated: e.target.value } : item
+                        );
                         saveTestimonials(updated);
                       }}
-                      className="w-full p-1.5 border border-neutral-300 rounded"
+                      className="w-full p-1.5 border border-neutral-300 rounded text-xs"
                     />
                   </div>
                 </div>
@@ -4327,8 +4536,9 @@ export default function AdminCMSPage() {
                     rows={3}
                     value={t.quote}
                     onChange={(e) => {
-                      const updated = [...testimonials];
-                      updated[idx].quote = e.target.value;
+                      const updated = testimonials.map((item, i) =>
+                        i === idx ? { ...item, quote: e.target.value } : item
+                      );
                       saveTestimonials(updated);
                     }}
                     className="w-full p-2 border border-neutral-300 rounded text-xs leading-relaxed"
