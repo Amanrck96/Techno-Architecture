@@ -594,7 +594,9 @@ export function CMSProvider({
     localDiskWritable?: boolean;
   }>({});
 
-  const lastServerUpdatedRef = useRef<string>(initialData?.updatedAt || (staticCmsContent as any)?.updatedAt || "");
+  const lastServerUpdatedRef = useRef<string>(
+    initialData && !initialData.isDefault ? initialData.updatedAt : ""
+  );
   const syncTimersRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
   // Tracks timestamp of the last local edit — used to block server overwrites for a grace period
   const lastLocalEditTimestampRef = useRef<number>(0);
@@ -883,7 +885,7 @@ export function CMSProvider({
           const parsed = JSON.parse(stm);
           if (Array.isArray(parsed) && parsed.length > 0) setTestimonials(filterOutDeletedItems(parsed, curDeleted));
         }
-      } else if (initialData && typeof initialData === "object") {
+      } else if (initialData && typeof initialData === "object" && !initialData.isDefault) {
         // Authoritative server data: sync to localStorage so local caches never drift
         try {
           if (Array.isArray(initialData.projects)) localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(initialData.projects));
@@ -904,10 +906,8 @@ export function CMSProvider({
       }
     } catch (_) {}
 
-    // 3. Only fetch from server if initialData was absent
-    if (!initialData) {
-      fetchFromServer();
-    }
+    // 3. Always fetch from server on mount to verify & sync latest live cloud state
+    fetchFromServer();
 
     // BroadcastChannel for instant inter-tab live sync
     let channel: BroadcastChannel | null = null;

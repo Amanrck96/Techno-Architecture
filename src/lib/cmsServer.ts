@@ -279,14 +279,18 @@ export async function getFromFirebaseStorage(explicitBucket?: string): Promise<a
   const bucketName = explicitBucket || FIREBASE_STORAGE_BUCKET;
   const getUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(
     FIREBASE_CMS_FILE_PATH
-  )}?alt=media`;
+  )}?alt=media&ts=${Date.now()}`;
 
   try {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 4000);
+    const timer = setTimeout(() => controller.abort(), 8000);
 
     const res = await fetch(getUrl, {
       cache: "no-store",
+      headers: {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        Pragma: "no-cache",
+      },
       signal: controller.signal,
     });
     clearTimeout(timer);

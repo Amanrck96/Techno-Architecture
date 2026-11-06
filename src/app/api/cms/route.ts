@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
 import { verifySessionToken, SESSION_COOKIE_NAME } from "@/lib/auth";
 import { getFirestoreDb, getFirebaseStorageBucket } from "@/lib/firebaseAdmin";
 import {
@@ -14,6 +15,24 @@ import {
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+
+function revalidatePublicPages() {
+  try {
+    revalidatePath("/", "layout");
+    revalidatePath("/");
+    revalidatePath("/about");
+    revalidatePath("/projects");
+    revalidatePath("/services");
+    revalidatePath("/gallery");
+    revalidatePath("/faq");
+    revalidatePath("/recognitions");
+    revalidatePath("/blog");
+    revalidatePath("/contact");
+    revalidatePath("/careers");
+  } catch (err) {
+    console.error("[Revalidation Error]:", err);
+  }
+}
 
 function persistenceFailure(storageStatus: any) {
   return NextResponse.json(
@@ -48,16 +67,6 @@ export async function GET(request: Request) {
       localDiskWritable: process.env.NODE_ENV !== "production" || !process.env.VERCEL,
     };
 
-    const cookieStore = cookies();
-    const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME);
-    const authHeader = request.headers.get("authorization") || request.headers.get("x-admin-token");
-    const isAdmin = Boolean(sessionCookie || authHeader);
-
-    const hasCustomCreds = Boolean(customUpstashUrl || customGithubToken);
-    const cacheControlHeader = isAdmin || hasCustomCreds
-      ? "no-store, no-cache, must-revalidate, proxy-revalidate"
-      : "public, s-maxage=30, stale-while-revalidate=60";
-
     return NextResponse.json(
       {
         ...data,
@@ -65,7 +74,8 @@ export async function GET(request: Request) {
       },
       {
         headers: {
-          "Cache-Control": cacheControlHeader,
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+          Pragma: "no-cache",
         },
       }
     );
@@ -153,6 +163,7 @@ export async function POST(request: Request) {
       delete (defaultData as any)._storageInfo;
       const storageStatus = await writeStore(defaultData, storageOptions);
       if (!storageStatus.isPermanent) return persistenceFailure(storageStatus);
+      revalidatePublicPages();
       return NextResponse.json({
         success: true,
         message: "All data reset to initial seed defaults.",
@@ -173,6 +184,7 @@ export async function POST(request: Request) {
       delete (updated as any)._storageInfo;
       const storageStatus = await writeStore(updated, storageOptions);
       if (!storageStatus.isPermanent) return persistenceFailure(storageStatus);
+      revalidatePublicPages();
       return NextResponse.json({
         success: true,
         message: storageStatus.summaryMessage,
@@ -189,6 +201,7 @@ export async function POST(request: Request) {
       delete (current as any)._storageInfo;
       const storageStatus = await writeStore(current, storageOptions);
       if (!storageStatus.isPermanent) return persistenceFailure(storageStatus);
+      revalidatePublicPages();
       return NextResponse.json({
         success: true,
         entity: body.entity,

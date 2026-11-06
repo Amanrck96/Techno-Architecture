@@ -2665,9 +2665,9 @@
     {
       "id": "team-rajesh",
       "name": "Ar. Rajesh Shivaram",
-      "role": "Principal Architect & Founder",
+      "role": "PRINCIPAL ARCHITECT & FOUNDER",
       "discipline": "Leadership",
-      "credentials": "B.Arch (Bangalore Institute of Technology)",
+      "credentials": "B.Arch",
       "bio": "A graduate of Bangalore Institute of Technology, Rajesh Shivaram is the Principal Architect of Techno Architecture and brings over two decades of professional experience to the practice. He leads the studio with a focus on design excellence, innovation, and careful execution, combining creativity with comfort, practicality, and environmental responsibility.",
       "image": "/team/rajesh-shivaram.jpg",
       "hoverImage": "/team/rajesh-copy.jpg",
@@ -2681,8 +2681,8 @@
     },
     {
       "id": "team-dheemanth",
-      "name": "Ar. Dheemanth @",
-      "role": "Senior Project Architect",
+      "name": "Ar. Dheemanth Lokesh",
+      "role": "PROJECT ARCHITECT",
       "discipline": "Architecture",
       "credentials": "B.Arch",
       "bio": "Directs luxury residential and mixed-use commissions, integrating passive climate strategies, volumetric daylighting, and monolithic structural coordination.",
@@ -2693,8 +2693,8 @@
     },
     {
       "id": "team-anoop",
-      "name": "Ar. Anoop",
-      "role": "Senior Project Architect",
+      "name": "Ar. Anoop Joseph Verghese",
+      "role": "ASSOCIATE ARCHITECT",
       "discipline": "Architecture",
       "credentials": "B.Arch",
       "bio": "Specializes in contemporary spatial sequencing, climate-responsive building envelopes, and vernacular masonry detailing from concept to handover.",
@@ -2706,8 +2706,8 @@
     {
       "id": "team-chaya",
       "name": "Ar. Chaya",
-      "role": "Studio Coordinator & Senior Architect",
-      "discipline": "Leadership",
+      "role": "Junior Architect",
+      "discipline": "Architecture",
       "credentials": "B.Arch",
       "bio": "Coordinates multidisciplinary studio operations, client partnerships, and design execution standards across architecture and interior commissions.",
       "image": "/team/chaya-1.jpg",
@@ -2717,10 +2717,10 @@
     },
     {
       "id": "team-veerendra",
-      "name": "Veerendra",
-      "role": "Technical Lead & Site Execution",
+      "name": "Ar. Veerendra",
+      "role": "Junior Architect",
       "discipline": "Office Administration",
-      "credentials": "B.E. (Civil) / Technical Coordination",
+      "credentials": "B.Arch",
       "bio": "Bridges architectural schematics with on-site structural reality, supervising MEP integration, vendor fabrication reviews, and strict construction tolerances.",
       "image": "/team/veerendra-2.jpg",
       "hoverImage": "/team/veerendra-1.jpg",
@@ -2729,10 +2729,10 @@
     },
     {
       "id": "team-bipin",
-      "name": "Bipin",
+      "name": "Ar. Bipin",
       "role": "Lead Interior Architect",
       "discipline": "Interiors",
-      "credentials": "B.Arch / Interior Architecture",
+      "credentials": "B.Arch",
       "bio": "Directs spatial curation, bespoke millwork, acoustic textures, artisanal lighting schemes, and luxury residential interior fit-outs.",
       "image": "/team/bipin-1.jpg",
       "hoverImage": "/team/bipin-2.jpg",
@@ -2741,10 +2741,10 @@
     },
     {
       "id": "team-prashant",
-      "name": "Prashant",
-      "role": "BIM & Technical Delivery Lead",
+      "name": "Ar. Prashant",
+      "role": "Project Architect",
       "discipline": "Office Administration",
-      "credentials": "B.Arch / BIM Certified",
+      "credentials": "B.Arch",
       "bio": "Spearheads Building Information Modeling, digital clash detection, structural coordination, and comprehensive tender documentation.",
       "image": "/team/prashant-1.jpg",
       "hoverImage": "/team/prashant-2.jpg",
@@ -2753,8 +2753,8 @@
     },
     {
       "id": "team-suma",
-      "name": "ASuma",
-      "role": "Senior Project Architect",
+      "name": "Ar. Suma",
+      "role": "PROJECT ARCHITECT",
       "discipline": "Architecture",
       "credentials": "B.Arch",
       "bio": "Focuses on residential masterplanning, internal courtyard microclimates, and sustainable material assemblies with sensitivity to site contours.",
@@ -2765,8 +2765,8 @@
     },
     {
       "id": "team-darshan",
-      "name": "Darshan",
-      "role": "Senior Technical Architect",
+      "name": "Ar. Darshan",
+      "role": "Project Architect",
       "discipline": "Office Administration",
       "credentials": "B.Arch",
       "bio": "Develops precise architectural working drawings, structural interface details, and oversees site execution quality compliance.",
@@ -2789,7 +2789,7 @@
     },
     {
       "id": "team-mohit",
-      "name": "Mohit",
+      "name": "Ar. Mohit",
       "role": "Interior Architect & Space Planner",
       "discipline": "Interiors",
       "credentials": "B.Des / Interior Architecture",
@@ -2825,7 +2825,7 @@
     },
     {
       "id": "team-sanjana",
-      "name": "Sanjana",
+      "name": "Ar. Sanjana",
       "role": "Interior Architect",
       "discipline": "Interiors",
       "credentials": "B.Arch",
@@ -2849,7 +2849,7 @@
     },
     {
       "id": "team-prarthana",
-      "name": "Prarthana",
+      "name": "Ar. Prarthana",
       "role": "Interior & Materials Specialist",
       "discipline": "Interiors",
       "credentials": "B.Des",
@@ -2861,7 +2861,7 @@
     },
     {
       "id": "team-aditya",
-      "name": "Aditya",
+      "name": "Ar. Aditya",
       "role": "Architectural Designer & Visualization Lead",
       "discipline": "Architecture",
       "credentials": "B.Arch",
@@ -2897,7 +2897,7 @@
     },
     {
       "id": "team-sahana",
-      "name": "Sahana",
+      "name": "Ar. Sahana",
       "role": "Architectural Designer",
       "discipline": "Architecture",
       "credentials": "B.Arch",
@@ -2909,7 +2909,7 @@
     },
     {
       "id": "team-sujay",
-      "name": "Sujay",
+      "name": "Ar. Sujay",
       "role": "Technical Architect & Site Coordinator",
       "discipline": "Office Administration",
       "credentials": "B.Arch",
@@ -2921,7 +2921,7 @@
     },
     {
       "id": "team-harsan",
-      "name": "Harsan",
+      "name": "Ar. Harsan",
       "role": "Visualization Specialist & Architect",
       "discipline": "Architecture",
       "credentials": "B.Arch",
@@ -5180,7 +5180,7 @@
       "sortOrder": 4
     }
   ],
-  "updatedAt": "2026-11-02T17:24:50.697Z",
+  "updatedAt": "2026-11-06T19:50:03.461Z",
   "deletedIds": [
     "team-1793451364578",
     "team-vaishnavi"
