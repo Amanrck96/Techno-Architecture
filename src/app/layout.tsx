@@ -5,8 +5,7 @@ import SiteShell from "@/components/layout/SiteShell";
 import { CMSProvider } from "@/lib/cmsStore";
 import { getAuthoritativeCMSData } from "@/lib/cmsServer";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const revalidate = 60;
 
 const inter = localFont({
   src: [

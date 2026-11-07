@@ -54,7 +54,18 @@ export async function GET(request: Request) {
     const customGithubToken = request.headers.get("x-github-token") || url.searchParams.get("githubToken") || undefined;
     const customGithubRepo = request.headers.get("x-github-repo") || url.searchParams.get("githubRepo") || undefined;
 
-    const data = await readStore(customUpstashUrl, customUpstashToken, customGithubToken, customGithubRepo);
+    const forceFresh =
+      url.searchParams.get("fresh") === "1" ||
+      Boolean(request.headers.get("authorization")) ||
+      Boolean(request.headers.get("x-admin-token"));
+
+    const data = await readStore(
+      customUpstashUrl,
+      customUpstashToken,
+      customGithubToken,
+      customGithubRepo,
+      forceFresh
+    );
 
     const storageInfo = {
       isVercel: Boolean(process.env.VERCEL),
@@ -74,8 +85,10 @@ export async function GET(request: Request) {
       },
       {
         headers: {
-          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
-          Pragma: "no-cache",
+          "Cache-Control": forceFresh
+            ? "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
+            : "public, s-maxage=60, stale-while-revalidate=300",
+          ...(forceFresh ? { Pragma: "no-cache" } : {}),
         },
       }
     );

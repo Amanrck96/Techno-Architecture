@@ -293,7 +293,9 @@ export default function AboutContent() {
                   src={rajesh?.image || "/team/rajesh-shivaram.jpg"}
                   alt={rajesh?.name || "Ar. Rajesh Shivaram"}
                   fill
-                  unoptimized
+                  sizes="(max-width: 640px) 100vw, 384px"
+                  quality={85}
+                  priority
                   className={`object-cover object-top transition-all duration-700 ${
                     rajesh?.hoverImage ? "group-hover:opacity-0 group-hover:scale-102" : "hover:scale-102"
                   }`}
@@ -303,7 +305,8 @@ export default function AboutContent() {
                     src={rajesh.hoverImage}
                     alt={`${rajesh?.name || "Ar. Rajesh Shivaram"} alternate`}
                     fill
-                    unoptimized
+                    sizes="(max-width: 640px) 100vw, 384px"
+                    quality={85}
                     className="object-cover object-top opacity-0 group-hover:opacity-100 group-hover:scale-102 transition-all duration-700"
                   />
                 )}
@@ -466,7 +469,8 @@ export default function AboutContent() {
                           src={member.image}
                           alt={member.name}
                           fill
-                          unoptimized
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                          quality={85}
                           className={`object-cover transition-all duration-500 ${
                             member.hoverImage && member.hoverImage !== member.image
                               ? "group-hover:opacity-0 group-hover:scale-105"
@@ -478,7 +482,8 @@ export default function AboutContent() {
                             src={member.hoverImage}
                             alt={`${member.name} alternate view`}
                             fill
-                            unoptimized
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                            quality={85}
                             className="object-cover opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
                           />
                         )}

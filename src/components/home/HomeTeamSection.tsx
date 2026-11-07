@@ -54,7 +54,8 @@ export default function HomeTeamSection() {
                         src={member.image}
                         alt={member.name}
                         fill
-                        unoptimized
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        quality={85}
                         className={`object-cover transition-all duration-500 ${
                           member.hoverImage && member.hoverImage !== member.image
                             ? "group-hover:opacity-0 group-hover:scale-105"
@@ -66,7 +67,8 @@ export default function HomeTeamSection() {
                           src={member.hoverImage}
                           alt={`${member.name} alternate`}
                           fill
-                          unoptimized
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                          quality={85}
                           className="object-cover opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
                         />
                       )}

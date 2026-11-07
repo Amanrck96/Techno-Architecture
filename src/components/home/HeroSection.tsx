@@ -63,8 +63,7 @@ export default function HeroSection() {
             alt={`Techno Architecture — ${currentProject.title}`}
             fill
             priority
-            unoptimized
-            quality={100}
+            quality={90}
             sizes="100vw"
             className="object-cover object-center select-none"
             style={{ imageRendering: "auto" }}

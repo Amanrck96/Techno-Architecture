@@ -20,7 +20,11 @@ export const TMP_FILE_PATH = process.env.VERCEL
 declare global {
   // eslint-disable-next-line no-var
   var __techno_cms_store__: any;
+  // eslint-disable-next-line no-var
+  var __techno_cms_cached_at__: number | undefined;
 }
+
+export const SERVER_CACHE_TTL_MS = 60 * 1000; // 60s memory cache for ultra-fast <10ms SSR TTFB
 
 // Universal filter to ensure any deleted item NEVER appears
 export function filterOutDeletedItems<T = any>(
@@ -502,8 +506,25 @@ export async function readStore(
   customUpstashUrl?: string,
   customUpstashToken?: string,
   customGithubToken?: string,
-  customGithubRepo?: string
+  customGithubRepo?: string,
+  forceFresh: boolean = false
 ): Promise<any> {
+  const now = Date.now();
+  const cachedAt = globalThis.__techno_cms_cached_at__ || 0;
+
+  // Ultra-fast in-memory cache hit (0ms execution, zero network round trips)
+  if (
+    !forceFresh &&
+    !customUpstashUrl &&
+    !customGithubToken &&
+    globalThis.__techno_cms_store__ &&
+    typeof globalThis.__techno_cms_store__ === "object" &&
+    globalThis.__techno_cms_store__.updatedAt &&
+    now - cachedAt < SERVER_CACHE_TTL_MS
+  ) {
+    return JSON.parse(JSON.stringify(globalThis.__techno_cms_store__));
+  }
+
   const candidates: any[] = [];
 
   // 1. In-memory store (fastest, survives warm invocations)
@@ -611,6 +632,7 @@ export async function readStore(
   };
 
   globalThis.__techno_cms_store__ = JSON.parse(JSON.stringify(cleanData));
+  globalThis.__techno_cms_cached_at__ = Date.now();
   return cleanData;
 }
 
@@ -662,6 +684,7 @@ export async function writeStore(
 
   // Always update in-memory store immediately
   globalThis.__techno_cms_store__ = JSON.parse(JSON.stringify(cleanData));
+  globalThis.__techno_cms_cached_at__ = Date.now();
 
   const result: WriteStoreResult = {
     localDisk: false,

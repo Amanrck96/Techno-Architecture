@@ -56,11 +56,12 @@ export default function LandingGallery() {
         <video
           ref={videoRef}
           src="/brindavan.mp4"
+          poster="/projects/aikya/elevation-east.jpg"
           autoPlay
           loop
           muted={isMuted}
           playsInline
-          preload="auto"
+          preload="metadata"
           className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
         />
 

@@ -916,8 +916,12 @@ export function CMSProvider({
       }
     } catch (_) {}
 
-    // 3. Always fetch from server on mount to verify & sync latest live cloud state
-    fetchFromServer();
+    // 3. Only fetch from server on mount if data is missing/default or if user is in /admin
+    const isAdmin = typeof window !== "undefined" && window.location.pathname.startsWith("/admin");
+    const needsFetch = !initialData || initialData.isDefault || isAdmin;
+    if (needsFetch) {
+      fetchFromServer();
+    }
 
     // BroadcastChannel for instant inter-tab live sync
     let channel: BroadcastChannel | null = null;
