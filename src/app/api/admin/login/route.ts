@@ -43,7 +43,7 @@ export async function POST(request: Request) {
               verifiedEmail = decoded.email;
             }
           } else {
-            // Fallback: Verify ID token via Google TokenInfo REST API (works without service account)
+            // Fallback 1: Verify ID token via Google TokenInfo REST API
             try {
               const tokenInfoRes = await fetch(
                 `https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(firebaseIdToken)}`,
@@ -57,6 +57,32 @@ export async function POST(request: Request) {
               }
             } catch (fetchErr) {
               console.warn("Google tokeninfo fallback verification failed:", fetchErr);
+            }
+
+            // Fallback 2: Google IdentityToolkit API (works for all Firebase client tokens)
+            if (!verifiedEmail) {
+              const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+              if (apiKey) {
+                try {
+                  const lookupRes = await fetch(
+                    `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`,
+                    {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ idToken: firebaseIdToken }),
+                    }
+                  );
+                  if (lookupRes.ok) {
+                    const lookupData = await lookupRes.json();
+                    const firstUser = lookupData?.users?.[0];
+                    if (firstUser?.email) {
+                      verifiedEmail = firstUser.email;
+                    }
+                  }
+                } catch (lookupErr) {
+                  console.warn("IdentityToolkit accounts:lookup error:", lookupErr);
+                }
+              }
             }
           }
         } catch (tokenErr) {
@@ -90,13 +116,15 @@ export async function POST(request: Request) {
     }
 
     // 2. Handle Traditional Admin Username / Password Authentication
-    const configuredPassword = (process.env.ADMIN_PASSWORD || process.env.ADMIN_PASS || "").trim();
-    if (!configuredPassword) {
+    const rawPassword = (process.env.ADMIN_PASSWORD || process.env.ADMIN_PASS || "").trim();
+    if (!rawPassword) {
       return NextResponse.json(
         { error: "Server configuration error: ADMIN_PASSWORD environment variable is not configured." },
         { status: 500 }
       );
     }
+
+    const cleanConfiguredPassword = rawPassword.replace(/^["']|["']$/g, "").trim();
 
     const configuredSessionSecret = (process.env.ADMIN_SESSION_SECRET || process.env.SESSION_SECRET || "").trim();
     if (!configuredSessionSecret) {
@@ -106,8 +134,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const expectedUsername = (process.env.ADMIN_USERNAME || process.env.ADMIN_USERNAM || "admin").trim();
-    const expectedPassword = configuredPassword;
+    const expectedUsername = (process.env.ADMIN_USERNAME || process.env.ADMIN_USERNAM || "admin").trim().toLowerCase();
 
     if (!username || !password) {
       return NextResponse.json(
@@ -116,10 +143,21 @@ export async function POST(request: Request) {
       );
     }
 
-    const trimmedUser = String(username).trim();
+    const trimmedUser = String(username).trim().toLowerCase();
     const trimmedPass = String(password).trim();
 
-    if (trimmedUser !== expectedUsername || trimmedPass !== expectedPassword) {
+    const allowedUsernames = new Set([
+      "admin",
+      "technoarchitecture",
+      "technoarchitecture@gmail.com",
+      "rajesh@technoarchitecture.co.in",
+      expectedUsername,
+    ]);
+
+    const isUserValid = allowedUsernames.has(trimmedUser);
+    const isPassValid = trimmedPass === cleanConfiguredPassword || trimmedPass === rawPassword;
+
+    if (!isUserValid || !isPassValid) {
       return NextResponse.json(
         { error: "Invalid username or password. Access denied." },
         { status: 401 }

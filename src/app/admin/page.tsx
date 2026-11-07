@@ -110,19 +110,31 @@ interface EnquiryLead {
 const STANDARD_TEAM_ROLES = [
   "Principal Architect & Founder",
   "Partner & Director",
-  "Senior Associate",
+  "Associate Architect",
   "Senior Project Architect",
   "Project Architect",
-  "Associate Architect",
   "Architect",
   "Junior Architect",
+  "Lead Interior Architect",
+  "Interior Architect",
+  "Interior Architect & Space Planner",
+  "Interior & Materials Specialist",
   "Senior Interior Designer",
   "Interior Designer",
+  "Senior Architect & Design Research",
+  "Computational Design & Project Architect",
+  "Architectural Designer & Visualization Lead",
+  "Sustainable Design & Landscape Coordinator",
+  "Architectural Designer",
+  "Technical Architect & Site Coordinator",
+  "Lead 3D Visualizer & Architect",
+  "Visualization Specialist & Architect",
   "3D Visualizer & BIM Modeler",
   "BIM Coordinator",
   "Landscape Architect",
   "Office Administrator & HR",
   "Studio Manager",
+  "Senior Associate",
   "Intern Architect",
 ] as const;
 
@@ -211,6 +223,29 @@ export default function AdminCMSPage() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [expandedProjectId, setExpandedProjectId] = useState<string | null>(null);
   const [expandedBlogId, setExpandedBlogId] = useState<string | null>(null);
+  const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [sessionExpiredWarning, setSessionExpiredWarning] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleStatus = (e: any) => {
+      if (e.detail?.status) {
+        setAutoSaveStatus(e.detail.status);
+        if (e.detail.status === "saved") {
+          setTimeout(() => setAutoSaveStatus("idle"), 3500);
+        }
+      }
+    };
+    const handleExpired = (e: any) => {
+      setSessionExpiredWarning(e.detail?.message || "Admin session expired. Please sign in again.");
+      showToast("⚠️ Admin session expired. Please log in to save changes permanently.");
+    };
+    window.addEventListener("techno_cms_autosave_status", handleStatus);
+    window.addEventListener("techno_admin_auth_expired", handleExpired);
+    return () => {
+      window.removeEventListener("techno_cms_autosave_status", handleStatus);
+      window.removeEventListener("techno_admin_auth_expired", handleExpired);
+    };
+  }, []);
 
   // Leads state
   const [leads, setLeads] = useState<EnquiryLead[]>([]);
@@ -396,22 +431,23 @@ export default function AdminCMSPage() {
             syncData = {};
           }
 
-          if (syncRes.ok || user) {
+          if (syncRes.ok && syncData?.token) {
             setIsAuthenticated(true);
-            setCurrentAdminUser(user.email || usernameInput);
-            if (syncData?.token) {
-              try {
-                localStorage.setItem("techno_admin_token", syncData.token);
-                sessionStorage.setItem("techno_admin_token", syncData.token);
-              } catch (_) {}
-            }
+            setCurrentAdminUser(syncData.username || user.email || usernameInput);
+            try {
+              localStorage.setItem("techno_admin_token", syncData.token);
+              sessionStorage.setItem("techno_admin_token", syncData.token);
+            } catch (_) {}
             setPasswordInput("");
             setAuthError("");
             showToast(`Welcome, ${user.email}! Authenticated via Firebase.`);
             return;
+          } else {
+            throw new Error(syncData?.error || "Firebase authentication was rejected by the server.");
           }
         } catch (fbErr: any) {
           console.warn("Firebase Email Login attempt:", fbErr);
+          throw new Error(fbErr?.message || "Firebase Email Login failed.");
         }
       }
 
@@ -450,17 +486,19 @@ export default function AdminCMSPage() {
         data = {};
       }
 
-      setIsAuthenticated(true);
-      setCurrentAdminUser(user.email || user.displayName || "Google Admin");
-      if (data?.token) {
+      if (res.ok && data?.token) {
+        setIsAuthenticated(true);
+        setCurrentAdminUser(data.username || user.email || user.displayName || "Google Admin");
         try {
           localStorage.setItem("techno_admin_token", data.token);
           sessionStorage.setItem("techno_admin_token", data.token);
         } catch (_) {}
+        setPasswordInput("");
+        setAuthError("");
+        showToast(`Welcome, ${user.displayName || user.email}! Signed in via Google.`);
+      } else {
+        throw new Error(data?.error || "Google Sign-In was not authorized by the server.");
       }
-      setPasswordInput("");
-      setAuthError("");
-      showToast(`Welcome, ${user.displayName || user.email}! Signed in via Google.`);
     } catch (err: any) {
       if (err.code === "auth/popup-closed-by-user") {
         setAuthError("Google Sign-In popup was closed before completion.");
@@ -1047,6 +1085,26 @@ export default function AdminCMSPage() {
               <p className="text-xs sm:text-sm text-neutral-400 max-w-2xl font-light leading-relaxed">
                 Full administrative control over all architectural projects, services, practice leadership, monographs, FAQs, gallery, awards, testimonials, and site configuration.
               </p>
+              {/* Live Cloud Auto-Sync Indicator */}
+              <div className="flex items-center gap-2 pt-1">
+                {autoSaveStatus === "saving" && (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[10px] font-mono bg-amber-500/20 text-amber-300 border border-amber-500/40 animate-pulse">
+                    <RefreshCw size={11} className="animate-spin" />
+                    Auto-syncing to cloud...
+                  </span>
+                )}
+                {autoSaveStatus === "saved" && (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                    <Check size={11} />
+                    Auto-saved to Cloud Storage
+                  </span>
+                )}
+                {autoSaveStatus === "error" && (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[10px] font-mono bg-red-500/20 text-red-300 border border-red-500/40">
+                    ⚠️ Cloud sync paused (check admin session)
+                  </span>
+                )}
+              </div>
             </div>
 
             {/* Data Management Action Buttons */}
@@ -1116,6 +1174,25 @@ export default function AdminCMSPage() {
 
       {/* Main Dashboard Body: Tabs & Entity Editors */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-8 space-y-8">
+
+      {/* Session Expired Warning Banner */}
+      {sessionExpiredWarning && (
+        <div className="p-4 bg-red-600 text-white text-xs flex items-center justify-between rounded shadow-lg animate-fadeIn border border-red-700">
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-sm">⚠️</span>
+            <span>{sessionExpiredWarning}</span>
+          </div>
+          <button
+            onClick={() => {
+              setIsAuthenticated(false);
+              setSessionExpiredWarning(null);
+            }}
+            className="px-3 py-1 bg-white text-red-700 font-semibold rounded text-xs hover:bg-neutral-100 transition-colors uppercase tracking-wider cursor-pointer"
+          >
+            Sign In Again
+          </button>
+        </div>
+      )}
 
       {/* Toast Notification */}
       {toastMessage && (
@@ -3185,109 +3262,127 @@ export default function AdminCMSPage() {
                   </div>
                 </div>
 
-                {/* Designation / Role Selector with real Dropdown & Custom input */}
-                <div className="space-y-1">
-                  <div className="flex justify-between items-center">
-                    <label className="text-[9px] uppercase font-mono text-neutral-500 font-semibold block">
-                      Designation / Role
-                    </label>
-                    <span className="text-[8px] font-mono text-neutral-400 uppercase">Dropdown + Custom</span>
-                  </div>
-                  <select
-                    value={STANDARD_TEAM_ROLES.includes(m.role as any) ? m.role : "__custom__"}
-                    onChange={(e) => {
-                      const selected = e.target.value;
-                      if (selected !== "__custom__") {
-                        const updated = team.map((item) =>
-                          item.id === m.id ? { ...item, role: selected } : item
-                        );
-                        saveTeam(updated);
-                      }
-                    }}
-                    className="w-full p-1.5 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none cursor-pointer font-medium text-neutral-800"
-                  >
-                    <option value="" disabled>-- Select Designation --</option>
-                    {STANDARD_TEAM_ROLES.map((role) => (
-                      <option key={role} value={role}>{role}</option>
-                    ))}
-                    {!STANDARD_TEAM_ROLES.includes(m.role as any) && m.role && (
-                      <option value={m.role}>Current: {m.role}</option>
-                    )}
-                    <option value="__custom__">Custom / Type your own...</option>
-                  </select>
-                  <input
-                    type="text"
-                    value={m.role || ""}
-                    placeholder="Type or customize designation..."
-                    onChange={(e) => {
-                      const updated = team.map((item) =>
-                        item.id === m.id ? { ...item, role: e.target.value } : item
-                      );
-                      saveTeam(updated);
-                    }}
-                    className="w-full text-xs text-neutral-700 p-1.5 border border-neutral-200 rounded focus:border-black focus:outline-none bg-neutral-50/50"
-                  />
-                </div>
+                {/* Designation & Discipline Selectors with Dual Dropdown + Custom Input */}
+                {(() => {
+                  const currentRole = (m.role || "").trim();
+                  const matchedRole = STANDARD_TEAM_ROLES.find(
+                    (r) => r.toLowerCase() === currentRole.toLowerCase()
+                  );
+                  const selectRoleValue = matchedRole || currentRole || "";
 
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <div className="flex justify-between items-center mb-0.5">
-                      <label className="text-[9px] uppercase font-mono text-neutral-500 font-semibold block">Discipline</label>
-                      <span className="text-[8px] font-mono text-neutral-400 uppercase">Dropdown</span>
-                    </div>
-                    <select
-                      value={STANDARD_TEAM_DISCIPLINES.includes(m.discipline as any) ? m.discipline : "__custom__"}
-                      onChange={(e) => {
-                        const selected = e.target.value;
-                        if (selected !== "__custom__") {
-                          const updated = team.map((item) =>
-                            item.id === m.id ? { ...item, discipline: selected } : item
-                          );
-                          saveTeam(updated);
-                        }
-                      }}
-                      className="w-full p-1.5 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none cursor-pointer font-medium text-neutral-800 mb-1"
-                    >
-                      <option value="" disabled>-- Select Discipline --</option>
-                      {STANDARD_TEAM_DISCIPLINES.map((disc) => (
-                        <option key={disc} value={disc}>{disc}</option>
-                      ))}
-                      {!STANDARD_TEAM_DISCIPLINES.includes(m.discipline as any) && m.discipline && (
-                        <option value={m.discipline}>Current: {m.discipline}</option>
-                      )}
-                      <option value="__custom__">Custom Discipline...</option>
-                    </select>
-                    {(!STANDARD_TEAM_DISCIPLINES.includes(m.discipline as any) || !m.discipline) && (
-                      <input
-                        type="text"
-                        value={m.discipline || ""}
-                        placeholder="Type custom discipline..."
-                        onChange={(e) => {
-                          const updated = team.map((item) =>
-                            item.id === m.id ? { ...item, discipline: e.target.value } : item
-                          );
-                          saveTeam(updated);
-                        }}
-                        className="w-full text-xs text-neutral-700 p-1 border border-neutral-200 rounded focus:border-black focus:outline-none bg-neutral-50/50"
-                      />
-                    )}
-                  </div>
-                  <div>
-                    <label className="text-[9px] uppercase font-mono text-neutral-500 font-semibold block mb-0.5">Credentials</label>
-                    <input
-                      type="text"
-                      value={m.credentials || ""}
-                      placeholder="e.g. B.Arch, COA"
-                      onChange={(e) => {
-                        const updated = team.map((item) =>
-                          item.id === m.id ? { ...item, credentials: e.target.value } : item
-                        );
-                        saveTeam(updated);
-                      }}
-                      className="w-full p-1.5 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none"
-                    />
-                  </div>
-                </div>
+                  const currentDisc = (m.discipline || "").trim();
+                  const matchedDisc = STANDARD_TEAM_DISCIPLINES.find(
+                    (d) => d.toLowerCase() === currentDisc.toLowerCase()
+                  );
+                  const selectDiscValue = matchedDisc || currentDisc || "Architecture";
+
+                  return (
+                    <>
+                      <div className="space-y-1">
+                        <div className="flex justify-between items-center">
+                          <label className="text-[9px] uppercase font-mono text-neutral-500 font-semibold block">
+                            Designation / Role
+                          </label>
+                          <span className="text-[8px] font-mono text-neutral-400 uppercase">Dropdown + Custom</span>
+                        </div>
+                        <select
+                          value={selectRoleValue}
+                          onChange={(e) => {
+                            const selected = e.target.value;
+                            if (selected && selected !== "__custom__") {
+                              const updated = team.map((item) =>
+                                item.id === m.id ? { ...item, role: selected } : item
+                              );
+                              saveTeam(updated);
+                            }
+                          }}
+                          className="w-full p-1.5 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none cursor-pointer font-medium text-neutral-800"
+                        >
+                          <option value="" disabled>-- Select Designation --</option>
+                          {STANDARD_TEAM_ROLES.map((role) => (
+                            <option key={role} value={role}>{role}</option>
+                          ))}
+                          {!matchedRole && currentRole && (
+                            <option value={currentRole}>{currentRole} (Current)</option>
+                          )}
+                          <option value="__custom__">+ Custom / Type your own below...</option>
+                        </select>
+                        <input
+                          type="text"
+                          value={m.role || ""}
+                          placeholder="Type or customize designation..."
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            const updated = team.map((item) =>
+                              item.id === m.id ? { ...item, role: val } : item
+                            );
+                            saveTeam(updated);
+                          }}
+                          className="w-full text-xs text-neutral-800 p-1.5 border border-neutral-200 rounded focus:border-black focus:outline-none bg-neutral-50/50 font-medium"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <div className="flex justify-between items-center mb-0.5">
+                            <label className="text-[9px] uppercase font-mono text-neutral-500 font-semibold block">Discipline</label>
+                            <span className="text-[8px] font-mono text-neutral-400 uppercase">Dropdown + Custom</span>
+                          </div>
+                          <select
+                            value={selectDiscValue}
+                            onChange={(e) => {
+                              const selected = e.target.value;
+                              if (selected && selected !== "__custom__") {
+                                const updated = team.map((item) =>
+                                  item.id === m.id ? { ...item, discipline: selected } : item
+                                );
+                                saveTeam(updated);
+                              }
+                            }}
+                            className="w-full p-1.5 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none cursor-pointer font-medium text-neutral-800 mb-1"
+                          >
+                            <option value="" disabled>-- Select Discipline --</option>
+                            {STANDARD_TEAM_DISCIPLINES.map((disc) => (
+                              <option key={disc} value={disc}>{disc}</option>
+                            ))}
+                            {!matchedDisc && currentDisc && (
+                              <option value={currentDisc}>{currentDisc} (Current)</option>
+                            )}
+                            <option value="__custom__">+ Custom / Type your own below...</option>
+                          </select>
+                          <input
+                            type="text"
+                            value={m.discipline || ""}
+                            placeholder="Type custom discipline..."
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              const updated = team.map((item) =>
+                                item.id === m.id ? { ...item, discipline: val } : item
+                              );
+                              saveTeam(updated);
+                            }}
+                            className="w-full text-xs text-neutral-800 p-1 border border-neutral-200 rounded focus:border-black focus:outline-none bg-neutral-50/50 font-medium"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[9px] uppercase font-mono text-neutral-500 font-semibold block mb-0.5">Credentials</label>
+                          <input
+                            type="text"
+                            value={m.credentials || ""}
+                            placeholder="e.g. B.Arch, COA"
+                            onChange={(e) => {
+                              const updated = team.map((item) =>
+                                item.id === m.id ? { ...item, credentials: e.target.value } : item
+                              );
+                              saveTeam(updated);
+                            }}
+                            className="w-full p-1.5 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none"
+                          />
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
 
                 <div>
                   <div className="flex justify-between items-center mb-1">

@@ -381,6 +381,16 @@ export async function syncToServer(payload: {
     } else {
       const err = await res.json().catch(() => ({}));
       console.warn("Failed to persist CMS update to server:", err);
+      if (res.status === 401 && typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("techno_admin_auth_expired", {
+            detail: {
+              message:
+                "Your admin session has expired or is invalid. Please sign in again to save your changes.",
+            },
+          })
+        );
+      }
       return { success: false, error: err };
     }
   } catch (err) {
@@ -974,6 +984,10 @@ export function CMSProvider({
       localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "true");
     } catch (_) {}
 
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("techno_cms_autosave_status", { detail: { status: "saving" } }));
+    }
+
     const existing = syncTimersRef.current.get(entity);
     if (existing) {
       clearTimeout(existing);
@@ -988,6 +1002,13 @@ export function CMSProvider({
             localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "false");
           }
         } catch (_) {}
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("techno_cms_autosave_status", { detail: { status: "saved", updatedAt: res.updatedAt } }));
+        }
+      } else {
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("techno_cms_autosave_status", { detail: { status: "error", error: res.error } }));
+        }
       }
     }, 1500);
     syncTimersRef.current.set(entity, timer);
