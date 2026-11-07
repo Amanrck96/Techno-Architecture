@@ -355,12 +355,17 @@ export async function syncToServer(payload: {
       headers["x-upstash-token"] = payload.upstashToken || creds.upstashToken;
     }
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
     const res = await fetch("/api/cms", {
       method: "POST",
       credentials: "include",
       headers,
       body: JSON.stringify(payload),
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
 
     if (res.ok) {
       const result = await res.json();
@@ -426,7 +431,7 @@ export interface CMSContextValue {
   saveSiteSettings: (newSettings: SiteSettings) => void;
   saveTestimonials: (newTestimonials: Testimonial[], explicitDeletedId?: string) => void;
   deleteEntity: (entity: string, id: string, slug?: string) => void;
-  saveAllToCloud: () => Promise<any>;
+  saveAllToCloud: (options?: { forceGitHubCommit?: boolean }) => Promise<any>;
   resetAllToDefaults: () => void;
   refetchFromServer: () => Promise<void>;
 }
@@ -998,20 +1003,26 @@ export function CMSProvider({
     }
     const timer = setTimeout(async () => {
       syncTimersRef.current.delete(entity);
-      const res = await syncToServer({ entity, data, deletedIds: currentDeleted || deletedIds });
-      if (res.success && res.updatedAt) {
-        lastServerUpdatedRef.current = res.updatedAt;
-        try {
-          if (syncTimersRef.current.size === 0) {
-            localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "false");
+      try {
+        const res = await syncToServer({ entity, data, deletedIds: currentDeleted || deletedIds });
+        if (res.success && res.updatedAt) {
+          lastServerUpdatedRef.current = res.updatedAt;
+          try {
+            if (syncTimersRef.current.size === 0) {
+              localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "false");
+            }
+          } catch (_) {}
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("techno_cms_autosave_status", { detail: { status: "saved", updatedAt: res.updatedAt } }));
           }
-        } catch (_) {}
-        if (typeof window !== "undefined") {
-          window.dispatchEvent(new CustomEvent("techno_cms_autosave_status", { detail: { status: "saved", updatedAt: res.updatedAt } }));
+        } else {
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("techno_cms_autosave_status", { detail: { status: "error", error: res.error } }));
+          }
         }
-      } else {
+      } catch (syncErr: any) {
         if (typeof window !== "undefined") {
-          window.dispatchEvent(new CustomEvent("techno_cms_autosave_status", { detail: { status: "error", error: res.error } }));
+          window.dispatchEvent(new CustomEvent("techno_cms_autosave_status", { detail: { status: "error", error: syncErr?.message || "Sync failed" } }));
         }
       }
     }, 1500);
@@ -1428,45 +1439,52 @@ export function CMSProvider({
     ]
   );
 
-  const saveAllToCloud = useCallback(async () => {
-    storageTimersRef.current.forEach((t) => clearTimeout(t));
-    storageTimersRef.current.clear();
-    syncTimersRef.current.forEach((t) => clearTimeout(t));
-    syncTimersRef.current.clear();
-    touchClientUpdate();
-    try {
-      localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects));
-      localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(services));
-      localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(team));
-      localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(blog));
-      localStorage.setItem(STORAGE_KEYS.FAQ, JSON.stringify(faq));
-      localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(gallery));
-      localStorage.setItem(STORAGE_KEYS.RECOGNITIONS, JSON.stringify(recognitions));
-      localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(siteSettings));
-      localStorage.setItem(STORAGE_KEYS.TESTIMONIALS, JSON.stringify(testimonials));
-      localStorage.setItem(STORAGE_KEYS.DELETED_IDS, JSON.stringify(deletedIds));
-    } catch (_) {}
-    const allData = {
-      projects,
-      services,
-      team,
-      blog,
-      faq,
-      gallery,
-      recognitions,
-      siteSettings,
-      testimonials,
-      deletedIds,
-    };
-    const res = await syncToServer({ allData, deletedIds, forceGitHubCommit: true });
-    if (res.success && res.updatedAt) {
-      lastServerUpdatedRef.current = res.updatedAt;
+  const saveAllToCloud = useCallback(
+    async (options?: { forceGitHubCommit?: boolean }) => {
+      storageTimersRef.current.forEach((t) => clearTimeout(t));
+      storageTimersRef.current.clear();
+      syncTimersRef.current.forEach((t) => clearTimeout(t));
+      syncTimersRef.current.clear();
+      touchClientUpdate();
       try {
-        localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "false");
+        localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects));
+        localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(services));
+        localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(team));
+        localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(blog));
+        localStorage.setItem(STORAGE_KEYS.FAQ, JSON.stringify(faq));
+        localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(gallery));
+        localStorage.setItem(STORAGE_KEYS.RECOGNITIONS, JSON.stringify(recognitions));
+        localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(siteSettings));
+        localStorage.setItem(STORAGE_KEYS.TESTIMONIALS, JSON.stringify(testimonials));
+        localStorage.setItem(STORAGE_KEYS.DELETED_IDS, JSON.stringify(deletedIds));
       } catch (_) {}
-    }
-    return res;
-  }, [projects, services, team, blog, faq, gallery, recognitions, siteSettings, testimonials, deletedIds]);
+      const allData = {
+        projects,
+        services,
+        team,
+        blog,
+        faq,
+        gallery,
+        recognitions,
+        siteSettings,
+        testimonials,
+        deletedIds,
+      };
+      const res = await syncToServer({
+        allData,
+        deletedIds,
+        forceGitHubCommit: Boolean(options?.forceGitHubCommit),
+      });
+      if (res.success && res.updatedAt) {
+        lastServerUpdatedRef.current = res.updatedAt;
+        try {
+          localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "false");
+        } catch (_) {}
+      }
+      return res;
+    },
+    [projects, services, team, blog, faq, gallery, recognitions, siteSettings, testimonials, deletedIds]
+  );
 
   const resetAllToDefaults = useCallback(() => {
     syncTimersRef.current.forEach((t) => clearTimeout(t));

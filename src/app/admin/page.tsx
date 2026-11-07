@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import BrandLogo from "@/components/common/BrandLogo";
 import {
   useCMSStore,
   getStorageCredentials,
@@ -230,7 +231,7 @@ export default function AdminCMSPage() {
     const handleStatus = (e: any) => {
       if (e.detail?.status) {
         setAutoSaveStatus(e.detail.status);
-        if (e.detail.status === "saved") {
+        if (e.detail.status === "saved" || e.detail.status === "error") {
           setTimeout(() => setAutoSaveStatus("idle"), 3500);
         }
       }
@@ -556,6 +557,26 @@ export default function AdminCMSPage() {
       showToast("Save failed: Network error reaching server.");
     } finally {
       setIsSyncingCloud(false);
+    }
+  };
+
+  const [isCommittingGitHub, setIsCommittingGitHub] = useState(false);
+  const handleCommitToGitHub = async () => {
+    if (!confirm("Commit all current studio content to GitHub repo (triggers production rebuild)? Proceed?")) {
+      return;
+    }
+    setIsCommittingGitHub(true);
+    try {
+      const res = await saveAllToCloud({ forceGitHubCommit: true });
+      if (res && res.success) {
+        showToast("Committed to GitHub successfully. Production redeployment started.");
+      } else {
+        showToast("GitHub commit notice: " + (res?.error || "Commit completed"));
+      }
+    } catch (e: any) {
+      showToast("GitHub commit error: " + e?.message);
+    } finally {
+      setIsCommittingGitHub(false);
     }
   };
 
@@ -1004,16 +1025,12 @@ export default function AdminCMSPage() {
               <Link
                 href="/"
                 title="Return to Public Site"
-                className="relative w-44 sm:w-56 md:w-64 h-10 sm:h-12 block group"
+                className="block group focus:outline-none"
               >
-                <Image
-                  src="/techno-logo-white-4k.png"
-                  alt="Techno Architecture Logo"
-                  fill
+                <BrandLogo
+                  theme="dark"
                   priority
-                  unoptimized
-                  sizes="320px"
-                  className="object-contain object-left group-hover:opacity-90 transition-opacity"
+                  className="w-44 sm:w-56 md:w-64"
                 />
               </Link>
               <div className="hidden sm:block h-6 w-px bg-white/20" />
@@ -1142,6 +1159,21 @@ export default function AdminCMSPage() {
               >
                 <Download size={13} />
                 <span>Export Backup</span>
+              </button>
+
+              <button
+                onClick={handleCommitToGitHub}
+                disabled={isCommittingGitHub}
+                type="button"
+                className="flex items-center gap-1.5 px-3.5 py-2 bg-white/10 hover:bg-white/20 disabled:opacity-50 text-white border border-white/15 transition-colors rounded text-xs font-medium uppercase tracking-wider cursor-pointer"
+                title="Commit content directly to GitHub repository & trigger production redeployment"
+              >
+                {isCommittingGitHub ? (
+                  <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <GitBranch size={13} />
+                )}
+                <span>{isCommittingGitHub ? "Committing..." : "Commit to GitHub"}</span>
               </button>
 
               <button
@@ -3289,7 +3321,15 @@ export default function AdminCMSPage() {
                           value={selectRoleValue}
                           onChange={(e) => {
                             const selected = e.target.value;
-                            if (selected && selected !== "__custom__") {
+                            if (selected === "__custom__") {
+                              const inputEl = document.getElementById(`role-input-${m.id}`) as HTMLInputElement;
+                              if (inputEl) {
+                                inputEl.focus();
+                                inputEl.select();
+                              }
+                              return;
+                            }
+                            if (selected) {
                               const updated = team.map((item) =>
                                 item.id === m.id ? { ...item, role: selected } : item
                               );
@@ -3308,6 +3348,7 @@ export default function AdminCMSPage() {
                           <option value="__custom__">+ Custom / Type your own below...</option>
                         </select>
                         <input
+                          id={`role-input-${m.id}`}
                           type="text"
                           value={m.role || ""}
                           placeholder="Type or customize designation..."
@@ -3332,35 +3373,44 @@ export default function AdminCMSPage() {
                             value={selectDiscValue}
                             onChange={(e) => {
                               const selected = e.target.value;
-                              if (selected && selected !== "__custom__") {
-                                const updated = team.map((item) =>
-                                  item.id === m.id ? { ...item, discipline: selected } : item
-                                );
-                                saveTeam(updated);
+                              if (selected === "__custom__") {
+                                const inputEl = document.getElementById(`disc-input-${m.id}`) as HTMLInputElement;
+                                if (inputEl) {
+                                inputEl.focus();
+                                inputEl.select();
                               }
-                            }}
-                            className="w-full p-1.5 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none cursor-pointer font-medium text-neutral-800 mb-1"
-                          >
-                            <option value="" disabled>-- Select Discipline --</option>
-                            {STANDARD_TEAM_DISCIPLINES.map((disc) => (
-                              <option key={disc} value={disc}>{disc}</option>
-                            ))}
-                            {!matchedDisc && currentDisc && (
-                              <option value={currentDisc}>{currentDisc} (Current)</option>
-                            )}
-                            <option value="__custom__">+ Custom / Type your own below...</option>
-                          </select>
-                          <input
-                            type="text"
-                            value={m.discipline || ""}
-                            placeholder="Type custom discipline..."
-                            onChange={(e) => {
-                              const val = e.target.value;
+                              return;
+                            }
+                            if (selected) {
                               const updated = team.map((item) =>
-                                item.id === m.id ? { ...item, discipline: val } : item
+                                item.id === m.id ? { ...item, discipline: selected } : item
                               );
                               saveTeam(updated);
-                            }}
+                            }
+                          }}
+                          className="w-full p-1.5 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none cursor-pointer font-medium text-neutral-800 mb-1"
+                        >
+                          <option value="" disabled>-- Select Discipline --</option>
+                          {STANDARD_TEAM_DISCIPLINES.map((disc) => (
+                            <option key={disc} value={disc}>{disc}</option>
+                          ))}
+                          {!matchedDisc && currentDisc && (
+                            <option value={currentDisc}>{currentDisc} (Current)</option>
+                          )}
+                          <option value="__custom__">+ Custom / Type your own below...</option>
+                        </select>
+                        <input
+                          id={`disc-input-${m.id}`}
+                          type="text"
+                          value={m.discipline || ""}
+                          placeholder="Type custom discipline..."
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            const updated = team.map((item) =>
+                              item.id === m.id ? { ...item, discipline: val } : item
+                            );
+                            saveTeam(updated);
+                          }}
                             className="w-full text-xs text-neutral-800 p-1 border border-neutral-200 rounded focus:border-black focus:outline-none bg-neutral-50/50 font-medium"
                           />
                         </div>
