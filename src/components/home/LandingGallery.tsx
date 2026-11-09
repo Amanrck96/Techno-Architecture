@@ -55,7 +55,7 @@ export default function LandingGallery() {
       <div className="relative flex-1 w-full overflow-hidden bg-neutral-950 text-white select-none">
         <video
           ref={videoRef}
-          src={process.env.NEXT_PUBLIC_HERO_VIDEO_URL || "/brindavan.mp4"}
+          src={process.env.NEXT_PUBLIC_HERO_VIDEO_URL || "https://firebasestorage.googleapis.com/v0/b/technoarchitecture-7d718.firebasestorage.app/o/media%2Fvideos%2Fbrindavan.mp4?alt=media&token=7fa378f0-ee17-4056-addf-a7c94fe86b93"}
           poster="/projects/aikya/elevation-east.jpg"
           autoPlay
           loop
