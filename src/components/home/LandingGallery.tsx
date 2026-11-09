@@ -55,7 +55,7 @@ export default function LandingGallery() {
       <div className="relative flex-1 w-full overflow-hidden bg-neutral-950 text-white select-none">
         <video
           ref={videoRef}
-          src="/brindavan.mp4"
+          src={process.env.NEXT_PUBLIC_HERO_VIDEO_URL || "/brindavan.mp4"}
           poster="/projects/aikya/elevation-east.jpg"
           autoPlay
           loop

@@ -6,6 +6,9 @@ const nextConfig = {
   },
   images: {
     formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 2678400, // 31 days (prevents constant Vercel Image Optimization recalculations)
+    deviceSizes: [640, 750, 1080, 1920],
+    imageSizes: [32, 64, 128, 256, 384],
     remotePatterns: [
       {
         protocol: 'https',
@@ -24,6 +27,31 @@ const nextConfig = {
         hostname: 'storage.googleapis.com',
       },
     ],
+  },
+  async headers() {
+    return [
+      {
+        // 1. Immutable Edge CDN Caching for Static Images & Media Assets (1 Year)
+        // Drastically cuts Vercel Fast Origin Transfer and Fast Data Transfer
+        source: '/:path*.(jpg|jpeg|png|webp|avif|gif|svg|mp4|webm|mov|ico|woff2)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        // 2. Edge CDN Caching for CMS API Hydration (reduces Function Invocations)
+        source: '/api/cms',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=60, stale-while-revalidate=300',
+          },
+        ],
+      },
+    ];
   },
   async redirects() {
     return [

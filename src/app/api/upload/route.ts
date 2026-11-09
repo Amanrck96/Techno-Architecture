@@ -158,46 +158,21 @@ export async function POST(request: Request) {
       console.warn("Firebase Storage upload skipped or failed, falling back to local server storage:", fbErr);
     }
 
-    // 3. Fallback: Save to public/uploads/[folder]/
-    try {
-      const uploadsDir = path.join(process.cwd(), "public", "uploads", folder);
-      await fs.mkdir(uploadsDir, { recursive: true });
-      const localFilePath = path.join(uploadsDir, filename);
-      await fs.writeFile(localFilePath, buffer);
-    } catch (_) {}
-
-    // 4. Commit to GitHub repo if token configured (guarantees permanent Vercel deployment persistence)
-    const isVercel = Boolean(process.env.VERCEL);
-    const ghToken = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
-    const ghRepo = process.env.GITHUB_REPOSITORY || "Kima1011/Techno-Architecture";
-    if (isVercel && ghToken && ghRepo && buffer.length < 25 * 1024 * 1024) {
+    // 3. Fallback: Save to public/uploads/[folder]/ (Local development only)
+    if (!process.env.VERCEL) {
       try {
-        const ghPath = `public/uploads/${folder}/${filename}`;
-        const contentBase64 = buffer.toString("base64");
-        await fetch(`https://api.github.com/repos/${ghRepo}/contents/${ghPath}`, {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${ghToken}`,
-            Accept: "application/vnd.github.v3+json",
-            "Content-Type": "application/json",
-            "User-Agent": "Techno-Architecture-Media",
-          },
-          body: JSON.stringify({
-            message: `chore(media): upload ${filename} to ${folder} archive`,
-            content: contentBase64,
-            branch: "main",
-          }),
-        });
-      } catch (ghErr) {
-        console.warn("[Media Upload] GitHub auto-commit notice:", ghErr);
-      }
+        const uploadsDir = path.join(process.cwd(), "public", "uploads", folder);
+        await fs.mkdir(uploadsDir, { recursive: true });
+        const localFilePath = path.join(uploadsDir, filename);
+        await fs.writeFile(localFilePath, buffer);
+      } catch (_) {}
     }
 
     const publicUrl = `/uploads/${folder}/${filename}`;
     return NextResponse.json({
       success: true,
       url: publicUrl,
-      storage: ghToken ? "github" : "local",
+      storage: "local",
       name: filename,
       folder,
     });
