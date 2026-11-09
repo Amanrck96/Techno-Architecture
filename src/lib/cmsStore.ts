@@ -985,6 +985,9 @@ export function CMSProvider({
     };
   }, [fetchFromServer, applyDataset, deletedIds]);
 
+  // Ref to track the global "saving" watchdog timer — prevents stuck spinner forever
+  const savingWatchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const debouncedSyncToServer = useCallback((entity: string, data: any, currentDeleted?: string[]) => {
     touchClientUpdate();
     // Record local edit timestamp to block server overwrites during the grace period
@@ -997,6 +1000,20 @@ export function CMSProvider({
       window.dispatchEvent(new CustomEvent("techno_cms_autosave_status", { detail: { status: "saving" } }));
     }
 
+    // WATCHDOG: If still "saving" after 25s (network hang / AbortController killed / zombie timer),
+    // force the status to "error" so the spinner NEVER stays stuck forever.
+    if (savingWatchdogRef.current) clearTimeout(savingWatchdogRef.current);
+    savingWatchdogRef.current = setTimeout(() => {
+      savingWatchdogRef.current = null;
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("techno_cms_autosave_status", {
+            detail: { status: "error", error: "Save timed out. Please click 'Save All to Cloud' to retry." },
+          })
+        );
+      }
+    }, 25000);
+
     const existing = syncTimersRef.current.get(entity);
     if (existing) {
       clearTimeout(existing);
@@ -1005,6 +1022,8 @@ export function CMSProvider({
       syncTimersRef.current.delete(entity);
       try {
         const res = await syncToServer({ entity, data, deletedIds: currentDeleted || deletedIds });
+        // Cancel watchdog on any definitive result
+        if (savingWatchdogRef.current) { clearTimeout(savingWatchdogRef.current); savingWatchdogRef.current = null; }
         if (res.success && res.updatedAt) {
           lastServerUpdatedRef.current = res.updatedAt;
           try {
@@ -1021,6 +1040,8 @@ export function CMSProvider({
           }
         }
       } catch (syncErr: any) {
+        // Cancel watchdog — we already have a definitive error
+        if (savingWatchdogRef.current) { clearTimeout(savingWatchdogRef.current); savingWatchdogRef.current = null; }
         if (typeof window !== "undefined") {
           window.dispatchEvent(new CustomEvent("techno_cms_autosave_status", { detail: { status: "error", error: syncErr?.message || "Sync failed" } }));
         }

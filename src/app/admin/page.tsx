@@ -226,12 +226,29 @@ export default function AdminCMSPage() {
   const [expandedBlogId, setExpandedBlogId] = useState<string | null>(null);
   const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [sessionExpiredWarning, setSessionExpiredWarning] = useState<string | null>(null);
+  // UI-side watchdog: if "saving" spinner stays for >28s without resolution, force it to "error"
+  const autoSaveWatchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const handleStatus = (e: any) => {
       if (e.detail?.status) {
-        setAutoSaveStatus(e.detail.status);
-        if (e.detail.status === "saved" || e.detail.status === "error") {
+        const status = e.detail.status as "saving" | "saved" | "error" | "idle";
+        setAutoSaveStatus(status);
+
+        // Clear any previous watchdog
+        if (autoSaveWatchdogRef.current) {
+          clearTimeout(autoSaveWatchdogRef.current);
+          autoSaveWatchdogRef.current = null;
+        }
+
+        if (status === "saving") {
+          // If still showing "saving" after 28s — something is definitely hung
+          autoSaveWatchdogRef.current = setTimeout(() => {
+            autoSaveWatchdogRef.current = null;
+            setAutoSaveStatus("error");
+            setTimeout(() => setAutoSaveStatus("idle"), 4000);
+          }, 28000);
+        } else if (status === "saved" || status === "error") {
           setTimeout(() => setAutoSaveStatus("idle"), 3500);
         }
       }
@@ -245,6 +262,7 @@ export default function AdminCMSPage() {
     return () => {
       window.removeEventListener("techno_cms_autosave_status", handleStatus);
       window.removeEventListener("techno_admin_auth_expired", handleExpired);
+      if (autoSaveWatchdogRef.current) clearTimeout(autoSaveWatchdogRef.current);
     };
   }, []);
 

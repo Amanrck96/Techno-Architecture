@@ -197,64 +197,76 @@ export async function saveToFirebaseStorage(
   data: any,
   explicitBucket?: string
 ): Promise<{ success: boolean; error?: string }> {
-  const bucketName =
+  const primaryBucket =
     explicitBucket ||
     process.env.FIREBASE_STORAGE_BUCKET ||
     process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ||
     FIREBASE_STORAGE_BUCKET;
 
+  const candidateBuckets = Array.from(
+    new Set([
+      primaryBucket,
+      primaryBucket.replace(".firebasestorage.app", ".appspot.com"),
+      primaryBucket.replace(".appspot.com", ".firebasestorage.app"),
+    ])
+  ).filter(Boolean);
+
   // 1. Try Firebase Admin SDK first (bypasses storage rules if service account is configured)
-  try {
-    const bucket = getFirebaseStorageBucket(bucketName);
-    if (bucket) {
-      const bodyString = typeof data === "string" ? data : JSON.stringify(data);
-      await bucket.file(FIREBASE_CMS_FILE_PATH).save(bodyString, {
-        contentType: "application/json",
-        resumable: false,
-        metadata: { cacheControl: "no-store" },
-      });
-      return { success: true };
+  for (const bucketName of candidateBuckets) {
+    try {
+      const bucket = getFirebaseStorageBucket(bucketName);
+      if (bucket) {
+        const bodyString = typeof data === "string" ? data : JSON.stringify(data);
+        await bucket.file(FIREBASE_CMS_FILE_PATH).save(bodyString, {
+          contentType: "application/json",
+          resumable: false,
+          metadata: { cacheControl: "no-store" },
+        });
+        return { success: true };
+      }
+    } catch (adminErr: any) {
+      console.warn("[CMS Server] Firebase Admin Storage upload notice:", adminErr?.message);
     }
-  } catch (adminErr: any) {
-    console.warn("[CMS Server] Firebase Admin Storage upload notice:", adminErr?.message);
   }
 
   // 2. Direct REST upload fallback to Firebase Storage
   // (Works seamlessly via standard Google Cloud Storage / Firebase Storage REST API)
-  const uploadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o?name=${encodeURIComponent(
-    FIREBASE_CMS_FILE_PATH
-  )}&uploadType=media`;
+  let lastErrText = "";
+  for (const bucketName of candidateBuckets) {
+    const uploadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o?name=${encodeURIComponent(
+      FIREBASE_CMS_FILE_PATH
+    )}&uploadType=media`;
 
-  try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 12000);
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 10000);
 
-    const bodyString = typeof data === "string" ? data : JSON.stringify(data);
-    const res = await fetch(uploadUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: bodyString,
-      signal: controller.signal,
-    });
-    clearTimeout(timer);
+      const bodyString = typeof data === "string" ? data : JSON.stringify(data);
+      const res = await fetch(uploadUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: bodyString,
+        signal: controller.signal,
+      });
+      clearTimeout(timer);
 
-    if (res.ok) {
-      return { success: true };
+      if (res.ok) {
+        return { success: true };
+      }
+
+      const errText = await res.text();
+      lastErrText = `Firebase Storage (${bucketName}) HTTP ${res.status}: ${errText}`;
+    } catch (e: any) {
+      lastErrText = e?.message || "Firebase Storage upload failed.";
     }
-
-    const errText = await res.text();
-    return {
-      success: false,
-      error: `Firebase Storage HTTP ${res.status}: ${errText}`,
-    };
-  } catch (e: any) {
-    return {
-      success: false,
-      error: e?.message || "Firebase Storage upload failed.",
-    };
   }
+
+  return {
+    success: false,
+    error: lastErrText || "Firebase Storage upload failed across all bucket endpoints.",
+  };
 }
 
 /**
@@ -280,33 +292,43 @@ export async function getFromFirebaseStorage(explicitBucket?: string): Promise<a
   }
 
   // 2. Fallback to public CDN / REST endpoint
-  const bucketName = explicitBucket || FIREBASE_STORAGE_BUCKET;
-  const getUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(
-    FIREBASE_CMS_FILE_PATH
-  )}?alt=media&ts=${Date.now()}`;
+  const primaryBucket = explicitBucket || FIREBASE_STORAGE_BUCKET;
+  const candidateBuckets = Array.from(
+    new Set([
+      primaryBucket,
+      primaryBucket.replace(".firebasestorage.app", ".appspot.com"),
+      primaryBucket.replace(".appspot.com", ".firebasestorage.app"),
+    ])
+  ).filter(Boolean);
 
-  try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 8000);
+  for (const bucketName of candidateBuckets) {
+    const getUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(
+      FIREBASE_CMS_FILE_PATH
+    )}?alt=media&ts=${Date.now()}`;
 
-    const res = await fetch(getUrl, {
-      cache: "no-store",
-      headers: {
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        Pragma: "no-cache",
-      },
-      signal: controller.signal,
-    });
-    clearTimeout(timer);
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 6000);
 
-    if (res.ok) {
-      const data = await res.json();
-      if (data && typeof data === "object" && data.updatedAt) {
-        return data;
+      const res = await fetch(getUrl, {
+        cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+        },
+        signal: controller.signal,
+      });
+      clearTimeout(timer);
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data && typeof data === "object" && data.updatedAt) {
+          return data;
+        }
       }
+    } catch (e) {
+      // Firebase Storage read notice
     }
-  } catch (e) {
-    // Firebase Storage read notice
   }
   return null;
 }
@@ -752,22 +774,7 @@ export async function writeStore(
       }
     })(),
 
-    // Tier 4: GitHub direct commit (ONLY when explicitly requested via forceGitHubCommit or manual Save to Cloud)
-    // NEVER run on automatic debounced background typing saves to prevent spamming GitHub commits and redeployments.
-    (async () => {
-      if (!options?.forceGitHubCommit) {
-        return;
-      }
-
-      const ghRes = await saveToGitHub(cleanData, options?.githubToken, options?.githubRepo);
-      if (ghRes.success) {
-        result.github = true;
-      } else if (options?.githubToken || process.env.GITHUB_TOKEN || process.env.GH_TOKEN) {
-        result.errorDetails.push(`GitHub: ${ghRes.error}`);
-      }
-    })(),
-
-    // Tier 5: /tmp or local cache file
+    // Tier 4: /tmp or local cache file
     (async () => {
       try {
         const dir = path.dirname(TMP_FILE_PATH);
@@ -779,6 +786,23 @@ export async function writeStore(
       }
     })(),
   ]);
+
+  // SEQUENTIAL GITHUB TIER — executes after Firebase Storage result is known:
+  // 1. If forceGitHubCommit=true → always commit to GitHub (manual "Commit to GitHub" or "Save All to Cloud" button)
+  // 2. If Firebase Storage write FAILED and we have no Firestore/Upstash → auto-fallback commit to GitHub to guarantee persistence!
+  const hasGitHubToken = options?.githubToken || process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
+  if (hasGitHubToken && (options?.forceGitHubCommit || (!result.firebaseStorage && !result.firestore && !result.upstash))) {
+    try {
+      const ghRes = await saveToGitHub(cleanData, options?.githubToken, options?.githubRepo);
+      if (ghRes.success) {
+        result.github = true;
+      } else {
+        result.errorDetails.push(`GitHub: ${ghRes.error}`);
+      }
+    } catch (ghErr: any) {
+      result.errorDetails.push(`GitHub error: ${ghErr?.message}`);
+    }
+  }
 
   result.isPermanent =
     result.firebaseStorage ||
