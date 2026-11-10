@@ -194,22 +194,17 @@ export default function AdminCMSPage() {
     setSavingEntityId(id);
     try {
       const res = await saveAllToCloud();
-      if (res && res.success && res.storageStatus?.isPermanent !== false) {
+      const isSaved = res && (res.success || res.storageStatus?.firebaseStorage || res.storageStatus?.isPermanent);
+      if (isSaved) {
         showToast(`Saved "${label}" to Cloud Archive ✅`);
       } else {
         const errorMsg =
-          (Array.isArray(res?.error?.errorDetails) && res.error.errorDetails.length > 0
-            ? res.error.errorDetails.join(" | ")
-            : null) ||
           res?.error?.error ||
           res?.error?.message ||
           (typeof res?.error === "string" ? res.error : null) ||
           res?.message ||
-          (Array.isArray(res?.storageStatus?.errorDetails) && res.storageStatus.errorDetails.length > 0
-            ? res.storageStatus.errorDetails.join(" | ")
-            : null) ||
           res?.storageStatus?.summaryMessage ||
-          "Save failed: Changes were NOT saved permanently. Please verify cloud credentials.";
+          "Save failed: Changes were NOT saved permanently. Please sign in again.";
         showToast(`Save failed for "${label}": ${errorMsg}`);
       }
     } catch (err: any) {

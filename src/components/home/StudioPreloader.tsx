@@ -74,6 +74,12 @@ export default function StudioPreloader({ forceShow = false, onComplete }: Studi
     const startTime = Date.now();
     const duration = 1800; // 1.8s
 
+    // Safety watchdog: Guarantees exit after max 2.2s even if setInterval is throttled in background tabs
+    const safetyTimer = setTimeout(() => {
+      clearInterval(timer);
+      finishAndExit();
+    }, 2200);
+
     const timer = setInterval(() => {
       const elapsed = Date.now() - startTime;
       const pct = Math.min(100, Math.floor((elapsed / duration) * 100));
@@ -88,6 +94,7 @@ export default function StudioPreloader({ forceShow = false, onComplete }: Studi
       } else {
         setStatusText("STUDIO READY");
         clearInterval(timer);
+        clearTimeout(safetyTimer);
         // Brief cinematic pause at 100% before shutter wipe
         setTimeout(() => {
           finishAndExit();
@@ -99,6 +106,7 @@ export default function StudioPreloader({ forceShow = false, onComplete }: Studi
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" || e.key === " ") {
         clearInterval(timer);
+        clearTimeout(safetyTimer);
         finishAndExit();
       }
     };
@@ -106,6 +114,7 @@ export default function StudioPreloader({ forceShow = false, onComplete }: Studi
 
     return () => {
       clearInterval(timer);
+      clearTimeout(safetyTimer);
       window.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "";
     };

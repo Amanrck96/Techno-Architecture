@@ -66,3 +66,21 @@ export function verifySessionToken(token: string | undefined | null): { valid: b
     return { valid: false };
   }
 }
+
+/**
+ * Validates multiple candidate tokens (e.g. Header token, x-admin-token, and Cookie).
+ * Returns valid if ANY candidate is verified. This prevents a stale expired cookie
+ * from blocking a fresh authorization header token.
+ */
+export function verifyAnyAdminToken(
+  candidateTokens: (string | undefined | null)[]
+): { valid: boolean; username?: string; token?: string } {
+  for (const candidate of candidateTokens) {
+    if (!candidate) continue;
+    const res = verifySessionToken(candidate);
+    if (res.valid) {
+      return { valid: true, username: res.username || "admin", token: candidate };
+    }
+  }
+  return { valid: false };
+}

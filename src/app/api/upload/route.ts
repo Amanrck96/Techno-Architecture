@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import fs from "fs/promises";
 import path from "path";
-import { verifySessionToken, SESSION_COOKIE_NAME } from "@/lib/auth";
+import { verifySessionToken, verifyAnyAdminToken, SESSION_COOKIE_NAME } from "@/lib/auth";
 import { getFirebaseStorageBucket } from "@/lib/firebaseAdmin";
 
 export const dynamic = "force-dynamic";
@@ -22,12 +22,12 @@ export async function POST(request: Request) {
       request.headers.get("Authorization") ||
       request.headers.get("x-admin-token") ||
       "";
-    const token =
-      cookieStore.get(SESSION_COOKIE_NAME)?.value ||
-      authHeader.replace(/^Bearer\s+/i, "").trim() ||
-      formToken;
-
-    const authResult = verifySessionToken(token);
+    const authResult = verifyAnyAdminToken([
+      authHeader.replace(/^Bearer\s+/i, "").trim(),
+      request.headers.get("x-admin-token"),
+      cookieStore.get(SESSION_COOKIE_NAME)?.value,
+      formToken,
+    ]);
     
     // In local dev without session, allow upload if no session cookie exists
     const isDev = process.env.NODE_ENV !== "production";

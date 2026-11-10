@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { verifySessionToken, SESSION_COOKIE_NAME } from "@/lib/auth";
+import { verifySessionToken, verifyAnyAdminToken, SESSION_COOKIE_NAME } from "@/lib/auth";
 import { getFirestoreDb, getFirebaseStorageBucket } from "@/lib/firebaseAdmin";
 import {
   readStore,
@@ -107,13 +107,13 @@ export async function POST(request: Request) {
     const authHeader = request.headers.get("authorization") || request.headers.get("x-admin-token");
     const tokenFromHeader = authHeader?.replace(/^Bearer\s+/i, "");
 
-    const tokenToVerify = sessionCookie?.value || tokenFromHeader;
+    // Check all candidate tokens — prevents an expired cookie from masking a fresh header token
+    const { valid } = verifyAnyAdminToken([
+      tokenFromHeader,
+      request.headers.get("x-admin-token"),
+      sessionCookie?.value,
+    ]);
 
-    if (!tokenToVerify) {
-      return NextResponse.json({ error: "Unauthorized: Admin session required." }, { status: 401 });
-    }
-
-    const { valid } = verifySessionToken(tokenToVerify);
     if (!valid) {
       return NextResponse.json({ error: "Unauthorized: Invalid or expired admin session." }, { status: 401 });
     }

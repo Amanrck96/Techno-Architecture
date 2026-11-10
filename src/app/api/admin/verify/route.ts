@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { verifySessionToken, SESSION_COOKIE_NAME } from "@/lib/auth";
+import { verifyAnyAdminToken, SESSION_COOKIE_NAME } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -11,13 +11,11 @@ export async function GET(request: Request) {
     const authHeader = request.headers.get("authorization") || request.headers.get("x-admin-token");
     const tokenFromHeader = authHeader?.replace(/^Bearer\s+/i, "");
 
-    const tokenToVerify = sessionCookie?.value || tokenFromHeader;
-
-    if (!tokenToVerify) {
-      return NextResponse.json({ authenticated: false }, { status: 401 });
-    }
-
-    const { valid, username } = verifySessionToken(tokenToVerify);
+    const { valid, username, token: verifiedToken } = verifyAnyAdminToken([
+      tokenFromHeader,
+      request.headers.get("x-admin-token"),
+      sessionCookie?.value,
+    ]);
 
     if (!valid) {
       return NextResponse.json({ authenticated: false }, { status: 401 });
@@ -26,7 +24,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       authenticated: true,
       username: username || "admin",
-      token: tokenToVerify,
+      token: verifiedToken || tokenFromHeader || sessionCookie?.value,
     });
   } catch (error) {
     console.error("Admin verify session error:", error);
