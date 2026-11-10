@@ -14,6 +14,14 @@
       "**/node_modules/**"
     ],
     "cleanUrls": true,
-    "trailingSlash": false
+    "trailingSlash": false,
+    "frameworksBackend": {
+      "region": "us-central1",
+      "minInstances": 1,
+      "concurrency": 80,
+      "cpu": 1,
+      "memoryMB": 512,
+      "timeoutSeconds": 60
+    }
   }
 }
