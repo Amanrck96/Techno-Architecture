@@ -2776,18 +2776,6 @@
       "sortOrder": 9
     },
     {
-      "id": "team-apeksh",
-      "name": "Ar. Apeksh",
-      "role": "Computational Design & Project Architect",
-      "discipline": "Architecture",
-      "credentials": "B.Arch",
-      "bio": "Focuses on parametric solar shading facades, computational geometry, daylight simulations, and contemporary envelope detailing.",
-      "image": "/team/apeksh-1.jpg",
-      "hoverImage": "/team/apeksh-2.jpg",
-      "socials": [],
-      "sortOrder": 10
-    },
-    {
       "id": "team-mohit",
       "name": "Ar. Mohit",
       "role": "Interior Architect & Space Planner",
@@ -2796,6 +2784,18 @@
       "bio": "Translates architectural narratives into crafted living spaces, emphasizing ergonomic joinery, bespoke hardware, and tailored finishes.",
       "image": "/team/mohit-2.jpg",
       "hoverImage": "/team/mohit-1.jpg",
+      "socials": [],
+      "sortOrder": 10
+    },
+    {
+      "id": "team-apeksh",
+      "name": "Ar. Apeksh",
+      "role": "Computational Design & Project Architect",
+      "discipline": "Architecture",
+      "credentials": "B.Arch",
+      "bio": "Focuses on parametric solar shading facades, computational geometry, daylight simulations, and contemporary envelope detailing.",
+      "image": "/team/apeksh-1.jpg",
+      "hoverImage": "/team/apeksh-2.jpg",
       "socials": [],
       "sortOrder": 11
     },
@@ -2930,6 +2930,17 @@
       "hoverImage": "/team/harsan-2.jpg",
       "socials": [],
       "sortOrder": 22
+    },
+    {
+      "id": "team-1794394967093",
+      "name": "AMAN SAH",
+      "role": "Office Administrator & HR",
+      "discipline": "Office Administration",
+      "credentials": "B.Arch",
+      "bio": "Practitioner contributing to innovative spatial planning and craftsmanship.",
+      "image": "https://firebasestorage.googleapis.com/v0/b/technoarchitecture-7d718.firebasestorage.app/o/team%2Ftechno_photo_1794395039486.jpg?alt=media&token=techno_photo_1794395039486.jpg",
+      "socials": [],
+      "sortOrder": 23
     }
   ],
   "blog": [
@@ -5181,7 +5192,7 @@
       "sortOrder": 4
     }
   ],
-  "updatedAt": "2026-11-11T11:31:31.009Z",
+  "updatedAt": "2026-11-11T11:32:28.574Z",
   "deletedIds": [
     "team-1793451364578",
     "team-vaishnavi"
