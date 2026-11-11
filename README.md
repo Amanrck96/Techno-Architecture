@@ -82,9 +82,9 @@ npm run start
 
 ---
 
-## 🔐 Required Environment Variables for Production (Vercel)
+## 🔐 Environment Variables & Production Architecture (Google Firebase)
 
-On Vercel, the local serverless filesystem is read-only (`EROFS`) and `/tmp` is ephemeral and not shared across serverless function instances. To ensure CMS edits in `/admin` persist durably and synchronize instantly across all devices and visitors, configure the following environment variables in your Vercel Project Settings (`Settings` -> `Environment Variables`):
+On Google Firebase (App Hosting / Cloud Run), Application Default Credentials (ADC) are automatically provided by the compute service account. Server-side CMS data persists permanently to Firebase Cloud Storage (`technoarchitecture-7d718.firebasestorage.app`) and Firestore without needing manual private keys in production.
 
 ### 1. Admin Authentication & Session Security (Required)
 | Variable | Description |
@@ -93,15 +93,15 @@ On Vercel, the local serverless filesystem is read-only (`EROFS`) and `/tmp` is 
 | `ADMIN_SESSION_SECRET` | Cryptographically random secret key (32+ chars) used for HMAC session tokens. |
 | `ADMIN_USERNAME` | Admin username (defaults to `admin` if omitted). |
 
-### 2. Firebase Cloud Storage & Admin SDK (Required for CMS Persistence)
+### 2. Firebase Cloud Storage & Admin SDK (ADC on Google Cloud / Fallback for Local Dev)
 | Variable | Description | Example / Recommended Value |
 |---|---|---|
 | `FIREBASE_PROJECT_ID` | Google Cloud / Firebase project identifier | `technoarchitecture-7d718` |
-| `FIREBASE_CLIENT_EMAIL` | Service Account email address | `firebase-adminsdk-...@technoarchitecture-7d718.iam.gserviceaccount.com` |
-| `FIREBASE_PRIVATE_KEY` | Service Account private key with newline escapes | `"-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"` |
 | `FIREBASE_STORAGE_BUCKET` | Default Google Cloud Storage bucket name | `technoarchitecture-7d718.firebasestorage.app` |
+| `FIREBASE_CLIENT_EMAIL` | *(Local dev fallback only)* Service Account email | `firebase-adminsdk-...@technoarchitecture-7d718.iam.gserviceaccount.com` |
+| `FIREBASE_PRIVATE_KEY` | *(Local dev fallback only)* Service Account private key | `"-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"` |
 
-*(Alternatively, you can provide the full JSON string via `FIREBASE_SERVICE_ACCOUNT_KEY`).*
+*(Alternatively, for local dev you can provide the full JSON string via `FIREBASE_SERVICE_ACCOUNT_KEY`).*
 
 ### 3. Firebase Client SDK (Web)
 | Variable | Description |

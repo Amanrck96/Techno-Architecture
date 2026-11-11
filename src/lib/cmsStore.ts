@@ -635,7 +635,7 @@ export function CMSProvider({
   });
 
   const [serverStorageInfo, setServerStorageInfo] = useState<{
-    isVercel?: boolean;
+    isGoogleCloud?: boolean;
     isProduction?: boolean;
     hasGitHubToken?: boolean;
     hasUpstashKV?: boolean;

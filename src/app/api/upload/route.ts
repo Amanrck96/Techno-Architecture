@@ -159,7 +159,7 @@ export async function POST(request: Request) {
     }
 
     // 3. Fallback: Save to public/uploads/[folder]/ (Local development only)
-    if (!process.env.VERCEL) {
+    if (process.env.NODE_ENV !== "production") {
       try {
         const uploadsDir = path.join(process.cwd(), "public", "uploads", folder);
         await fs.mkdir(uploadsDir, { recursive: true });

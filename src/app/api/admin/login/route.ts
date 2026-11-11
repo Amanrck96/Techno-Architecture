@@ -33,7 +33,7 @@ export async function POST(request: Request) {
 
       if (firebaseIdToken) {
         try {
-          // Dynamic import of firebase-admin to prevent top-level bundling crashes on Vercel
+          // Dynamic import of firebase-admin to prevent top-level bundling crashes on serverless runtimes
           const { initFirebaseAdmin } = await import("@/lib/firebaseAdmin");
           const adminApp = initFirebaseAdmin();
           if (adminApp) {

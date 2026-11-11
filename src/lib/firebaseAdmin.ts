@@ -2,22 +2,28 @@ import { initializeApp, getApps, cert, type App } from "firebase-admin/app";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
 
-function getServiceAccount() {
+const DEFAULT_PROJECT_ID = "technoarchitecture-7d718";
+const DEFAULT_STORAGE_BUCKET = "technoarchitecture-7d718.firebasestorage.app";
+
+/**
+ * Optional local development fallback for service account credentials.
+ * On Google Cloud / Firebase runtimes (App Hosting, Cloud Run, Cloud Functions),
+ * Application Default Credentials (ADC) are used automatically instead.
+ */
+function getLocalDevServiceAccount() {
   if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
     try {
       return JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
-    } catch (e) {
-      console.warn("Invalid FIREBASE_SERVICE_ACCOUNT_KEY JSON:", e);
+    } catch {
+      // Invalid JSON syntax; skip fallback - never log keys
     }
   }
 
   if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY) {
     let pk = process.env.FIREBASE_PRIVATE_KEY.trim();
-    // Strip wrapping double or single quotes if copied directly from a JSON file or .env
     if ((pk.startsWith('"') && pk.endsWith('"')) || (pk.startsWith("'") && pk.endsWith("'"))) {
       pk = pk.slice(1, -1);
     }
-    // Convert literal \n escape sequences into real newlines
     pk = pk.replace(/\\n/g, "\n");
 
     return {
@@ -36,35 +42,62 @@ export function initFirebaseAdmin(): App | null {
     return existingApps[0]!;
   }
 
-  const credentials = getServiceAccount();
   const bucketName =
     process.env.FIREBASE_STORAGE_BUCKET ||
     process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ||
-    (credentials?.projectId ? `${credentials.projectId}.firebasestorage.app` : "technoarchitecture-7d718.firebasestorage.app");
+    DEFAULT_STORAGE_BUCKET;
 
-  if (credentials) {
+  const projectId =
+    process.env.GOOGLE_CLOUD_PROJECT ||
+    process.env.GCP_PROJECT ||
+    process.env.FIREBASE_PROJECT_ID ||
+    DEFAULT_PROJECT_ID;
+
+  // 1. PRIMARY: On Google Cloud runtimes (Firebase App Hosting, Cloud Run, Cloud Functions),
+  // initialize with native Application Default Credentials (ADC) without explicit cert.
+  // The Google metadata service and attached service account automatically handle auth.
+  const isGoogleRuntime = Boolean(
+    process.env.K_SERVICE ||
+    process.env.FUNCTION_TARGET ||
+    process.env.FIREBASE_CONFIG ||
+    process.env.GAE_SERVICE ||
+    (!process.env.FIREBASE_CLIENT_EMAIL && !process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
+  );
+
+  if (isGoogleRuntime) {
     try {
       return initializeApp({
-        credential: cert(credentials),
+        projectId,
         storageBucket: bucketName,
       });
-    } catch (err: any) {
-      console.warn("[Firebase Admin] Service account cert init note:", err?.message);
+    } catch {
+      // If ADC throws, fall through to dev credentials fallback
     }
   }
 
-  // On Google Cloud (Cloud Run / Cloud Functions / GAE), Application Default Credentials (ADC)
-  // are automatically provided by the environment metadata service without explicit env vars.
-  try {
-    return initializeApp({
-      projectId: process.env.GOOGLE_CLOUD_PROJECT || process.env.GCP_PROJECT || "technoarchitecture-7d718",
-      storageBucket: bucketName,
-    });
-  } catch (err: any) {
-    console.warn("[Firebase Admin] Native ADC initialization note:", err?.message);
+  // 2. OPTIONAL FALLBACK: Local development service account from .env.local
+  const devCredentials = getLocalDevServiceAccount();
+  if (devCredentials) {
+    try {
+      return initializeApp({
+        credential: cert(devCredentials),
+        projectId: devCredentials.projectId || projectId,
+        storageBucket: bucketName,
+      });
+    } catch {
+      // Never log credentials or private keys
+    }
   }
 
-  return null;
+  // 3. Fallback: Initialize with project ID and storageBucket
+  try {
+    return initializeApp({
+      projectId,
+      storageBucket: bucketName,
+    });
+  } catch {
+    return null;
+  }
 }
 
 export function getFirestoreDb(): Firestore | null {
@@ -79,6 +112,7 @@ export function getFirebaseStorageBucket(explicitBucket?: string) {
   const bucketName =
     explicitBucket ||
     process.env.FIREBASE_STORAGE_BUCKET ||
-    process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
+    process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ||
+    DEFAULT_STORAGE_BUCKET;
   return bucketName ? getStorage(app).bucket(bucketName) : getStorage(app).bucket();
 }

@@ -978,8 +978,8 @@ export default function AdminCMSPage() {
       setUploadProgress(25);
 
       // 2. Direct Upload to Firebase Cloud Storage (technoarchitecture-7d718.firebasestorage.app)
-      // Uploading directly from client to Firebase Storage completely bypasses Vercel Origin,
-      // saving Fast Origin Transfer and Fluid Active CPU hours.
+      // Uploading directly from client to Firebase Storage completely bypasses the server runtime,
+      // saving Cloud Run compute bandwidth and latency.
       try {
         const fbResult = await uploadToFirebaseStorage(
           uploadFile,

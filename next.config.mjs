@@ -29,7 +29,7 @@ const nextConfig = {
     return [
       {
         // 1. Immutable Edge CDN Caching for Static Images & Media Assets (1 Year)
-        // Drastically cuts Vercel Fast Origin Transfer and Fast Data Transfer
+        // Drastically cuts Cloud Run network egress and origin transfer
         source: '/:path*.(jpg|jpeg|png|webp|avif|gif|svg|mp4|webm|mov|ico|woff2)',
         headers: [
           {

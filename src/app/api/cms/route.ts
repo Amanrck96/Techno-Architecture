@@ -68,14 +68,14 @@ export async function GET(request: Request) {
     );
 
     const storageInfo = {
-      isVercel: Boolean(process.env.VERCEL),
+      isGoogleCloud: Boolean(process.env.K_SERVICE || process.env.FUNCTION_TARGET || process.env.FIREBASE_CONFIG || process.env.GOOGLE_CLOUD_PROJECT),
       isProduction: process.env.NODE_ENV === "production",
       hasFirebaseStorage: Boolean(getFirebaseStorageBucket() || FIREBASE_STORAGE_BUCKET),
       firebaseStorageBucket: FIREBASE_STORAGE_BUCKET,
       hasGitHubToken: Boolean(process.env.GITHUB_TOKEN || process.env.GH_TOKEN),
       hasUpstashKV: Boolean(process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL),
       hasFirestore: Boolean(getFirestoreDb()),
-      localDiskWritable: process.env.NODE_ENV !== "production" || !process.env.VERCEL,
+      localDiskWritable: process.env.NODE_ENV !== "production",
     };
 
     return NextResponse.json(

@@ -13,9 +13,10 @@ import { initialTestimonials } from "@/data/testimonials";
 import { getFirestoreDb, getFirebaseStorageBucket } from "@/lib/firebaseAdmin";
 
 export const DATA_FILE_PATH = path.join(process.cwd(), "src", "data", "cms-content.json");
-export const TMP_FILE_PATH = process.env.VERCEL
-  ? path.join("/tmp", "cms-content.json")
-  : path.join(process.cwd(), ".next", "cache", "cms-tmp.json");
+export const TMP_FILE_PATH =
+  process.env.NODE_ENV === "production" || process.env.K_SERVICE || process.env.FUNCTION_TARGET
+    ? path.join("/tmp", "cms-content.json")
+    : path.join(process.cwd(), ".next", "cache", "cms-tmp.json");
 
 declare global {
   // eslint-disable-next-line no-var

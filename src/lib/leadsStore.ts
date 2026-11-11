@@ -17,9 +17,10 @@ export interface EnquiryLead {
 }
 
 const LOCAL_DATA_PATH = path.join(process.cwd(), "src", "data", "enquiries.json");
-const TMP_DATA_PATH = process.env.VERCEL
-  ? path.join("/tmp", "enquiries.json")
-  : path.join(process.cwd(), ".next", "cache", "enquiries-tmp.json");
+const TMP_DATA_PATH =
+  process.env.NODE_ENV === "production" || process.env.K_SERVICE || process.env.FUNCTION_TARGET
+    ? path.join("/tmp", "enquiries.json")
+    : path.join(process.cwd(), ".next", "cache", "enquiries-tmp.json");
 
 declare global {
   // eslint-disable-next-line no-var
@@ -140,8 +141,8 @@ export async function getAllLeads(): Promise<EnquiryLead[]> {
     }
   } catch {}
 
-  // 5. Try reading from GitHub (for production deployments on Vercel)
-  if (process.env.VERCEL || process.env.NODE_ENV === "production") {
+  // 5. Try reading from GitHub (for production deployments on Google Cloud)
+  if (process.env.NODE_ENV === "production") {
     try {
       const gh = await getLeadsFromGitHub();
       if (gh && Array.isArray(gh.leads)) {

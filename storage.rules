@@ -4,13 +4,15 @@ service firebase.storage {
     // Public read for all architectural photography, videos, and media
     match /{allPaths=**} {
       allow read: if true;
-      // Write access permitted for authenticated admin studio users
+      // Client write access permitted only for authenticated admin studio users (e.g. photo uploads)
       allow write: if request.auth != null;
     }
 
-    // Direct CMS synchronization fallback for content storage
+    // CMS data is managed strictly server-side via Firebase Admin SDK.
+    // Browser client direct writes are strictly disallowed.
     match /cms/{allPaths=**} {
-      allow read, write: if true;
+      allow read: if true;
+      allow write: if false;
     }
   }
 }

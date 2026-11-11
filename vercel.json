@@ -1,5 +1,0 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "ignoreCommand": "bash -c 'if git log -1 --pretty=%B | grep -q \"^chore(cms):\\|^chore(leads):\"; then echo \"[Vercel Skip] Skipping deploy for CMS/leads content sync commit\"; exit 0; else exit 1; fi'"
-}
-
