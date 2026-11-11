@@ -12,10 +12,18 @@ function getServiceAccount() {
   }
 
   if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY) {
+    let pk = process.env.FIREBASE_PRIVATE_KEY.trim();
+    // Strip wrapping double or single quotes if copied directly from a JSON file or .env
+    if ((pk.startsWith('"') && pk.endsWith('"')) || (pk.startsWith("'") && pk.endsWith("'"))) {
+      pk = pk.slice(1, -1);
+    }
+    // Convert literal \n escape sequences into real newlines
+    pk = pk.replace(/\\n/g, "\n");
+
     return {
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+      projectId: process.env.FIREBASE_PROJECT_ID.trim(),
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL.trim(),
+      privateKey: pk,
     };
   }
 

@@ -318,6 +318,8 @@ export async function syncToServer(payload: {
   upstashUrl?: string;
   upstashToken?: string;
   forceGitHubCommit?: boolean;
+  expectedUpdatedAt?: string;
+  forceOverwrite?: boolean;
 }): Promise<{
   success: boolean;
   updatedAt?: string;
@@ -325,6 +327,7 @@ export async function syncToServer(payload: {
   storageStatus?: any;
   message?: string;
   error?: any;
+  conflict?: boolean;
 }> {
   try {
     const token =
@@ -390,6 +393,25 @@ export async function syncToServer(payload: {
           ? err
           : err?.error || err?.message || `Server error (HTTP ${res.status})`;
       console.warn("Failed to persist CMS update to server:", errorMsg);
+
+      if (res.status === 409 && typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("techno_cms_concurrency_conflict", {
+            detail: {
+              serverUpdatedAt: err?.serverUpdatedAt,
+              message:
+                errorMsg ||
+                "Someone else saved changes first. Please reload to review the latest changes before saving.",
+            },
+          })
+        );
+        return {
+          success: false,
+          conflict: true,
+          error: errorMsg,
+        };
+      }
+
       if (res.status === 401 && typeof window !== "undefined") {
         window.dispatchEvent(
           new CustomEvent("techno_admin_auth_expired", {
@@ -445,6 +467,7 @@ export interface CMSContextValue {
   saveAllToCloud: (options?: { forceGitHubCommit?: boolean }) => Promise<any>;
   resetAllToDefaults: () => void;
   refetchFromServer: () => Promise<void>;
+  applyDataset: (data: any) => void;
 }
 
 const CMSContext = createContext<CMSContextValue | null>(null);
@@ -757,8 +780,20 @@ export function CMSProvider({
       } catch (_) {}
 
       // Loading must NEVER trigger an automated save. If there are pending uncommitted edits in
-      // localStorage, retain them locally without firing network write requests on page load.
-      if (hasUnsavedEdits) {
+      // localStorage or in-flight dirty changes, retain them locally without firing network write requests on page load.
+      if (hasUnsavedEdits || isDirtyRef.current) {
+        const serverTime = data.updatedAt ? new Date(data.updatedAt).getTime() : 0;
+        const currentKnownTime = lastServerUpdatedRef.current ? new Date(lastServerUpdatedRef.current).getTime() : 0;
+        if (serverTime > currentKnownTime && typeof window !== "undefined") {
+          window.dispatchEvent(
+            new CustomEvent("techno_cms_server_conflict", {
+              detail: {
+                serverUpdatedAt: data.updatedAt,
+                serverData: data,
+              },
+            })
+          );
+        }
         return;
       }
 
@@ -1049,7 +1084,11 @@ export function CMSProvider({
         ...localData,
       };
 
-      const res = await syncToServer({ allData: consolidatedPayload, deletedIds });
+      const res = await syncToServer({
+        allData: consolidatedPayload,
+        deletedIds,
+        expectedUpdatedAt: lastServerUpdatedRef.current || undefined,
+      });
 
       if (savingWatchdogRef.current) {
         clearTimeout(savingWatchdogRef.current);
@@ -1587,6 +1626,7 @@ export function CMSProvider({
         allData,
         deletedIds,
         forceGitHubCommit: Boolean(options?.forceGitHubCommit),
+        expectedUpdatedAt: lastServerUpdatedRef.current || undefined,
       });
       if (res.success && res.updatedAt) {
         lastServerUpdatedRef.current = res.updatedAt;
@@ -1661,6 +1701,7 @@ export function CMSProvider({
       saveAllToCloud,
       resetAllToDefaults,
       refetchFromServer: fetchFromServer,
+      applyDataset,
     }),
     [
       isClient,
@@ -1688,6 +1729,7 @@ export function CMSProvider({
       saveAllToCloud,
       resetAllToDefaults,
       fetchFromServer,
+      applyDataset,
     ]
   );
 
@@ -1739,6 +1781,7 @@ function useStandaloneCMSStore(): CMSContextValue {
     saveAllToCloud: async () => ({ success: true }),
     resetAllToDefaults: () => {},
     refetchFromServer: async () => {},
+    applyDataset: () => {},
   };
 }
 

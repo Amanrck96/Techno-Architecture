@@ -33,6 +33,18 @@ export const AdminDraftInput = React.memo(function AdminDraftInput({
   );
   const latestLocalRef = useRef(localValue);
   latestLocalRef.current = localValue;
+  const onCommitRef = useRef(onCommit);
+  onCommitRef.current = onCommit;
+
+  // Flush pending uncommitted local draft on unmount / route change / tab switch
+  useEffect(() => {
+    return () => {
+      if (latestLocalRef.current !== committedValueRef.current) {
+        committedValueRef.current = latestLocalRef.current;
+        onCommitRef.current(latestLocalRef.current);
+      }
+    };
+  }, []);
 
   // Sync external value only if the user is not actively typing/focused
   useEffect(() => {
@@ -117,6 +129,18 @@ export const AdminDraftTextarea = React.memo(function AdminDraftTextarea({
   );
   const latestLocalRef = useRef(localValue);
   latestLocalRef.current = localValue;
+  const onCommitRef = useRef(onCommit);
+  onCommitRef.current = onCommit;
+
+  // Flush pending uncommitted local draft on unmount / route change / tab switch
+  useEffect(() => {
+    return () => {
+      if (latestLocalRef.current !== committedValueRef.current) {
+        committedValueRef.current = latestLocalRef.current;
+        onCommitRef.current(latestLocalRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const stringified = value !== undefined && value !== null ? String(value) : "";

@@ -164,6 +164,25 @@ export async function POST(request: Request) {
 
     const current = await readStore(upstashUrl, upstashToken, githubToken, githubRepo);
 
+    // Optimistic Concurrency Control: Check expectedUpdatedAt vs current.updatedAt
+    if (body.expectedUpdatedAt && current?.updatedAt && body.reset !== true && !body.forceOverwrite) {
+      const expectedTime = new Date(body.expectedUpdatedAt).getTime();
+      const currentTime = new Date(current.updatedAt).getTime();
+      // If server content is newer than client's baseline (allow 1s tolerance for micro-skews)
+      if (!isNaN(expectedTime) && !isNaN(currentTime) && currentTime - expectedTime > 1000) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Someone else saved changes first. Please reload to review the latest changes before saving.",
+            serverUpdatedAt: current.updatedAt,
+            expectedUpdatedAt: body.expectedUpdatedAt,
+            conflict: true,
+          },
+          { status: 409 }
+        );
+      }
+    }
+
     // Merge deletedIds into current
     const mergedDeleted = new Set<string>(Array.isArray(current.deletedIds) ? current.deletedIds : []);
     incomingDeletedIds.forEach((id) => mergedDeleted.add(id));

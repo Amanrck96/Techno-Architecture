@@ -195,8 +195,10 @@ export const FIREBASE_CMS_FILE_PATH = "cms/cms-content.json";
  */
 export async function saveToFirebaseStorage(
   data: any,
-  explicitBucket?: string
+  explicitBucket?: string,
+  customFilePath?: string
 ): Promise<{ success: boolean; error?: string }> {
+  const targetFilePath = customFilePath || FIREBASE_CMS_FILE_PATH;
   const primaryBucket =
     explicitBucket ||
     process.env.FIREBASE_STORAGE_BUCKET ||
@@ -217,7 +219,7 @@ export async function saveToFirebaseStorage(
       const bucket = getFirebaseStorageBucket(bucketName);
       if (bucket) {
         const bodyString = typeof data === "string" ? data : JSON.stringify(data);
-        await bucket.file(FIREBASE_CMS_FILE_PATH).save(bodyString, {
+        await bucket.file(targetFilePath).save(bodyString, {
           contentType: "application/json",
           resumable: false,
           metadata: { cacheControl: "no-store" },
@@ -234,7 +236,7 @@ export async function saveToFirebaseStorage(
   let lastErrText = "";
   for (const bucketName of candidateBuckets) {
     const uploadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o?name=${encodeURIComponent(
-      FIREBASE_CMS_FILE_PATH
+      targetFilePath
     )}&uploadType=media`;
 
     try {
@@ -832,10 +834,8 @@ export async function writeStore(
     result.summaryMessage = "Saved permanently to src/data/cms-content.json on disk.";
   } else {
     result.summaryMessage =
-      "NOT saved permanently. " +
-      (result.errorDetails.length
-        ? result.errorDetails.join(" | ")
-        : "No persistent storage is configured (set FIREBASE_* env vars).");
+      "Storage not configured: missing FIREBASE_* credentials (FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY) in host environment. " +
+      (result.errorDetails.length ? `[${result.errorDetails.join(" | ")}]` : "");
   }
 
   return result;

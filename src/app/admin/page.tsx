@@ -182,6 +182,7 @@ export default function AdminCMSPage() {
     saveAllToCloud,
     resetAllToDefaults,
     refetchFromServer,
+    applyDataset,
   } = useCMSStore();
 
   // Authentication states
@@ -195,8 +196,44 @@ export default function AdminCMSPage() {
   const [isSubmittingAuth, setIsSubmittingAuth] = useState<boolean>(false);
   const [isSyncingCloud, setIsSyncingCloud] = useState<boolean>(false);
 
+  // Data-Loss Safety & Concurrency Control states (Task 3 & 4)
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false);
+  const [staleDraftNotice, setStaleDraftNotice] = useState<boolean>(false);
+  const [serverConflictData, setServerConflictData] = useState<{
+    serverUpdatedAt: string;
+    serverData: any;
+  } | null>(null);
+  const [concurrencyConflictMessage, setConcurrencyConflictMessage] = useState<string | null>(null);
+
   // Storage & Persistence Configuration
-    const [savingEntityId, setSavingEntityId] = useState<string | null>(null);
+  const [savingEntityId, setSavingEntityId] = useState<string | null>(null);
+
+  const handleExplicitSaveChanges = async () => {
+    setIsSyncingCloud(true);
+    try {
+      const res = await saveAllToCloud();
+      if (res && res.success && res.storageStatus?.isPermanent !== false) {
+        setHasUnsavedChanges(false);
+        setStaleDraftNotice(false);
+        setServerConflictData(null);
+        setConcurrencyConflictMessage(null);
+        showToast(res.message || "All changes saved & synced permanently ✅");
+      } else {
+        const errorMsg =
+          res?.error?.error ||
+          res?.error?.message ||
+          (typeof res?.error === "string" ? res.error : null) ||
+          res?.message ||
+          res?.storageStatus?.summaryMessage ||
+          "Save failed: Changes were NOT saved permanently. Please verify credentials.";
+        showToast("Save failed: " + errorMsg);
+      }
+    } catch (err: any) {
+      showToast("Save failed: " + (err?.message || "Network error"));
+    } finally {
+      setIsSyncingCloud(false);
+    }
+  };
 
   const handleSaveItem = async (id: string, label: string) => {
     setSavingEntityId(id);
@@ -234,15 +271,46 @@ export default function AdminCMSPage() {
   // UI-side watchdog: if "saving" spinner stays for >28s without resolution, force it to "error"
   const autoSaveWatchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Check for stale unsaved edits on initial mount (Task 3d)
+  useEffect(() => {
+    try {
+      if (localStorage.getItem("techno_has_unsaved_edits") === "true") {
+        setHasUnsavedChanges(true);
+        setStaleDraftNotice(true);
+      }
+    } catch (_) {}
+  }, []);
+
+  // BeforeUnload safety warning when drafts are dirty (Task 3a)
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      let isLocalDirty = false;
+      try {
+        isLocalDirty = localStorage.getItem("techno_has_unsaved_edits") === "true";
+      } catch (_) {}
+      if (isLocalDirty || hasUnsavedChanges || autoSaveStatus === "saving") {
+        e.preventDefault();
+        e.returnValue = "You have unsaved changes. Are you sure you want to leave?";
+        return e.returnValue;
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [hasUnsavedChanges, autoSaveStatus]);
+
   useEffect(() => {
     const handleStatus = (e: any) => {
       if (e.detail?.status) {
         const status = e.detail.status as "saving" | "saved" | "error" | "idle";
         setAutoSaveStatus(status);
-        if (status === "error") {
-          setAutoSaveErrorMessage(e.detail?.error || "Sync failed");
+        if (status === "saving") {
+          setHasUnsavedChanges(true);
         } else if (status === "saved") {
+          setHasUnsavedChanges(false);
+          setStaleDraftNotice(false);
           setAutoSaveErrorMessage(null);
+        } else if (status === "error") {
+          setAutoSaveErrorMessage(e.detail?.error || "Sync failed");
         }
 
         // Clear any previous watchdog
@@ -266,14 +334,35 @@ export default function AdminCMSPage() {
         }
       }
     };
+
+    const handleServerConflict = (e: any) => {
+      if (e.detail) {
+        setServerConflictData(e.detail);
+      }
+    };
+
+    const handleConcurrencyConflict = (e: any) => {
+      if (e.detail) {
+        setConcurrencyConflictMessage(
+          e.detail.message ||
+            "Someone else saved changes first. Please reload to review the latest changes before saving."
+        );
+      }
+    };
+
     const handleExpired = (e: any) => {
       setSessionExpiredWarning(e.detail?.message || "Admin session expired. Please sign in again.");
       showToast("⚠️ Admin session expired. Please log in to save changes permanently.");
     };
+
     window.addEventListener("techno_cms_autosave_status", handleStatus);
+    window.addEventListener("techno_cms_server_conflict", handleServerConflict);
+    window.addEventListener("techno_cms_concurrency_conflict", handleConcurrencyConflict);
     window.addEventListener("techno_admin_auth_expired", handleExpired);
     return () => {
       window.removeEventListener("techno_cms_autosave_status", handleStatus);
+      window.removeEventListener("techno_cms_server_conflict", handleServerConflict);
+      window.removeEventListener("techno_cms_concurrency_conflict", handleConcurrencyConflict);
       window.removeEventListener("techno_admin_auth_expired", handleExpired);
       if (autoSaveWatchdogRef.current) clearTimeout(autoSaveWatchdogRef.current);
     };
@@ -1251,6 +1340,25 @@ export default function AdminCMSPage() {
                 <span>Admin: <strong className="text-white">{currentAdminUser}</strong></span>
               </div>
 
+              {/* Unsaved Changes Indicator Badge (Task 3a) */}
+              {hasUnsavedChanges ? (
+                <div
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[11px] font-mono"
+                  title="You have unsaved changes in local draft state"
+                >
+                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                  <span>Edits: <strong>Unsaved Changes</strong></span>
+                </div>
+              ) : (
+                <div
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[11px] font-mono"
+                  title="All changes are committed and synced"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <span>Edits: <strong>All Synced</strong></span>
+                </div>
+              )}
+
               {/* Persistence Status Badge */}
               <div
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[11px] font-mono"
@@ -1329,17 +1437,37 @@ export default function AdminCMSPage() {
 
             {/* Data Management Action Buttons */}
             <div className="flex flex-wrap items-center gap-2">
+              {/* Explicit Save Changes Button (Task 3a) */}
+              <button
+                onClick={handleExplicitSaveChanges}
+                disabled={isSyncingCloud}
+                type="button"
+                className={`flex items-center gap-1.5 px-4 py-2 transition-all rounded text-xs font-semibold uppercase tracking-wider shadow-sm cursor-pointer ${
+                  hasUnsavedChanges
+                    ? "bg-amber-500 hover:bg-amber-400 text-black shadow-amber-500/30 ring-2 ring-amber-400/50"
+                    : "bg-emerald-600 hover:bg-emerald-500 text-white"
+                }`}
+                title="Save all local draft changes directly to cloud storage"
+              >
+                {isSyncingCloud ? (
+                  <div className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Save size={13} />
+                )}
+                <span>{isSyncingCloud ? "Saving Changes..." : hasUnsavedChanges ? "Save Changes (Unsaved)" : "Save Changes"}</span>
+              </button>
+
               <button
                 onClick={handleForceSaveCloud}
                 disabled={isSyncingCloud}
                 type="button"
-                className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-800 text-white transition-colors rounded text-xs font-medium uppercase tracking-wider shadow-sm"
+                className="flex items-center gap-1.5 px-3.5 py-2 bg-white/10 hover:bg-white/20 disabled:bg-white/5 text-white border border-white/15 transition-colors rounded text-xs font-medium uppercase tracking-wider shadow-sm"
                 title="Force push all edits &amp; deletions directly to cloud store"
               >
                 {isSyncingCloud ? (
                   <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 ) : (
-                  <Save size={13} />
+                  <RefreshCw size={13} />
                 )}
                 <span>{isSyncingCloud ? "Saving..." : "Save All to Cloud"}</span>
               </button>
@@ -1448,6 +1576,116 @@ export default function AdminCMSPage() {
           >
             Retry Connection
           </button>
+        </div>
+      )}
+
+      {/* Stale Unsaved Changes Banner (Task 3d) */}
+      {staleDraftNotice && (
+        <div className="p-4 bg-amber-950/90 border border-amber-500/70 text-amber-200 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded shadow-lg animate-fadeIn">
+          <div className="flex items-center gap-2.5">
+            <AlertTriangle size={18} className="text-amber-400 shrink-0" />
+            <div>
+              <p className="font-semibold text-white">You have unsaved local changes from a previous session.</p>
+              <p className="text-amber-300/80 text-[11px]">Save now to commit them to cloud storage, or discard to restore the latest server version.</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+            <button
+              type="button"
+              onClick={handleExplicitSaveChanges}
+              className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded text-xs transition-colors cursor-pointer"
+            >
+              Save Now
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                try {
+                  localStorage.setItem("techno_has_unsaved_edits", "false");
+                } catch (_) {}
+                setStaleDraftNotice(false);
+                setHasUnsavedChanges(false);
+                refetchFromServer();
+                showToast("Local edits discarded. Restored latest server content.");
+              }}
+              className="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-medium rounded text-xs transition-colors border border-white/10 cursor-pointer"
+            >
+              Discard
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Background Server Conflict Banner (Task 3c) */}
+      {serverConflictData && (
+        <div className="p-4 bg-sky-950/90 border border-sky-500/70 text-sky-200 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded shadow-lg animate-fadeIn">
+          <div className="flex items-center gap-2.5">
+            <RefreshCw size={18} className="text-sky-400 shrink-0" />
+            <div>
+              <p className="font-semibold text-white">Server has newer data (updated {new Date(serverConflictData.serverUpdatedAt).toLocaleTimeString()}).</p>
+              <p className="text-sky-300/80 text-[11px]">Another user or session saved changes on the server while you were editing.</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+            <button
+              type="button"
+              onClick={() => {
+                applyDataset(serverConflictData.serverData);
+                setServerConflictData(null);
+                setHasUnsavedChanges(false);
+                try {
+                  localStorage.setItem("techno_has_unsaved_edits", "false");
+                } catch (_) {}
+                showToast("Reloaded latest server version.");
+              }}
+              className="px-3.5 py-1.5 bg-sky-600 hover:bg-sky-500 text-white font-semibold rounded text-xs transition-colors cursor-pointer"
+            >
+              Reload Latest
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setServerConflictData(null);
+                showToast("Retained local edits. Click 'Save Changes' to save.");
+              }}
+              className="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-medium rounded text-xs transition-colors border border-white/10 cursor-pointer"
+            >
+              Keep Mine
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Optimistic Concurrency Conflict Alert Banner (Task 4) */}
+      {concurrencyConflictMessage && (
+        <div className="p-4 bg-red-950/90 border border-red-500/80 text-red-200 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded shadow-lg animate-fadeIn">
+          <div className="flex items-center gap-2.5">
+            <AlertTriangle size={18} className="text-red-400 shrink-0" />
+            <div>
+              <p className="font-semibold text-white">Save Conflict (HTTP 409)</p>
+              <p className="text-red-300/80 text-[11px]">{concurrencyConflictMessage}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+            <button
+              type="button"
+              onClick={() => {
+                setConcurrencyConflictMessage(null);
+                refetchFromServer();
+                showToast("Refreshing latest content from server...");
+              }}
+              className="px-3.5 py-1.5 bg-red-600 hover:bg-red-500 text-white font-semibold rounded text-xs transition-colors cursor-pointer"
+            >
+              Reload Latest
+            </button>
+            <button
+              type="button"
+              onClick={() => setConcurrencyConflictMessage(null)}
+              className="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-medium rounded text-xs transition-colors border border-white/10 cursor-pointer"
+            >
+              Dismiss
+            </button>
+          </div>
         </div>
       )}
 
