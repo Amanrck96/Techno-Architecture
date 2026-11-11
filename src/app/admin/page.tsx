@@ -79,6 +79,10 @@ import {
   CheckCheck,
   Archive,
   ChevronRight,
+  Search,
+  Copy,
+  FileSpreadsheet,
+  MessageCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ImageMouseAdjuster } from "@/components/admin/ImageMouseAdjuster";
@@ -105,6 +109,7 @@ interface EnquiryLead {
   budget: string;
   message: string;
   status: "new" | "reviewed" | "archived";
+  notes?: string;
   createdAt: string;
 }
 
@@ -261,12 +266,30 @@ export default function AdminCMSPage() {
     };
   }, []);
 
-  // Leads state
+  // Leads CRM state
   const [leads, setLeads] = useState<EnquiryLead[]>([]);
   const [leadsLoading, setLeadsLoading] = useState(false);
   const [leadsError, setLeadsError] = useState<string | null>(null);
   const [expandedLeadId, setExpandedLeadId] = useState<string | null>(null);
   const [leadsFilter, setLeadsFilter] = useState<"all" | "new" | "reviewed" | "archived">("all");
+  const [leadsSearchQuery, setLeadsSearchQuery] = useState<string>("");
+  const [deletingLeadId, setDeletingLeadId] = useState<string | null>(null);
+  const [editingNoteLeadId, setEditingNoteLeadId] = useState<string | null>(null);
+  const [leadNoteInput, setLeadNoteInput] = useState<string>("");
+  const [savingNote, setSavingNote] = useState<boolean>(false);
+  const [showAddLeadModal, setShowAddLeadModal] = useState<boolean>(false);
+  const [isSubmittingManualLead, setIsSubmittingManualLead] = useState<boolean>(false);
+  const [newLeadForm, setNewLeadForm] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    company: "",
+    service: "General Architecture & Design Enquiry",
+    budget: "",
+    message: "",
+    notes: "",
+    status: "new" as "new" | "reviewed" | "archived",
+  });
 
   // File import ref
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -301,6 +324,8 @@ export default function AdminCMSPage() {
               sessionStorage.setItem("techno_admin_token", data.token);
             } catch (_) {}
           }
+          // Fetch leads immediately on auth so sidebar/badge counts update right away
+          fetchLeads();
         } else {
           setIsAuthenticated(false);
         }
@@ -328,7 +353,7 @@ export default function AdminCMSPage() {
         headers["Authorization"] = `Bearer ${token}`;
         headers["x-admin-token"] = token;
       }
-      const res = await fetch("/api/admin/leads", { headers, cache: "no-store" });
+      const res = await fetch("/api/admin/leads", { headers, credentials: "include", cache: "no-store" });
       let data: any = null;
       try {
         const text = await res.text();
@@ -360,6 +385,7 @@ export default function AdminCMSPage() {
       const res = await fetch("/api/admin/leads", {
         method: "PATCH",
         headers,
+        credentials: "include",
         body: JSON.stringify({ id, status }),
       });
       let data: any = null;
@@ -376,6 +402,135 @@ export default function AdminCMSPage() {
       showToast(`Lead marked as ${status}.`);
     } catch (err: any) {
       showToast("Failed to update lead status: " + (err?.message || "Unknown error"));
+    }
+  };
+
+  const handleDeleteLead = async (id: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    if (!confirm("Are you sure you want to permanently delete this enquiry lead? This action cannot be undone.")) return;
+    setDeletingLeadId(id);
+    try {
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("techno_admin_token") ||
+            sessionStorage.getItem("techno_admin_token")
+          : null;
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+        headers["x-admin-token"] = token;
+      }
+      const res = await fetch(`/api/admin/leads?id=${encodeURIComponent(id)}`, {
+        method: "DELETE",
+        headers,
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || "Failed to delete lead from server.");
+      setLeads((prev) => prev.filter((l) => l.id !== id));
+      if (expandedLeadId === id) setExpandedLeadId(null);
+      showToast("Enquiry lead deleted permanently ✅");
+    } catch (err: any) {
+      showToast("Delete failed: " + (err?.message || "Unknown error"));
+    } finally {
+      setDeletingLeadId(null);
+    }
+  };
+
+  const handleSaveLeadNote = async (id: string) => {
+    setSavingNote(true);
+    try {
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("techno_admin_token") ||
+            sessionStorage.getItem("techno_admin_token")
+          : null;
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+        headers["x-admin-token"] = token;
+      }
+      const res = await fetch("/api/admin/leads", {
+        method: "PATCH",
+        headers,
+        credentials: "include",
+        body: JSON.stringify({ id, notes: leadNoteInput }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || "Failed to save note.");
+      setLeads((prev) =>
+        prev.map((l) => (l.id === id ? { ...l, notes: leadNoteInput } : l))
+      );
+      setEditingNoteLeadId(null);
+      showToast("Studio internal note saved ✅");
+    } catch (err: any) {
+      showToast("Failed to save note: " + (err?.message || "Unknown error"));
+    } finally {
+      setSavingNote(false);
+    }
+  };
+
+  const handleExportLeadsCsv = () => {
+    const token =
+      typeof window !== "undefined"
+        ? localStorage.getItem("techno_admin_token") ||
+          sessionStorage.getItem("techno_admin_token")
+        : null;
+    const url = token
+      ? `/api/admin/leads?format=csv&token=${encodeURIComponent(token)}`
+      : `/api/admin/leads?format=csv`;
+    window.open(url, "_blank");
+    showToast("Exporting leads to CSV... 📊");
+  };
+
+  const handleCreateManualLead = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newLeadForm.fullName.trim()) {
+      showToast("Please enter lead full name.");
+      return;
+    }
+    setIsSubmittingManualLead(true);
+    try {
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("techno_admin_token") ||
+            sessionStorage.getItem("techno_admin_token")
+          : null;
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+        headers["x-admin-token"] = token;
+      }
+      const res = await fetch("/api/admin/leads", {
+        method: "POST",
+        headers,
+        credentials: "include",
+        body: JSON.stringify(newLeadForm),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || "Failed to create manual lead.");
+      if (data?.lead) {
+        setLeads((prev) => [data.lead, ...prev]);
+      } else {
+        await fetchLeads();
+      }
+      setShowAddLeadModal(false);
+      setNewLeadForm({
+        fullName: "",
+        email: "",
+        phone: "",
+        company: "",
+        service: "General Architecture & Design Enquiry",
+        budget: "",
+        message: "",
+        notes: "",
+        status: "new",
+      });
+      showToast("New enquiry lead created successfully ✅");
+    } catch (err: any) {
+      showToast("Failed to create lead: " + (err?.message || "Unknown error"));
+    } finally {
+      setIsSubmittingManualLead(false);
     }
   };
 
@@ -417,6 +572,7 @@ export default function AdminCMSPage() {
         }
         setPasswordInput("");
         setAuthError("");
+        fetchLeads();
         showToast("Access granted. Welcome to Techno Architecture Admin Studio.");
         return;
       }
@@ -454,6 +610,7 @@ export default function AdminCMSPage() {
             } catch (_) {}
             setPasswordInput("");
             setAuthError("");
+            fetchLeads();
             showToast(`Welcome, ${user.email}! Authenticated via Firebase.`);
             return;
           } else {
@@ -509,6 +666,7 @@ export default function AdminCMSPage() {
         } catch (_) {}
         setPasswordInput("");
         setAuthError("");
+        fetchLeads();
         showToast(`Welcome, ${user.displayName || user.email}! Signed in via Google.`);
       } else {
         throw new Error(data?.error || "Google Sign-In was not authorized by the server.");
@@ -5535,7 +5693,7 @@ export default function AdminCMSPage() {
       )}
 
       {/* ========================================================= */}
-      {/* LEADS / ENQUIRIES TAB                                     */}
+      {/* LEADS / ENQUIRIES CRM TAB                                  */}
       {/* ========================================================= */}
       {activeTab === "leads" && (
         <div className="space-y-6">
@@ -5544,47 +5702,97 @@ export default function AdminCMSPage() {
             <div>
               <h2 className="text-sm font-semibold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
                 <Inbox size={16} className="text-emerald-600" />
-                Enquiry Leads & Contact Submissions
+                Enquiry Leads CRM & Studio Pipeline ({leads.length})
               </h2>
               <p className="text-xs text-neutral-500 mt-1">
-                All enquiries submitted via the contact form — stored permanently in Firestore.
+                Full-featured CRM for architectural enquiries, intake tracking, and studio follow-ups.
               </p>
             </div>
-            <button
-              onClick={fetchLeads}
-              disabled={leadsLoading}
-              className="flex items-center gap-1.5 px-4 py-2 bg-neutral-900 text-white text-xs uppercase tracking-wider rounded hover:bg-neutral-700 disabled:opacity-50 transition-colors"
-            >
-              <RefreshCw size={12} className={leadsLoading ? "animate-spin" : ""} />
-              <span>{leadsLoading ? "Loading..." : "Refresh Leads"}</span>
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setShowAddLeadModal(true)}
+                className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 text-white text-xs uppercase tracking-wider font-semibold rounded hover:bg-emerald-700 transition-colors shadow-sm"
+              >
+                <Plus size={13} />
+                <span>Add Lead</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleExportLeadsCsv}
+                className="flex items-center gap-1.5 px-3.5 py-2 bg-neutral-900 text-white text-xs uppercase tracking-wider font-semibold rounded hover:bg-neutral-800 transition-colors shadow-sm"
+              >
+                <FileSpreadsheet size={13} className="text-emerald-400" />
+                <span>Export CSV</span>
+              </button>
+              <button
+                type="button"
+                onClick={fetchLeads}
+                disabled={leadsLoading}
+                className="flex items-center gap-1.5 px-3 py-2 bg-neutral-100 text-neutral-700 text-xs uppercase tracking-wider rounded hover:bg-neutral-200 disabled:opacity-50 transition-colors border border-neutral-300"
+              >
+                <RefreshCw size={12} className={leadsLoading ? "animate-spin" : ""} />
+                <span>{leadsLoading ? "Syncing..." : "Refresh"}</span>
+              </button>
+            </div>
           </div>
 
-          {/* Filter Tabs */}
-          <div className="flex gap-2 flex-wrap">
-            {(["all", "new", "reviewed", "archived"] as const).map((f) => (
-              <button
-                key={f}
-                onClick={() => setLeadsFilter(f)}
-                className={cn(
-                  "px-3 py-1.5 text-[10px] uppercase tracking-widest rounded transition-colors font-medium",
-                  leadsFilter === f
-                    ? f === "new"
-                      ? "bg-emerald-600 text-white"
-                      : f === "archived"
-                      ? "bg-neutral-400 text-white"
-                      : "bg-black text-white"
-                    : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
-                )}
-              >
-                {f === "all" ? `All (${leads.length})` : `${f} (${leads.filter((l) => l.status === f).length})`}
-              </button>
-            ))}
+          {/* Search & Filter Bar */}
+          <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between bg-white p-3 border border-neutral-200 rounded-lg shadow-sm">
+            {/* Search Input */}
+            <div className="relative flex-1">
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+              <input
+                type="text"
+                placeholder="Search leads by name, email, phone, company, service or message..."
+                value={leadsSearchQuery}
+                onChange={(e) => setLeadsSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-8 py-2 text-xs border border-neutral-200 rounded focus:outline-none focus:border-black bg-neutral-50/50"
+              />
+              {leadsSearchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setLeadsSearchQuery("")}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-700"
+                >
+                  <X size={13} />
+                </button>
+              )}
+            </div>
+
+            {/* Status Filter Tabs */}
+            <div className="flex gap-1.5 flex-wrap">
+              {(["all", "new", "reviewed", "archived"] as const).map((f) => {
+                const count =
+                  f === "all"
+                    ? leads.length
+                    : leads.filter((l) => l.status === f).length;
+                return (
+                  <button
+                    key={f}
+                    type="button"
+                    onClick={() => setLeadsFilter(f)}
+                    className={cn(
+                      "px-3 py-1.5 text-[11px] uppercase tracking-wider rounded font-medium transition-colors",
+                      leadsFilter === f
+                        ? f === "new"
+                          ? "bg-emerald-600 text-white shadow-sm"
+                          : f === "archived"
+                          ? "bg-neutral-700 text-white shadow-sm"
+                          : "bg-black text-white shadow-sm"
+                        : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
+                    )}
+                  >
+                    {f} ({count})
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Error state */}
           {leadsError && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded flex items-start gap-2 text-xs text-red-700">
+            <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2 text-xs text-red-700">
               <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
               <span>{leadsError}</span>
             </div>
@@ -5593,30 +5801,71 @@ export default function AdminCMSPage() {
           {/* Empty / Loading state */}
           {leadsLoading && (
             <div className="flex flex-col items-center justify-center py-16 gap-3 text-neutral-400">
-              <RefreshCw size={24} className="animate-spin" />
-              <span className="text-xs uppercase tracking-widest">Fetching leads from Firestore...</span>
+              <RefreshCw size={24} className="animate-spin text-neutral-700" />
+              <span className="text-xs uppercase tracking-widest font-mono">Syncing CRM records from cloud store...</span>
             </div>
           )}
 
           {!leadsLoading && !leadsError && leads.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-16 gap-3 text-neutral-400 border border-dashed border-neutral-200 rounded">
+            <div className="flex flex-col items-center justify-center py-16 gap-3 text-neutral-400 border border-dashed border-neutral-300 rounded-lg bg-neutral-50/50">
               <Inbox size={32} strokeWidth={1} />
-              <span className="text-xs uppercase tracking-widest">No enquiry leads yet</span>
-              <span className="text-[11px] text-neutral-400">Submissions from the contact form will appear here.</span>
+              <span className="text-xs uppercase tracking-widest font-semibold text-neutral-700">No enquiry leads yet</span>
+              <span className="text-[11px] text-neutral-500">Submissions from the website contact form or manual entries will appear here.</span>
+              <button
+                type="button"
+                onClick={() => setShowAddLeadModal(true)}
+                className="mt-2 px-3 py-1.5 bg-black text-white text-xs uppercase tracking-wider rounded hover:bg-neutral-800"
+              >
+                + Create First Lead
+              </button>
             </div>
           )}
 
-          {/* Leads Table */}
-          {!leadsLoading && leads.filter((l) => leadsFilter === "all" || l.status === leadsFilter).length > 0 && (
-            <div className="space-y-3">
-              {leads
-                .filter((l) => leadsFilter === "all" || l.status === leadsFilter)
-                .map((lead) => {
+          {/* Filtered Leads List */}
+          {!leadsLoading && (() => {
+            const query = leadsSearchQuery.toLowerCase().trim();
+            const filtered = leads.filter((lead) => {
+              const matchesFilter = leadsFilter === "all" || lead.status === leadsFilter;
+              if (!matchesFilter) return false;
+              if (!query) return true;
+              return (
+                (lead.fullName || "").toLowerCase().includes(query) ||
+                (lead.email || "").toLowerCase().includes(query) ||
+                (lead.phone || "").toLowerCase().includes(query) ||
+                (lead.company || "").toLowerCase().includes(query) ||
+                (lead.service || "").toLowerCase().includes(query) ||
+                (lead.budget || "").toLowerCase().includes(query) ||
+                (lead.message || "").toLowerCase().includes(query) ||
+                (lead.notes || "").toLowerCase().includes(query)
+              );
+            });
+
+            if (filtered.length === 0 && leads.length > 0) {
+              return (
+                <div className="py-12 text-center text-xs text-neutral-500 border border-dashed border-neutral-200 rounded-lg">
+                  No leads matching search query &quot;{leadsSearchQuery}&quot; under &quot;{leadsFilter}&quot; filter.
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLeadsSearchQuery("");
+                      setLeadsFilter("all");
+                    }}
+                    className="block mx-auto mt-2 text-neutral-900 underline font-semibold"
+                  >
+                    Clear Filters
+                  </button>
+                </div>
+              );
+            }
+
+            return (
+              <div className="space-y-3">
+                {filtered.map((lead) => {
                   const isExpanded = expandedLeadId === lead.id;
                   const statusColors: Record<string, string> = {
                     new: "bg-emerald-50 text-emerald-700 border-emerald-200",
                     reviewed: "bg-blue-50 text-blue-700 border-blue-200",
-                    archived: "bg-neutral-100 text-neutral-500 border-neutral-200",
+                    archived: "bg-neutral-100 text-neutral-600 border-neutral-300",
                   };
                   const statusIcons: Record<string, React.ReactNode> = {
                     new: <Clock size={10} />,
@@ -5624,24 +5873,35 @@ export default function AdminCMSPage() {
                     archived: <Archive size={10} />,
                   };
 
+                  const cleanDigits = (lead.phone || "").replace(/\D/g, "");
+                  const whatsappPhone = cleanDigits.length === 10 ? `91${cleanDigits}` : cleanDigits;
+
+                  const handleCopyDetails = (e: React.MouseEvent) => {
+                    e.stopPropagation();
+                    const text = `*Techno Architecture Lead Details*\nName: ${lead.fullName}\nEmail: ${lead.email}\nPhone: ${lead.phone}\nCompany: ${lead.company}\nService: ${lead.service}\nBudget: ${lead.budget}\nMessage:\n${lead.message}\nReceived: ${lead.createdAt}`;
+                    navigator.clipboard.writeText(text);
+                    showToast("Lead details copied to clipboard 📋");
+                  };
+
                   return (
                     <div
                       key={lead.id}
                       className={cn(
-                        "border rounded-lg overflow-hidden transition-all duration-200",
-                        lead.status === "new" ? "border-emerald-200 bg-emerald-50/30" : "border-neutral-200 bg-white"
+                        "border rounded-lg overflow-hidden transition-all duration-200 bg-white",
+                        lead.status === "new" ? "border-emerald-200 shadow-sm" : "border-neutral-200",
+                        isExpanded ? "ring-1 ring-neutral-300" : ""
                       )}
                     >
                       {/* Lead Row Header */}
                       <div
-                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 cursor-pointer hover:bg-neutral-50 transition-colors"
+                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 cursor-pointer hover:bg-neutral-50/70 transition-colors"
                         onClick={() => setExpandedLeadId(isExpanded ? null : lead.id)}
                       >
-                        <div className="flex items-start gap-3 min-w-0">
+                        <div className="flex items-start gap-3 min-w-0 flex-1">
                           {/* Status Badge */}
                           <span
                             className={cn(
-                              "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] uppercase font-semibold tracking-wider border flex-shrink-0 mt-0.5",
+                              "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] uppercase font-bold tracking-wider border flex-shrink-0 mt-0.5",
                               statusColors[lead.status] || statusColors.new
                             )}
                           >
@@ -5649,39 +5909,103 @@ export default function AdminCMSPage() {
                             {lead.status}
                           </span>
 
-                          <div className="min-w-0">
-                            <div className="font-semibold text-xs text-neutral-900 truncate">
-                              {lead.fullName || "—"}
-                            </div>
-                            <div className="text-[11px] text-neutral-500 mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5">
-                              <span className="flex items-center gap-1">
-                                <Mail size={9} /> {lead.email}
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="font-bold text-xs text-neutral-900 truncate">
+                                {lead.fullName || "—"}
                               </span>
-                              {lead.phone && lead.phone !== "Not provided" && (
-                                <span className="flex items-center gap-1">
-                                  <Phone size={9} /> {lead.phone}
+                              {lead.company && lead.company !== "Not provided" && (
+                                <span className="text-[10px] px-1.5 py-0.5 bg-neutral-100 text-neutral-600 rounded font-medium">
+                                  {lead.company}
                                 </span>
                               )}
+                              {lead.notes && (
+                                <span className="text-[9px] px-1.5 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded font-semibold uppercase">
+                                  Has Notes
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="text-[11px] text-neutral-500 mt-1 flex flex-wrap gap-x-4 gap-y-1 items-center">
+                              {lead.email && lead.email !== "Not provided" && (
+                                <a
+                                  href={`mailto:${lead.email}`}
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="flex items-center gap-1 hover:text-black transition-colors"
+                                  title="Send email"
+                                >
+                                  <Mail size={10} className="text-neutral-400" /> {lead.email}
+                                </a>
+                              )}
+                              {lead.phone && lead.phone !== "Not provided" && (
+                                <a
+                                  href={`tel:${lead.phone}`}
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="flex items-center gap-1 hover:text-black transition-colors font-mono"
+                                  title="Click to call"
+                                >
+                                  <Phone size={10} className="text-neutral-400" /> {lead.phone}
+                                </a>
+                              )}
+                              {whatsappPhone && whatsappPhone.length >= 10 && (
+                                <a
+                                  href={`https://wa.me/${whatsappPhone}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="flex items-center gap-1 text-emerald-700 hover:text-emerald-800 font-semibold text-[10px] bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200"
+                                  title="Chat on WhatsApp"
+                                >
+                                  <MessageCircle size={10} /> WhatsApp
+                                </a>
+                              )}
                               {lead.service && lead.service !== "General Architecture & Design Enquiry" && (
-                                <span className="text-neutral-400">{lead.service}</span>
+                                <span className="text-neutral-400 text-[10px]">{lead.service}</span>
                               )}
                             </div>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-2 flex-shrink-0">
+                        {/* Right header controls */}
+                        <div className="flex items-center gap-2 flex-shrink-0 self-end sm:self-center">
                           {lead.createdAt && (
                             <span className="text-[10px] text-neutral-400 font-mono hidden md:block">
                               {(() => {
                                 try {
                                   const d = new Date(lead.createdAt);
-                                  return isNaN(d.getTime()) ? "—" : d.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+                                  return isNaN(d.getTime())
+                                    ? "—"
+                                    : d.toLocaleDateString("en-IN", {
+                                        day: "2-digit",
+                                        month: "short",
+                                        year: "numeric",
+                                      });
                                 } catch {
                                   return "—";
                                 }
                               })()}
                             </span>
                           )}
+
+                          <button
+                            type="button"
+                            onClick={handleCopyDetails}
+                            title="Copy lead details"
+                            className="p-1.5 text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded transition-colors"
+                          >
+                            <Copy size={12} />
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={(e) => handleDeleteLead(lead.id, e)}
+                            disabled={deletingLeadId === lead.id}
+                            title="Delete lead permanently"
+                            className="p-1.5 text-neutral-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                          >
+                            <Trash2 size={12} className={deletingLeadId === lead.id ? "animate-spin" : ""} />
+                          </button>
+
                           <ChevronRight
                             size={14}
                             className={cn(
@@ -5694,24 +6018,24 @@ export default function AdminCMSPage() {
 
                       {/* Expanded Detail Panel */}
                       {isExpanded && (
-                        <div className="px-4 pb-4 border-t border-neutral-100 space-y-4 pt-4">
+                        <div className="px-4 pb-4 border-t border-neutral-100 space-y-4 pt-4 bg-neutral-50/30">
                           {/* Meta Grid */}
-                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs bg-white p-3 rounded-lg border border-neutral-100">
                             <div>
                               <span className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">Company</span>
-                              <span className="text-neutral-700">{lead.company || "—"}</span>
+                              <span className="text-neutral-800 font-medium">{lead.company || "—"}</span>
                             </div>
                             <div>
                               <span className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">Budget</span>
-                              <span className="text-neutral-700">{lead.budget || "Not specified"}</span>
+                              <span className="text-neutral-800 font-medium">{lead.budget || "Not specified"}</span>
                             </div>
                             <div>
                               <span className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">Service Interest</span>
-                              <span className="text-neutral-700">{lead.service || "—"}</span>
+                              <span className="text-neutral-800 font-medium">{lead.service || "—"}</span>
                             </div>
                             <div>
-                              <span className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">Received</span>
-                              <span className="text-neutral-700 font-mono">
+                              <span className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">Received At</span>
+                              <span className="text-neutral-800 font-mono text-[11px]">
                                 {(() => {
                                   if (!lead.createdAt) return "—";
                                   try {
@@ -5725,53 +6049,304 @@ export default function AdminCMSPage() {
                             </div>
                           </div>
 
-                          {/* Message */}
+                          {/* Client Message */}
                           <div>
-                            <span className="text-[9px] uppercase font-mono text-neutral-400 block mb-1.5">Message</span>
-                            <div className="p-3 bg-neutral-50 border border-neutral-200 rounded text-xs text-neutral-700 leading-relaxed whitespace-pre-wrap">
-                              {lead.message}
+                            <span className="text-[9px] uppercase font-mono text-neutral-400 block mb-1">Client Enquiry Message</span>
+                            <div className="p-3 bg-white border border-neutral-200 rounded text-xs text-neutral-700 leading-relaxed whitespace-pre-wrap font-sans">
+                              {lead.message || "No message body provided."}
                             </div>
                           </div>
 
-                          {/* Actions */}
-                          <div className="flex flex-wrap items-center gap-2 pt-1">
-                            <span className="text-[10px] uppercase font-mono text-neutral-400">Mark as:</span>
+                          {/* Internal Studio Follow-up Notes */}
+                          <div className="p-3 bg-amber-50/60 border border-amber-200 rounded-lg">
+                            <div className="flex justify-between items-center mb-1.5">
+                              <span className="text-[10px] uppercase font-bold text-amber-800 tracking-wider flex items-center gap-1.5">
+                                📝 Studio Internal Notes & Follow-up Log
+                              </span>
+                              {editingNoteLeadId !== lead.id && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setEditingNoteLeadId(lead.id);
+                                    setLeadNoteInput(lead.notes || "");
+                                  }}
+                                  className="text-[10px] text-amber-900 underline font-semibold hover:text-black"
+                                >
+                                  {lead.notes ? "Edit Note" : "+ Add Note"}
+                                </button>
+                              )}
+                            </div>
+
+                            {editingNoteLeadId === lead.id ? (
+                              <div className="space-y-2 mt-2">
+                                <textarea
+                                  value={leadNoteInput}
+                                  onChange={(e) => setLeadNoteInput(e.target.value)}
+                                  placeholder="E.g., Called Ar. Rajesh regarding 1200 sqft layout. Scheduled in-person studio consultation for next Tuesday."
+                                  rows={3}
+                                  className="w-full p-2 text-xs border border-amber-300 rounded focus:outline-none focus:border-amber-600 bg-white"
+                                />
+                                <div className="flex gap-2 justify-end">
+                                  <button
+                                    type="button"
+                                    onClick={() => setEditingNoteLeadId(null)}
+                                    className="px-2.5 py-1 text-[11px] bg-neutral-100 text-neutral-600 rounded hover:bg-neutral-200"
+                                  >
+                                    Cancel
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleSaveLeadNote(lead.id)}
+                                    disabled={savingNote}
+                                    className="px-3 py-1 text-[11px] bg-neutral-900 text-white rounded hover:bg-black font-semibold disabled:opacity-50"
+                                  >
+                                    {savingNote ? "Saving..." : "Save Note"}
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="text-xs text-neutral-700 italic">
+                                {lead.notes ? (
+                                  lead.notes
+                                ) : (
+                                  <span className="text-neutral-400 not-italic text-[11px]">
+                                    No internal notes yet. Click &quot;+ Add Note&quot; to log consultation outcomes or next steps.
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Action Footer */}
+                          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-neutral-200">
+                            <span className="text-[10px] uppercase font-mono text-neutral-500">Status:</span>
                             {lead.status !== "new" && (
                               <button
+                                type="button"
                                 onClick={() => updateLeadStatus(lead.id, "new")}
-                                className="flex items-center gap-1 px-3 py-1 text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 rounded hover:bg-emerald-100 transition-colors uppercase tracking-wider"
+                                className="flex items-center gap-1 px-3 py-1 text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 rounded hover:bg-emerald-100 transition-colors uppercase tracking-wider font-semibold"
                               >
-                                <Clock size={10} /> New
+                                <Clock size={10} /> Mark New
                               </button>
                             )}
                             {lead.status !== "reviewed" && (
                               <button
+                                type="button"
                                 onClick={() => updateLeadStatus(lead.id, "reviewed")}
-                                className="flex items-center gap-1 px-3 py-1 text-[10px] bg-blue-50 text-blue-700 border border-blue-200 rounded hover:bg-blue-100 transition-colors uppercase tracking-wider"
+                                className="flex items-center gap-1 px-3 py-1 text-[10px] bg-blue-50 text-blue-700 border border-blue-200 rounded hover:bg-blue-100 transition-colors uppercase tracking-wider font-semibold"
                               >
-                                <CheckCheck size={10} /> Reviewed
+                                <CheckCheck size={10} /> Mark Reviewed
                               </button>
                             )}
                             {lead.status !== "archived" && (
                               <button
+                                type="button"
                                 onClick={() => updateLeadStatus(lead.id, "archived")}
-                                className="flex items-center gap-1 px-3 py-1 text-[10px] bg-neutral-100 text-neutral-600 border border-neutral-200 rounded hover:bg-neutral-200 transition-colors uppercase tracking-wider"
+                                className="flex items-center gap-1 px-3 py-1 text-[10px] bg-neutral-100 text-neutral-600 border border-neutral-300 rounded hover:bg-neutral-200 transition-colors uppercase tracking-wider font-semibold"
                               >
                                 <Archive size={10} /> Archive
                               </button>
                             )}
-                            <a
-                              href={`mailto:${lead.email}?subject=Re: Your Architectural Enquiry — Techno Architecture&body=Dear ${lead.fullName},%0A%0AThank you for reaching out to Techno Architecture.`}
-                              className="flex items-center gap-1 px-3 py-1 text-[10px] bg-black text-white rounded hover:bg-neutral-800 transition-colors uppercase tracking-wider ml-auto"
-                            >
-                              <Mail size={10} /> Reply via Email
-                            </a>
+
+                            <div className="ml-auto flex items-center gap-2">
+                              {lead.phone && lead.phone !== "Not provided" && (
+                                <a
+                                  href={`tel:${lead.phone}`}
+                                  className="flex items-center gap-1 px-3 py-1 text-[10px] bg-neutral-100 text-neutral-800 border border-neutral-300 rounded hover:bg-neutral-200 transition-colors uppercase tracking-wider font-semibold"
+                                >
+                                  <Phone size={10} /> Call Client
+                                </a>
+                              )}
+                              <a
+                                href={`mailto:${lead.email}?subject=Re: Your Architectural Enquiry — Techno Architecture&body=Dear ${lead.fullName},%0A%0AThank you for reaching out to Techno Architecture.`}
+                                className="flex items-center gap-1 px-3 py-1 text-[10px] bg-black text-white rounded hover:bg-neutral-800 transition-colors uppercase tracking-wider font-semibold"
+                              >
+                                <Mail size={10} /> Reply via Email
+                              </a>
+                              <button
+                                type="button"
+                                onClick={(e) => handleDeleteLead(lead.id, e)}
+                                disabled={deletingLeadId === lead.id}
+                                className="flex items-center gap-1 px-2.5 py-1 text-[10px] text-red-600 hover:bg-red-50 rounded border border-transparent hover:border-red-200 uppercase tracking-wider font-semibold transition-colors"
+                              >
+                                <Trash2 size={10} /> Delete
+                              </button>
+                            </div>
                           </div>
                         </div>
                       )}
                     </div>
                   );
                 })}
+              </div>
+            );
+          })()}
+
+          {/* Add Manual Lead Modal */}
+          {showAddLeadModal && (
+            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+              <div className="bg-white rounded-xl shadow-2xl border border-neutral-200 max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 space-y-4">
+                <div className="flex justify-between items-center pb-3 border-b border-neutral-100">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
+                    <Plus size={16} className="text-emerald-600" />
+                    Record New Enquiry Lead (Manual Intake)
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddLeadModal(false)}
+                    className="text-neutral-400 hover:text-neutral-700"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+
+                <form onSubmit={handleCreateManualLead} className="space-y-3.5">
+                  <div>
+                    <label className="block text-[10px] uppercase font-mono text-neutral-500 mb-1">
+                      Client Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g., Rajesh Mehta"
+                      value={newLeadForm.fullName}
+                      onChange={(e) => setNewLeadForm({ ...newLeadForm, fullName: e.target.value })}
+                      className="w-full p-2 text-xs border border-neutral-300 rounded focus:outline-none focus:border-black"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[10px] uppercase font-mono text-neutral-500 mb-1">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="client@example.com"
+                        value={newLeadForm.email}
+                        onChange={(e) => setNewLeadForm({ ...newLeadForm, email: e.target.value })}
+                        className="w-full p-2 text-xs border border-neutral-300 rounded focus:outline-none focus:border-black"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] uppercase font-mono text-neutral-500 mb-1">
+                        Phone Number
+                      </label>
+                      <input
+                        type="tel"
+                        placeholder="+91 98765 43210"
+                        value={newLeadForm.phone}
+                        onChange={(e) => setNewLeadForm({ ...newLeadForm, phone: e.target.value })}
+                        className="w-full p-2 text-xs border border-neutral-300 rounded focus:outline-none focus:border-black"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[10px] uppercase font-mono text-neutral-500 mb-1">
+                        Company / Organization
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g., Residential or Developer Corp"
+                        value={newLeadForm.company}
+                        onChange={(e) => setNewLeadForm({ ...newLeadForm, company: e.target.value })}
+                        className="w-full p-2 text-xs border border-neutral-300 rounded focus:outline-none focus:border-black"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] uppercase font-mono text-neutral-500 mb-1">
+                        Estimated Budget
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g., ₹1.5 Cr — ₹2 Cr"
+                        value={newLeadForm.budget}
+                        onChange={(e) => setNewLeadForm({ ...newLeadForm, budget: e.target.value })}
+                        className="w-full p-2 text-xs border border-neutral-300 rounded focus:outline-none focus:border-black"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[10px] uppercase font-mono text-neutral-500 mb-1">
+                        Service Requested
+                      </label>
+                      <select
+                        value={newLeadForm.service}
+                        onChange={(e) => setNewLeadForm({ ...newLeadForm, service: e.target.value })}
+                        className="w-full p-2 text-xs border border-neutral-300 rounded focus:outline-none focus:border-black bg-white"
+                      >
+                        <option value="General Architecture & Design Enquiry">General Architecture &amp; Design</option>
+                        <option value="Residential Architecture & Villa Design">Residential Architecture &amp; Villa Design</option>
+                        <option value="Commercial & Office Architecture">Commercial &amp; Office Architecture</option>
+                        <option value="Hospitality & Resort Design">Hospitality &amp; Resort Design</option>
+                        <option value="Interior Architecture & Space Planning">Interior Architecture &amp; Space Planning</option>
+                        <option value="Sustainable Architecture & Consultation">Sustainable Architecture &amp; Consultation</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] uppercase font-mono text-neutral-500 mb-1">
+                        Initial Lead Status
+                      </label>
+                      <select
+                        value={newLeadForm.status}
+                        onChange={(e) => setNewLeadForm({ ...newLeadForm, status: e.target.value as any })}
+                        className="w-full p-2 text-xs border border-neutral-300 rounded focus:outline-none focus:border-black bg-white"
+                      >
+                        <option value="new">New (Needs Follow-up)</option>
+                        <option value="reviewed">Reviewed (In Discussion)</option>
+                        <option value="archived">Archived</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] uppercase font-mono text-neutral-500 mb-1">
+                      Enquiry Requirements / Notes
+                    </label>
+                    <textarea
+                      rows={3}
+                      placeholder="Details discussed during phone call or studio walk-in..."
+                      value={newLeadForm.message}
+                      onChange={(e) => setNewLeadForm({ ...newLeadForm, message: e.target.value })}
+                      className="w-full p-2 text-xs border border-neutral-300 rounded focus:outline-none focus:border-black font-sans"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] uppercase font-mono text-neutral-500 mb-1">
+                      Internal Studio Notes (Private)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Referred by Ar. Rajesh, wants proposal by Friday"
+                      value={newLeadForm.notes}
+                      onChange={(e) => setNewLeadForm({ ...newLeadForm, notes: e.target.value })}
+                      className="w-full p-2 text-xs border border-neutral-300 rounded focus:outline-none focus:border-black"
+                    />
+                  </div>
+
+                  <div className="flex gap-2 justify-end pt-3 border-t border-neutral-100">
+                    <button
+                      type="button"
+                      onClick={() => setShowAddLeadModal(false)}
+                      className="px-4 py-2 text-xs bg-neutral-100 text-neutral-700 rounded hover:bg-neutral-200 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isSubmittingManualLead}
+                      className="px-5 py-2 text-xs bg-emerald-600 text-white font-semibold rounded hover:bg-emerald-700 disabled:opacity-50 transition-colors uppercase tracking-wider"
+                    >
+                      {isSubmittingManualLead ? "Saving Lead..." : "Save Lead to CRM"}
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           )}
         </div>

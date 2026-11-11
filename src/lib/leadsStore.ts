@@ -12,6 +12,7 @@ export interface EnquiryLead {
   budget: string;
   message: string;
   status: "new" | "reviewed" | "archived";
+  notes?: string;
   createdAt: string;
 }
 
@@ -268,20 +269,35 @@ export async function persistNewLead(lead: EnquiryLead): Promise<{ success: bool
  * Update a lead's status (new -> reviewed -> archived)
  */
 export async function updateLeadStatus(id: string, status: "new" | "reviewed" | "archived"): Promise<boolean> {
-  const currentLeads = await getAllLeads();
-  const target = currentLeads.find((l) => l.id === id);
-  if (!target) return false;
+  return updateLead(id, { status });
+}
 
-  target.status = status;
+/**
+ * Update any attributes of a lead (status, internal notes, contact details)
+ */
+export async function updateLead(id: string, updates: Partial<EnquiryLead>): Promise<boolean> {
+  const currentLeads = await getAllLeads();
+  const index = currentLeads.findIndex((l) => l.id === id);
+  if (index === -1) return false;
+
+  const updatedLead: EnquiryLead = {
+    ...currentLeads[index],
+    ...updates,
+    id, // ensure ID cannot be mutated
+  };
+
+  currentLeads[index] = updatedLead;
   globalThis.__techno_enquiries_store__ = currentLeads;
 
   // 1. Update Firestore if active
   try {
     const db = getFirestoreDb();
     if (db) {
-      await db.collection("enquiries").doc(id).update({ status });
+      await db.collection("enquiries").doc(id).set(updatedLead, { merge: true });
     }
-  } catch {}
+  } catch (err) {
+    console.warn("[LeadsStore] Firestore update notice:", err);
+  }
 
   // 2. Update local disk
   try {
@@ -297,4 +313,83 @@ export async function updateLeadStatus(id: string, status: "new" | "reviewed" | 
   saveLeadsToGitHub(currentLeads).catch(() => {});
 
   return true;
+}
+
+/**
+ * Delete a lead permanently across all persistence tiers
+ */
+export async function deleteLead(id: string): Promise<boolean> {
+  const currentLeads = await getAllLeads();
+  const filtered = currentLeads.filter((l) => l.id !== id);
+  if (filtered.length === currentLeads.length) {
+    return false; // lead didn't exist
+  }
+
+  globalThis.__techno_enquiries_store__ = filtered;
+
+  // 1. Delete from Firestore if active
+  try {
+    const db = getFirestoreDb();
+    if (db) {
+      await db.collection("enquiries").doc(id).delete();
+    }
+  } catch (err) {
+    console.warn("[LeadsStore] Firestore delete notice:", err);
+  }
+
+  // 2. Update local disk
+  try {
+    await fs.writeFile(LOCAL_DATA_PATH, JSON.stringify(filtered, null, 2), "utf-8");
+  } catch {}
+
+  // 3. Update /tmp
+  try {
+    await fs.writeFile(TMP_DATA_PATH, JSON.stringify(filtered, null, 2), "utf-8");
+  } catch {}
+
+  // 4. Update GitHub
+  saveLeadsToGitHub(filtered).catch(() => {});
+
+  return true;
+}
+
+/**
+ * Generate formatted CSV export string of all leads
+ */
+export function generateLeadsCsv(leads: EnquiryLead[]): string {
+  const headers = [
+    "Lead ID",
+    "Full Name",
+    "Email",
+    "Phone",
+    "Company",
+    "Service Requested",
+    "Budget",
+    "Status",
+    "Received Date",
+    "Message",
+    "Internal Studio Notes",
+  ];
+
+  const escapeCsv = (val: any) => {
+    if (val === null || val === undefined) return '""';
+    const str = String(val).replace(/"/g, '""');
+    return `"${str}"`;
+  };
+
+  const rows = leads.map((l) => [
+    escapeCsv(l.id),
+    escapeCsv(l.fullName),
+    escapeCsv(l.email),
+    escapeCsv(l.phone),
+    escapeCsv(l.company),
+    escapeCsv(l.service),
+    escapeCsv(l.budget),
+    escapeCsv(l.status),
+    escapeCsv(l.createdAt),
+    escapeCsv(l.message),
+    escapeCsv(l.notes || ""),
+  ]);
+
+  return [headers.join(","), ...rows.map((r) => r.join(","))].join("\r\n");
 }
