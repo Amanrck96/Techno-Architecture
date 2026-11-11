@@ -73,15 +73,15 @@ export default function StudioPreloader({ forceShow = false, onComplete }: Studi
     // Lock body scroll momentarily while preloader is active
     document.body.style.overflow = "hidden";
 
-    // Fast, ultra-snappy cinematic progress counter (~650ms total duration)
+    // Fast, ultra-snappy cinematic progress counter (~480ms total duration)
     const startTime = Date.now();
-    const duration = 650; // Rapid 650ms
+    const duration = 480; // Rapid ~480ms
 
-    // Safety watchdog: Guarantees exit after max 1.1s under any browser throttling condition
+    // Safety watchdog: Guarantees exit after max 850ms under any browser throttling condition
     const safetyTimer = setTimeout(() => {
       clearInterval(timer);
       finishAndExit();
-    }, 1100);
+    }, 850);
 
     const timer = setInterval(() => {
       const elapsed = Date.now() - startTime;
@@ -93,15 +93,15 @@ export default function StudioPreloader({ forceShow = false, onComplete }: Studi
       } else if (pct < 70) {
         setStatusText("CALIBRATING LIGHT, VOLUME & MATERIALITY");
       } else if (pct < 100) {
-        setStatusText("ENTERING TECHNO ARCHITECTURE STUDIO");
+        setStatusText("LOADING TECHNO ARCHITECTURE");
       } else {
-        setStatusText("STUDIO READY");
+        setStatusText("READY");
         clearInterval(timer);
         clearTimeout(safetyTimer);
-        // Snappy 120ms pause at 100% before smooth shutter wipe
+        // Snappy 80ms pause at 100% before smooth shutter wipe
         setTimeout(() => {
           finishAndExit();
-        }, 120);
+        }, 80);
       }
     }, 16);
 
@@ -147,7 +147,7 @@ export default function StudioPreloader({ forceShow = false, onComplete }: Studi
           }}
           className="fixed inset-0 z-[999999] bg-neutral-950 text-white flex flex-col justify-between p-6 sm:p-10 lg:p-14 select-none overflow-hidden cursor-pointer"
           onClick={finishAndExit}
-          title="Click to enter studio immediately"
+          title="Click anywhere to skip"
           role="dialog"
           aria-label="Studio Opening Sequence"
         >
@@ -232,9 +232,9 @@ export default function StudioPreloader({ forceShow = false, onComplete }: Studi
                 finishAndExit();
               }}
               className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/5 hover:bg-white/15 border border-white/15 hover:border-white/30 text-neutral-200 hover:text-white transition-all text-[9px] sm:text-[10px] font-mono tracking-[0.2em] uppercase rounded-xs cursor-pointer"
-              aria-label="Skip introduction and enter studio"
+              aria-label="Skip introduction"
             >
-              <span>ENTER STUDIO</span>
+              <span>SKIP</span>
               <span className="text-neutral-500 text-[8px]">[ESC]</span>
             </button>
           </div>

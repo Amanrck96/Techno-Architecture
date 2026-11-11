@@ -196,8 +196,8 @@ export default function Footer() {
             <Link href="/about" className="hover:text-neutral-600 transition-colors">
               Legal Notice
             </Link>
-            <Link href="/admin" className="text-neutral-600 hover:text-black font-semibold transition-colors">
-              Owner Portal
+            <Link href="/admin" className="text-neutral-600 hover:text-black font-semibold transition-colors" title="Admin Login & Owner Portal">
+              Admin Login / Owner Portal
             </Link>
           </div>
         </div>

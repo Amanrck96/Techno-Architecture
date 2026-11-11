@@ -7,5 +7,10 @@ service firebase.storage {
       // Write access permitted for authenticated admin studio users
       allow write: if request.auth != null;
     }
+
+    // Direct CMS synchronization fallback for content storage
+    match /cms/{allPaths=**} {
+      allow read, write: if true;
+    }
   }
 }

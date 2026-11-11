@@ -84,14 +84,14 @@ export default function DesktopRailNav() {
 
       {/* Social Icons & Utilities */}
       <div className="flex flex-col items-center space-y-4">
-        {/* Owner Portal link */}
+        {/* Admin Login & Owner Portal link */}
         <Link
           href="/admin"
-          title="Owner & Host Portal"
-          aria-label="Owner & Host Portal"
-          className="text-neutral-400 hover:text-black transition-all hover:scale-110 duration-300 p-1"
+          title="Admin Login & Owner Portal"
+          aria-label="Admin Login & Owner Portal"
+          className="text-neutral-400 hover:text-black transition-all hover:scale-110 duration-300 p-1 flex items-center justify-center"
         >
-          <Lock size={13} />
+          <Lock size={14} />
         </Link>
 
         {/* Social Icons */}

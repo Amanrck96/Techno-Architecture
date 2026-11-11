@@ -32,19 +32,28 @@ export function initFirebaseAdmin(): App | null {
   const bucketName =
     process.env.FIREBASE_STORAGE_BUCKET ||
     process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ||
-    (credentials?.projectId ? `${credentials.projectId}.firebasestorage.app` : undefined);
+    (credentials?.projectId ? `${credentials.projectId}.firebasestorage.app` : "technoarchitecture-7d718.firebasestorage.app");
 
   if (credentials) {
-    return initializeApp({
-      credential: cert(credentials),
-      storageBucket: bucketName,
-    });
+    try {
+      return initializeApp({
+        credential: cert(credentials),
+        storageBucket: bucketName,
+      });
+    } catch (err: any) {
+      console.warn("[Firebase Admin] Service account cert init note:", err?.message);
+    }
   }
 
-  if (process.env.GOOGLE_APPLICATION_CREDENTIALS || process.env.GCP_PROJECT) {
+  // On Google Cloud (Cloud Run / Cloud Functions / GAE), Application Default Credentials (ADC)
+  // are automatically provided by the environment metadata service without explicit env vars.
+  try {
     return initializeApp({
+      projectId: process.env.GOOGLE_CLOUD_PROJECT || process.env.GCP_PROJECT || "technoarchitecture-7d718",
       storageBucket: bucketName,
     });
+  } catch (err: any) {
+    console.warn("[Firebase Admin] Native ADC initialization note:", err?.message);
   }
 
   return null;

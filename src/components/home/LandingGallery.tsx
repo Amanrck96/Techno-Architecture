@@ -114,13 +114,13 @@ export default function LandingGallery() {
               PROJECTS
             </Link>
 
-            {/* Enter Studio Primary CTA — Triggers Cinematic Studio Entrance */}
+            {/* Explore Architecture Primary CTA */}
             <Link
               href="/home?intro=cinematic"
               prefetch={true}
               className="inline-flex items-center gap-2 text-[9px] sm:text-[10px] tracking-[0.22em] uppercase font-semibold text-black bg-white hover:bg-neutral-200 transition-colors py-2.5 sm:py-3 px-4 sm:px-5 shadow-lg group cursor-pointer"
             >
-              <span>ENTER STUDIO</span>
+              <span>EXPLORE ARCHITECTURE</span>
               <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
             </Link>
           </div>

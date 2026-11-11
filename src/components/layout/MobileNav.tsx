@@ -115,6 +115,17 @@ export default function MobileNav() {
                 </li>
               );
             })}
+            <li className="pt-2 border-t border-neutral-100">
+              <Link
+                href="/admin"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-2 text-xs font-mono tracking-[0.2em] uppercase text-neutral-500 hover:text-black py-2"
+                aria-label="Admin Login"
+              >
+                <Lock size={13} />
+                <span>ADMIN LOGIN</span>
+              </Link>
+            </li>
           </ul>
         </nav>
 

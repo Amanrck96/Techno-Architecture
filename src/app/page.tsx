@@ -1,4 +1,5 @@
 import LandingGallery from "@/components/home/LandingGallery";
+import StudioPreloader from "@/components/home/StudioPreloader";
 
 export const metadata = {
   title: "TECHNO ARCHITECTURE — Architecture shaped around people, place and purpose",
@@ -7,5 +8,10 @@ export const metadata = {
 };
 
 export default function HomePage() {
-  return <LandingGallery />;
+  return (
+    <>
+      <StudioPreloader />
+      <LandingGallery />
+    </>
+  );
 }
