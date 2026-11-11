@@ -921,12 +921,13 @@ export function CMSProvider({
       }
     } catch (_) {}
 
-    // 3. Only fetch from server on mount if data is missing/default or if user is in /admin
-    const isAdmin = typeof window !== "undefined" && window.location.pathname.startsWith("/admin");
-    const needsFetch = !initialData || initialData.isDefault || isAdmin;
-    if (needsFetch) {
+    // 3. Always fetch from server on client mount to sync fresh cloud edits immediately across all visitors
+    fetchFromServer();
+
+    // 4. Periodic background sync (every 45s) to receive real-time cloud edits without requiring git commit or page refresh
+    const pollInterval = setInterval(() => {
       fetchFromServer();
-    }
+    }, 45000);
 
     // BroadcastChannel for instant inter-tab live sync
     let channel: BroadcastChannel | null = null;
@@ -976,6 +977,7 @@ export function CMSProvider({
     window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
+      clearInterval(pollInterval);
       if (channel) channel.close();
       window.removeEventListener("beforeunload", handleBeforeUnload);
       storageTimersRef.current.forEach((t) => clearTimeout(t));

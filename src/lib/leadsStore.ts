@@ -60,53 +60,11 @@ async function getLeadsFromGitHub(): Promise<{ leads: EnquiryLead[]; sha?: strin
 }
 
 /**
- * Commit leads array to GitHub repository via REST API
+ * Commit leads array to GitHub repository (Disabled to prevent automatic git commit flooding)
  */
-async function saveLeadsToGitHub(leads: EnquiryLead[]): Promise<boolean> {
-  const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
-  const repo = process.env.GITHUB_REPOSITORY || "Amanrck96/Techno-Architecture";
-  const filePath = "src/data/enquiries.json";
-
-  if (!token) return false;
-
-  try {
-    // 1. Get current SHA if file exists
-    let sha: string | undefined;
-    const getRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/vnd.github.v3+json",
-      },
-      cache: "no-store",
-    });
-
-    if (getRes.ok) {
-      const fileInfo = await getRes.json();
-      sha = fileInfo.sha;
-    }
-
-    const contentStr = JSON.stringify(leads, null, 2);
-    const contentBase64 = Buffer.from(contentStr).toString("base64");
-
-    const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/vnd.github.v3+json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        message: `chore(leads): sync enquiry leads via studio portal [${new Date().toISOString()}]`,
-        content: contentBase64,
-        sha,
-      }),
-    });
-
-    return putRes.ok;
-  } catch (err) {
-    console.warn("[LeadsStore] GitHub commit notice:", err);
-    return false;
-  }
+async function saveLeadsToGitHub(_leads: EnquiryLead[]): Promise<boolean> {
+  // Automatic GitHub commits disabled. Leads are safely and permanently stored in Cloud Firestore.
+  return true;
 }
 
 /**

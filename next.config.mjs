@@ -5,10 +5,7 @@ const nextConfig = {
     serverComponentsExternalPackages: ['firebase-admin'],
   },
   images: {
-    formats: ['image/avif', 'image/webp'],
-    minimumCacheTTL: 2678400, // 31 days (prevents constant Vercel Image Optimization recalculations)
-    deviceSizes: [640, 750, 1080, 1920],
-    imageSizes: [32, 64, 128, 256, 384],
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -42,12 +39,12 @@ const nextConfig = {
         ],
       },
       {
-        // 2. Edge CDN Caching for CMS API Hydration (reduces Function Invocations)
+        // 2. Real-time CMS API Hydration (Instant live sync for all visitors without stale cache)
         source: '/api/cms',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, s-maxage=60, stale-while-revalidate=300',
+            value: 'no-cache, no-store, must-revalidate',
           },
         ],
       },
