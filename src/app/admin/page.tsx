@@ -86,6 +86,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ImageMouseAdjuster } from "@/components/admin/ImageMouseAdjuster";
+import { AdminDraftInput, AdminDraftTextarea } from "@/components/admin/AdminDraftInputs";
 
 type AdminTab =
   | "projects"
@@ -1779,11 +1780,10 @@ export default function AdminCMSPage() {
                       <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                         Title
                       </label>
-                      <input
+                      <AdminDraftInput
                         type="text"
                         value={p.title}
-                        onChange={(e) => {
-                          const val = e.target.value;
+                        onCommit={(val) => {
                           const updated = projects.map((item, i) =>
                             i === idx ? { ...item, title: val } : item
                           );
@@ -1796,28 +1796,20 @@ export default function AdminCMSPage() {
                       <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                         Slug (URL)
                       </label>
-                      <input
+                      <AdminDraftInput
                         type="text"
                         value={p.slug}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          const updated = projects.map((item, i) =>
-                            i === idx ? { ...item, slug: val } : item
-                          );
-                          saveProjects(updated);
-                        }}
-                        onBlur={(e) => {
-                          const sanitizedSlug = e.target.value
+                        onCommit={(val) => {
+                          const sanitizedSlug = val
                             .trim()
                             .toLowerCase()
                             .replace(/[\s_]+/g, "-")
                             .replace(/[^a-z0-9-]/g, "");
-                          if (sanitizedSlug && sanitizedSlug !== e.target.value) {
-                            const updated = projects.map((item, i) =>
-                              i === idx ? { ...item, slug: sanitizedSlug } : item
-                            );
-                            saveProjects(updated);
-                          }
+                          const finalSlug = sanitizedSlug || val;
+                          const updated = projects.map((item, i) =>
+                            i === idx ? { ...item, slug: finalSlug } : item
+                          );
+                          saveProjects(updated);
                         }}
                         className="w-full p-2 border border-neutral-300 rounded text-xs font-mono focus:border-black focus:outline-none"
                       />
@@ -1913,11 +1905,10 @@ export default function AdminCMSPage() {
                     <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                       Short Overview Description
                     </label>
-                    <textarea
+                    <AdminDraftTextarea
                       rows={2}
                       value={p.description}
-                      onChange={(e) => {
-                        const val = e.target.value;
+                      onCommit={(val) => {
                         const updated = projects.map((item, i) =>
                           i === idx ? { ...item, description: val } : item
                         );
@@ -1998,11 +1989,10 @@ export default function AdminCMSPage() {
                           <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                             Client Quote / Review
                           </label>
-                          <textarea
+                          <AdminDraftTextarea
                             rows={3}
                             value={p.testimonial.quote || ""}
-                            onChange={(e) => {
-                              const val = e.target.value;
+                            onCommit={(val) => {
                               const updated = projects.map((item, i) =>
                                 i === idx && item.testimonial
                                   ? { ...item, testimonial: { ...item.testimonial, quote: val } }
@@ -2020,11 +2010,10 @@ export default function AdminCMSPage() {
                             <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                               Client Name
                             </label>
-                            <input
+                            <AdminDraftInput
                               type="text"
                               value={p.testimonial.clientName || ""}
-                              onChange={(e) => {
-                                const val = e.target.value;
+                              onCommit={(val) => {
                                 const updated = projects.map((item, i) =>
                                   i === idx && item.testimonial
                                     ? { ...item, testimonial: { ...item.testimonial, clientName: val } }
@@ -2041,11 +2030,10 @@ export default function AdminCMSPage() {
                             <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                               Designation / Role
                             </label>
-                            <input
+                            <AdminDraftInput
                               type="text"
                               value={p.testimonial.designation || ""}
-                              onChange={(e) => {
-                                const val = e.target.value;
+                              onCommit={(val) => {
                                 const updated = projects.map((item, i) =>
                                   i === idx && item.testimonial
                                     ? { ...item, testimonial: { ...item.testimonial, designation: val } }
@@ -2062,11 +2050,10 @@ export default function AdminCMSPage() {
                             <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                               Company / Residence
                             </label>
-                            <input
+                            <AdminDraftInput
                               type="text"
                               value={p.testimonial.company || ""}
-                              onChange={(e) => {
-                                const val = e.target.value;
+                              onCommit={(val) => {
                                 const updated = projects.map((item, i) =>
                                   i === idx && item.testimonial
                                     ? { ...item, testimonial: { ...item.testimonial, company: val } }
@@ -2099,11 +2086,10 @@ export default function AdminCMSPage() {
                           <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                             Location
                           </label>
-                          <input
+                          <AdminDraftInput
                             type="text"
                             value={p.location}
-                            onChange={(e) => {
-                              const val = e.target.value;
+                            onCommit={(val) => {
                               const updated = projects.map((item, i) =>
                                 i === idx ? { ...item, location: val } : item
                               );
@@ -2116,13 +2102,13 @@ export default function AdminCMSPage() {
                           <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                             Year
                           </label>
-                          <input
+                          <AdminDraftInput
                             type="number"
                             value={p.year}
-                            onChange={(e) => {
-                              const val = parseInt(e.target.value) || 2024;
+                            onCommit={(val) => {
+                              const intVal = parseInt(val) || 2024;
                               const updated = projects.map((item, i) =>
-                                i === idx ? { ...item, year: val } : item
+                                i === idx ? { ...item, year: intVal } : item
                               );
                               saveProjects(updated);
                             }}
@@ -2133,11 +2119,10 @@ export default function AdminCMSPage() {
                           <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                             Built-Up Area
                           </label>
-                          <input
+                          <AdminDraftInput
                             type="text"
                             value={p.area}
-                            onChange={(e) => {
-                              const val = e.target.value;
+                            onCommit={(val) => {
                               const updated = projects.map((item, i) =>
                                 i === idx ? { ...item, area: val } : item
                               );
@@ -2150,11 +2135,10 @@ export default function AdminCMSPage() {
                           <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                             Client
                           </label>
-                          <input
+                          <AdminDraftInput
                             type="text"
                             value={p.client}
-                            onChange={(e) => {
-                              const val = e.target.value;
+                            onCommit={(val) => {
                               const updated = projects.map((item, i) =>
                                 i === idx ? { ...item, client: val } : item
                               );
@@ -2169,11 +2153,10 @@ export default function AdminCMSPage() {
                         <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                           In-Depth Process & Architectural Narrative
                         </label>
-                        <textarea
+                        <AdminDraftTextarea
                           rows={3}
                           value={p.processNarrative}
-                          onChange={(e) => {
-                            const val = e.target.value;
+                          onCommit={(val) => {
                             const updated = projects.map((item, i) =>
                               i === idx ? { ...item, processNarrative: val } : item
                             );
@@ -2189,13 +2172,13 @@ export default function AdminCMSPage() {
                           <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                             Principal Architect
                           </label>
-                          <input
+                          <AdminDraftInput
                             type="text"
                             placeholder="Ar. Rajesh Shivaram"
                             value={p.credits?.principalArchitect || "Ar. Rajesh Shivaram"}
-                            onChange={(e) => {
+                            onCommit={(val) => {
                               saveProjects(projects.map((item, i) =>
-                                i === idx ? { ...item, credits: { ...item.credits, principalArchitect: e.target.value } } : item
+                                i === idx ? { ...item, credits: { ...item.credits, principalArchitect: val } } : item
                               ));
                             }}
                             className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
@@ -2205,18 +2188,18 @@ export default function AdminCMSPage() {
                           <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                             Project Architect
                           </label>
-                          <input
+                          <AdminDraftInput
                             type="text"
                             placeholder="e.g. Vikramaditya Shenoy"
                             value={p.credits?.projectArchitect || p.credits?.projectLead || ""}
-                            onChange={(e) => {
+                            onCommit={(val) => {
                               saveProjects(projects.map((item, i) =>
                                 i === idx ? {
                                   ...item,
                                   credits: {
                                     ...item.credits,
-                                    projectArchitect: e.target.value,
-                                    projectLead: e.target.value,
+                                    projectArchitect: val,
+                                    projectLead: val,
                                   }
                                 } : item
                               ));
@@ -2228,13 +2211,13 @@ export default function AdminCMSPage() {
                           <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                             Landscape Architect
                           </label>
-                          <input
+                          <AdminDraftInput
                             type="text"
                             placeholder="e.g. Verdant Studio"
                             value={p.credits?.landscapeArchitect || ""}
-                            onChange={(e) => {
+                            onCommit={(val) => {
                               saveProjects(projects.map((item, i) =>
-                                i === idx ? { ...item, credits: { ...item.credits, landscapeArchitect: e.target.value } } : item
+                                i === idx ? { ...item, credits: { ...item.credits, landscapeArchitect: val } } : item
                               ));
                             }}
                             className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
@@ -2244,13 +2227,13 @@ export default function AdminCMSPage() {
                           <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                             Photography Credit
                           </label>
-                          <input
+                          <AdminDraftInput
                             type="text"
                             placeholder="e.g. Shamanth Patil Photography"
                             value={p.credits?.photography || ""}
-                            onChange={(e) => {
+                            onCommit={(val) => {
                               saveProjects(projects.map((item, i) =>
-                                i === idx ? { ...item, credits: { ...item.credits, photography: e.target.value } } : item
+                                i === idx ? { ...item, credits: { ...item.credits, photography: val } } : item
                               ));
                             }}
                             className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
@@ -2260,13 +2243,13 @@ export default function AdminCMSPage() {
                           <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                             Team
                           </label>
-                          <input
+                          <AdminDraftInput
                             type="text"
                             placeholder="e.g. Karthik Sundaram, Divya Raghavan"
                             value={p.credits?.team || ""}
-                            onChange={(e) => {
+                            onCommit={(val) => {
                               saveProjects(projects.map((item, i) =>
-                                i === idx ? { ...item, credits: { ...item.credits, team: e.target.value } } : item
+                                i === idx ? { ...item, credits: { ...item.credits, team: val } } : item
                               ));
                             }}
                             className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
@@ -2744,10 +2727,10 @@ export default function AdminCMSPage() {
                 <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                   Primary Page Topic / Heading
                 </label>
-                <input
+                <AdminDraftInput
                   type="text"
                   value={siteSettings.servicesHeader?.title ?? "Services"}
-                  onChange={(e) => {
+                  onCommit={(val) => {
                     const currentHeader = siteSettings.servicesHeader || {
                       title: "Services",
                       subtitle: "PRACTICE DISCIPLINES & SCOPE",
@@ -2755,7 +2738,7 @@ export default function AdminCMSPage() {
                     };
                     saveSiteSettings({
                       ...siteSettings,
-                      servicesHeader: { ...currentHeader, title: e.target.value },
+                      servicesHeader: { ...currentHeader, title: val },
                     });
                   }}
                   placeholder="Services"
@@ -2767,10 +2750,10 @@ export default function AdminCMSPage() {
                 <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                   Scope Sub-heading / Monospace Tag (Below Topic)
                 </label>
-                <input
+                <AdminDraftInput
                   type="text"
                   value={siteSettings.servicesHeader?.subtitle ?? "PRACTICE DISCIPLINES & SCOPE"}
-                  onChange={(e) => {
+                  onCommit={(val) => {
                     const currentHeader = siteSettings.servicesHeader || {
                       title: "Services",
                       subtitle: "PRACTICE DISCIPLINES & SCOPE",
@@ -2778,7 +2761,7 @@ export default function AdminCMSPage() {
                     };
                     saveSiteSettings({
                       ...siteSettings,
-                      servicesHeader: { ...currentHeader, subtitle: e.target.value },
+                      servicesHeader: { ...currentHeader, subtitle: val },
                     });
                   }}
                   placeholder="PRACTICE DISCIPLINES & SCOPE"
@@ -2790,13 +2773,13 @@ export default function AdminCMSPage() {
                 <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                   Services Introduction Narrative
                 </label>
-                <textarea
+                <AdminDraftTextarea
                   rows={2}
                   value={
                     siteSettings.servicesHeader?.description ??
                     "We provide integrated design services for new buildings and interior environments. Each appointment is structured around the project's scale, stage and specific requirements."
                   }
-                  onChange={(e) => {
+                  onCommit={(val) => {
                     const currentHeader = siteSettings.servicesHeader || {
                       title: "Services",
                       subtitle: "PRACTICE DISCIPLINES & SCOPE",
@@ -2804,7 +2787,7 @@ export default function AdminCMSPage() {
                     };
                     saveSiteSettings({
                       ...siteSettings,
-                      servicesHeader: { ...currentHeader, description: e.target.value },
+                      servicesHeader: { ...currentHeader, description: val },
                     });
                   }}
                   className="w-full p-2 border border-neutral-300 rounded text-xs bg-white leading-relaxed"
@@ -3449,13 +3432,13 @@ export default function AdminCMSPage() {
                       <label className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">
                         Practitioner Full Name
                       </label>
-                      <input
+                      <AdminDraftInput
                         type="text"
                         value={m.name || ""}
                         placeholder="e.g. Ar. Rajesh Shivaram"
-                        onChange={(e) => {
+                        onCommit={(val) => {
                           const updated = team.map((item) =>
-                            item.id === m.id ? { ...item, name: e.target.value } : item
+                            item.id === m.id ? { ...item, name: val } : item
                           );
                           saveTeam(updated);
                         }}
@@ -3570,36 +3553,35 @@ export default function AdminCMSPage() {
                           )}
                           <option value="__custom__">+ Custom / Type your own below...</option>
                         </select>
-                        <input
+                        <AdminDraftInput
                           id={`disc-input-${m.id}`}
                           type="text"
                           value={m.discipline || ""}
                           placeholder="Type custom discipline..."
-                          onChange={(e) => {
-                            const val = e.target.value;
+                          onCommit={(val) => {
                             const updated = team.map((item) =>
                               item.id === m.id ? { ...item, discipline: val } : item
                             );
                             saveTeam(updated);
                           }}
-                            className="w-full text-xs text-neutral-800 p-1 border border-neutral-200 rounded focus:border-black focus:outline-none bg-neutral-50/50 font-medium"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-[9px] uppercase font-mono text-neutral-500 font-semibold block mb-0.5">Credentials</label>
-                          <input
-                            type="text"
-                            value={m.credentials || ""}
-                            placeholder="e.g. B.Arch, COA"
-                            onChange={(e) => {
-                              const updated = team.map((item) =>
-                                item.id === m.id ? { ...item, credentials: e.target.value } : item
-                              );
-                              saveTeam(updated);
-                            }}
-                            className="w-full p-1.5 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none"
-                          />
-                        </div>
+                          className="w-full text-xs text-neutral-800 p-1 border border-neutral-200 rounded focus:border-black focus:outline-none bg-neutral-50/50 font-medium"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[9px] uppercase font-mono text-neutral-500 font-semibold block mb-0.5">Credentials</label>
+                        <AdminDraftInput
+                          type="text"
+                          value={m.credentials || ""}
+                          placeholder="e.g. B.Arch, COA"
+                          onCommit={(val) => {
+                            const updated = team.map((item) =>
+                              item.id === m.id ? { ...item, credentials: val } : item
+                            );
+                            saveTeam(updated);
+                          }}
+                          className="w-full p-1.5 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none"
+                        />
+                      </div>
                       </div>
                     </>
                   );
@@ -3679,12 +3661,12 @@ export default function AdminCMSPage() {
 
                 <div>
                   <label className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">Biography</label>
-                  <textarea
+                  <AdminDraftTextarea
                     rows={3}
                     value={m.bio || ""}
-                    onChange={(e) => {
+                    onCommit={(val) => {
                       const updated = team.map((item) =>
-                        item.id === m.id ? { ...item, bio: e.target.value } : item
+                        item.id === m.id ? { ...item, bio: val } : item
                       );
                       saveTeam(updated);
                     }}
@@ -3830,22 +3812,22 @@ export default function AdminCMSPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="sm:col-span-2">
                     <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">Title</label>
-                    <input
+                    <AdminDraftInput
                       type="text"
                       value={b.title}
-                      onChange={(e) => {
-                        saveBlog(blog.map((item, i) => i === idx ? { ...item, title: e.target.value } : item));
+                      onCommit={(val) => {
+                        saveBlog(blog.map((item, i) => i === idx ? { ...item, title: val } : item));
                       }}
                       className="w-full p-2 border border-neutral-300 rounded font-medium"
                     />
                   </div>
                   <div>
                     <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">Slug</label>
-                    <input
+                    <AdminDraftInput
                       type="text"
                       value={b.slug}
-                      onChange={(e) => {
-                        saveBlog(blog.map((item, i) => i === idx ? { ...item, slug: e.target.value } : item));
+                      onCommit={(val) => {
+                        saveBlog(blog.map((item, i) => i === idx ? { ...item, slug: val } : item));
                       }}
                       className="w-full p-2 border border-neutral-300 rounded font-mono"
                     />
@@ -3876,11 +3858,11 @@ export default function AdminCMSPage() {
 
                 <div>
                   <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">Excerpt</label>
-                  <textarea
+                  <AdminDraftTextarea
                     rows={2}
                     value={b.excerpt}
-                    onChange={(e) => {
-                      saveBlog(blog.map((item, i) => i === idx ? { ...item, excerpt: e.target.value } : item));
+                    onCommit={(val) => {
+                      saveBlog(blog.map((item, i) => i === idx ? { ...item, excerpt: val } : item));
                     }}
                     className="w-full p-2 border border-neutral-300 rounded text-xs leading-relaxed"
                   />
@@ -3938,14 +3920,14 @@ export default function AdminCMSPage() {
                         <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                           Article Introduction
                         </label>
-                        <textarea
+                        <AdminDraftTextarea
                           rows={3}
                           value={b.content?.introduction || ""}
-                          onChange={(e) => {
+                          onCommit={(val) => {
                             saveBlog(blog.map((item, i) => {
                               if (i !== idx) return item;
                               const content = item.content || { introduction: "", sections: [], conclusion: "" };
-                              return { ...item, content: { ...content, introduction: e.target.value } };
+                              return { ...item, content: { ...content, introduction: val } };
                             }));
                           }}
                           className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
@@ -4000,16 +3982,16 @@ export default function AdminCMSPage() {
                               </button>
                             </div>
 
-                            <input
+                            <AdminDraftInput
                               type="text"
                               value={sec.heading}
                               placeholder="Section Heading"
-                              onChange={(e) => {
+                              onCommit={(val) => {
                                 saveBlog(blog.map((item, i) => {
                                   if (i !== idx) return item;
                                   const content = item.content || { introduction: "", sections: [], conclusion: "" };
                                   const sections = (content.sections || []).map((secItem, sI) =>
-                                    sI === sIdx ? { ...secItem, heading: e.target.value } : secItem
+                                    sI === sIdx ? { ...secItem, heading: val } : secItem
                                   );
                                   return { ...item, content: { ...content, sections } };
                                 }));
@@ -4017,12 +3999,12 @@ export default function AdminCMSPage() {
                               className="w-full p-1.5 border border-neutral-300 rounded text-xs font-medium"
                             />
 
-                            <textarea
+                            <AdminDraftTextarea
                               rows={3}
                               value={sec.body?.join("\n\n") || ""}
                               placeholder="Paragraph text (separate paragraphs with blank line)"
-                              onChange={(e) => {
-                                const newBody = e.target.value.split("\n\n");
+                              onCommit={(val) => {
+                                const newBody = val.split("\n\n");
                                 saveBlog(blog.map((item, i) => {
                                   if (i !== idx) return item;
                                   const content = item.content || { introduction: "", sections: [], conclusion: "" };
@@ -4068,14 +4050,14 @@ export default function AdminCMSPage() {
                         <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                           Article Conclusion
                         </label>
-                        <textarea
+                        <AdminDraftTextarea
                           rows={2}
                           value={b.content?.conclusion || ""}
-                          onChange={(e) => {
+                          onCommit={(val) => {
                             saveBlog(blog.map((item, i) => {
                               if (i !== idx) return item;
                               const content = item.content || { introduction: "", sections: [], conclusion: "" };
-                              return { ...item, content: { ...content, conclusion: e.target.value } };
+                              return { ...item, content: { ...content, conclusion: val } };
                             }));
                           }}
                           className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
@@ -4153,12 +4135,12 @@ export default function AdminCMSPage() {
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-neutral-100 pb-2">
                   <div className="flex items-center gap-2 flex-1">
                     <span className="text-[10px] font-mono text-neutral-400">Q{idx + 1}.</span>
-                    <input
+                    <AdminDraftInput
                       type="text"
                       value={item.question}
-                      onChange={(e) => {
+                      onCommit={(val) => {
                         const updated = faq.map((f, i) =>
-                          i === idx ? { ...f, question: e.target.value } : f
+                          i === idx ? { ...f, question: val } : f
                         );
                         saveFaq(updated);
                       }}
@@ -4259,11 +4241,11 @@ export default function AdminCMSPage() {
                     </button>
                   </div>
                 </div>
-                <textarea
+                <AdminDraftTextarea
                   rows={3}
                   value={item.answer}
-                  onChange={(e) => {
-                    saveFaq(faq.map((f, i) => i === idx ? { ...f, answer: e.target.value } : f));
+                  onCommit={(val) => {
+                    saveFaq(faq.map((f, i) => i === idx ? { ...f, answer: val } : f));
                   }}
                   className="w-full p-2 border border-neutral-300 rounded text-xs leading-relaxed focus:border-black focus:outline-none"
                 />
@@ -4798,12 +4780,12 @@ export default function AdminCMSPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                   <div>
                     <label className="text-[10px] uppercase font-mono text-neutral-400 block mb-0.5">Client Name</label>
-                    <input
+                    <AdminDraftInput
                       type="text"
                       value={t.clientName}
-                      onChange={(e) => {
+                      onCommit={(val) => {
                         const updated = testimonials.map((item, i) =>
-                          i === idx ? { ...item, clientName: e.target.value } : item
+                          i === idx ? { ...item, clientName: val } : item
                         );
                         saveTestimonials(updated);
                       }}
@@ -4812,13 +4794,13 @@ export default function AdminCMSPage() {
                   </div>
                   <div>
                     <label className="text-[10px] uppercase font-mono text-neutral-400 block mb-0.5">Designation</label>
-                    <input
+                    <AdminDraftInput
                       type="text"
                       value={t.designation}
                       placeholder="e.g. Homeowner / Founder"
-                      onChange={(e) => {
+                      onCommit={(val) => {
                         const updated = testimonials.map((item, i) =>
-                          i === idx ? { ...item, designation: e.target.value } : item
+                          i === idx ? { ...item, designation: val } : item
                         );
                         saveTestimonials(updated);
                       }}
@@ -4827,13 +4809,13 @@ export default function AdminCMSPage() {
                   </div>
                   <div>
                     <label className="text-[10px] uppercase font-mono text-neutral-400 block mb-0.5">Company / Residence</label>
-                    <input
+                    <AdminDraftInput
                       type="text"
                       value={t.company || ""}
                       placeholder="e.g. Private Residence"
-                      onChange={(e) => {
+                      onCommit={(val) => {
                         const updated = testimonials.map((item, i) =>
-                          i === idx ? { ...item, company: e.target.value } : item
+                          i === idx ? { ...item, company: val } : item
                         );
                         saveTestimonials(updated);
                       }}
@@ -4842,13 +4824,13 @@ export default function AdminCMSPage() {
                   </div>
                   <div>
                     <label className="text-[10px] uppercase font-mono text-neutral-400 block mb-0.5">Associated Project</label>
-                    <input
+                    <AdminDraftInput
                       type="text"
                       value={t.projectAssociated}
                       placeholder="e.g. AIKYA"
-                      onChange={(e) => {
+                      onCommit={(val) => {
                         const updated = testimonials.map((item, i) =>
-                          i === idx ? { ...item, projectAssociated: e.target.value } : item
+                          i === idx ? { ...item, projectAssociated: val } : item
                         );
                         saveTestimonials(updated);
                       }}
@@ -4859,12 +4841,12 @@ export default function AdminCMSPage() {
 
                 <div>
                   <label className="text-[10px] uppercase font-mono text-neutral-400 block mb-0.5">Client Quote</label>
-                  <textarea
+                  <AdminDraftTextarea
                     rows={3}
                     value={t.quote}
-                    onChange={(e) => {
+                    onCommit={(val) => {
                       const updated = testimonials.map((item, i) =>
-                        i === idx ? { ...item, quote: e.target.value } : item
+                        i === idx ? { ...item, quote: val } : item
                       );
                       saveTestimonials(updated);
                     }}
@@ -4924,11 +4906,11 @@ export default function AdminCMSPage() {
                 <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                   Practice Name
                 </label>
-                <input
+                <AdminDraftInput
                   type="text"
                   value={siteSettings.name}
-                  onChange={(e) => {
-                    saveSiteSettings({ ...siteSettings, name: e.target.value });
+                  onCommit={(val) => {
+                    saveSiteSettings({ ...siteSettings, name: val });
                   }}
                   className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
                 />
@@ -4938,11 +4920,11 @@ export default function AdminCMSPage() {
                 <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                   Tagline
                 </label>
-                <input
+                <AdminDraftInput
                   type="text"
                   value={siteSettings.tagline}
-                  onChange={(e) => {
-                    saveSiteSettings({ ...siteSettings, tagline: e.target.value });
+                  onCommit={(val) => {
+                    saveSiteSettings({ ...siteSettings, tagline: val });
                   }}
                   className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
                 />
@@ -4952,11 +4934,11 @@ export default function AdminCMSPage() {
                 <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                   Founded Year
                 </label>
-                <input
+                <AdminDraftInput
                   type="number"
                   value={siteSettings.foundedYear}
-                  onChange={(e) => {
-                    saveSiteSettings({ ...siteSettings, foundedYear: parseInt(e.target.value) || 2006 });
+                  onCommit={(val) => {
+                    saveSiteSettings({ ...siteSettings, foundedYear: parseInt(val) || 2006 });
                   }}
                   className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
                 />
@@ -4966,11 +4948,11 @@ export default function AdminCMSPage() {
                 <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                   Business Hours
                 </label>
-                <input
+                <AdminDraftInput
                   type="text"
                   value={siteSettings.operatingHours}
-                  onChange={(e) => {
-                    saveSiteSettings({ ...siteSettings, operatingHours: e.target.value });
+                  onCommit={(val) => {
+                    saveSiteSettings({ ...siteSettings, operatingHours: val });
                   }}
                   className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
                 />
@@ -4980,11 +4962,11 @@ export default function AdminCMSPage() {
                 <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                   Sitewide Short Statement (Footer Copy)
                 </label>
-                <input
+                <AdminDraftInput
                   type="text"
                   value={siteSettings.shortDescription}
-                  onChange={(e) => {
-                    saveSiteSettings({ ...siteSettings, shortDescription: e.target.value });
+                  onCommit={(val) => {
+                    saveSiteSettings({ ...siteSettings, shortDescription: val });
                   }}
                   className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
                 />
@@ -4994,11 +4976,11 @@ export default function AdminCMSPage() {
                 <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                   Long Introduction Statement (Homepage & About)
                 </label>
-                <textarea
+                <AdminDraftTextarea
                   rows={3}
                   value={siteSettings.longDescription}
-                  onChange={(e) => {
-                    saveSiteSettings({ ...siteSettings, longDescription: e.target.value });
+                  onCommit={(val) => {
+                    saveSiteSettings({ ...siteSettings, longDescription: val });
                   }}
                   className="w-full p-2 border border-neutral-300 rounded text-xs leading-relaxed bg-white"
                 />
@@ -5020,13 +5002,13 @@ export default function AdminCMSPage() {
                 <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                   General Inquiry Email
                 </label>
-                <input
+                <AdminDraftInput
                   type="email"
                   value={siteSettings.contact.email}
-                  onChange={(e) => {
+                  onCommit={(val) => {
                     saveSiteSettings({
                       ...siteSettings,
-                      contact: { ...siteSettings.contact, email: e.target.value },
+                      contact: { ...siteSettings.contact, email: val },
                     });
                   }}
                   className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
@@ -5037,13 +5019,13 @@ export default function AdminCMSPage() {
                 <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                   Direct Office Phone
                 </label>
-                <input
+                <AdminDraftInput
                   type="text"
                   value={siteSettings.contact.phone}
-                  onChange={(e) => {
+                  onCommit={(val) => {
                     saveSiteSettings({
                       ...siteSettings,
-                      contact: { ...siteSettings.contact, phone: e.target.value },
+                      contact: { ...siteSettings.contact, phone: val },
                     });
                   }}
                   className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
@@ -5054,13 +5036,13 @@ export default function AdminCMSPage() {
                 <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                   Office No BSNL Landline
                 </label>
-                <input
+                <AdminDraftInput
                   type="text"
                   value={siteSettings.contact.phoneBsnl || ""}
-                  onChange={(e) => {
+                  onCommit={(val) => {
                     saveSiteSettings({
                       ...siteSettings,
-                      contact: { ...siteSettings.contact, phoneBsnl: e.target.value },
+                      contact: { ...siteSettings.contact, phoneBsnl: val },
                     });
                   }}
                   className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"

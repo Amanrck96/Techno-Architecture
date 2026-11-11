@@ -996,30 +996,31 @@ export function CMSProvider({
       localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "true");
     } catch (_) {}
 
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new CustomEvent("techno_cms_autosave_status", { detail: { status: "saving" } }));
-    }
-
-    // WATCHDOG: If still "saving" after 25s (network hang / AbortController killed / zombie timer),
-    // force the status to "error" so the spinner NEVER stays stuck forever.
-    if (savingWatchdogRef.current) clearTimeout(savingWatchdogRef.current);
-    savingWatchdogRef.current = setTimeout(() => {
-      savingWatchdogRef.current = null;
-      if (typeof window !== "undefined") {
-        window.dispatchEvent(
-          new CustomEvent("techno_cms_autosave_status", {
-            detail: { status: "error", error: "Save timed out. Please click 'Save All to Cloud' to retry." },
-          })
-        );
-      }
-    }, 25000);
-
     const existing = syncTimersRef.current.get(entity);
     if (existing) {
       clearTimeout(existing);
     }
     const timer = setTimeout(async () => {
       syncTimersRef.current.delete(entity);
+
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("techno_cms_autosave_status", { detail: { status: "saving" } }));
+      }
+
+      // WATCHDOG: If still "saving" after 25s (network hang / AbortController killed / zombie timer),
+      // force the status to "error" so the spinner NEVER stays stuck forever.
+      if (savingWatchdogRef.current) clearTimeout(savingWatchdogRef.current);
+      savingWatchdogRef.current = setTimeout(() => {
+        savingWatchdogRef.current = null;
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(
+            new CustomEvent("techno_cms_autosave_status", {
+              detail: { status: "error", error: "Save timed out. Please click 'Save All to Cloud' to retry." },
+            })
+          );
+        }
+      }, 25000);
+
       try {
         const res = await syncToServer({ entity, data, deletedIds: currentDeleted || deletedIds });
         // Cancel watchdog on any definitive result

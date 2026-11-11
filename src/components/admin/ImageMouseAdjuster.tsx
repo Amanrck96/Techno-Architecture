@@ -51,18 +51,22 @@ export function ImageMouseAdjuster({
 
   const containerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const latestPosRef = useRef<{ x: number; y: number }>({ x: positionX ?? 50, y: positionY ?? 50 });
 
   // Sync with incoming props if changed externally
   useEffect(() => {
-    setPosX(positionX ?? 50);
-    setPosY(positionY ?? 50);
+    const x = positionX ?? 50;
+    const y = positionY ?? 50;
+    setPosX(x);
+    setPosY(y);
+    latestPosRef.current = { x, y };
     setCurrentScale(scale ?? 1.0);
     setUrlInput(imageUrl || "");
   }, [positionX, positionY, scale, imageUrl]);
 
   // Handle position calculation from mouse / pointer event
   const updatePositionFromEvent = useCallback(
-    (clientX: number, clientY: number) => {
+    (clientX: number, clientY: number, shouldEmit: boolean = false) => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
       if (rect.width <= 0 || rect.height <= 0) return;
@@ -73,14 +77,17 @@ export function ImageMouseAdjuster({
       const clampedX = Math.round(Math.max(0, Math.min(100, rawX)));
       const clampedY = Math.round(Math.max(0, Math.min(100, rawY)));
 
+      latestPosRef.current = { x: clampedX, y: clampedY };
       setPosX(clampedX);
       setPosY(clampedY);
 
-      onChange({
-        positionX: clampedX,
-        positionY: clampedY,
-        scale: currentScale,
-      });
+      if (shouldEmit) {
+        onChange({
+          positionX: clampedX,
+          positionY: clampedY,
+          scale: currentScale,
+        });
+      }
     },
     [currentScale, onChange]
   );
@@ -88,18 +95,25 @@ export function ImageMouseAdjuster({
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(true);
-    updatePositionFromEvent(e.clientX, e.clientY);
+    updatePositionFromEvent(e.clientX, e.clientY, false);
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isDragging) return;
-    updatePositionFromEvent(e.clientX, e.clientY);
+    updatePositionFromEvent(e.clientX, e.clientY, false);
   };
 
   const handleMouseUp = () => {
     if (isDragging) {
       setIsDragging(false);
-      onToast?.(`Image alignment adjusted: ${posX}% X, ${posY}% Y`);
+      const finalX = latestPosRef.current.x;
+      const finalY = latestPosRef.current.y;
+      onChange({
+        positionX: finalX,
+        positionY: finalY,
+        scale: currentScale,
+      });
+      onToast?.(`Image alignment adjusted: ${finalX}% X, ${finalY}% Y`);
     }
   };
 
@@ -107,19 +121,27 @@ export function ImageMouseAdjuster({
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     if (e.touches.length === 1) {
       setIsDragging(true);
-      updatePositionFromEvent(e.touches[0].clientX, e.touches[0].clientY);
+      updatePositionFromEvent(e.touches[0].clientX, e.touches[0].clientY, false);
     }
   };
 
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
     if (isDragging && e.touches.length === 1) {
-      updatePositionFromEvent(e.touches[0].clientX, e.touches[0].clientY);
+      updatePositionFromEvent(e.touches[0].clientX, e.touches[0].clientY, false);
     }
   };
 
   const handleTouchEnd = () => {
     if (isDragging) {
       setIsDragging(false);
+      const finalX = latestPosRef.current.x;
+      const finalY = latestPosRef.current.y;
+      onChange({
+        positionX: finalX,
+        positionY: finalY,
+        scale: currentScale,
+      });
+      onToast?.(`Image alignment adjusted: ${finalX}% X, ${finalY}% Y`);
     }
   };
 
