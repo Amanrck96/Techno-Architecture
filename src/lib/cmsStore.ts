@@ -385,7 +385,11 @@ export async function syncToServer(payload: {
       };
     } else {
       const err = await res.json().catch(() => ({}));
-      console.warn("Failed to persist CMS update to server:", err);
+      const errorMsg =
+        typeof err === "string"
+          ? err
+          : err?.error || err?.message || `Server error (HTTP ${res.status})`;
+      console.warn("Failed to persist CMS update to server:", errorMsg);
       if (res.status === 401 && typeof window !== "undefined") {
         window.dispatchEvent(
           new CustomEvent("techno_admin_auth_expired", {
@@ -396,11 +400,18 @@ export async function syncToServer(payload: {
           })
         );
       }
-      return { success: false, error: err };
+      return { success: false, error: `HTTP ${res.status}: ${errorMsg}` };
     }
-  } catch (err) {
-    console.warn("Network error saving to /api/cms:", err);
-    return { success: false, error: err };
+  } catch (err: any) {
+    const errorMsg =
+      err?.name === "AbortError"
+        ? "Request timed out after 15s. The server may be restarting or redeploying."
+        : err?.message || "Failed to fetch";
+    console.warn("Network error saving to /api/cms:", errorMsg);
+    return {
+      success: false,
+      error: `Network error (${errorMsg}). Please check your connection or retry.`,
+    };
   }
 }
 
@@ -745,17 +756,9 @@ export function CMSProvider({
         hasUnsavedEdits = localStorage.getItem(STORAGE_KEYS.HAS_UNSAVED_EDITS) === "true";
       } catch (_) {}
 
+      // Loading must NEVER trigger an automated save. If there are pending uncommitted edits in
+      // localStorage, retain them locally without firing network write requests on page load.
       if (hasUnsavedEdits) {
-        const localData = getLocalDataset();
-        if (Object.keys(localData).length > 0) {
-          const syncRes = await syncToServer({ allData: localData, deletedIds });
-          if (syncRes.success && syncRes.updatedAt) {
-            lastServerUpdatedRef.current = syncRes.updatedAt;
-            try {
-              localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "false");
-            } catch (_) {}
-          }
-        }
         return;
       }
 
@@ -984,74 +987,160 @@ export function CMSProvider({
       storageTimersRef.current.clear();
       syncTimersRef.current.forEach((t) => clearTimeout(t));
       syncTimersRef.current.clear();
+      if (trailingSaveTimerRef.current) clearTimeout(trailingSaveTimerRef.current);
+      if (savingWatchdogRef.current) clearTimeout(savingWatchdogRef.current);
     };
   }, [fetchFromServer, applyDataset, deletedIds]);
 
-  // Ref to track the global "saving" watchdog timer — prevents stuck spinner forever
+  // =========================================================================
+  // SINGLE-FLIGHT SAVE QUEUE (ONE IN-FLIGHT AT A TIME + 3s TRAILING DEBOUNCE)
+  // Batches rapid changes across multiple fields/entities into ONE request.
+  // =========================================================================
+  const isSavingRef = useRef(false);
+  const isDirtyRef = useRef(false);
+  const trailingSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const savingWatchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const debouncedSyncToServer = useCallback((entity: string, data: any, currentDeleted?: string[]) => {
-    touchClientUpdate();
-    // Record local edit timestamp to block server overwrites during the grace period
-    lastLocalEditTimestampRef.current = Date.now();
-    try {
-      localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "true");
-    } catch (_) {}
-
-    const existing = syncTimersRef.current.get(entity);
-    if (existing) {
-      clearTimeout(existing);
+  const executeSingleFlightSave = useCallback(async () => {
+    if (isSavingRef.current) {
+      isDirtyRef.current = true;
+      return;
     }
-    const timer = setTimeout(async () => {
-      syncTimersRef.current.delete(entity);
 
+    isSavingRef.current = true;
+    isDirtyRef.current = false;
+
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("techno_cms_autosave_status", { detail: { status: "saving" } })
+      );
+    }
+
+    // WATCHDOG: If still "saving" after 20s, force status to error
+    if (savingWatchdogRef.current) clearTimeout(savingWatchdogRef.current);
+    savingWatchdogRef.current = setTimeout(() => {
+      savingWatchdogRef.current = null;
       if (typeof window !== "undefined") {
-        window.dispatchEvent(new CustomEvent("techno_cms_autosave_status", { detail: { status: "saving" } }));
+        window.dispatchEvent(
+          new CustomEvent("techno_cms_autosave_status", {
+            detail: {
+              status: "error",
+              error: "Save timed out (20s). Click 'Save All to Cloud' to retry.",
+            },
+          })
+        );
+      }
+    }, 20000);
+
+    try {
+      // Gather latest local and state dataset
+      const localData = getLocalDataset();
+      const consolidatedPayload = {
+        projects,
+        services,
+        team,
+        blog,
+        faq,
+        gallery,
+        recognitions,
+        siteSettings,
+        testimonials,
+        deletedIds,
+        ...localData,
+      };
+
+      const res = await syncToServer({ allData: consolidatedPayload, deletedIds });
+
+      if (savingWatchdogRef.current) {
+        clearTimeout(savingWatchdogRef.current);
+        savingWatchdogRef.current = null;
       }
 
-      // WATCHDOG: If still "saving" after 25s (network hang / AbortController killed / zombie timer),
-      // force the status to "error" so the spinner NEVER stays stuck forever.
-      if (savingWatchdogRef.current) clearTimeout(savingWatchdogRef.current);
-      savingWatchdogRef.current = setTimeout(() => {
-        savingWatchdogRef.current = null;
+      if (res.success && res.updatedAt) {
+        lastServerUpdatedRef.current = res.updatedAt;
+        try {
+          localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "false");
+        } catch (_) {}
         if (typeof window !== "undefined") {
           window.dispatchEvent(
             new CustomEvent("techno_cms_autosave_status", {
-              detail: { status: "error", error: "Save timed out. Please click 'Save All to Cloud' to retry." },
+              detail: { status: "saved", updatedAt: res.updatedAt },
             })
           );
         }
-      }, 25000);
-
-      try {
-        const res = await syncToServer({ entity, data, deletedIds: currentDeleted || deletedIds });
-        // Cancel watchdog on any definitive result
-        if (savingWatchdogRef.current) { clearTimeout(savingWatchdogRef.current); savingWatchdogRef.current = null; }
-        if (res.success && res.updatedAt) {
-          lastServerUpdatedRef.current = res.updatedAt;
-          try {
-            if (syncTimersRef.current.size === 0) {
-              localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "false");
-            }
-          } catch (_) {}
-          if (typeof window !== "undefined") {
-            window.dispatchEvent(new CustomEvent("techno_cms_autosave_status", { detail: { status: "saved", updatedAt: res.updatedAt } }));
-          }
-        } else {
-          if (typeof window !== "undefined") {
-            window.dispatchEvent(new CustomEvent("techno_cms_autosave_status", { detail: { status: "error", error: res.error } }));
-          }
-        }
-      } catch (syncErr: any) {
-        // Cancel watchdog — we already have a definitive error
-        if (savingWatchdogRef.current) { clearTimeout(savingWatchdogRef.current); savingWatchdogRef.current = null; }
+      } else {
+        const errorDetail =
+          typeof res.error === "string"
+            ? res.error
+            : res.error?.error || res.error?.message || "Sync failed";
         if (typeof window !== "undefined") {
-          window.dispatchEvent(new CustomEvent("techno_cms_autosave_status", { detail: { status: "error", error: syncErr?.message || "Sync failed" } }));
+          window.dispatchEvent(
+            new CustomEvent("techno_cms_autosave_status", {
+              detail: { status: "error", error: errorDetail },
+            })
+          );
         }
       }
-    }, 1500);
-    syncTimersRef.current.set(entity, timer);
-  }, [deletedIds]);
+    } catch (syncErr: any) {
+      if (savingWatchdogRef.current) {
+        clearTimeout(savingWatchdogRef.current);
+        savingWatchdogRef.current = null;
+      }
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("techno_cms_autosave_status", {
+            detail: {
+              status: "error",
+              error: syncErr?.message || "Network error while saving.",
+            },
+          })
+        );
+      }
+    } finally {
+      isSavingRef.current = false;
+
+      // If changes occurred while saving, schedule ONE trailing batch save
+      if (isDirtyRef.current) {
+        isDirtyRef.current = false;
+        if (trailingSaveTimerRef.current) clearTimeout(trailingSaveTimerRef.current);
+        trailingSaveTimerRef.current = setTimeout(() => {
+          executeSingleFlightSave();
+        }, 2500);
+      }
+    }
+  }, [
+    projects,
+    services,
+    team,
+    blog,
+    faq,
+    gallery,
+    recognitions,
+    siteSettings,
+    testimonials,
+    deletedIds,
+  ]);
+
+  const debouncedSyncToServer = useCallback(
+    (_entity: string, _data: any, _currentDeleted?: string[]) => {
+      touchClientUpdate();
+      lastLocalEditTimestampRef.current = Date.now();
+      try {
+        localStorage.setItem(STORAGE_KEYS.HAS_UNSAVED_EDITS, "true");
+      } catch (_) {}
+
+      isDirtyRef.current = true;
+
+      // 3-second trailing debounce: consolidate multiple field edits into a single save
+      if (trailingSaveTimerRef.current) {
+        clearTimeout(trailingSaveTimerRef.current);
+      }
+      trailingSaveTimerRef.current = setTimeout(() => {
+        executeSingleFlightSave();
+      }, 3000);
+    },
+    [executeSingleFlightSave]
+  );
 
   // =========================================================
   // SAVE METHODS (IMMEDIATE DELETION DISPATCH + OPTIMISTIC UI)

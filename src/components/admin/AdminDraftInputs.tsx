@@ -6,27 +6,35 @@ export interface AdminDraftInputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange"> {
   value?: string | number;
   onCommit: (val: string) => void;
-  debounceMs?: number;
+  debounceMs?: number; // Kept for interface compatibility; commits strictly on blur / Enter
 }
 
+/**
+ * High-performance draft text input.
+ * Keeps changes in LOCAL component state while typing.
+ * Commits to the parent store ONLY on blur or when the Enter key is pressed.
+ * Prevents unnecessary re-renders of the entire admin page on every keystroke.
+ */
 export const AdminDraftInput = React.memo(function AdminDraftInput({
   value,
   onCommit,
   onBlur,
   onKeyDown,
   onFocus,
-  debounceMs = 500,
   className,
   ...props
 }: AdminDraftInputProps) {
-  const [localValue, setLocalValue] = useState<string>(value !== undefined && value !== null ? String(value) : "");
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [localValue, setLocalValue] = useState<string>(
+    value !== undefined && value !== null ? String(value) : ""
+  );
   const isFocusedRef = useRef(false);
+  const committedValueRef = useRef<string>(
+    value !== undefined && value !== null ? String(value) : ""
+  );
   const latestLocalRef = useRef(localValue);
   latestLocalRef.current = localValue;
-  const committedValueRef = useRef<string>(value !== undefined && value !== null ? String(value) : "");
 
-  // Synchronize when external prop changes, but only if not actively focused
+  // Sync external value only if the user is not actively typing/focused
   useEffect(() => {
     const stringified = value !== undefined && value !== null ? String(value) : "";
     committedValueRef.current = stringified;
@@ -37,10 +45,6 @@ export const AdminDraftInput = React.memo(function AdminDraftInput({
 
   const commit = useCallback(
     (valToCommit: string) => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-        timerRef.current = null;
-      }
       if (valToCommit !== committedValueRef.current) {
         committedValueRef.current = valToCommit;
         onCommit(valToCommit);
@@ -50,15 +54,7 @@ export const AdminDraftInput = React.memo(function AdminDraftInput({
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const nextVal = e.target.value;
-    setLocalValue(nextVal);
-
-    if (debounceMs > 0) {
-      if (timerRef.current) clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(() => {
-        commit(nextVal);
-      }, debounceMs);
-    }
+    setLocalValue(e.target.value);
   };
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -79,12 +75,6 @@ export const AdminDraftInput = React.memo(function AdminDraftInput({
     onKeyDown?.(e);
   };
 
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, []);
-
   return (
     <input
       {...props}
@@ -100,29 +90,36 @@ export const AdminDraftInput = React.memo(function AdminDraftInput({
 
 export interface AdminDraftTextareaProps
   extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "value" | "onChange"> {
-  value?: string;
+  value?: string | number;
   onCommit: (val: string) => void;
   debounceMs?: number;
 }
 
+/**
+ * High-performance draft textarea.
+ * Keeps changes in LOCAL component state while typing.
+ * Commits to the parent store ONLY on blur.
+ */
 export const AdminDraftTextarea = React.memo(function AdminDraftTextarea({
   value,
   onCommit,
   onBlur,
   onFocus,
-  debounceMs = 500,
   className,
   ...props
 }: AdminDraftTextareaProps) {
-  const [localValue, setLocalValue] = useState<string>(value || "");
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [localValue, setLocalValue] = useState<string>(
+    value !== undefined && value !== null ? String(value) : ""
+  );
   const isFocusedRef = useRef(false);
+  const committedValueRef = useRef<string>(
+    value !== undefined && value !== null ? String(value) : ""
+  );
   const latestLocalRef = useRef(localValue);
   latestLocalRef.current = localValue;
-  const committedValueRef = useRef<string>(value || "");
 
   useEffect(() => {
-    const stringified = value || "";
+    const stringified = value !== undefined && value !== null ? String(value) : "";
     committedValueRef.current = stringified;
     if (!isFocusedRef.current) {
       setLocalValue(stringified);
@@ -131,10 +128,6 @@ export const AdminDraftTextarea = React.memo(function AdminDraftTextarea({
 
   const commit = useCallback(
     (valToCommit: string) => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-        timerRef.current = null;
-      }
       if (valToCommit !== committedValueRef.current) {
         committedValueRef.current = valToCommit;
         onCommit(valToCommit);
@@ -144,15 +137,7 @@ export const AdminDraftTextarea = React.memo(function AdminDraftTextarea({
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const nextVal = e.target.value;
-    setLocalValue(nextVal);
-
-    if (debounceMs > 0) {
-      if (timerRef.current) clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(() => {
-        commit(nextVal);
-      }, debounceMs);
-    }
+    setLocalValue(e.target.value);
   };
 
   const handleFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
@@ -165,12 +150,6 @@ export const AdminDraftTextarea = React.memo(function AdminDraftTextarea({
     commit(latestLocalRef.current);
     onBlur?.(e);
   };
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, []);
 
   return (
     <textarea

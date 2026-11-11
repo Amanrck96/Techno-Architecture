@@ -384,7 +384,6 @@ export async function saveToUpstashKV(
 }
 
 let isGitHubCommitInProgress = false;
-let pendingGitHubCommit: { data: any; token?: string; repo?: string } | null = null;
 
 export async function getFromGitHub(explicitToken?: string, explicitRepo?: string): Promise<any | null> {
   const token = explicitToken || process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
@@ -394,9 +393,8 @@ export async function getFromGitHub(explicitToken?: string, explicitRepo?: strin
   if (!token) return null;
 
   try {
-    // Timeout of 2.5s to prevent blocking SSR
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 2500);
+    const timer = setTimeout(() => controller.abort(), 3000);
 
     const res = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
       headers: {
@@ -420,7 +418,7 @@ export async function getFromGitHub(explicitToken?: string, explicitRepo?: strin
       }
     }
   } catch (e) {
-    // console.warn notice
+    // Read notice
   }
   return null;
 }
@@ -437,8 +435,10 @@ export async function saveToGitHub(
   if (!token) return { success: false, error: "GitHub Personal Access Token not provided." };
 
   if (isGitHubCommitInProgress) {
-    pendingGitHubCommit = { data, token: explicitToken, repo: explicitRepo };
-    return { success: true, sha: "queued" };
+    return {
+      success: false,
+      error: "A GitHub commit is already in progress. Please wait a few seconds before committing again.",
+    };
   }
 
   isGitHubCommitInProgress = true;
@@ -446,8 +446,9 @@ export async function saveToGitHub(
   try {
     const contentStr = JSON.stringify(data, null, 2);
     const contentBase64 = Buffer.from(contentStr).toString("base64");
+    const maxRetries = 2;
 
-    for (let attempt = 1; attempt <= 3; attempt++) {
+    for (let attempt = 1; attempt <= maxRetries + 1; attempt++) {
       let sha: string | undefined;
 
       try {
@@ -468,9 +469,14 @@ export async function saveToGitHub(
             success: false,
             error: `GitHub authorization failed (HTTP ${getRes.status}). Verify your token has 'repo' access.`,
           };
+        } else if (getRes.status === 429) {
+          return {
+            success: false,
+            error: "GitHub API rate limit exceeded (HTTP 429). Please wait before trying again.",
+          };
         }
       } catch (err: any) {
-        if (attempt === 3) throw err;
+        if (attempt > maxRetries) throw err;
       }
 
       const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
@@ -494,29 +500,30 @@ export async function saveToGitHub(
         return { success: true, sha: putData.content?.sha };
       }
 
-      if (putRes.status === 409 && attempt < 3) {
-        await new Promise((r) => setTimeout(r, 400));
+      // Handle 409 SHA conflict: refetch latest SHA and retry with backoff
+      if (putRes.status === 409 && attempt <= maxRetries) {
+        const backoffMs = attempt * 1000;
+        await new Promise((r) => setTimeout(r, backoffMs));
         continue;
       }
 
+      // If rate limited or forbidden or server error, stop immediately without endless loops
       const putErr = await putRes.text();
-      return { success: false, error: `GitHub commit rejected (HTTP ${putRes.status}): ${putErr}` };
+      return {
+        success: false,
+        error: `GitHub commit rejected (HTTP ${putRes.status}): ${putErr.slice(0, 300)}`,
+      };
     }
 
-    return { success: false, error: "Failed to commit to GitHub after 3 attempts." };
+    return {
+      success: false,
+      error: "GitHub commit failed due to continuous SHA conflicts after retry.",
+    };
   } catch (err: any) {
     console.warn("[CMS Server] GitHub API commit error:", err);
     return { success: false, error: err?.message || "Network error connecting to GitHub API." };
   } finally {
     isGitHubCommitInProgress = false;
-
-    if (pendingGitHubCommit) {
-      const next = pendingGitHubCommit;
-      pendingGitHubCommit = null;
-      setTimeout(() => {
-        saveToGitHub(next.data, next.token, next.repo);
-      }, 500);
-    }
   }
 }
 
@@ -787,11 +794,12 @@ export async function writeStore(
     })(),
   ]);
 
-  // SEQUENTIAL GITHUB TIER — executes after Firebase Storage result is known:
-  // 1. If forceGitHubCommit=true → always commit to GitHub (manual "Commit to GitHub" or "Save All to Cloud" button)
-  // 2. If Firebase Storage write FAILED and we have no Firestore/Upstash → auto-fallback commit to GitHub to guarantee persistence!
+  // GITHUB TIER:
+  // Git commits trigger continuous production redeployments, so they are STRICTLY RESTRICTED
+  // to explicit manual requests (options?.forceGitHubCommit = true).
+  // Standard background auto-saves and admin edits NEVER commit to Git automatically.
   const hasGitHubToken = options?.githubToken || process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
-  if (hasGitHubToken && (options?.forceGitHubCommit || (!result.firebaseStorage && !result.firestore && !result.upstash))) {
+  if (hasGitHubToken && options?.forceGitHubCommit) {
     try {
       const ghRes = await saveToGitHub(cleanData, options?.githubToken, options?.githubRepo);
       if (ghRes.success) {

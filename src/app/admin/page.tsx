@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import BrandLogo from "@/components/common/BrandLogo";
@@ -53,6 +53,7 @@ import {
   LogOut,
   ArrowLeft,
   AlertCircle,
+  AlertTriangle,
   Building,
   Mail,
   Phone,
@@ -180,6 +181,7 @@ export default function AdminCMSPage() {
     saveTestimonials,
     saveAllToCloud,
     resetAllToDefaults,
+    refetchFromServer,
   } = useCMSStore();
 
   // Authentication states
@@ -226,6 +228,8 @@ export default function AdminCMSPage() {
   const [expandedProjectId, setExpandedProjectId] = useState<string | null>(null);
   const [expandedBlogId, setExpandedBlogId] = useState<string | null>(null);
   const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [autoSaveErrorMessage, setAutoSaveErrorMessage] = useState<string | null>(null);
+  const [serverConnectionWarning, setServerConnectionWarning] = useState<string | null>(null);
   const [sessionExpiredWarning, setSessionExpiredWarning] = useState<string | null>(null);
   // UI-side watchdog: if "saving" spinner stays for >28s without resolution, force it to "error"
   const autoSaveWatchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -235,6 +239,11 @@ export default function AdminCMSPage() {
       if (e.detail?.status) {
         const status = e.detail.status as "saving" | "saved" | "error" | "idle";
         setAutoSaveStatus(status);
+        if (status === "error") {
+          setAutoSaveErrorMessage(e.detail?.error || "Sync failed");
+        } else if (status === "saved") {
+          setAutoSaveErrorMessage(null);
+        }
 
         // Clear any previous watchdog
         if (autoSaveWatchdogRef.current) {
@@ -247,10 +256,13 @@ export default function AdminCMSPage() {
           autoSaveWatchdogRef.current = setTimeout(() => {
             autoSaveWatchdogRef.current = null;
             setAutoSaveStatus("error");
-            setTimeout(() => setAutoSaveStatus("idle"), 4000);
+            setAutoSaveErrorMessage("Save timed out (28s). Please click 'Save All to Cloud' to retry.");
+            setTimeout(() => setAutoSaveStatus("idle"), 6000);
           }, 28000);
-        } else if (status === "saved" || status === "error") {
+        } else if (status === "saved") {
           setTimeout(() => setAutoSaveStatus("idle"), 3500);
+        } else if (status === "error") {
+          setTimeout(() => setAutoSaveStatus("idle"), 8000);
         }
       }
     };
@@ -296,48 +308,64 @@ export default function AdminCMSPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // 1. Verify Session on Mount via Server
-  useEffect(() => {
-    async function checkAuthSession() {
-      try {
-        const storedToken =
-          typeof window !== "undefined"
-            ? localStorage.getItem("techno_admin_token") ||
-              sessionStorage.getItem("techno_admin_token")
-            : null;
+  const checkAuthSession = useCallback(async () => {
+    try {
+      const storedToken =
+        typeof window !== "undefined"
+          ? localStorage.getItem("techno_admin_token") ||
+            sessionStorage.getItem("techno_admin_token")
+          : null;
 
-        const headers: Record<string, string> = {};
-        if (storedToken) {
-          headers["Authorization"] = `Bearer ${storedToken}`;
-          headers["x-admin-token"] = storedToken;
-        }
-
-        const res = await fetch("/api/admin/verify", {
-          credentials: "include",
-          headers,
-        });
-        const data = await res.json();
-        if (res.ok && data.authenticated) {
-          setIsAuthenticated(true);
-          setCurrentAdminUser(data.username || "admin");
-          if (data.token) {
-            try {
-              localStorage.setItem("techno_admin_token", data.token);
-              sessionStorage.setItem("techno_admin_token", data.token);
-            } catch (_) {}
-          }
-          // Fetch leads immediately on auth so sidebar/badge counts update right away
-          fetchLeads();
-        } else {
-          setIsAuthenticated(false);
-        }
-      } catch (err) {
-        setIsAuthenticated(false);
-      } finally {
-        setIsVerifying(false);
+      const headers: Record<string, string> = {};
+      if (storedToken) {
+        headers["Authorization"] = `Bearer ${storedToken}`;
+        headers["x-admin-token"] = storedToken;
       }
+
+      const res = await fetch("/api/admin/verify", {
+        credentials: "include",
+        headers,
+      });
+      let data: any = null;
+      try {
+        data = await res.json();
+      } catch (_) {
+        data = null;
+      }
+
+      if (res.ok && data?.authenticated) {
+        setIsAuthenticated(true);
+        setCurrentAdminUser(data.username || "admin");
+        setServerConnectionWarning(null);
+        if (data.token) {
+          try {
+            localStorage.setItem("techno_admin_token", data.token);
+            sessionStorage.setItem("techno_admin_token", data.token);
+          } catch (_) {}
+        }
+        // Fetch leads immediately on auth so sidebar/badge counts update right away
+        fetchLeads();
+      } else {
+        setIsAuthenticated(false);
+      }
+    } catch (err: any) {
+      console.warn("[Admin Verify] Network error verifying session:", err?.message);
+      const hadToken = typeof window !== "undefined" && Boolean(localStorage.getItem("techno_admin_token"));
+      if (hadToken) {
+        setIsAuthenticated(true);
+        setCurrentAdminUser("admin");
+        setServerConnectionWarning("The server is temporarily restarting or redeploying. Loaded local cached studio data.");
+      } else {
+        setIsAuthenticated(false);
+      }
+    } finally {
+      setIsVerifying(false);
     }
-    checkAuthSession();
   }, []);
+
+  useEffect(() => {
+    checkAuthSession();
+  }, [checkAuthSession]);
 
   // Fetch leads from Firestore whenever the leads tab is activated
   const fetchLeads = async () => {
@@ -1275,7 +1303,7 @@ export default function AdminCMSPage() {
                 Full administrative control over all architectural projects, services, practice leadership, monographs, FAQs, gallery, awards, testimonials, and site configuration.
               </p>
               {/* Live Cloud Auto-Sync Indicator */}
-              <div className="flex items-center gap-2 pt-1">
+              <div className="flex flex-wrap items-center gap-2 pt-1">
                 {autoSaveStatus === "saving" && (
                   <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[10px] font-mono bg-amber-500/20 text-amber-300 border border-amber-500/40 animate-pulse">
                     <RefreshCw size={11} className="animate-spin" />
@@ -1289,8 +1317,11 @@ export default function AdminCMSPage() {
                   </span>
                 )}
                 {autoSaveStatus === "error" && (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[10px] font-mono bg-red-500/20 text-red-300 border border-red-500/40">
-                    ⚠️ Cloud sync paused (check admin session)
+                  <span
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[10px] font-mono bg-red-500/20 text-red-300 border border-red-500/40"
+                    title={autoSaveErrorMessage || "Sync issue"}
+                  >
+                    ⚠️ Sync: {autoSaveErrorMessage || "Check session"}
                   </span>
                 )}
               </div>
@@ -1394,6 +1425,28 @@ export default function AdminCMSPage() {
             className="px-3 py-1 bg-white text-red-700 font-semibold rounded text-xs hover:bg-neutral-100 transition-colors uppercase tracking-wider cursor-pointer"
           >
             Sign In Again
+          </button>
+        </div>
+      )}
+
+      {/* Server Redeploy / Temporary Connection Warning Banner with Retry */}
+      {serverConnectionWarning && (
+        <div className="p-4 bg-amber-950/80 border border-amber-600/70 text-amber-200 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded shadow-md animate-fadeIn">
+          <div className="flex items-center gap-2.5">
+            <AlertTriangle size={16} className="text-amber-400 shrink-0" />
+            <span>{serverConnectionWarning}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setServerConnectionWarning(null);
+              checkAuthSession();
+              refetchFromServer();
+              showToast("Re-checking server connection...");
+            }}
+            className="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded text-xs transition-colors self-start sm:self-auto shrink-0 cursor-pointer shadow-xs"
+          >
+            Retry Connection
           </button>
         </div>
       )}
@@ -2839,12 +2892,12 @@ export default function AdminCMSPage() {
                 <div className="flex justify-between items-center border-b border-neutral-100 pb-3">
                   <div className="flex items-center gap-3">
                     <span className="text-xs font-mono font-bold text-neutral-400">0{idx + 1}</span>
-                    <input
+                    <AdminDraftInput
                       type="text"
                       value={s.title}
-                      onChange={(e) => {
+                      onCommit={(val) => {
                         const updated = services.map((item, i) =>
-                          i === idx ? { ...item, title: e.target.value } : item
+                          i === idx ? { ...item, title: val } : item
                         );
                         saveServices(updated);
                       }}
@@ -2944,11 +2997,11 @@ export default function AdminCMSPage() {
                     <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                       Slug (URL)
                     </label>
-                    <input
+                    <AdminDraftInput
                       type="text"
                       value={s.slug}
-                      onChange={(e) => {
-                        saveServices(services.map((item, i) => i === idx ? { ...item, slug: e.target.value } : item));
+                      onCommit={(val) => {
+                        saveServices(services.map((item, i) => i === idx ? { ...item, slug: val } : item));
                       }}
                       className="w-full p-2 border border-neutral-300 rounded font-mono"
                     />
@@ -2958,11 +3011,11 @@ export default function AdminCMSPage() {
                       Cover Image (Upload from Laptop or URL)
                     </label>
                     <div className="flex gap-1.5 items-center">
-                      <input
+                      <AdminDraftInput
                         type="text"
                         value={s.image}
-                        onChange={(e) => {
-                          saveServices(services.map((item, i) => i === idx ? { ...item, image: e.target.value } : item));
+                        onCommit={(val) => {
+                          saveServices(services.map((item, i) => i === idx ? { ...item, image: val } : item));
                         }}
                         placeholder="Image URL or upload from laptop"
                         className="flex-1 min-w-0 p-2 border border-neutral-300 rounded font-mono text-xs focus:border-black focus:outline-none"
@@ -2995,11 +3048,11 @@ export default function AdminCMSPage() {
                   <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                     Short Summary (Catalog View)
                   </label>
-                  <input
+                  <AdminDraftInput
                     type="text"
                     value={s.shortDescription}
-                    onChange={(e) => {
-                      saveServices(services.map((item, i) => i === idx ? { ...item, shortDescription: e.target.value } : item));
+                    onCommit={(val) => {
+                      saveServices(services.map((item, i) => i === idx ? { ...item, shortDescription: val } : item));
                     }}
                     className="w-full p-2 border border-neutral-300 rounded text-xs"
                   />
@@ -3009,11 +3062,11 @@ export default function AdminCMSPage() {
                   <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                     Detailed Scope Description
                   </label>
-                  <textarea
+                  <AdminDraftTextarea
                     rows={3}
                     value={s.detailedDescription}
-                    onChange={(e) => {
-                      saveServices(services.map((item, i) => i === idx ? { ...item, detailedDescription: e.target.value } : item));
+                    onCommit={(val) => {
+                      saveServices(services.map((item, i) => i === idx ? { ...item, detailedDescription: val } : item));
                     }}
                     className="w-full p-2 border border-neutral-300 rounded text-xs leading-relaxed"
                   />
