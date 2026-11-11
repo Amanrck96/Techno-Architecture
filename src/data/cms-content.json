@@ -2940,8 +2940,7 @@
       "bio": "Practitioner contributing to innovative spatial planning and craftsmanship.",
       "image": "https://firebasestorage.googleapis.com/v0/b/technoarchitecture-7d718.firebasestorage.app/o/team%2Ftechno_photo_1794395039486.jpg?alt=media&token=techno_photo_1794395039486.jpg",
       "socials": [],
-      "sortOrder": 23,
-      "hoverImage": ""
+      "sortOrder": 23
     }
   ],
   "blog": [
@@ -5193,7 +5192,7 @@
       "sortOrder": 4
     }
   ],
-  "updatedAt": "2026-11-11T11:32:40.471Z",
+  "updatedAt": "2026-11-11T11:33:48.841Z",
   "deletedIds": [
     "team-1793451364578",
     "team-vaishnavi"
