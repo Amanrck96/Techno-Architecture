@@ -1,0 +1,19 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+1 info using npm@10.9.2
+2 info using node@v23.9.0
+3 silly config load:file:C:\Program Files\nodejs\node_modules\npm\npmrc
+4 silly config load:file:C:\.npmrc
+5 silly config load:file:C:\Users\amanr\.npmrc
+6 silly config load:file:C:\Users\amanr\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm exec firebase --version
+8 verbose argv "exec" "--cache" "c:\\Users\\amanr\\TechnoArchitectur\\Techno-Architecture\\.npm-cache" "--" "firebase" "--version"
+9 verbose logfile logs-max:10 dir:c:\Users\amanr\TechnoArchitectur\Techno-Architecture\.npm-cache\_logs\2026-11-11T08_32_51_478Z-
+10 verbose logfile c:\Users\amanr\TechnoArchitectur\Techno-Architecture\.npm-cache\_logs\2026-11-11T08_32_51_478Z-debug-0.log
+11 silly logfile done cleaning log files
+12 http fetch GET https://registry.npmjs.org/npm attempt 1 failed with EACCES
+13 verbose cwd C:\
+14 verbose os Windows_NT 10.0.26300
+15 verbose node v23.9.0
+16 verbose npm  v10.9.2
+17 verbose exit 1
+18 verbose code 1
