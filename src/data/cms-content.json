@@ -167,7 +167,7 @@
       },
       "videoTour": {
         "title": "Brindavana | Technoarchitecture (Home Tour)",
-        "url": "https://firebasestorage.googleapis.com/v0/b/technoarchitecture-7d718.firebasestorage.app/o/media%2Fvideos%2Fbrindavan.mp4?alt=media&token=7fa378f0-ee17-4056-addf-a7c94fe86b93",
+        "url": "/projects/brindavan/brindavan.mp4",
         "platform": "Film",
         "actionText": "Watch Architectural Film"
       },
@@ -2680,18 +2680,6 @@
       "sortOrder": 1
     },
     {
-      "id": "team-dheemanth",
-      "name": "Ar. Dheemanth Lokesh",
-      "role": "PROJECT ARCHITECT",
-      "discipline": "Architecture",
-      "credentials": "B.Arch",
-      "bio": "Directs luxury residential and mixed-use commissions, integrating passive climate strategies, volumetric daylighting, and monolithic structural coordination.",
-      "image": "/team/dheemanth-1.jpg",
-      "hoverImage": "/team/dheemanth-2.jpg",
-      "socials": [],
-      "sortOrder": 2
-    },
-    {
       "id": "team-anoop",
       "name": "Ar. Anoop Joseph Verghese",
       "role": "ASSOCIATE ARCHITECT",
@@ -2700,6 +2688,18 @@
       "bio": "Specializes in contemporary spatial sequencing, climate-responsive building envelopes, and vernacular masonry detailing from concept to handover.",
       "image": "/team/anoop-1.jpg",
       "hoverImage": "/team/anoop-2.jpg",
+      "socials": [],
+      "sortOrder": 2
+    },
+    {
+      "id": "team-dheemanth",
+      "name": "Ar. Dheemanth ",
+      "role": "PROJECT ARCHITECT",
+      "discipline": "Architecture",
+      "credentials": "B.Arch",
+      "bio": "Directs luxury residential and mixed-use commissions, integrating passive climate strategies, volumetric daylighting, and monolithic structural coordination.",
+      "image": "/team/dheemanth-1.jpg",
+      "hoverImage": "/team/dheemanth-2.jpg",
       "socials": [],
       "sortOrder": 3
     },
@@ -5136,7 +5136,8 @@
       }
     ],
     "operatingHours": "Monday to Friday, 10:00 AM to 6:30 PM",
-    "copyrightNotice": "TECHNO ARCHITECTURE. ALL RIGHTS RESERVED."
+    "copyrightNotice": "TECHNO ARCHITECTURE. ALL RIGHTS RESERVED.",
+    "_testSaveAt": "2026-11-10T05:32:57.110Z"
   },
   "testimonials": [
     {
@@ -5180,7 +5181,7 @@
       "sortOrder": 4
     }
   ],
-  "updatedAt": "2026-11-06T19:50:03.461Z",
+  "updatedAt": "2026-11-11T11:31:30.475Z",
   "deletedIds": [
     "team-1793451364578",
     "team-vaishnavi"
