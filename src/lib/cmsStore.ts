@@ -1001,13 +1001,19 @@ export function CMSProvider({
       }
     } catch (_) {}
 
-    // 3. Always fetch from server on client mount to sync fresh cloud edits immediately across all visitors
+    // 3. Always fetch from server on client mount to sync fresh cloud edits immediately
     fetchFromServer();
 
-    // 4. Periodic background sync (every 45s) to receive real-time cloud edits without requiring git commit or page refresh
-    const pollInterval = setInterval(() => {
-      fetchFromServer();
-    }, 45000);
+    // 4. Periodic background sync — STRICTLY RESTRICTED TO ADMIN CONSOLE (/admin) ONLY
+    // Public visitors never poll in loops, preventing millions of serverless invocations and keeping the project in free tier.
+    let pollInterval: ReturnType<typeof setInterval> | null = null;
+    if (typeof window !== "undefined" && window.location.pathname.startsWith("/admin")) {
+      pollInterval = setInterval(() => {
+        // Skip polling if the browser tab is hidden/backgrounded
+        if (typeof document !== "undefined" && document.hidden) return;
+        fetchFromServer();
+      }, 60000);
+    }
 
     // BroadcastChannel for instant inter-tab live sync
     let channel: BroadcastChannel | null = null;
@@ -1057,7 +1063,7 @@ export function CMSProvider({
     window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
-      clearInterval(pollInterval);
+      if (pollInterval) clearInterval(pollInterval);
       if (channel) channel.close();
       window.removeEventListener("beforeunload", handleBeforeUnload);
       storageTimersRef.current.forEach((t) => clearTimeout(t));

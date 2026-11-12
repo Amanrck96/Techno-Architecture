@@ -50,4 +50,13 @@ next-env.d.ts
 /scratch/
 Microsoft/
 .firebase/
+# Video & Heavy Media (Host on Firebase Storage or Cloud CDN, never commit to git or static hosting)
+*.mp4
+*.mov
+*.avi
+*.webm
+*.mkv
+
+# Temporary distribution & build artifacts
+/dist_static/
 

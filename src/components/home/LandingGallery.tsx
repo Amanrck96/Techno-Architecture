@@ -75,13 +75,22 @@ export default function LandingGallery() {
         <video
           ref={videoRef}
           src={process.env.NEXT_PUBLIC_HERO_VIDEO_URL || "https://firebasestorage.googleapis.com/v0/b/technoarchitecture-7d718.firebasestorage.app/o/media%2Fvideos%2Fbrindavan.mp4?alt=media&token=7fa378f0-ee17-4056-addf-a7c94fe86b93"}
-          poster="https://firebasestorage.googleapis.com/v0/b/technoarchitecture-7d718.firebasestorage.app/o/projects%2Faikya%2Felevation-east.jpg?alt=media&token=elevation-east.jpg"
+          poster="/projects/aikya/elevation-east.jpg"
           autoPlay
           loop
           muted={isMuted}
           playsInline
-          preload="metadata"
+          preload="none"
+          onError={(e) => {
+            // Graceful fallback to static high-res poster when video stream is blocked or unavailable
+            (e.currentTarget as HTMLVideoElement).style.display = "none";
+          }}
           className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
+        />
+        {/* Fallback image when video element is hidden */}
+        <div
+          className="absolute inset-0 w-full h-full bg-cover bg-center pointer-events-none -z-10"
+          style={{ backgroundImage: "url('/projects/aikya/elevation-east.jpg')" }}
         />
 
         {/* Click anywhere on the video hero to enter the studio */}
