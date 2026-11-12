@@ -14,7 +14,6 @@ import {
   loginWithGoogle,
   loginWithEmail,
   logout as firebaseLogout,
-  uploadToFirebaseStorage,
 } from "@/lib/firebaseClient";
 import { Project, ProjectImage, VideoTour } from "@/data/projects";
 import { Service } from "@/data/services";
@@ -977,27 +976,9 @@ export default function AdminCMSPage() {
 
       setUploadProgress(25);
 
-      // 2. Direct Upload to Firebase Cloud Storage (technoarchitecture-7d718.firebasestorage.app)
-      // Uploading directly from client to Firebase Storage completely bypasses the server runtime,
-      // saving Cloud Run compute bandwidth and latency.
-      try {
-        const fbResult = await uploadToFirebaseStorage(
-          uploadFile,
-          folder,
-          undefined,
-          (pct) => setUploadProgress(25 + Math.round(pct * 0.7))
-        );
-        if (fbResult?.url) {
-          setUploadProgress(100);
-          onSuccess(fbResult.url);
-          showToast("✅ " + (isVideo ? "Video" : "Photo") + " uploaded to Firebase Storage successfully!");
-          return;
-        }
-      } catch (fbErr) {
-        console.warn("Direct Firebase Storage client upload error, attempting server fallback:", fbErr);
-      }
-
-      // 3. Fallback: Upload via Next.js server /api/upload endpoint with full authentication & cookies
+      // 2. Upload via Next.js server /api/upload endpoint with full authentication & cookies
+      // All storage writes are handled server-side via Firebase Admin SDK.
+      // Direct client writes are disallowed by Storage Security Rules for zero-trust security.
       try {
         const fd = new FormData();
         fd.append("file", uploadFile);

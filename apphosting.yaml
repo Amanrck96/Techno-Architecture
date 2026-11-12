@@ -42,3 +42,4 @@ env:
     secret: ADMIN_SESSION_SECRET
     availability:
       - RUNTIME
+

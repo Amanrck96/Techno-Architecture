@@ -1,18 +1,71 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    // Public read for all architectural photography, videos, and media
+    // 1. DEFAULT-DENY: Reject all reads and writes across the entire bucket by default.
     match /{allPaths=**} {
-      allow read: if true;
-      // Client write access permitted only for authenticated admin studio users (e.g. photo uploads)
-      allow write: if request.auth != null;
+      allow read, write: if false;
     }
 
-    // CMS data is managed strictly server-side via Firebase Admin SDK.
-    // Browser client direct writes are strictly disallowed.
-    match /cms/{allPaths=**} {
+    // 2. PUBLIC MEDIA WHITELIST: Allow public read-only access exclusively for served website assets.
+    // Client direct writes are strictly disabled across the entire bucket.
+    // All media uploads are authenticated and processed server-side via Next.js /api/upload using Firebase Admin SDK.
+    match /uploads/{allPaths=**} {
       allow read: if true;
       allow write: if false;
+    }
+
+    match /media/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /team/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /projects/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /gallery/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /blog/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /recognitions/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /testimonials/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // 3. SENSITIVE SERVER-ONLY DATA: Defense-in-depth lock.
+    // Absolutely no read or write permissions for browser clients (anonymous or authenticated).
+    // The server reads and persists these files exclusively via Firebase Admin SDK with server credentials.
+    match /cms/{allPaths=**} {
+      allow read, write: if false;
+    }
+
+    match /leads/{allPaths=**} {
+      allow read, write: if false;
+    }
+
+    match /enquiries/{allPaths=**} {
+      allow read, write: if false;
+    }
+
+    match /backups/{allPaths=**} {
+      allow read, write: if false;
     }
   }
 }

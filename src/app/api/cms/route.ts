@@ -144,11 +144,23 @@ export async function POST(request: Request) {
     // Action: Test credentials
     if (body.action === "test-connection") {
       const results: any = {};
-      // Test Firebase Cloud Storage
-      const fbTest = await saveToFirebaseStorage({
-        _test: true,
-        testedAt: new Date().toISOString(),
-      });
+      const testKey = `cms-test/test-${Date.now()}.json`;
+      // Test Firebase Cloud Storage strictly via isolated test path (NEVER touch live cms/cms-content.json)
+      const fbTest = await saveToFirebaseStorage(
+        {
+          _test: true,
+          testedAt: new Date().toISOString(),
+        },
+        undefined,
+        testKey
+      );
+      // Clean up test object immediately
+      try {
+        const bucket = getFirebaseStorageBucket();
+        if (bucket) {
+          await bucket.file(testKey).delete({ ignoreNotFound: true });
+        }
+      } catch (_) {}
       results.firebaseStorage = fbTest;
 
       if (githubToken) {
