@@ -6,6 +6,7 @@ import { getFirestoreDb, getFirebaseStorageBucket } from "@/lib/firebaseAdmin";
 import {
   readStore,
   writeStore,
+  writeRecord,
   getDefaultData,
   saveToGitHub,
   saveToUpstashKV,
@@ -58,6 +59,65 @@ export async function GET(request: Request) {
       url.searchParams.get("fresh") === "1" ||
       Boolean(request.headers.get("authorization")) ||
       Boolean(request.headers.get("x-admin-token"));
+
+    const entityParam = url.searchParams.get("entity");
+    const idParam = url.searchParams.get("id");
+
+    // Single-record split read
+    if (entityParam && idParam) {
+      const fullData = await readStore(
+        customUpstashUrl,
+        customUpstashToken,
+        customGithubToken,
+        customGithubRepo,
+        forceFresh
+      );
+      let record = null;
+      if (Array.isArray(fullData[entityParam])) {
+        record = fullData[entityParam].find((item: any) => item && (item.id === idParam || item.slug === idParam));
+      } else if (entityParam === "siteSettings") {
+        record = fullData.siteSettings;
+      }
+      if (!record) {
+        return NextResponse.json({ error: `Record "${idParam}" not found in "${entityParam}".` }, { status: 404 });
+      }
+      return NextResponse.json(record, {
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": forceFresh ? "no-store, no-cache, must-revalidate" : "public, s-maxage=60, stale-while-revalidate=300",
+        },
+      });
+    }
+
+    // Lightweight manifest read
+    if (url.searchParams.get("manifest") === "1") {
+      const fullData = await readStore(
+        customUpstashUrl,
+        customUpstashToken,
+        customGithubToken,
+        customGithubRepo,
+        forceFresh
+      );
+      const manifest = {
+        updatedAt: fullData.updatedAt || new Date().toISOString(),
+        sections: {
+          projects: { count: Array.isArray(fullData.projects) ? fullData.projects.length : 0 },
+          services: { count: Array.isArray(fullData.services) ? fullData.services.length : 0 },
+          team: { count: Array.isArray(fullData.team) ? fullData.team.length : 0 },
+          blog: { count: Array.isArray(fullData.blog) ? fullData.blog.length : 0 },
+          faq: { count: Array.isArray(fullData.faq) ? fullData.faq.length : 0 },
+          gallery: { count: Array.isArray(fullData.gallery) ? fullData.gallery.length : 0 },
+          recognitions: { count: Array.isArray(fullData.recognitions) ? fullData.recognitions.length : 0 },
+          testimonials: { count: Array.isArray(fullData.testimonials) ? fullData.testimonials.length : 0 },
+        },
+      };
+      return NextResponse.json(manifest, {
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": forceFresh ? "no-store, no-cache, must-revalidate" : "public, s-maxage=60, stale-while-revalidate=300",
+        },
+      });
+    }
 
     const data = await readStore(
       customUpstashUrl,
@@ -214,6 +274,58 @@ export async function POST(request: Request) {
         storageStatus,
         data: defaultData,
         updatedAt: defaultData.updatedAt,
+      });
+    }
+
+    // Granular Single-Record Update (projects/<id>, team/<id>, services/<id>, etc.)
+    if (body.entity && (body.record || body.data)) {
+      const entity = String(body.entity);
+      const recordData = body.record || body.data;
+      const recordId = String(body.recordId || recordData?.id || recordData?.slug || "");
+      const expectedRecordUpdatedAt = body.expectedUpdatedAt || recordData?.expectedUpdatedAt;
+
+      // Locate existing record in server dataset for concurrency validation
+      let existingRecord: any = null;
+      if (Array.isArray(current[entity])) {
+        existingRecord = current[entity].find((item: any) => item && (item.id === recordId || item.slug === recordId));
+      } else if (entity === "siteSettings") {
+        existingRecord = current.siteSettings;
+      }
+
+      // Per-record concurrency control: 409 Conflict if server version is newer
+      if (expectedRecordUpdatedAt && existingRecord?.updatedAt && !body.forceOverwrite) {
+        const expectedTime = new Date(expectedRecordUpdatedAt).getTime();
+        const serverTime = new Date(existingRecord.updatedAt).getTime();
+        if (!isNaN(expectedTime) && !isNaN(serverTime) && serverTime - expectedTime > 1000) {
+          return NextResponse.json(
+            {
+              success: false,
+              conflict: true,
+              error: `Record "${recordId}" in "${entity}" was modified by another session. Please reload before saving.`,
+              serverUpdatedAt: existingRecord.updatedAt,
+              expectedUpdatedAt: expectedRecordUpdatedAt,
+            },
+            { status: 409 }
+          );
+        }
+      }
+
+      const updatedTimestamp = new Date().toISOString();
+      const updatedRecord = {
+        ...recordData,
+        updatedAt: updatedTimestamp,
+      };
+
+      const result = await writeRecord(entity, recordId, updatedRecord);
+
+      revalidatePublicPages();
+      return NextResponse.json({
+        success: true,
+        entity,
+        recordId,
+        updatedAt: updatedTimestamp,
+        durationMs: result.durationMs,
+        sizeBytes: result.sizeBytes,
       });
     }
 

@@ -300,20 +300,8 @@ export function ImageMouseAdjuster({
         console.warn("Server upload fallback failed, using dataUrl fallback:", apiErr);
       }
 
-      // 3. Fallback: Apply client dataUrl
-      if (fallbackDataUrl) {
-        setUrlInput(fallbackDataUrl);
-        onChange({
-          imageUrl: fallbackDataUrl,
-          positionX: posX,
-          positionY: posY,
-          scale: currentScale,
-        });
-        onToast?.("✅ Image saved to studio archive.");
-        return;
-      }
-
-      throw new Error("Could not process image file.");
+      // 3. Fallback: Never embed raw base64 data URLs into CMS content.
+      throw new Error("Server image upload failed. Raw base64 data cannot be embedded directly into CMS records.");
     } catch (err: any) {
       alert(`Image upload failed: ${err.message || "Unknown error"}`);
     } finally {

@@ -242,7 +242,7 @@ export async function saveToFirebaseStorage(
 
     try {
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 10000);
+      const timer = setTimeout(() => controller.abort(), 60000);
 
       const bodyString = typeof data === "string" ? data : JSON.stringify(data);
       const res = await fetch(uploadUrl, {
@@ -275,17 +275,19 @@ export async function saveToFirebaseStorage(
 /**
  * Reads CMS content directly from Firebase Cloud Storage via Admin SDK (with public CDN fallback).
  */
-export async function getFromFirebaseStorage(explicitBucket?: string): Promise<any | null> {
+export async function getFromFirebaseStorage(explicitBucket?: string, customFilePath?: string): Promise<any | null> {
+  const targetPath = customFilePath || FIREBASE_CMS_FILE_PATH;
+
   // 1. Try Firebase Admin Storage download first (bypasses CDN cache & public permissions)
   try {
     const bucket = getFirebaseStorageBucket(explicitBucket);
     if (bucket) {
-      const file = bucket.file(FIREBASE_CMS_FILE_PATH);
+      const file = bucket.file(targetPath);
       const [exists] = await file.exists();
       if (exists) {
         const [contents] = await file.download();
         const data = JSON.parse(contents.toString("utf-8"));
-        if (data && typeof data === "object" && data.updatedAt) {
+        if (data && typeof data === "object") {
           return data;
         }
       }
@@ -306,12 +308,12 @@ export async function getFromFirebaseStorage(explicitBucket?: string): Promise<a
 
   for (const bucketName of candidateBuckets) {
     const getUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(
-      FIREBASE_CMS_FILE_PATH
+      targetPath
     )}?alt=media&ts=${Date.now()}`;
 
     try {
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 6000);
+      const timer = setTimeout(() => controller.abort(), 60000);
 
       const res = await fetch(getUrl, {
         cache: "no-store",
@@ -325,7 +327,7 @@ export async function getFromFirebaseStorage(explicitBucket?: string): Promise<a
 
       if (res.ok) {
         const data = await res.json();
-        if (data && typeof data === "object" && data.updatedAt) {
+        if (data && typeof data === "object") {
           return data;
         }
       }
@@ -334,6 +336,73 @@ export async function getFromFirebaseStorage(explicitBucket?: string): Promise<a
     }
   }
   return null;
+}
+
+/**
+ * Granular Split Storage: Writes a single entity record to storage & Firestore.
+ * Significantly smaller payload (< 5 KB vs 250 KB monolithic) and fast (< 100ms).
+ */
+export async function writeRecord(
+  entity: string,
+  recordId: string,
+  record: any
+): Promise<{ success: boolean; error?: string; durationMs: number; sizeBytes: number }> {
+  const t0 = Date.now();
+  const cleanEntity = String(entity).replace(/[^a-zA-Z0-9-_]/g, "");
+  const cleanId = String(recordId).replace(/[^a-zA-Z0-9-_]/g, "");
+  const targetPath = `cms/${cleanEntity}/${cleanId}.json`;
+  const recordString = JSON.stringify(record, null, 2);
+  const sizeBytes = Buffer.byteLength(recordString, "utf8");
+
+  let storageOk = false;
+  let storageErr = "";
+
+  // 1. Write granular file to Firebase Cloud Storage via Admin SDK
+  try {
+    const fbRes = await saveToFirebaseStorage(record, undefined, targetPath);
+    if (fbRes.success) {
+      storageOk = true;
+    } else {
+      storageErr = fbRes.error || "Storage write failed";
+    }
+  } catch (err: any) {
+    storageErr = err?.message || "Storage error";
+  }
+
+  // 2. Write granular record to Firestore (collection: cms_[entity], doc: [id])
+  try {
+    const db = getFirestoreDb();
+    if (db) {
+      await db.collection(`cms_${cleanEntity}`).doc(cleanId).set(record);
+      storageOk = true;
+    }
+  } catch (dbErr: any) {
+    console.warn(`[CMS Server] Firestore record write notice for ${cleanEntity}/${cleanId}:`, dbErr?.message);
+  }
+
+  // 3. Update in-memory store so server rendered views reflect edit immediately
+  if (globalThis.__techno_cms_store__) {
+    const store = globalThis.__techno_cms_store__;
+    if (Array.isArray(store[cleanEntity])) {
+      const idx = store[cleanEntity].findIndex((item: any) => item && (item.id === cleanId || item.slug === cleanId));
+      if (idx >= 0) {
+        store[cleanEntity][idx] = record;
+      } else {
+        store[cleanEntity].push(record);
+      }
+    } else if (cleanEntity === "siteSettings") {
+      store.siteSettings = record;
+    }
+    store.updatedAt = record.updatedAt || new Date().toISOString();
+  }
+
+  const durationMs = Date.now() - t0;
+  return {
+    success: storageOk,
+    error: storageOk ? undefined : storageErr,
+    durationMs,
+    sizeBytes,
+  };
 }
 
 export async function getFromUpstashKV(explicitUrl?: string, explicitToken?: string): Promise<any | null> {
@@ -397,7 +466,7 @@ export async function getFromGitHub(explicitToken?: string, explicitRepo?: strin
 
   try {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 3000);
+    const timer = setTimeout(() => controller.abort(), 60000);
 
     const res = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
       headers: {

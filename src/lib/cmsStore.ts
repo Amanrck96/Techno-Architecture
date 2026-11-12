@@ -328,7 +328,13 @@ export async function syncToServer(payload: {
   message?: string;
   error?: any;
   conflict?: boolean;
+  status?: number;
+  durationMs?: number;
+  sizeBytes?: number;
+  isTimeout?: boolean;
+  serverUpdatedAt?: string;
 }> {
+  let t0 = typeof performance !== "undefined" ? performance.now() : Date.now();
   try {
     const token =
       typeof window !== "undefined"
@@ -358,17 +364,23 @@ export async function syncToServer(payload: {
       headers["x-upstash-token"] = payload.upstashToken || creds.upstashToken;
     }
 
+    t0 = typeof performance !== "undefined" ? performance.now() : Date.now();
+    const payloadString = JSON.stringify(payload);
+    const sizeBytes = typeof Blob !== "undefined" ? new Blob([payloadString]).size : payloadString.length;
+
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    // Strict requirement: Never timeout shorter than 60s
+    const timeoutId = setTimeout(() => controller.abort(), 60000);
 
     const res = await fetch("/api/cms", {
       method: "POST",
       credentials: "include",
       headers,
-      body: JSON.stringify(payload),
+      body: payloadString,
       signal: controller.signal,
     });
     clearTimeout(timeoutId);
+    const durationMs = Math.round((typeof performance !== "undefined" ? performance.now() : Date.now()) - t0);
 
     if (res.ok) {
       const result = await res.json();
@@ -385,6 +397,8 @@ export async function syncToServer(payload: {
         data: result.data,
         storageStatus: result.storageStatus,
         message: result.message,
+        durationMs,
+        sizeBytes,
       };
     } else {
       const err = await res.json().catch(() => ({}));
@@ -408,7 +422,10 @@ export async function syncToServer(payload: {
         return {
           success: false,
           conflict: true,
+          status: 409,
           error: errorMsg,
+          durationMs,
+          sizeBytes,
         };
       }
 
@@ -422,17 +439,29 @@ export async function syncToServer(payload: {
           })
         );
       }
-      return { success: false, error: `HTTP ${res.status}: ${errorMsg}` };
+      return {
+        success: false,
+        status: res.status,
+        error: `HTTP ${res.status}: ${errorMsg}`,
+        durationMs,
+        sizeBytes,
+      };
     }
   } catch (err: any) {
-    const errorMsg =
-      err?.name === "AbortError"
-        ? "Request timed out after 15s. The server may be restarting or redeploying."
-        : err?.message || "Failed to fetch";
+    const tEnd = typeof performance !== "undefined" ? performance.now() : Date.now();
+    const durationMs = Math.round(tEnd - (typeof t0 !== "undefined" ? t0 : tEnd));
+    const sizeBytes = typeof payload !== "undefined" ? JSON.stringify(payload).length : 0;
+    const isTimeout = err?.name === "AbortError";
+    const errorMsg = isTimeout
+      ? "Save timed out after 60s. The server operation took too long."
+      : err?.message || "Failed to fetch";
     console.warn("Network error saving to /api/cms:", errorMsg);
     return {
       success: false,
-      error: `Network error (${errorMsg}). Please check your connection or retry.`,
+      error: `Network error: ${errorMsg}`,
+      durationMs,
+      sizeBytes,
+      isTimeout,
     };
   }
 }
@@ -440,6 +469,15 @@ export async function syncToServer(payload: {
 // =========================================================================
 // REACT CONTEXT & GLOBAL PROVIDER (GUARANTEES ZERO FLASH OF DELETED DATA)
 // =========================================================================
+
+export interface RecordSaveStatus {
+  state: "idle" | "saving" | "saved" | "failed";
+  error?: string;
+  durationMs?: number;
+  sizeBytes?: number;
+  timestamp?: number;
+  conflict?: boolean;
+}
 
 export interface CMSContextValue {
   isClient: boolean;
@@ -454,6 +492,7 @@ export interface CMSContextValue {
   testimonials: Testimonial[];
   deletedIds: string[];
   serverStorageInfo: any;
+  recordStatus: Record<string, RecordSaveStatus>;
   saveProjects: (newProjects: Project[], explicitDeletedId?: string) => void;
   saveServices: (newServices: Service[], explicitDeletedId?: string) => void;
   saveTeam: (newTeam: TeamMember[], explicitDeletedId?: string) => void;
@@ -463,6 +502,7 @@ export interface CMSContextValue {
   saveRecognitions: (newRecognitions: Recognition[], explicitDeletedId?: string) => void;
   saveSiteSettings: (newSettings: SiteSettings) => void;
   saveTestimonials: (newTestimonials: Testimonial[], explicitDeletedId?: string) => void;
+  saveSingleRecord: (entity: string, record: any) => Promise<any>;
   deleteEntity: (entity: string, id: string, slug?: string) => void;
   saveAllToCloud: (options?: { forceGitHubCommit?: boolean }) => Promise<any>;
   resetAllToDefaults: () => void;
@@ -1028,9 +1068,119 @@ export function CMSProvider({
   }, [fetchFromServer, applyDataset, deletedIds]);
 
   // =========================================================================
-  // SINGLE-FLIGHT SAVE QUEUE (ONE IN-FLIGHT AT A TIME + 3s TRAILING DEBOUNCE)
+  // SINGLE-FLIGHT SAVE QUEUE (ONE IN-FLIGHT AT A TIME + 60s TIMEOUT)
   // Batches rapid changes across multiple fields/entities into ONE request.
+  // Never aborted by a newer save; queued sequentially with retry & status.
   // =========================================================================
+  const [recordStatus, setRecordStatus] = useState<Record<string, RecordSaveStatus>>({});
+  const saveQueueRef = useRef<Array<{
+    id: string;
+    entity: string;
+    recordId: string;
+    payload: any;
+    retries: number;
+    resolve: (res: any) => void;
+    reject: (err: any) => void;
+  }>>([]);
+  const isProcessingQueueRef = useRef(false);
+
+  const processQueue = useCallback(async () => {
+    if (isProcessingQueueRef.current || saveQueueRef.current.length === 0) return;
+    isProcessingQueueRef.current = true;
+
+    while (saveQueueRef.current.length > 0) {
+      const job = saveQueueRef.current[0];
+      const trackingKey = job.recordId || job.entity;
+
+      setRecordStatus((prev) => ({
+        ...prev,
+        [trackingKey]: { state: "saving", timestamp: Date.now() },
+      }));
+
+      let result: any = null;
+      let errorMsg = "";
+
+      try {
+        result = await syncToServer(job.payload);
+      } catch (err: any) {
+        errorMsg = err?.message || "Network error";
+      }
+
+      if (result && result.success) {
+        saveQueueRef.current.shift();
+        setRecordStatus((prev) => ({
+          ...prev,
+          [trackingKey]: {
+            state: "saved",
+            durationMs: result.durationMs,
+            sizeBytes: result.sizeBytes,
+            timestamp: Date.now(),
+          },
+        }));
+        job.resolve(result);
+      } else {
+        const isConflict = Boolean(result?.conflict || result?.status === 409);
+        const isAuth = Boolean(result?.status === 401 || result?.status === 403);
+        errorMsg = result?.error || errorMsg || `Save failed (HTTP ${result?.status || 500})`;
+
+        if (isConflict || isAuth || job.retries >= 2) {
+          saveQueueRef.current.shift();
+          setRecordStatus((prev) => ({
+            ...prev,
+            [trackingKey]: {
+              state: "failed",
+              error: errorMsg,
+              durationMs: result?.durationMs,
+              sizeBytes: result?.sizeBytes,
+              timestamp: Date.now(),
+              conflict: isConflict,
+            },
+          }));
+          job.resolve(result || { success: false, error: errorMsg });
+        } else {
+          job.retries += 1;
+          await new Promise((r) => setTimeout(r, job.retries * 1000));
+        }
+      }
+    }
+
+    isProcessingQueueRef.current = false;
+  }, []);
+
+  const saveSingleRecord = useCallback(
+    (entity: string, record: any): Promise<any> => {
+      const recordId = String(record?.id || record?.slug || entity);
+
+      return new Promise((resolve, reject) => {
+        const payload = {
+          entity,
+          recordId,
+          record,
+          expectedUpdatedAt: record.updatedAt || undefined,
+        };
+
+        const existingIdx = saveQueueRef.current.findIndex((j) => j.id === `${entity}:${recordId}`);
+        if (existingIdx > 0) {
+          saveQueueRef.current[existingIdx].payload = payload;
+          saveQueueRef.current[existingIdx].resolve = resolve;
+          saveQueueRef.current[existingIdx].reject = reject;
+        } else {
+          saveQueueRef.current.push({
+            id: `${entity}:${recordId}`,
+            entity,
+            recordId,
+            payload,
+            retries: 0,
+            resolve,
+            reject,
+          });
+        }
+        processQueue();
+      });
+    },
+    [processQueue]
+  );
+
   const isSavingRef = useRef(false);
   const isDirtyRef = useRef(false);
   const trailingSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -1051,7 +1201,7 @@ export function CMSProvider({
       );
     }
 
-    // WATCHDOG: If still "saving" after 20s, force status to error
+    // WATCHDOG: If still "saving" after 65s, force status to error (Never timeout shorter than 60s)
     if (savingWatchdogRef.current) clearTimeout(savingWatchdogRef.current);
     savingWatchdogRef.current = setTimeout(() => {
       savingWatchdogRef.current = null;
@@ -1060,12 +1210,12 @@ export function CMSProvider({
           new CustomEvent("techno_cms_autosave_status", {
             detail: {
               status: "error",
-              error: "Save timed out (20s). Click 'Save All to Cloud' to retry.",
+              error: "Save timed out (65s). Click 'Save All to Cloud' to retry.",
             },
           })
         );
       }
-    }, 20000);
+    }, 65000);
 
     try {
       // Gather latest local and state dataset
@@ -1688,6 +1838,7 @@ export function CMSProvider({
       testimonials,
       deletedIds,
       serverStorageInfo,
+      recordStatus,
       saveProjects,
       saveServices,
       saveTeam,
@@ -1697,6 +1848,7 @@ export function CMSProvider({
       saveRecognitions,
       saveSiteSettings,
       saveTestimonials,
+      saveSingleRecord,
       deleteEntity,
       saveAllToCloud,
       resetAllToDefaults,
@@ -1716,6 +1868,7 @@ export function CMSProvider({
       testimonials,
       deletedIds,
       serverStorageInfo,
+      recordStatus,
       saveProjects,
       saveServices,
       saveTeam,
@@ -1725,6 +1878,7 @@ export function CMSProvider({
       saveRecognitions,
       saveSiteSettings,
       saveTestimonials,
+      saveSingleRecord,
       deleteEntity,
       saveAllToCloud,
       resetAllToDefaults,
@@ -1768,6 +1922,7 @@ function useStandaloneCMSStore(): CMSContextValue {
     testimonials,
     deletedIds,
     serverStorageInfo,
+    recordStatus: {},
     saveProjects: () => {},
     saveServices: () => {},
     saveTeam: () => {},
@@ -1777,6 +1932,7 @@ function useStandaloneCMSStore(): CMSContextValue {
     saveRecognitions: () => {},
     saveSiteSettings: () => {},
     saveTestimonials: () => {},
+    saveSingleRecord: async () => ({ success: true }),
     deleteEntity: () => {},
     saveAllToCloud: async () => ({ success: true }),
     resetAllToDefaults: () => {},

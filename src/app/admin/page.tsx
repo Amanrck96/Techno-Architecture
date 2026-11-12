@@ -178,6 +178,8 @@ export default function AdminCMSPage() {
     saveRecognitions,
     saveSiteSettings,
     saveTestimonials,
+    saveSingleRecord,
+    recordStatus,
     saveAllToCloud,
     resetAllToDefaults,
     refetchFromServer,
@@ -209,14 +211,17 @@ export default function AdminCMSPage() {
 
   const handleExplicitSaveChanges = async () => {
     setIsSyncingCloud(true);
+    const t0 = typeof performance !== "undefined" ? performance.now() : Date.now();
     try {
       const res = await saveAllToCloud();
-      if (res && res.success && res.storageStatus?.isPermanent !== false) {
+      if (res && res.success === true && res.storageStatus?.isPermanent !== false) {
         setHasUnsavedChanges(false);
         setStaleDraftNotice(false);
         setServerConflictData(null);
         setConcurrencyConflictMessage(null);
-        showToast(res.message || "All changes saved & synced permanently ✅");
+        const dur = res.durationMs || Math.round((typeof performance !== "undefined" ? performance.now() : Date.now()) - t0);
+        const sz = res.sizeBytes ? `${(res.sizeBytes / 1024).toFixed(1)} KB` : "";
+        showToast(`All changes saved & synced permanently (${dur}ms${sz ? `, ${sz}` : ""}) ✅`);
       } else {
         const errorMsg =
           res?.error?.error ||
@@ -224,23 +229,44 @@ export default function AdminCMSPage() {
           (typeof res?.error === "string" ? res.error : null) ||
           res?.message ||
           res?.storageStatus?.summaryMessage ||
-          "Save failed: Changes were NOT saved permanently. Please verify credentials.";
-        showToast("Save failed: " + errorMsg);
+          "Save rejected by server.";
+        const dur = res?.durationMs ? `${res.durationMs}ms` : "";
+        const sz = res?.sizeBytes ? `${(res.sizeBytes / 1024).toFixed(1)} KB` : "";
+        const diag = [dur, sz].filter(Boolean).join(", ");
+        showToast(`❌ Save Failed: ${errorMsg}${diag ? ` (${diag})` : ""}`);
       }
     } catch (err: any) {
-      showToast("Save failed: " + (err?.message || "Network error"));
+      showToast(`❌ Save Failed: ${err?.message || "Network error"}`);
     } finally {
       setIsSyncingCloud(false);
     }
   };
 
-  const handleSaveItem = async (id: string, label: string) => {
+  const handleSaveItem = async (id: string, label: string, entity: string = "projects") => {
     setSavingEntityId(id);
+    const t0 = typeof performance !== "undefined" ? performance.now() : Date.now();
     try {
-      const res = await saveAllToCloud();
-      const isSaved = res && (res.success || res.storageStatus?.firebaseStorage || res.storageStatus?.isPermanent);
-      if (isSaved) {
-        showToast(`Saved "${label}" to Cloud Archive ✅`);
+      let recordToSave: any = null;
+      if (entity === "projects") recordToSave = projects.find((p) => p.id === id);
+      else if (entity === "services") recordToSave = services.find((s) => s.id === id);
+      else if (entity === "team") recordToSave = team.find((t) => t.id === id);
+      else if (entity === "blog") recordToSave = blog.find((b) => b.id === id || b.slug === id);
+      else if (entity === "faq") recordToSave = faq.find((f) => f.id === id);
+      else if (entity === "gallery") recordToSave = gallery.find((g) => g.id === id);
+      else if (entity === "recognitions") recordToSave = recognitions.find((r) => r.id === id);
+      else if (entity === "testimonials") recordToSave = testimonials.find((t) => t.id === id);
+
+      let res: any;
+      if (recordToSave && saveSingleRecord) {
+        res = await saveSingleRecord(entity, recordToSave);
+      } else {
+        res = await saveAllToCloud();
+      }
+
+      if (res && res.success === true) {
+        const dur = res.durationMs || Math.round((typeof performance !== "undefined" ? performance.now() : Date.now()) - t0);
+        const sz = res.sizeBytes ? `${(res.sizeBytes / 1024).toFixed(1)} KB` : "";
+        showToast(`Saved "${label}" successfully (${dur}ms${sz ? `, ${sz}` : ""}) ✅`);
       } else {
         const errorMsg =
           res?.error?.error ||
@@ -248,11 +274,14 @@ export default function AdminCMSPage() {
           (typeof res?.error === "string" ? res.error : null) ||
           res?.message ||
           res?.storageStatus?.summaryMessage ||
-          "Save failed: Changes were NOT saved permanently. Please sign in again.";
-        showToast(`Save failed for "${label}": ${errorMsg}`);
+          "Save failed: Changes were NOT saved permanently.";
+        const dur = res?.durationMs ? `${res.durationMs}ms` : "";
+        const sz = res?.sizeBytes ? `${(res.sizeBytes / 1024).toFixed(1)} KB` : "";
+        const diag = [dur, sz].filter(Boolean).join(", ");
+        showToast(`❌ Save Failed for "${label}": ${errorMsg}${diag ? ` (${diag})` : ""}`);
       }
     } catch (err: any) {
-      showToast(`Failed to save "${label}": ${err?.message || "Network error"}`);
+      showToast(`❌ Save Failed for "${label}": ${err?.message || "Network error"}`);
     } finally {
       setSavingEntityId(null);
     }
@@ -1019,15 +1048,9 @@ export default function AdminCMSPage() {
         console.warn("Direct /api/upload error, falling back to client-saved dataUrl:", uploadErr);
       }
 
-      // 3. Resilient Fallback: If server upload had any issue, apply the optimized dataUrl immediately
-      if (fallbackDataUrl) {
-        setUploadProgress(100);
-        onSuccess(fallbackDataUrl);
-        showToast(`✅ Photo saved directly into studio archive!`);
-        return;
-      }
-
-      throw new Error("Could not process photo file.");
+      // 3. Fallback: Never embed base64 data URLs into CMS content.
+      // If server upload failed, abort with a clear error so the user can re-try.
+      throw new Error("Photo upload to storage failed. Media cannot be embedded as raw base64 data.");
     } catch (err: any) {
       alert(`Media upload failed: ${err.message || "Unknown error"}`);
     } finally {
@@ -1406,12 +1429,20 @@ export default function AdminCMSPage() {
                   </span>
                 )}
                 {autoSaveStatus === "error" && (
-                  <span
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[10px] font-mono bg-red-500/20 text-red-300 border border-red-500/40"
-                    title={autoSaveErrorMessage || "Sync issue"}
-                  >
-                    ⚠️ Sync: {autoSaveErrorMessage || "Check session"}
-                  </span>
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded text-xs font-mono bg-red-950/80 text-red-300 border border-red-500/60 shadow-lg">
+                    <AlertTriangle size={13} className="text-red-400 shrink-0" />
+                    <span>
+                      <strong>Save Failed:</strong> {autoSaveErrorMessage || "Server write failed"}{" "}
+                      <span className="text-neutral-400 text-[11px]">(Draft preserved safely in browser)</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleExplicitSaveChanges}
+                      className="px-2.5 py-0.5 ml-1 rounded bg-red-600 hover:bg-red-500 text-white font-sans text-[11px] font-semibold transition-colors cursor-pointer"
+                    >
+                      Retry
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
