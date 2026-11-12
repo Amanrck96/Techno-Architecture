@@ -1,5 +1,4 @@
 import React from "react";
-import StudioPreloader from "@/components/home/StudioPreloader";
 import HomeIntro from "@/components/home/HomeIntro";
 import HomeProjectsGrid from "@/components/home/HomeProjectsGrid";
 import HomeTeamSection from "@/components/home/HomeTeamSection";
@@ -14,9 +13,6 @@ export const metadata = {
 export default function HomeDirectoryPage() {
   return (
     <div className="w-full flex flex-col">
-      {/* Cinematic Studio Entrance, Logo Reveal & Preloader Transition */}
-      <StudioPreloader />
-
       {/* a. Introduction */}
       <HomeIntro />
 
@@ -31,3 +27,4 @@ export default function HomeDirectoryPage() {
     </div>
   );
 }
+

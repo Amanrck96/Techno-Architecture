@@ -39,7 +39,7 @@ export default function LandingGallery() {
       {/* 1. TOP HEADER — Official Brand Identity Only (ENTER STUDIO removed as requested) */}
       <header className="relative z-30 w-full bg-white border-b border-neutral-200 px-6 sm:px-10 lg:px-16 py-3 sm:py-3.5 md:py-4 flex items-center justify-between shrink-0 shadow-xs">
         <Link
-          href="/home?intro=cinematic"
+          href="/home"
           prefetch={true}
           className="inline-flex focus:outline-none transition-opacity hover:opacity-90"
           aria-label="Techno Architecture"
@@ -67,7 +67,7 @@ export default function LandingGallery() {
 
         {/* Click anywhere on the video hero to enter the studio */}
         <Link
-          href="/home?intro=cinematic"
+          href="/home"
           prefetch={true}
           className="absolute inset-0 z-10 cursor-pointer focus:outline-none"
           aria-label="Enter Techno Architecture Studio"
@@ -78,7 +78,7 @@ export default function LandingGallery() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/30 pointer-events-none" />
 
         {/* 3. BOTTOM CAPTION & INTERACTIVE CONTROLS — Matching px-6 sm:px-10 lg:px-16 Grid Alignment */}
-        <div className="absolute bottom-0 left-0 right-0 z-20 px-6 sm:px-10 lg:px-16 pb-6 sm:pb-8 lg:pb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4 pointer-events-none">
+        <div className="absolute bottom-0 left-0 right-0 z-30 px-6 sm:px-10 lg:px-16 pb-6 sm:pb-8 lg:pb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4 pointer-events-none">
           {/* Architectural Statement / Brand Info — Flush Left Aligned with Top Logo */}
           <div className="space-y-1.5 max-w-xl pointer-events-auto">
             <span className="block text-[9px] md:text-[10px] tracking-[0.3em] text-neutral-300 uppercase font-mono drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
@@ -93,7 +93,7 @@ export default function LandingGallery() {
           </div>
 
           {/* Interactive Player Controls & CTAs */}
-          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 pointer-events-auto">
+          <div className="relative z-30 flex flex-wrap items-center gap-2 sm:gap-2.5 pointer-events-auto">
             {/* Audio Toggle Button (Symbol Only) */}
             <button
               type="button"
@@ -109,14 +109,14 @@ export default function LandingGallery() {
             <Link
               href="/projects"
               prefetch={true}
-              className="text-[9px] sm:text-[10px] tracking-[0.25em] uppercase font-medium text-neutral-200 hover:text-white transition-colors py-2.5 sm:py-3 px-3.5 sm:px-4 bg-black/60 hover:bg-black backdrop-blur-md border border-white/20 hover:border-white/40"
+              className="text-[9px] sm:text-[10px] tracking-[0.25em] uppercase font-medium text-neutral-200 hover:text-white transition-colors py-2.5 sm:py-3 px-3.5 sm:px-4 bg-black/60 hover:bg-black backdrop-blur-md border border-white/20 hover:border-white/40 cursor-pointer"
             >
               PROJECTS
             </Link>
 
             {/* Explore Architecture Primary CTA */}
             <Link
-              href="/home?intro=cinematic"
+              href="/home"
               prefetch={true}
               className="inline-flex items-center gap-2 text-[9px] sm:text-[10px] tracking-[0.22em] uppercase font-semibold text-black bg-white hover:bg-neutral-200 transition-colors py-2.5 sm:py-3 px-4 sm:px-5 shadow-lg group cursor-pointer"
             >
