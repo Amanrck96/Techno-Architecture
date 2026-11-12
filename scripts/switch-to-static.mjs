@@ -68,3 +68,4 @@ const firebaseStaticConfig = {
 fs.writeFileSync(path.join(rootDir, 'firebase.json'), JSON.stringify(firebaseStaticConfig, null, 2), 'utf8');
 console.log('✅ firebase.json updated to point to dist_static/');
 console.log('🎉 Ready to deploy! Run: firebase deploy --only hosting');
+

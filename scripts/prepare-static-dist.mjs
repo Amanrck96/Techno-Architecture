@@ -96,3 +96,4 @@ console.log(`✅ Static distribution created successfully!`);
 console.log(`   Files: ${fileCount}`);
 console.log(`   Total Size: ${(totalBytes / 1024 / 1024).toFixed(2)} MB`);
 console.log(`   Location: ${distDir}`);
+

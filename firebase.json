@@ -13,7 +13,14 @@
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "**/*.mp4",
+      "**/*.mov",
+      "**/*.avi",
+      "**/*.webm",
+      "**/*.zip",
+      "**/*.tar.gz",
+      "**/cms-backup*.json"
     ],
     "headers": [
       {

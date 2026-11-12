@@ -60,3 +60,4 @@ if (mode === '--to-local') {
 } else {
   console.log('Usage: node scripts/switch-media-source.mjs [--to-local | --to-cloud]');
 }
+
