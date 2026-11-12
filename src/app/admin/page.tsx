@@ -1484,50 +1484,6 @@ export default function AdminCMSPage() {
                 <span>{isSyncingCloud ? "Saving..." : "Save All to Cloud"}</span>
               </button>
 
-              <button
-                onClick={exportCmsJson}
-                type="button"
-                className="flex items-center gap-1.5 px-3.5 py-2 bg-white text-black hover:bg-neutral-200 transition-colors rounded text-xs font-medium uppercase tracking-wider shadow-sm"
-                title="Download clean production cms-content.json to replace in repository"
-              >
-                <Download size={13} />
-                <span>Download cms-content.json</span>
-              </button>
-
-              <button
-                onClick={exportData}
-                type="button"
-                className="flex items-center gap-1.5 px-3.5 py-2 bg-white/10 hover:bg-white/20 text-white border border-white/15 transition-colors rounded text-xs font-medium uppercase tracking-wider"
-                title="Download full JSON backup of website"
-              >
-                <Download size={13} />
-                <span>Export Backup</span>
-              </button>
-
-              <button
-                onClick={handleCommitToGitHub}
-                disabled={isCommittingGitHub}
-                type="button"
-                className="flex items-center gap-1.5 px-3.5 py-2 bg-white/10 hover:bg-white/20 disabled:opacity-50 text-white border border-white/15 transition-colors rounded text-xs font-medium uppercase tracking-wider cursor-pointer"
-                title="Commit content directly to GitHub repository & trigger production redeployment"
-              >
-                {isCommittingGitHub ? (
-                  <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <GitBranch size={13} />
-                )}
-                <span>{isCommittingGitHub ? "Committing..." : "Commit to GitHub"}</span>
-              </button>
-
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                type="button"
-                className="flex items-center gap-1.5 px-3.5 py-2 bg-white/10 hover:bg-white/20 text-white border border-white/15 transition-colors rounded text-xs font-medium uppercase tracking-wider"
-                title="Upload previously exported JSON backup"
-              >
-                <Upload size={13} />
-                <span>Import JSON</span>
-              </button>
 
               <button
                 onClick={() => {
