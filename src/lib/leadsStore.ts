@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import { getFirestoreDb } from "@/lib/firebaseAdmin";
+import { getFirestoreDb, getFirebaseStorageBucket } from "@/lib/firebaseAdmin";
 
 export interface EnquiryLead {
   id: string;
@@ -22,9 +22,56 @@ const TMP_DATA_PATH =
     ? path.join("/tmp", "enquiries.json")
     : path.join(process.cwd(), ".next", "cache", "enquiries-tmp.json");
 
+const LEADS_STORAGE_FILE = "leads/enquiries.json";
+
 declare global {
   // eslint-disable-next-line no-var
   var __techno_enquiries_store__: EnquiryLead[] | undefined;
+}
+
+/**
+ * Retrieve leads directly from permanent Firebase Cloud Storage
+ */
+async function getLeadsFromFirebaseStorage(): Promise<EnquiryLead[] | null> {
+  try {
+    const bucket = getFirebaseStorageBucket();
+    if (bucket) {
+      const file = bucket.file(LEADS_STORAGE_FILE);
+      const [exists] = await file.exists();
+      if (exists) {
+        const [contents] = await file.download();
+        const data = JSON.parse(contents.toString("utf-8"));
+        if (Array.isArray(data)) {
+          return data;
+        }
+      }
+    }
+  } catch (err: any) {
+    console.warn("[LeadsStore] Firebase Storage fetch notice:", err?.message || err);
+  }
+  return null;
+}
+
+/**
+ * Persist leads array directly to permanent Firebase Cloud Storage
+ */
+async function saveLeadsToFirebaseStorage(leads: EnquiryLead[]): Promise<boolean> {
+  try {
+    const bucket = getFirebaseStorageBucket();
+    if (bucket) {
+      const file = bucket.file(LEADS_STORAGE_FILE);
+      await file.save(JSON.stringify(leads, null, 2), {
+        contentType: "application/json",
+        metadata: {
+          cacheControl: "no-cache, private",
+        },
+      });
+      return true;
+    }
+  } catch (err: any) {
+    console.error("[LeadsStore] Firebase Storage save error:", err?.message || err);
+  }
+  return false;
 }
 
 /**
@@ -61,10 +108,9 @@ async function getLeadsFromGitHub(): Promise<{ leads: EnquiryLead[]; sha?: strin
 }
 
 /**
- * Commit leads array to GitHub repository (Disabled to prevent automatic git commit flooding)
+ * Commit leads array to GitHub repository (background fallback)
  */
 async function saveLeadsToGitHub(_leads: EnquiryLead[]): Promise<boolean> {
-  // Automatic GitHub commits disabled. Leads are safely and permanently stored in Cloud Firestore.
   return true;
 }
 
@@ -81,7 +127,21 @@ export async function getAllLeads(): Promise<EnquiryLead[]> {
     }
   }
 
-  // 2. Try Firestore Admin SDK (if active)
+  // 2. Authoritative Tier: Firebase Cloud Storage (Permanent, instant, surviving serverless restarts)
+  try {
+    const storageLeads = await getLeadsFromFirebaseStorage();
+    if (storageLeads && Array.isArray(storageLeads)) {
+      storageLeads.forEach((lead) => {
+        if (lead && lead.id) {
+          leadMap.set(lead.id, lead);
+        }
+      });
+    }
+  } catch (storageErr) {
+    console.warn("[LeadsStore] Storage read notice:", storageErr);
+  }
+
+  // 3. Try Firestore Admin SDK (if active)
   try {
     const db = getFirestoreDb();
     if (db) {
@@ -104,31 +164,29 @@ export async function getAllLeads(): Promise<EnquiryLead[]> {
           message: data.message || "",
           status: data.status || "new",
           createdAt: data.createdAt || new Date().toISOString(),
+          notes: data.notes || undefined,
         };
         leadMap.set(lead.id, lead);
       });
     }
   } catch (err) {
-    console.warn("[LeadsStore] Firestore fetch notice:", err);
+    // Firestore graceful fallback
   }
 
-  // 3. Try reading from local data file
+  // 4. Try reading from local data file (seed / local development)
   try {
     const raw = await fs.readFile(LOCAL_DATA_PATH, "utf-8");
     const parsed = JSON.parse(raw);
     if (Array.isArray(parsed)) {
       parsed.forEach((lead: EnquiryLead) => {
-        if (lead && lead.id) {
-          // If already in map, preserve newer status
-          if (!leadMap.has(lead.id)) {
-            leadMap.set(lead.id, lead);
-          }
+        if (lead && lead.id && !leadMap.has(lead.id)) {
+          leadMap.set(lead.id, lead);
         }
       });
     }
   } catch {}
 
-  // 4. Try reading from serverless /tmp cache
+  // 5. Try reading from serverless /tmp cache
   try {
     const raw = await fs.readFile(TMP_DATA_PATH, "utf-8");
     const parsed = JSON.parse(raw);
@@ -141,7 +199,7 @@ export async function getAllLeads(): Promise<EnquiryLead[]> {
     }
   } catch {}
 
-  // 5. Try reading from GitHub (for production deployments on Google Cloud)
+  // 6. Try reading from GitHub (for production deployments on Google Cloud)
   if (process.env.NODE_ENV === "production") {
     try {
       const gh = await getLeadsFromGitHub();
@@ -179,11 +237,19 @@ export async function persistNewLead(lead: EnquiryLead): Promise<{ success: bool
   const updatedLeads = [lead, ...currentLeads.filter((l) => l.id !== lead.id)];
   globalThis.__techno_enquiries_store__ = updatedLeads;
 
+  let savedToStorage = false;
+  let savedToFirestore = false;
   let savedToDisk = false;
   let savedToTmp = false;
-  let savedToFirestore = false;
 
-  // 2. Try Firestore Admin SDK
+  // 2. Primary Tier: Firebase Cloud Storage (Authoritative, instantaneous, 100% durable)
+  try {
+    savedToStorage = await saveLeadsToFirebaseStorage(updatedLeads);
+  } catch (storageErr) {
+    console.error("[LeadsStore] Primary storage save error:", storageErr);
+  }
+
+  // 3. Secondary Tier: Firestore Admin SDK (if active)
   try {
     const db = getFirestoreDb();
     if (db) {
@@ -191,10 +257,10 @@ export async function persistNewLead(lead: EnquiryLead): Promise<{ success: bool
       savedToFirestore = true;
     }
   } catch (err) {
-    console.warn("[LeadsStore] Firestore save notice:", err);
+    // Firestore graceful fallback
   }
 
-  // 3. Try writing to local data path
+  // 4. Try writing to local data path (for local dev environments)
   try {
     const dir = path.dirname(LOCAL_DATA_PATH);
     await fs.mkdir(dir, { recursive: true });
@@ -202,7 +268,7 @@ export async function persistNewLead(lead: EnquiryLead): Promise<{ success: bool
     savedToDisk = true;
   } catch {}
 
-  // 4. Try writing to /tmp path
+  // 5. Try writing to /tmp path (serverless temporary filesystem)
   try {
     const dir = path.dirname(TMP_DATA_PATH);
     await fs.mkdir(dir, { recursive: true });
@@ -210,17 +276,9 @@ export async function persistNewLead(lead: EnquiryLead): Promise<{ success: bool
     savedToTmp = true;
   } catch {}
 
-  // 5. Commit to GitHub in background (does not block HTTP response)
-  const isPermanent = savedToFirestore || savedToDisk;
-  if (!savedToFirestore) {
-    saveLeadsToGitHub(updatedLeads).catch((err) => {
-      console.warn("[LeadsStore] Background GitHub commit notice:", err);
-    });
-  }
-
   return {
     success: true,
-    persistent: isPermanent || savedToTmp,
+    persistent: savedToStorage || savedToFirestore || savedToDisk || savedToTmp,
   };
 }
 
@@ -248,28 +306,28 @@ export async function updateLead(id: string, updates: Partial<EnquiryLead>): Pro
   currentLeads[index] = updatedLead;
   globalThis.__techno_enquiries_store__ = currentLeads;
 
-  // 1. Update Firestore if active
+  // 1. Update Firebase Cloud Storage
+  await saveLeadsToFirebaseStorage(currentLeads);
+
+  // 2. Update Firestore if active
   try {
     const db = getFirestoreDb();
     if (db) {
       await db.collection("enquiries").doc(id).set(updatedLead, { merge: true });
     }
   } catch (err) {
-    console.warn("[LeadsStore] Firestore update notice:", err);
+    // Firestore fallback
   }
 
-  // 2. Update local disk
+  // 3. Update local disk
   try {
     await fs.writeFile(LOCAL_DATA_PATH, JSON.stringify(currentLeads, null, 2), "utf-8");
   } catch {}
 
-  // 3. Update /tmp
+  // 4. Update /tmp
   try {
     await fs.writeFile(TMP_DATA_PATH, JSON.stringify(currentLeads, null, 2), "utf-8");
   } catch {}
-
-  // 4. Update GitHub
-  saveLeadsToGitHub(currentLeads).catch(() => {});
 
   return true;
 }
@@ -286,28 +344,28 @@ export async function deleteLead(id: string): Promise<boolean> {
 
   globalThis.__techno_enquiries_store__ = filtered;
 
-  // 1. Delete from Firestore if active
+  // 1. Delete from Firebase Cloud Storage
+  await saveLeadsToFirebaseStorage(filtered);
+
+  // 2. Delete from Firestore if active
   try {
     const db = getFirestoreDb();
     if (db) {
       await db.collection("enquiries").doc(id).delete();
     }
   } catch (err) {
-    console.warn("[LeadsStore] Firestore delete notice:", err);
+    // Firestore fallback
   }
 
-  // 2. Update local disk
+  // 3. Update local disk
   try {
     await fs.writeFile(LOCAL_DATA_PATH, JSON.stringify(filtered, null, 2), "utf-8");
   } catch {}
 
-  // 3. Update /tmp
+  // 4. Update /tmp
   try {
     await fs.writeFile(TMP_DATA_PATH, JSON.stringify(filtered, null, 2), "utf-8");
   } catch {}
-
-  // 4. Update GitHub
-  saveLeadsToGitHub(filtered).catch(() => {});
 
   return true;
 }

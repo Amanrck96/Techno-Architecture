@@ -28,7 +28,9 @@ export default function BrandLogo({
   align = "left",
 }: BrandLogoProps) {
   const isDark = theme === "dark";
-  const logoSrc = isDark ? "/techno-logo-white.png" : "/techno-brand-logo.png";
+  const logoSrc = isDark
+    ? "https://firebasestorage.googleapis.com/v0/b/technoarchitecture-7d718.firebasestorage.app/o/brand%2Ftechno-logo-white.png?alt=media&token=techno-logo-white.png"
+    : "https://firebasestorage.googleapis.com/v0/b/technoarchitecture-7d718.firebasestorage.app/o/brand%2Ftechno-brand-logo.png?alt=media&token=techno-brand-logo.png";
   const textColor = isDark ? "#ffffff" : "#171717";
   const alignClass = align === "center" ? "items-center" : "items-start";
   const imgAlignClass = align === "center" ? "object-center" : "object-left";

@@ -56,7 +56,7 @@ export default function LandingGallery() {
         <video
           ref={videoRef}
           src={process.env.NEXT_PUBLIC_HERO_VIDEO_URL || "https://firebasestorage.googleapis.com/v0/b/technoarchitecture-7d718.firebasestorage.app/o/media%2Fvideos%2Fbrindavan.mp4?alt=media&token=7fa378f0-ee17-4056-addf-a7c94fe86b93"}
-          poster="/projects/aikya/elevation-east.jpg"
+          poster="https://firebasestorage.googleapis.com/v0/b/technoarchitecture-7d718.firebasestorage.app/o/projects%2Faikya%2Felevation-east.jpg?alt=media&token=elevation-east.jpg"
           autoPlay
           loop
           muted={isMuted}
