@@ -47,7 +47,7 @@ export const initialBlogPosts: BlogPost[] = [
     },
     publishedAt: "2024-08-14",
     readingTime: "7 min read",
-    heroImage: "https://firebasestorage.googleapis.com/v0/b/technoarchitecture-7d718.firebasestorage.app/o/projects%2Faikya%2Felevation-evening.jpg?alt=media",
+    heroImage: "/projects/aikya/elevation-evening.jpg",
     featured: true,
     content: {
       introduction: "Concrete in contemporary South Asian architecture is frequently misunderstood as a purely brutalist gesture. Yet, when modulated with regional awareness, board-formed concrete functions as an extraordinary climatic regulator, gathering cool night air and releasing it slowly across sweltering daylight hours.",
