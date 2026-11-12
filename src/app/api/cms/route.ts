@@ -7,6 +7,7 @@ import {
   readStore,
   writeStore,
   writeRecord,
+  deleteRecord,
   getDefaultData,
   saveToGitHub,
   saveToUpstashKV,
@@ -277,8 +278,39 @@ export async function POST(request: Request) {
       });
     }
 
+    // Explicit Record Deletion (projects/<id>, team/<id>, services/<id>, etc.)
+    if (body.action === "delete" || body.delete) {
+      const entity = String(body.entity || "");
+      const recordId = String(body.recordId || body.id || "");
+      const slug = String(body.slug || "");
+      if (!entity || !recordId) {
+        return NextResponse.json(
+          { error: "Missing entity or recordId for delete action." },
+          { status: 400 }
+        );
+      }
+      const deleteResult = await deleteRecord(entity, recordId, slug, storageOptions);
+      revalidatePublicPages();
+      return NextResponse.json({
+        success: true,
+        action: "delete",
+        entity,
+        recordId,
+        slug,
+        deletedId: deleteResult.deletedId,
+        durationMs: deleteResult.durationMs,
+        message: `Permanently deleted record "${recordId}" from ${entity}.`,
+      });
+    }
+
     // Granular Single-Record Update (projects/<id>, team/<id>, services/<id>, etc.)
-    if (body.entity && (body.record || body.data)) {
+    // Note: MUST NOT match when body.data is an array (which represents whole-entity lists)
+    const isSingleRecordUpdate = Boolean(
+      body.record ||
+      (body.recordId && body.data && !Array.isArray(body.data))
+    );
+
+    if (body.entity && isSingleRecordUpdate) {
       const entity = String(body.entity);
       const recordData = body.record || body.data;
       const recordId = String(body.recordId || recordData?.id || recordData?.slug || "");
@@ -341,11 +373,43 @@ export async function POST(request: Request) {
           }
         : current.siteSettings;
 
+      // Merge deletedIds from all sources
+      const allDeleted = new Set<string>(current.deletedIds || []);
+      if (Array.isArray(body.deletedIds)) {
+        body.deletedIds.forEach((id: string) => {
+          if (id && typeof id === "string") allDeleted.add(id.trim());
+        });
+      }
+      if (Array.isArray(body.allData.deletedIds)) {
+        body.allData.deletedIds.forEach((id: string) => {
+          if (id && typeof id === "string") allDeleted.add(id.trim());
+        });
+      }
+      const mergedDeletedIds = Array.from(allDeleted);
+
+      const filterDeleted = (arr: any) =>
+        Array.isArray(arr)
+          ? arr.filter(
+              (item: any) =>
+                item &&
+                !mergedDeletedIds.includes(String(item.id)) &&
+                (!item.slug || !mergedDeletedIds.includes(String(item.slug)))
+            )
+          : arr;
+
       const updated = {
         ...current,
         ...body.allData,
+        projects: filterDeleted(body.allData.projects || current.projects),
+        services: filterDeleted(body.allData.services || current.services),
+        team: filterDeleted(body.allData.team || current.team),
+        blog: filterDeleted(body.allData.blog || current.blog),
+        faq: filterDeleted(body.allData.faq || current.faq),
+        gallery: filterDeleted(body.allData.gallery || current.gallery),
+        recognitions: filterDeleted(body.allData.recognitions || current.recognitions),
+        testimonials: filterDeleted(body.allData.testimonials || current.testimonials),
         siteSettings: mergedSiteSettings,
-        deletedIds: current.deletedIds,
+        deletedIds: mergedDeletedIds,
         updatedAt: new Date().toISOString(),
       };
       delete (updated as any).isDefault;
@@ -363,6 +427,15 @@ export async function POST(request: Request) {
     }
 
     if (body.entity && body.data !== undefined) {
+      // Merge any incoming deletedIds
+      if (Array.isArray(body.deletedIds) && body.deletedIds.length > 0) {
+        const mergedDeleted = new Set<string>(current.deletedIds || []);
+        body.deletedIds.forEach((id: string) => {
+          if (id && typeof id === "string") mergedDeleted.add(id.trim());
+        });
+        current.deletedIds = Array.from(mergedDeleted);
+      }
+
       if (body.entity === "siteSettings") {
         current.siteSettings = {
           ...current.siteSettings,
@@ -373,7 +446,16 @@ export async function POST(request: Request) {
           },
         };
       } else {
-        current[body.entity] = body.data;
+        const activeDeletedIds = new Set<string>(current.deletedIds || []);
+        const sanitizedData = Array.isArray(body.data)
+          ? body.data.filter(
+              (item: any) =>
+                item &&
+                !activeDeletedIds.has(String(item.id)) &&
+                (!item.slug || !activeDeletedIds.has(String(item.slug)))
+            )
+          : body.data;
+        current[body.entity] = sanitizedData;
       }
       current.updatedAt = new Date().toISOString();
       delete (current as any).isDefault;
@@ -395,5 +477,50 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error("POST /api/cms error:", error);
     return NextResponse.json({ error: "Internal server error saving CMS data." }, { status: 500 });
+  }
+}
+
+// DELETE: Admin endpoint to explicitly purge an entity record
+export async function DELETE(request: Request) {
+  try {
+    const cookieStore = cookies();
+    const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME);
+    const authHeader = request.headers.get("authorization") || request.headers.get("x-admin-token");
+    const tokenFromHeader = authHeader?.replace(/^Bearer\s+/i, "");
+
+    const { valid } = verifyAnyAdminToken([
+      tokenFromHeader,
+      request.headers.get("x-admin-token"),
+      sessionCookie?.value,
+    ]);
+
+    if (!valid) {
+      return NextResponse.json({ error: "Unauthorized: Invalid or expired admin session." }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const entity = searchParams.get("entity") || "";
+    const recordId = searchParams.get("id") || searchParams.get("recordId") || "";
+    const slug = searchParams.get("slug") || "";
+
+    if (!entity || !recordId) {
+      return NextResponse.json({ error: "Missing entity or recordId parameter." }, { status: 400 });
+    }
+
+    const deleteResult = await deleteRecord(entity, recordId, slug);
+    revalidatePublicPages();
+    return NextResponse.json({
+      success: true,
+      action: "delete",
+      entity,
+      recordId,
+      slug,
+      deletedId: deleteResult.deletedId,
+      durationMs: deleteResult.durationMs,
+      message: `Permanently deleted record "${recordId}" from ${entity}.`,
+    });
+  } catch (error: any) {
+    console.error("DELETE /api/cms error:", error);
+    return NextResponse.json({ error: "Internal server error deleting record." }, { status: 500 });
   }
 }

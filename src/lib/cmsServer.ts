@@ -443,6 +443,105 @@ export async function writeRecord(
   };
 }
 
+export interface StorageOptions {
+  githubToken?: string;
+  githubRepo?: string;
+  upstashUrl?: string;
+  upstashToken?: string;
+  forceGitHubCommit?: boolean;
+  deletedIds?: string[];
+}
+
+/**
+ * Granular & Master Record Purge:
+ * 1. Purges granular split storage file (cms/[entity]/[id].json) from Firebase Cloud Storage.
+ * 2. Purges granular record document from Firestore collection (cms_[entity]/[id]).
+ * 3. Permanently appends ID and slug to master deletedIds.
+ * 4. Removes record from master dataset and persists updated master store across all storage tiers.
+ */
+export async function deleteRecord(
+  entity: string,
+  recordId: string,
+  slug?: string,
+  options?: StorageOptions
+): Promise<{ success: boolean; error?: string; durationMs: number; deletedId: string }> {
+  const t0 = Date.now();
+  const cleanEntity = String(entity).replace(/[^a-zA-Z0-9-_]/g, "");
+  const cleanId = String(recordId).replace(/[^a-zA-Z0-9-_]/g, "");
+  const cleanSlug = slug ? String(slug).replace(/[^a-zA-Z0-9-_]/g, "") : "";
+  const targetPath = `cms/${cleanEntity}/${cleanId}.json`;
+
+  const primaryBucket =
+    process.env.FIREBASE_STORAGE_BUCKET ||
+    process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ||
+    FIREBASE_STORAGE_BUCKET;
+
+  const candidateBuckets = Array.from(
+    new Set([
+      primaryBucket,
+      primaryBucket.replace(".firebasestorage.app", ".appspot.com"),
+      primaryBucket.replace(".appspot.com", ".firebasestorage.app"),
+    ])
+  ).filter(Boolean);
+
+  // 1. Delete granular file from Firebase Storage bucket
+  for (const bucketName of candidateBuckets) {
+    try {
+      const bucket = getFirebaseStorageBucket(bucketName);
+      if (bucket) {
+        await bucket.file(targetPath).delete({ ignoreNotFound: true });
+        break;
+      }
+    } catch (_) {}
+
+    try {
+      const deleteUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(targetPath)}`;
+      await fetch(deleteUrl, { method: "DELETE" }).catch(() => {});
+    } catch (_) {}
+  }
+
+  // 2. Delete granular document from Firestore
+  try {
+    const db = getFirestoreDb();
+    if (db) {
+      await db.collection(`cms_${cleanEntity}`).doc(cleanId).delete().catch(() => {});
+    }
+  } catch (_) {}
+
+  // 3. Update authoritative master store (cms/cms-content.json)
+  try {
+    const store = await readStore();
+    const idsToRemove = new Set<string>();
+    if (cleanId) idsToRemove.add(cleanId);
+    if (cleanSlug) idsToRemove.add(cleanSlug);
+
+    const mergedDeleted = new Set<string>(store.deletedIds || []);
+    idsToRemove.forEach((id) => mergedDeleted.add(id));
+    store.deletedIds = Array.from(mergedDeleted);
+
+    if (Array.isArray(store[cleanEntity])) {
+      store[cleanEntity] = store[cleanEntity].filter(
+        (item: any) => item && !idsToRemove.has(String(item.id)) && !idsToRemove.has(String(item.slug))
+      );
+    }
+    store.updatedAt = new Date().toISOString();
+    delete (store as any).isDefault;
+    delete (store as any)._storageInfo;
+
+    await writeStore(store, options);
+    globalThis.__techno_cms_store__ = JSON.parse(JSON.stringify(store));
+    globalThis.__techno_cms_cached_at__ = Date.now();
+  } catch (err: any) {
+    console.warn(`[CMS Server] Master store delete sync notice for ${cleanEntity}/${cleanId}:`, err?.message);
+  }
+
+  return {
+    success: true,
+    deletedId: cleanId,
+    durationMs: Date.now() - t0,
+  };
+}
+
 export async function getFromUpstashKV(explicitUrl?: string, explicitToken?: string): Promise<any | null> {
   const url = explicitUrl || process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
   const token = explicitToken || process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
@@ -831,14 +930,7 @@ let hasLoggedEROFSWarning = false;
 
 export async function writeStore(
   data: any,
-  options?: {
-    githubToken?: string;
-    githubRepo?: string;
-    upstashUrl?: string;
-    upstashToken?: string;
-    forceGitHubCommit?: boolean;
-    deletedIds?: string[];
-  }
+  options?: StorageOptions
 ): Promise<WriteStoreResult> {
   // Merge and persist deletedIds
   const existingDeleted = new Set<string>(Array.isArray(data.deletedIds) ? data.deletedIds : []);

@@ -246,6 +246,7 @@ export default function AdminCMSPage() {
     saveSiteSettings,
     saveTestimonials,
     saveSingleRecord,
+    deleteEntity,
     recordStatus,
     saveAllToCloud,
     resetAllToDefaults,
@@ -2112,7 +2113,7 @@ export default function AdminCMSPage() {
                       <button
                         onClick={() => {
                           if (confirm(`Delete project "${p.title}" permanently?`)) {
-                            saveProjects(projects.filter((x) => x.id !== p.id));
+                            deleteEntity("projects", p.id, p.slug);
                             showToast(`Project "${p.title}" deleted.`);
                           }
                         }}
@@ -3286,7 +3287,7 @@ export default function AdminCMSPage() {
                     <button
                       onClick={() => {
                         if (confirm(`Delete service "${s.title}"?`)) {
-                          saveServices(services.filter((x) => x.id !== s.id));
+                          deleteEntity("services", s.id, s.slug);
                           showToast(`Service "${s.title}" deleted.`);
                         }
                       }}
@@ -3739,7 +3740,7 @@ export default function AdminCMSPage() {
                     type="button"
                     onClick={() => {
                       if (confirm(`Remove ${m.name} from studio team?`)) {
-                        saveTeam(team.filter((x) => x.id !== m.id));
+                        deleteEntity("team", m.id);
                         showToast(`Removed ${m.name}.`);
                       }
                     }}
@@ -4175,7 +4176,7 @@ export default function AdminCMSPage() {
                     <button
                       onClick={() => {
                         if (confirm(`Delete monograph "${b.title}"?`)) {
-                          saveBlog(blog.filter((x) => x.id !== b.id));
+                          deleteEntity("blog", b.id, b.slug);
                           showToast(`Deleted "${b.title}".`);
                         }
                       }}
@@ -4609,8 +4610,10 @@ export default function AdminCMSPage() {
                     </button>
                     <button
                       onClick={() => {
-                        saveFaq(faq.filter((f) => f.id !== item.id));
-                        showToast("FAQ removed.");
+                        if (confirm("Delete this FAQ item?")) {
+                          deleteEntity("faq", item.id);
+                          showToast("FAQ removed.");
+                        }
                       }}
                       className="text-neutral-400 hover:text-red-500 p-1"
                     >
@@ -4681,8 +4684,10 @@ export default function AdminCMSPage() {
                   />
                   <button
                     onClick={() => {
-                      saveGallery(gallery.filter((x) => x.id !== g.id));
-                      showToast("Gallery asset deleted.");
+                      if (confirm("Delete this gallery photo?")) {
+                        deleteEntity("gallery", g.id);
+                        showToast("Gallery asset deleted.");
+                      }
                     }}
                     className="absolute top-2 right-2 p-1.5 bg-black/70 hover:bg-red-600 text-white rounded transition-colors"
                     title="Delete image"
@@ -4903,8 +4908,10 @@ export default function AdminCMSPage() {
                     </button>
                     <button
                       onClick={() => {
-                        saveRecognitions(recognitions.filter((x) => x.id !== r.id));
-                        showToast("Recognition deleted.");
+                        if (confirm(`Delete recognition "${r.title}"?`)) {
+                          deleteEntity("recognitions", r.id);
+                          showToast("Recognition deleted.");
+                        }
                       }}
                       className="text-neutral-400 hover:text-red-500 p-1"
                     >
@@ -5142,8 +5149,10 @@ export default function AdminCMSPage() {
                     </button>
                     <button
                       onClick={() => {
-                        saveTestimonials(testimonials.filter((x) => x.id !== t.id));
-                        showToast("Testimonial removed.");
+                        if (confirm(`Remove testimonial from ${t.clientName}?`)) {
+                          deleteEntity("testimonials", t.id);
+                          showToast("Testimonial removed.");
+                        }
                       }}
                       className="text-neutral-400 hover:text-red-500 p-1"
                     >

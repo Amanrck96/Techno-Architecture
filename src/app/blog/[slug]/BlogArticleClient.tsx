@@ -26,17 +26,36 @@ export default function BlogArticleClient({
   const slug = decodeURIComponent(Array.isArray(rawSlug) ? rawSlug[0] : (rawSlug || "")).trim();
   const targetNorm = normalizeSlug(slug);
 
-  const { blog } = useCMSStore();
+  const { blog, deletedIds } = useCMSStore();
+
+  const isSlugDeleted = Boolean(
+    slug &&
+    Array.isArray(deletedIds) &&
+    deletedIds.some((d) => normalizeSlug(d) === targetNorm || d === slug)
+  );
+
+  if (isSlugDeleted) {
+    return notFound();
+  }
+
+  const activeDeletedIds = new Set<string>(deletedIds || []);
+  const filteredStaticBlog = ((staticCmsContent as any)?.blog && Array.isArray((staticCmsContent as any).blog))
+    ? (staticCmsContent as any).blog.filter((b: BlogPost) => !activeDeletedIds.has(b.id) && !activeDeletedIds.has(b.slug))
+    : [];
+  const filteredInitialBlog = Array.isArray(initialBlogPosts)
+    ? initialBlogPosts.filter((b: BlogPost) => !activeDeletedIds.has(b.id) && !activeDeletedIds.has(b.slug))
+    : [];
 
   const sourceBlog: BlogPost[] =
     Array.isArray(blog) && blog.length > 0
       ? blog
-      : (staticCmsContent as any)?.blog && Array.isArray((staticCmsContent as any).blog)
-      ? (staticCmsContent as any).blog
-      : initialBlogPosts;
+      : filteredStaticBlog.length > 0
+      ? filteredStaticBlog
+      : filteredInitialBlog;
 
   const matchesPost = (p: BlogPost) => {
     if (!p || !targetNorm) return false;
+    if (activeDeletedIds.has(p.id) || activeDeletedIds.has(p.slug)) return false;
     if (normalizeSlug(p.slug) === targetNorm) return true;
     if (normalizeSlug(p.id) === targetNorm) return true;
     if (normalizeSlug(p.title) === targetNorm) return true;
@@ -45,8 +64,8 @@ export default function BlogArticleClient({
 
   let post = sourceBlog.find(matchesPost);
 
-  if (!post && initialBlogPosts && initialBlogPosts.length > 0) {
-    post = initialBlogPosts.find(matchesPost);
+  if (!post && filteredInitialBlog.length > 0) {
+    post = filteredInitialBlog.find(matchesPost);
   }
 
   if (!post) {

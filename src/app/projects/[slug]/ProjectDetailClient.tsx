@@ -75,20 +75,38 @@ export default function ProjectDetailClient({
   const routeParams = useParams();
   const rawSlug = (params?.slug || routeParams?.slug) as string | string[] | undefined;
   const slug = decodeURIComponent(Array.isArray(rawSlug) ? rawSlug[0] : (rawSlug || "")).trim();
-  const { projects, testimonials } = useCMSStore();
+  const { projects, testimonials, deletedIds } = useCMSStore();
 
-  const primaryList = Array.isArray(projects) && projects.length > 0 ? projects : defaultProjects;
+  const isSlugDeleted = Boolean(
+    slug &&
+    Array.isArray(deletedIds) &&
+    deletedIds.some((d) => normalizeSlug(d) === normalizeSlug(slug) || d === slug)
+  );
+
+  if (isSlugDeleted) {
+    return notFound();
+  }
+
+  const activeDeletedIds = new Set<string>(deletedIds || []);
+  const filteredDefaultProjects = Array.isArray(defaultProjects)
+    ? defaultProjects.filter((p) => !activeDeletedIds.has(p.id) && !activeDeletedIds.has(p.slug))
+    : [];
+  const filteredInitialProjects = Array.isArray(initialProjects)
+    ? initialProjects.filter((p) => !activeDeletedIds.has(p.id) && !activeDeletedIds.has(p.slug))
+    : [];
+
+  const primaryList = Array.isArray(projects) && projects.length > 0 ? projects : filteredDefaultProjects;
   let currentIndex = primaryList.findIndex((p) => matchesProjectSlug(p, slug));
   let sourceList = primaryList;
 
-  if (currentIndex === -1 && Array.isArray(defaultProjects) && defaultProjects.length > 0) {
-    currentIndex = defaultProjects.findIndex((p) => matchesProjectSlug(p, slug));
-    if (currentIndex !== -1) sourceList = defaultProjects;
+  if (currentIndex === -1 && filteredDefaultProjects.length > 0) {
+    currentIndex = filteredDefaultProjects.findIndex((p) => matchesProjectSlug(p, slug));
+    if (currentIndex !== -1) sourceList = filteredDefaultProjects;
   }
 
-  if (currentIndex === -1 && Array.isArray(initialProjects) && initialProjects.length > 0) {
-    currentIndex = initialProjects.findIndex((p) => matchesProjectSlug(p, slug));
-    if (currentIndex !== -1) sourceList = initialProjects;
+  if (currentIndex === -1 && filteredInitialProjects.length > 0) {
+    currentIndex = filteredInitialProjects.findIndex((p) => matchesProjectSlug(p, slug));
+    if (currentIndex !== -1) sourceList = filteredInitialProjects;
   }
 
   if (currentIndex === -1) {

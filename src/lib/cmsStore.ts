@@ -308,6 +308,8 @@ export function getLocalDataset(): any {
 // Helper to push updates to server with dual cookie + Authorization header authentication
 export async function syncToServer(payload: {
   entity?: string;
+  recordId?: string;
+  slug?: string;
   data?: any;
   allData?: any;
   deletedIds?: string[];
@@ -1728,6 +1730,15 @@ export function CMSProvider({
         const updated = testimonials.filter((t) => t.id !== id);
         saveTestimonials(updated, id);
       }
+
+      // Explicitly purge from cloud storage and database via server delete action
+      syncToServer({
+        action: "delete",
+        entity,
+        recordId: id,
+        slug,
+        deletedIds: nextDeleted,
+      });
     },
     [
       deletedIds,
