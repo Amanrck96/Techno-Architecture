@@ -18,3 +18,4 @@ code = code.replace(regex, (match, filename) => {
 
 fs.writeFileSync(teamPath, code, 'utf8');
 console.log(`✅ Converted ${count} team images in team.ts to local paths.`);
+

@@ -1,7 +1,7 @@
 import React from "react";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const dynamic = "force-static";
+export const revalidate = false;
 
 export default function AdminLayout({
   children,
@@ -10,4 +10,3 @@ export default function AdminLayout({
 }) {
   return <>{children}</>;
 }
-
