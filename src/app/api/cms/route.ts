@@ -330,9 +330,21 @@ export async function POST(request: Request) {
     }
 
     if (body.allData) {
+      const mergedSiteSettings = body.allData.siteSettings
+        ? {
+            ...current.siteSettings,
+            ...body.allData.siteSettings,
+            contact: {
+              ...(current.siteSettings?.contact || {}),
+              ...(body.allData.siteSettings.contact || {}),
+            },
+          }
+        : current.siteSettings;
+
       const updated = {
         ...current,
         ...body.allData,
+        siteSettings: mergedSiteSettings,
         deletedIds: current.deletedIds,
         updatedAt: new Date().toISOString(),
       };
@@ -351,7 +363,18 @@ export async function POST(request: Request) {
     }
 
     if (body.entity && body.data !== undefined) {
-      current[body.entity] = body.data;
+      if (body.entity === "siteSettings") {
+        current.siteSettings = {
+          ...current.siteSettings,
+          ...body.data,
+          contact: {
+            ...(current.siteSettings?.contact || {}),
+            ...(body.data?.contact || {}),
+          },
+        };
+      } else {
+        current[body.entity] = body.data;
+      }
       current.updatedAt = new Date().toISOString();
       delete (current as any).isDefault;
       delete (current as any)._storageInfo;

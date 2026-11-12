@@ -156,6 +156,73 @@ const STANDARD_TEAM_DISCIPLINES = [
   "Urban Design",
 ] as const;
 
+function sanitizeAdminImageUrl(rawUrl?: string | null): string {
+  if (!rawUrl) return "";
+  let url = rawUrl.trim();
+  // Strip non-UUID pseudo tokens from firebase storage URLs
+  if (url.includes("firebasestorage.googleapis.com")) {
+    url = url.replace(/([?&])token=[^&"'\s]+/g, "");
+    url = url.replace(/\?&/, "?").replace(/[?&]$/, "");
+    if (!url.includes("alt=media")) {
+      url += (url.includes("?") ? "&" : "?") + "alt=media";
+    }
+  }
+  return url;
+}
+
+function AdminImage({
+  src,
+  alt,
+  className = "object-cover",
+  fallbackText = "No Photo",
+}: {
+  src?: string | null;
+  alt: string;
+  className?: string;
+  fallbackText?: string;
+}) {
+  const cleanSrc = sanitizeAdminImageUrl(src);
+  const [currentSrc, setCurrentSrc] = useState<string>(cleanSrc);
+  const [hasError, setHasError] = useState(false);
+  const [triedFallback, setTriedFallback] = useState(false);
+
+  useEffect(() => {
+    const s = sanitizeAdminImageUrl(src);
+    setCurrentSrc(s);
+    setHasError(false);
+    setTriedFallback(false);
+  }, [src]);
+
+  if (!currentSrc || hasError) {
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-100 text-neutral-400 p-1 text-center select-none">
+        <Camera size={14} className="text-neutral-400 mb-0.5" />
+        <span className="text-[7.5px] uppercase tracking-wider font-mono text-neutral-400 line-clamp-1">
+          {fallbackText}
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={currentSrc}
+      alt={alt}
+      loading="lazy"
+      className={cn("w-full h-full object-cover select-none", className)}
+      onError={() => {
+        if (!triedFallback && currentSrc.includes("token=")) {
+          setTriedFallback(true);
+          setCurrentSrc(currentSrc.replace(/([?&])token=[^&]+/g, "").replace(/\?&/, "?").replace(/[?&]$/, ""));
+        } else {
+          setHasError(true);
+        }
+      }}
+    />
+  );
+}
+
 export default function AdminCMSPage() {
   const {
     projects,
@@ -472,6 +539,7 @@ export default function AdminCMSPage() {
         setIsAuthenticated(true);
         setCurrentAdminUser("admin");
         setServerConnectionWarning("The server is temporarily restarting or redeploying. Loaded local cached studio data.");
+        fetchLeads();
       } else {
         setIsAuthenticated(false);
       }
@@ -484,12 +552,13 @@ export default function AdminCMSPage() {
     checkAuthSession();
   }, [checkAuthSession]);
 
-  // Fetch leads from Firestore whenever the leads tab is activated
-  const fetchLeads = async () => {
+  // Fetch leads from storage whenever the leads tab is activated
+  const fetchLeads = async (retry?: number | React.MouseEvent) => {
+    const retryCount = typeof retry === "number" ? retry : 0;
     setLeadsLoading(true);
     setLeadsError(null);
     try {
-      const token =
+      let token =
         typeof window !== "undefined"
           ? localStorage.getItem("techno_admin_token") ||
             sessionStorage.getItem("techno_admin_token")
@@ -499,7 +568,31 @@ export default function AdminCMSPage() {
         headers["Authorization"] = `Bearer ${token}`;
         headers["x-admin-token"] = token;
       }
-      const res = await fetch("/api/admin/leads", { headers, credentials: "include", cache: "no-store" });
+      let res = await fetch("/api/admin/leads", { headers, credentials: "include", cache: "no-store" });
+      
+      // Auto-heal 401 by re-verifying session cookie or re-auth
+      if (res.status === 401 && retryCount < 2) {
+        try {
+          const verifyHeaders: Record<string, string> = {};
+          if (token) {
+            verifyHeaders["Authorization"] = `Bearer ${token}`;
+            verifyHeaders["x-admin-token"] = token;
+          }
+          const verifyRes = await fetch("/api/admin/verify", { headers: verifyHeaders, credentials: "include" });
+          if (verifyRes.ok) {
+            const vData = await verifyRes.json();
+            if (vData?.token) {
+              token = vData.token;
+              try {
+                localStorage.setItem("techno_admin_token", vData.token);
+                sessionStorage.setItem("techno_admin_token", vData.token);
+              } catch (_) {}
+              return fetchLeads(retryCount + 1);
+            }
+          }
+        } catch (_) {}
+      }
+
       let data: any = null;
       try {
         const text = await res.text();
@@ -1895,12 +1988,10 @@ export default function AdminCMSPage() {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-100 pb-3">
                     <div className="flex items-center gap-3">
                       <div className="relative w-12 h-10 bg-neutral-100 rounded overflow-hidden flex-shrink-0">
-                        <Image
-                          src={p.mainImage || "/projects/aikya/elevation-east.jpg"}
+                        <AdminImage
+                          src={p.mainImage}
                           alt={p.title}
-                          fill
-                          unoptimized
-                          className="object-cover"
+                          fallbackText="Cover"
                         />
                       </div>
                       <div>
@@ -2158,6 +2249,16 @@ export default function AdminCMSPage() {
                         />
                       </label>
                     </div>
+                    {/* Visual Live Cover Image Preview */}
+                    {p.mainImage && (
+                      <div className="relative aspect-[16/9] sm:aspect-[21/9] max-h-56 w-full bg-neutral-900 rounded overflow-hidden border border-neutral-300 mt-2 shadow-xs">
+                        <AdminImage
+                          src={p.mainImage}
+                          alt={`${p.title} Cover Preview`}
+                          fallbackText="Cover Preview"
+                        />
+                      </div>
+                    )}
                   </div>
 
                   <div>
@@ -2795,12 +2896,10 @@ export default function AdminCMSPage() {
                               className="p-3 bg-white border border-neutral-200 rounded flex gap-3 items-start"
                             >
                               <div className="relative w-16 h-14 bg-neutral-100 rounded overflow-hidden flex-shrink-0 group">
-                                <Image
+                                <AdminImage
                                   src={img.url}
                                   alt={img.caption || "Gallery photo"}
-                                  fill
-                                  unoptimized
-                                  className="object-cover"
+                                  fallbackText="Photo"
                                 />
                                 <label className="absolute inset-0 bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
                                   <Upload size={14} />
@@ -3247,6 +3346,16 @@ export default function AdminCMSPage() {
                         />
                       </label>
                     </div>
+                    {/* Visual Live Service Image Preview */}
+                    {s.image && (
+                      <div className="relative aspect-[16/9] sm:aspect-[21/9] max-h-56 w-full bg-neutral-900 rounded overflow-hidden border border-neutral-300 mt-2 shadow-xs">
+                        <AdminImage
+                          src={s.image}
+                          alt={`${s.title} Service Preview`}
+                          fallbackText="Service Preview"
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -3644,19 +3753,11 @@ export default function AdminCMSPage() {
 
                 <div className="flex items-center gap-3">
                   <div className="relative w-12 h-14 bg-neutral-100 rounded overflow-hidden flex-shrink-0 group">
-                    {m.image ? (
-                      <Image
-                        src={m.image}
-                        alt={m.name}
-                        fill
-                        unoptimized
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-neutral-400 font-mono text-[8px] uppercase">
-                        No Photo
-                      </div>
-                    )}
+                    <AdminImage
+                      src={m.image}
+                      alt={m.name}
+                      fallbackText="Portrait"
+                    />
                     {/* Hover Click-to-Upload overlay from laptop */}
                     <label
                       title="Click to upload photo from your laptop"
@@ -3898,6 +3999,23 @@ export default function AdminCMSPage() {
                       />
                     </label>
                   </div>
+                  {/* Practitioner Portrait Preview */}
+                  {m.image && (
+                    <div className="flex items-center gap-3 my-2 p-2 bg-neutral-100 rounded border border-neutral-200">
+                      <div className="relative w-14 h-16 bg-neutral-200 rounded overflow-hidden flex-shrink-0">
+                        <AdminImage
+                          src={m.image}
+                          alt={m.name}
+                          fallbackText="Photo"
+                        />
+                      </div>
+                      <div className="text-[10px] text-neutral-600 space-y-0.5 overflow-hidden">
+                        <span className="font-semibold block text-neutral-900 truncate">{m.name}</span>
+                        <span className="text-[9px] text-neutral-400 font-mono block truncate">{m.image}</span>
+                        <span className="text-[9px] text-emerald-600 font-medium block">✓ Practitioner Photo Active</span>
+                      </div>
+                    </div>
+                  )}
                   <div className="flex items-center justify-between mt-1 text-[9px] text-neutral-400">
                     <span>Saved to Studio Cloud Archive</span>
                     {m.image && (
@@ -4556,12 +4674,10 @@ export default function AdminCMSPage() {
             {gallery.map((g, idx) => (
               <div key={g.id} className="p-3 border border-neutral-200 bg-white space-y-2 rounded shadow-xs text-xs">
                 <div className="relative aspect-[16/10] w-full bg-neutral-100 rounded overflow-hidden">
-                  <Image
+                  <AdminImage
                     src={g.imageUrl}
                     alt={g.title}
-                    fill
-                    unoptimized
-                    className="object-cover"
+                    fallbackText="Gallery Asset"
                   />
                   <button
                     onClick={() => {
@@ -5312,13 +5428,13 @@ export default function AdminCMSPage() {
                 <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                   WhatsApp Direct Number
                 </label>
-                <input
+                <AdminDraftInput
                   type="text"
                   value={siteSettings.contact.whatsapp || ""}
-                  onChange={(e) => {
+                  onCommit={(val) => {
                     saveSiteSettings({
                       ...siteSettings,
-                      contact: { ...siteSettings.contact, whatsapp: e.target.value },
+                      contact: { ...siteSettings.contact, whatsapp: val },
                     });
                   }}
                   className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
@@ -5329,13 +5445,13 @@ export default function AdminCMSPage() {
                 <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                   Press Email
                 </label>
-                <input
+                <AdminDraftInput
                   type="email"
                   value={siteSettings.contact.pressEmail}
-                  onChange={(e) => {
+                  onCommit={(val) => {
                     saveSiteSettings({
                       ...siteSettings,
-                      contact: { ...siteSettings.contact, pressEmail: e.target.value },
+                      contact: { ...siteSettings.contact, pressEmail: val },
                     });
                   }}
                   className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
@@ -5346,13 +5462,13 @@ export default function AdminCMSPage() {
                 <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                   Careers & Portfolio Email
                 </label>
-                <input
+                <AdminDraftInput
                   type="email"
                   value={siteSettings.contact.careersEmail}
-                  onChange={(e) => {
+                  onCommit={(val) => {
                     saveSiteSettings({
                       ...siteSettings,
-                      contact: { ...siteSettings.contact, careersEmail: e.target.value },
+                      contact: { ...siteSettings.contact, careersEmail: val },
                     });
                   }}
                   className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
@@ -5376,12 +5492,12 @@ export default function AdminCMSPage() {
                   <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                     Studio Location Label
                   </label>
-                  <input
+                  <AdminDraftInput
                     type="text"
                     value={st.city}
-                    onChange={(e) => {
+                    onCommit={(val) => {
                       const updated = (siteSettings.studios || []).map((s, i) =>
-                        i === sIdx ? { ...s, city: e.target.value } : s
+                        i === sIdx ? { ...s, city: val } : s
                       );
                       saveSiteSettings({ ...siteSettings, studios: updated });
                     }}
@@ -5392,12 +5508,12 @@ export default function AdminCMSPage() {
                   <label className="text-[10px] uppercase font-mono text-neutral-500 block mb-1">
                     Street Address
                   </label>
-                  <input
+                  <AdminDraftInput
                     type="text"
                     value={st.address}
-                    onChange={(e) => {
+                    onCommit={(val) => {
                       const updated = (siteSettings.studios || []).map((s, i) =>
-                        i === sIdx ? { ...s, address: e.target.value } : s
+                        i === sIdx ? { ...s, address: val } : s
                       );
                       saveSiteSettings({ ...siteSettings, studios: updated });
                     }}
@@ -5417,12 +5533,12 @@ export default function AdminCMSPage() {
                     <label className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">
                       Platform
                     </label>
-                    <input
+                    <AdminDraftInput
                       type="text"
                       value={soc.platform}
-                      onChange={(e) => {
+                      onCommit={(val) => {
                         const updated = [...(siteSettings.socials || [])];
-                        updated[socIdx] = { ...updated[socIdx], platform: e.target.value };
+                        updated[socIdx] = { ...updated[socIdx], platform: val };
                         saveSiteSettings({ ...siteSettings, socials: updated });
                       }}
                       className="w-full p-2 border border-neutral-300 rounded bg-white"
@@ -5432,12 +5548,12 @@ export default function AdminCMSPage() {
                     <label className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">
                       Handle / Label
                     </label>
-                    <input
+                    <AdminDraftInput
                       type="text"
                       value={soc.handle}
-                      onChange={(e) => {
+                      onCommit={(val) => {
                         const updated = [...(siteSettings.socials || [])];
-                        updated[socIdx] = { ...updated[socIdx], handle: e.target.value };
+                        updated[socIdx] = { ...updated[socIdx], handle: val };
                         saveSiteSettings({ ...siteSettings, socials: updated });
                       }}
                       className="w-full p-2 border border-neutral-300 rounded bg-white"
@@ -5447,12 +5563,12 @@ export default function AdminCMSPage() {
                     <label className="text-[9px] uppercase font-mono text-neutral-400 block mb-0.5">
                       URL
                     </label>
-                    <input
+                    <AdminDraftInput
                       type="url"
                       value={soc.url}
-                      onChange={(e) => {
+                      onCommit={(val) => {
                         const updated = [...(siteSettings.socials || [])];
-                        updated[socIdx] = { ...updated[socIdx], url: e.target.value };
+                        updated[socIdx] = { ...updated[socIdx], url: val };
                         saveSiteSettings({ ...siteSettings, socials: updated });
                       }}
                       className="w-full p-2 border border-neutral-300 rounded bg-white"
@@ -6033,9 +6149,18 @@ export default function AdminCMSPage() {
 
           {/* Error state */}
           {leadsError && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2 text-xs text-red-700">
-              <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
-              <span>{leadsError}</span>
+            <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-center justify-between gap-2 text-xs text-red-700">
+              <div className="flex items-start gap-2">
+                <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
+                <span>{leadsError}</span>
+              </div>
+              <button
+                type="button"
+                onClick={fetchLeads}
+                className="px-3 py-1 bg-red-600 text-white rounded text-[11px] font-semibold hover:bg-red-700 shrink-0 cursor-pointer"
+              >
+                Retry
+              </button>
             </div>
           )}
 

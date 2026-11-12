@@ -25,12 +25,9 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
   if (isLandingPage) {
     // Pure landing experience matching Studio Bomb: Only gallery animation + logo
     return (
-      <>
-        <main id="main-content" className="w-full h-screen overflow-hidden">
-          {children}
-        </main>
-        <CookieConsent />
-      </>
+      <main id="main-content" className="w-full h-screen overflow-hidden">
+        {children}
+      </main>
     );
   }
 

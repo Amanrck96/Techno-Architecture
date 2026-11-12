@@ -1634,11 +1634,20 @@ export function CMSProvider({
 
   const saveSiteSettings = useCallback(
     (newSettings: SiteSettings) => {
-      setSiteSettings(newSettings);
-      persistToStorageAndBroadcast(STORAGE_KEYS.SETTINGS, "siteSettings", newSettings, deletedIds);
-      debouncedSyncToServer("siteSettings", newSettings);
+      // Deep merge contact so no contact field can ever be reset or lost
+      const mergedSettings: SiteSettings = {
+        ...siteSettings,
+        ...newSettings,
+        contact: {
+          ...siteSettings.contact,
+          ...(newSettings.contact || {}),
+        },
+      };
+      setSiteSettings(mergedSettings);
+      persistToStorageAndBroadcast(STORAGE_KEYS.SETTINGS, "siteSettings", mergedSettings, deletedIds);
+      debouncedSyncToServer("siteSettings", mergedSettings);
     },
-    [debouncedSyncToServer, deletedIds, persistToStorageAndBroadcast]
+    [siteSettings, debouncedSyncToServer, deletedIds, persistToStorageAndBroadcast]
   );
 
   const saveTestimonials = useCallback(

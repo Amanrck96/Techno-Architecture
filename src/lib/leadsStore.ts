@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { getFirestoreDb, getFirebaseStorageBucket } from "@/lib/firebaseAdmin";
+import seedEnquiries from "@/data/enquiries.json";
 
 export interface EnquiryLead {
   id: string;
@@ -120,6 +121,15 @@ async function saveLeadsToGitHub(_leads: EnquiryLead[]): Promise<boolean> {
 export async function getAllLeads(): Promise<EnquiryLead[]> {
   const leadMap = new Map<string, EnquiryLead>();
 
+  // 0. Seed enquiries from bundled static data (guarantees leads are always available)
+  if (Array.isArray(seedEnquiries)) {
+    for (const lead of (seedEnquiries as any[])) {
+      if (lead && lead.id) {
+        leadMap.set(lead.id, lead as EnquiryLead);
+      }
+    }
+  }
+
   // 1. Check in-memory store
   if (globalThis.__techno_enquiries_store__) {
     for (const lead of globalThis.__techno_enquiries_store__) {
@@ -141,63 +151,35 @@ export async function getAllLeads(): Promise<EnquiryLead[]> {
     console.warn("[LeadsStore] Storage read notice:", storageErr);
   }
 
-  // 3. Try Firestore Admin SDK (if active)
-  try {
-    const db = getFirestoreDb();
-    if (db) {
-      const snapshot = await db
-        .collection("enquiries")
-        .orderBy("createdAt", "desc")
-        .limit(200)
-        .get();
+  // 3. If leads are already retrieved from authoritative Firebase Storage or in-memory,
+  // return immediately to avoid blocking on slow/failing external calls.
+  if (leadMap.size === 0) {
+    // 4. Try reading from local data file (seed / local development)
+    try {
+      const raw = await fs.readFile(LOCAL_DATA_PATH, "utf-8");
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        parsed.forEach((lead: EnquiryLead) => {
+          if (lead && lead.id && !leadMap.has(lead.id)) {
+            leadMap.set(lead.id, lead);
+          }
+        });
+      }
+    } catch {}
 
-      snapshot.docs.forEach((doc) => {
-        const data = doc.data() as any;
-        const lead: EnquiryLead = {
-          id: doc.id,
-          fullName: data.fullName || "",
-          email: data.email || "",
-          phone: data.phone || "",
-          company: data.company || "",
-          service: data.service || "",
-          budget: data.budget || "",
-          message: data.message || "",
-          status: data.status || "new",
-          createdAt: data.createdAt || new Date().toISOString(),
-          notes: data.notes || undefined,
-        };
-        leadMap.set(lead.id, lead);
-      });
-    }
-  } catch (err) {
-    // Firestore graceful fallback
+    // 5. Try reading from serverless /tmp cache
+    try {
+      const raw = await fs.readFile(TMP_DATA_PATH, "utf-8");
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        parsed.forEach((lead: EnquiryLead) => {
+          if (lead && lead.id && !leadMap.has(lead.id)) {
+            leadMap.set(lead.id, lead);
+          }
+        });
+      }
+    } catch {}
   }
-
-  // 4. Try reading from local data file (seed / local development)
-  try {
-    const raw = await fs.readFile(LOCAL_DATA_PATH, "utf-8");
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) {
-      parsed.forEach((lead: EnquiryLead) => {
-        if (lead && lead.id && !leadMap.has(lead.id)) {
-          leadMap.set(lead.id, lead);
-        }
-      });
-    }
-  } catch {}
-
-  // 5. Try reading from serverless /tmp cache
-  try {
-    const raw = await fs.readFile(TMP_DATA_PATH, "utf-8");
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) {
-      parsed.forEach((lead: EnquiryLead) => {
-        if (lead && lead.id && !leadMap.has(lead.id)) {
-          leadMap.set(lead.id, lead);
-        }
-      });
-    }
-  } catch {}
 
   // 6. Try reading from GitHub (for production deployments on Google Cloud)
   if (process.env.NODE_ENV === "production") {

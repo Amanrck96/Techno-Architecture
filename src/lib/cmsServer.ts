@@ -381,6 +381,7 @@ export async function writeRecord(
   }
 
   // 3. Update in-memory store so server rendered views reflect edit immediately
+  let updatedMasterStore: any = null;
   if (globalThis.__techno_cms_store__) {
     const store = globalThis.__techno_cms_store__;
     if (Array.isArray(store[cleanEntity])) {
@@ -391,9 +392,46 @@ export async function writeRecord(
         store[cleanEntity].push(record);
       }
     } else if (cleanEntity === "siteSettings") {
-      store.siteSettings = record;
+      store.siteSettings = {
+        ...store.siteSettings,
+        ...record,
+        contact: {
+          ...(store.siteSettings?.contact || {}),
+          ...(record.contact || {}),
+        },
+      };
     }
     store.updatedAt = record.updatedAt || new Date().toISOString();
+    updatedMasterStore = store;
+  }
+
+  // 4. Update the authoritative master store (cms/cms-content.json) in Firebase Storage
+  // so cold starts, SSR, and other instances always see this granular update
+  try {
+    const masterData = updatedMasterStore || (await readStore());
+    if (Array.isArray(masterData[cleanEntity])) {
+      const idx = masterData[cleanEntity].findIndex((item: any) => item && (item.id === cleanId || item.slug === cleanId));
+      if (idx >= 0) {
+        masterData[cleanEntity][idx] = record;
+      } else {
+        masterData[cleanEntity].push(record);
+      }
+    } else if (cleanEntity === "siteSettings") {
+      masterData.siteSettings = {
+        ...masterData.siteSettings,
+        ...record,
+        contact: {
+          ...(masterData.siteSettings?.contact || {}),
+          ...(record.contact || {}),
+        },
+      };
+    }
+    masterData.updatedAt = record.updatedAt || new Date().toISOString();
+    await saveToFirebaseStorage(masterData);
+    globalThis.__techno_cms_store__ = masterData;
+    globalThis.__techno_cms_cached_at__ = Date.now();
+  } catch (syncErr: any) {
+    console.warn(`[CMS Server] Master store sync notice for ${cleanEntity}/${cleanId}:`, syncErr?.message);
   }
 
   const durationMs = Date.now() - t0;
@@ -642,6 +680,39 @@ export async function readStore(
     const fbData = await getFromFirebaseStorage();
     if (fbData && typeof fbData === "object" && fbData.updatedAt) {
       candidates.push(fbData);
+
+      // Fast path: If Firebase Storage returns valid authoritative data and no special override requested,
+      // return clean data immediately without stalling on slow external networks.
+      if (!customUpstashUrl && !customGithubToken && !forceFresh) {
+        const allDeletedIds = new Set<string>();
+        if (Array.isArray(fbData.deletedIds)) {
+          fbData.deletedIds.forEach((id: string) => allDeletedIds.add(id));
+        }
+        const mergedDeletedIds = Array.from(allDeletedIds);
+        const cleanData = {
+          ...fbData,
+          deletedIds: mergedDeletedIds,
+          projects: sanitizeProjectsList(filterOutDeletedItems(fbData.projects || [], mergedDeletedIds)),
+          services: filterOutDeletedItems(fbData.services || [], mergedDeletedIds),
+          team: sanitizeTeamList(filterOutDeletedItems(fbData.team || [], mergedDeletedIds)),
+          blog: filterOutDeletedItems(fbData.blog || [], mergedDeletedIds),
+          faq: filterOutDeletedItems(fbData.faq || [], mergedDeletedIds),
+          gallery: filterOutDeletedItems(fbData.gallery || [], mergedDeletedIds),
+          recognitions: filterOutDeletedItems(fbData.recognitions || [], mergedDeletedIds),
+          siteSettings: {
+            ...initialSiteSettings,
+            ...(fbData.siteSettings || {}),
+            contact: {
+              ...initialSiteSettings.contact,
+              ...((fbData.siteSettings && fbData.siteSettings.contact) || {}),
+            },
+          },
+          testimonials: filterOutDeletedItems(fbData.testimonials || [], mergedDeletedIds),
+        };
+        globalThis.__techno_cms_store__ = JSON.parse(JSON.stringify(cleanData));
+        globalThis.__techno_cms_cached_at__ = Date.now();
+        return cleanData;
+      }
     }
   } catch (_) {}
 
@@ -728,7 +799,14 @@ export async function readStore(
     faq: filterOutDeletedItems(bestData.faq || [], mergedDeletedIds),
     gallery: filterOutDeletedItems(bestData.gallery || [], mergedDeletedIds),
     recognitions: filterOutDeletedItems(bestData.recognitions || [], mergedDeletedIds),
-    siteSettings: bestData.siteSettings || initialSiteSettings,
+    siteSettings: {
+      ...initialSiteSettings,
+      ...(bestData.siteSettings || {}),
+      contact: {
+        ...initialSiteSettings.contact,
+        ...((bestData.siteSettings && bestData.siteSettings.contact) || {}),
+      },
+    },
     testimonials: filterOutDeletedItems(bestData.testimonials || [], mergedDeletedIds),
   };
 
@@ -779,7 +857,16 @@ export async function writeStore(
     faq: sanitizeFaqList(filterOutDeletedItems(data.faq || [], mergedDeletedIds)),
     gallery: filterOutDeletedItems(data.gallery || [], mergedDeletedIds),
     recognitions: sanitizeRecognitionsList(filterOutDeletedItems(data.recognitions || [], mergedDeletedIds)),
-    siteSettings: data.siteSettings || initialSiteSettings,
+    siteSettings: {
+      ...initialSiteSettings,
+      ...(globalThis.__techno_cms_store__?.siteSettings || {}),
+      ...(data.siteSettings || {}),
+      contact: {
+        ...initialSiteSettings.contact,
+        ...(globalThis.__techno_cms_store__?.siteSettings?.contact || {}),
+        ...(data.siteSettings?.contact || {}),
+      },
+    },
     testimonials: sanitizeTestimonialsList(filterOutDeletedItems(data.testimonials || [], mergedDeletedIds)),
   };
 

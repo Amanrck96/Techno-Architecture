@@ -19,6 +19,11 @@ service firebase.storage {
       allow write: if false;
     }
 
+    match /brand/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
     match /team/{allPaths=**} {
       allow read: if true;
       allow write: if false;

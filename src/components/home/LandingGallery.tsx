@@ -2,12 +2,15 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Volume2, VolumeX, ArrowRight } from "lucide-react";
 import BrandLogo from "@/components/common/BrandLogo";
 
 export default function LandingGallery() {
+  const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isMuted, setIsMuted] = useState(true);
+  const [isNavigating, setIsNavigating] = useState<string | null>(null);
 
   // Guarantee continuous autoplay loop on mount with standard browser policy compliance (muted)
   useEffect(() => {
@@ -22,6 +25,22 @@ export default function LandingGallery() {
       });
     }
   }, []);
+
+  // Pre-load destination routes
+  useEffect(() => {
+    router.prefetch("/home");
+    router.prefetch("/projects");
+  }, [router]);
+
+  // Navigate with instant visual response and click lock
+  const handleNavigate = useCallback(
+    (targetPath: string) => {
+      if (isNavigating) return;
+      setIsNavigating(targetPath);
+      router.push(targetPath);
+    },
+    [isNavigating, router]
+  );
 
   // Toggle Mute / Unmute
   const toggleMute = useCallback((e?: React.MouseEvent) => {
@@ -93,36 +112,42 @@ export default function LandingGallery() {
           </div>
 
           {/* Interactive Player Controls & CTAs */}
-          <div className="relative z-30 flex flex-wrap items-center gap-2 sm:gap-2.5 pointer-events-auto">
+          <div className="relative z-50 flex flex-wrap items-center gap-2 sm:gap-2.5 pointer-events-auto">
             {/* Audio Toggle Button (Symbol Only) */}
             <button
               type="button"
               onClick={toggleMute}
               title={isMuted ? "Unmute Audio" : "Mute Audio"}
               aria-label={isMuted ? "Unmute Audio" : "Mute Audio"}
-              className="p-2.5 sm:p-3 bg-black/60 hover:bg-black text-white backdrop-blur-md border border-white/20 hover:border-white/40 transition-colors flex items-center justify-center cursor-pointer"
+              className="p-2.5 sm:p-3 bg-black/70 hover:bg-black active:scale-95 text-white backdrop-blur-md border border-white/20 hover:border-white/40 transition-all flex items-center justify-center cursor-pointer select-none"
             >
               {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
             </button>
 
             {/* Explore Projects Button */}
-            <Link
-              href="/projects"
-              prefetch={true}
-              className="text-[9px] sm:text-[10px] tracking-[0.25em] uppercase font-medium text-neutral-200 hover:text-white transition-colors py-2.5 sm:py-3 px-3.5 sm:px-4 bg-black/60 hover:bg-black backdrop-blur-md border border-white/20 hover:border-white/40 cursor-pointer"
+            <button
+              type="button"
+              disabled={isNavigating !== null}
+              onClick={() => handleNavigate("/projects")}
+              className="text-[9px] sm:text-[10px] tracking-[0.25em] uppercase font-medium text-neutral-200 hover:text-white active:scale-95 transition-all py-2.5 sm:py-3 px-3.5 sm:px-4 bg-black/70 hover:bg-black backdrop-blur-md border border-white/20 hover:border-white/40 cursor-pointer select-none disabled:opacity-60"
             >
-              PROJECTS
-            </Link>
+              {isNavigating === "/projects" ? "LOADING..." : "PROJECTS"}
+            </button>
 
             {/* Explore Architecture Primary CTA */}
-            <Link
-              href="/home"
-              prefetch={true}
-              className="inline-flex items-center gap-2 text-[9px] sm:text-[10px] tracking-[0.22em] uppercase font-semibold text-black bg-white hover:bg-neutral-200 transition-colors py-2.5 sm:py-3 px-4 sm:px-5 shadow-lg group cursor-pointer"
+            <button
+              type="button"
+              disabled={isNavigating !== null}
+              onClick={() => handleNavigate("/home")}
+              className="inline-flex items-center gap-2 text-[9px] sm:text-[10px] tracking-[0.22em] uppercase font-semibold text-black bg-white hover:bg-neutral-100 active:scale-95 transition-all py-2.5 sm:py-3 px-4 sm:px-5 shadow-xl group cursor-pointer select-none disabled:opacity-80"
             >
-              <span>EXPLORE ARCHITECTURE</span>
-              <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
-            </Link>
+              <span>{isNavigating === "/home" ? "OPENING STUDIO..." : "EXPLORE ARCHITECTURE"}</span>
+              {isNavigating === "/home" ? (
+                <div className="w-3 h-3 border-2 border-black border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
+              )}
+            </button>
           </div>
         </div>
       </div>

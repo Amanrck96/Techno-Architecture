@@ -23,7 +23,7 @@ export const initialServices: Service[] = [
     title: "Architecture",
     shortDescription: "We develop architecture from the first site study and spatial brief through design, documentation and construction-stage coordination.",
     detailedDescription: "We develop architecture from the first site study and spatial brief through design, documentation and construction-stage coordination. Our process considers planning, climate, movement, structure, material character and long-term use as connected design decisions.",
-    image: "https://firebasestorage.googleapis.com/v0/b/technoarchitecture-7d718.firebasestorage.app/o/projects%2Faikya%2Felevation-east.jpg?alt=media&token=elevation-east.jpg",
+    image: "https://firebasestorage.googleapis.com/v0/b/technoarchitecture-7d718.firebasestorage.app/o/projects%2Faikya%2Felevation-east.jpg?alt=media",
     process: [
       { step: "01", title: "Site and Brief Analysis", description: "First site study, orientation, spatial brief, and climatic parameters." },
       { step: "02", title: "Concept and Schematic Design", description: "Iterative exploration of spatial volume, movement, daylight, and overall form." },
@@ -49,7 +49,7 @@ export const initialServices: Service[] = [
     title: "Structural Design",
     shortDescription: "We coordinate the structural system with the architectural concept from early design stages for safe, efficient, and buildable buildings.",
     detailedDescription: "Structural design forms an integral part of our end to end project scope. We coordinate the structural system with the architectural concept from the early design stages, helping the building remain safe, efficient, buildable and aligned with the intended spatial character.",
-    image: "https://firebasestorage.googleapis.com/v0/b/technoarchitecture-7d718.firebasestorage.app/o/projects%2Fbetween-two-trees%2Fbetween-two-trees-facade-street.jpg?alt=media&token=between-two-trees-facade-street.jpg",
+    image: "https://firebasestorage.googleapis.com/v0/b/technoarchitecture-7d718.firebasestorage.app/o/projects%2Fbetween-two-trees%2Fbetween-two-trees-facade-street.jpg?alt=media",
     process: [
       { step: "01", title: "Structural Concept Development", description: "Establishing load paths and structural logic aligned with architectural vision." },
       { step: "02", title: "Structural System Planning", description: "Selecting optimal RCC frames, steel elements, or composite structural schemes." },
@@ -75,7 +75,7 @@ export const initialServices: Service[] = [
     title: "Interior Design",
     shortDescription: "Our interior work extends the architectural idea into spaces that are comfortable, functional and materially refined.",
     detailedDescription: "Our interior work extends the architectural idea into spaces that are comfortable, functional and materially refined. We plan circulation, furniture, lighting, storage and finishes as one coordinated system, with close attention to proportions and daily use.",
-    image: "https://firebasestorage.googleapis.com/v0/b/technoarchitecture-7d718.firebasestorage.app/o/projects%2Fsalut%2Fsalut-terrace-bar-screening-ambience.jpg?alt=media&token=salut-terrace-bar-screening-ambience.jpg",
+    image: "https://firebasestorage.googleapis.com/v0/b/technoarchitecture-7d718.firebasestorage.app/o/projects%2Fsalut%2Fsalut-terrace-bar-screening-ambience.jpg?alt=media",
     process: [
       { step: "01", title: "Space Planning", description: "Circulation mapping, functional zoning, and furniture layout optimization." },
       { step: "02", title: "Interior Concept Development", description: "Mood boards, spatial narratives, 3D visualization, and thematic continuity." },
