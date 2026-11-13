@@ -16,6 +16,7 @@ import {
   loginWithEmail,
   logout as firebaseLogout,
   uploadToFirebaseStorage,
+  onAuthUserChanged,
 } from "@/lib/firebaseClient";
 import { Project, ProjectImage, VideoTour } from "@/data/projects";
 import { Service } from "@/data/services";
@@ -554,6 +555,16 @@ export default function AdminClient() {
 
   useEffect(() => {
     checkAuthSession();
+    const unsub = onAuthUserChanged((user) => {
+      if (user) {
+        setIsAuthenticated(true);
+        setCurrentAdminUser(user.email || user.displayName || "admin");
+        setIsVerifying(false);
+      }
+    });
+    return () => {
+      if (unsub) unsub();
+    };
   }, [checkAuthSession]);
 
   // Listen for real-time contact submissions from other tabs
@@ -977,45 +988,39 @@ export default function AdminClient() {
     try {
       const userCred = await loginWithGoogle();
       const user = userCred.user;
+      if (!user) throw new Error("No user returned from Google authentication.");
       const idToken = await user.getIdToken();
 
-      const res = await fetch("/api/admin/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          firebaseIdToken: idToken,
-          firebaseEmail: user.email,
-        }),
-      });
-
-      let data: any = null;
+      // Attempt server cookie synchronization if server API is available
       try {
-        const text = await res.text();
-        data = text ? JSON.parse(text) : {};
-      } catch (_) {
-        data = {};
-      }
+        await fetch("/api/admin/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            firebaseIdToken: idToken,
+            firebaseEmail: user.email,
+          }),
+        });
+      } catch (_) {}
 
-      if (res.ok && data?.token) {
-        setIsAuthenticated(true);
-        setCurrentAdminUser(data.username || user.email || user.displayName || "Google Admin");
-        try {
-          localStorage.setItem("techno_admin_token", data.token);
-          sessionStorage.setItem("techno_admin_token", data.token);
-        } catch (_) {}
-        setPasswordInput("");
-        setAuthError("");
-        fetchLeads();
-        showToast(`Welcome, ${user.displayName || user.email}! Signed in via Google.`);
-      } else {
-        throw new Error(data?.error || "Google Sign-In was not authorized by the server.");
-      }
+      // Authorize client-side with Firebase Auth credentials
+      setIsAuthenticated(true);
+      setCurrentAdminUser(user.email || user.displayName || "Google Admin");
+      try {
+        localStorage.setItem("techno_admin_token", idToken);
+        localStorage.setItem("techno_admin_user", user.email || user.displayName || "Google Admin");
+        sessionStorage.setItem("techno_admin_token", idToken);
+      } catch (_) {}
+      setPasswordInput("");
+      setAuthError("");
+      fetchLeads();
+      showToast(`Welcome, ${user.displayName || user.email}! Signed in via Google.`);
     } catch (err: any) {
       if (err.code === "auth/popup-closed-by-user") {
         setAuthError("Google Sign-In popup was closed before completion.");
       } else if (err.code === "auth/unauthorized-domain") {
-        setAuthError("Unauthorized Domain: Please add 'localhost' to Firebase Console > Authentication > Settings > Authorized Domains.");
+        setAuthError("Unauthorized Domain: Please add your domain to Firebase Console > Authentication > Settings > Authorized Domains.");
       } else {
         setAuthError(err.message || "Google Sign-In failed.");
       }

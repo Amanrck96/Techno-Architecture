@@ -1,2 +1,12 @@
-/admin/*    /admin.html    200
-/*          /index.html    200
+/login                     /admin/                      302
+/admin/login               /admin/                      302
+/team                      /about/#team                 301
+/projects/mantle           /projects/the-mantle/        301
+/projects/mantle/          /projects/the-mantle/        301
+/projects/mantle-buildofy  /projects/the-mantle/        301
+/projects/mantle-buildofy/ /projects/the-mantle/        301
+/projects/zenith-residence /projects/the-mantle/        301
+/projects/zenith-residence/ /projects/the-mantle/       301
+/projects/nirvana          /projects/echoes-of-nirvana/ 301
+/projects/nirvana/         /projects/echoes-of-nirvana/ 301
+/admin/*                   /admin/index.html            200
