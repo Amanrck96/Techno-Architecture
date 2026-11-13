@@ -43,9 +43,28 @@ if (fs.existsSync(distDir)) {
 }
 fs.mkdirSync(distDir, { recursive: true });
 
-// 2. Copy public directory assets (excluding heavy mp4/mov videos)
-console.log('📂 Copying public assets (skipping video files)...');
-copyRecursiveSync(publicDir, distDir, ['.mp4', '.mov', '.avi', '.webm']);
+// 2. Copy public directory assets (including optimized hero video)
+console.log('📂 Copying public assets (including optimized brindavan_hero.mp4)...');
+function copyPublicAssets(src, dest) {
+  if (!fs.existsSync(src)) return;
+  const stat = fs.statSync(src);
+  if (stat.isDirectory()) {
+    if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
+    for (const item of fs.readdirSync(src)) {
+      copyPublicAssets(path.join(src, item), path.join(dest, item));
+    }
+  } else {
+    const ext = path.extname(src).toLowerCase();
+    const basename = path.basename(src).toLowerCase();
+    // Exclude heavy video formats, but explicitly copy the 3.15MB brindavan_hero.mp4
+    if (['.mov', '.avi', '.webm'].includes(ext)) return;
+    if (ext === '.mp4' && basename !== 'brindavan_hero.mp4') return;
+    const destDir = path.dirname(dest);
+    if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });
+    fs.copyFileSync(src, dest);
+  }
+}
+copyPublicAssets(publicDir, distDir);
 
 // 3. Copy Next.js static assets (_next/static)
 console.log('📦 Copying Next.js JS/CSS bundles to _next/static...');

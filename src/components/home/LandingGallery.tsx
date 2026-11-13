@@ -74,17 +74,13 @@ export default function LandingGallery() {
       <div className="relative flex-1 w-full overflow-hidden bg-neutral-950 text-white select-none">
         <video
           ref={videoRef}
-          src={process.env.NEXT_PUBLIC_HERO_VIDEO_URL || "https://firebasestorage.googleapis.com/v0/b/technoarchitecture-7d718.firebasestorage.app/o/media%2Fvideos%2Fbrindavan.mp4?alt=media&token=7fa378f0-ee17-4056-addf-a7c94fe86b93"}
+          src={process.env.NEXT_PUBLIC_HERO_VIDEO_URL || "/brindavan_hero.mp4"}
           poster="/projects/aikya/elevation-east.jpg"
           autoPlay
           loop
           muted={isMuted}
           playsInline
-          preload="none"
-          onError={(e) => {
-            // Graceful fallback to static high-res poster when video stream is blocked or unavailable
-            (e.currentTarget as HTMLVideoElement).style.display = "none";
-          }}
+          preload="auto"
           className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
         />
         {/* Fallback image when video element is hidden */}
