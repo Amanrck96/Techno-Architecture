@@ -25,8 +25,24 @@ export const VALID_PROJECT_CATEGORIES = ["Residential", "Commercial", "Hospitali
 export type ValidProjectCategory = (typeof VALID_PROJECT_CATEGORIES)[number];
 
 export function sanitizeProjectCategory(cat: any): ValidProjectCategory {
-  if ((VALID_PROJECT_CATEGORIES as readonly string[]).includes(cat)) return cat as ValidProjectCategory;
+  if (!cat) return "Residential";
+  const c = String(cat).trim().toLowerCase();
+  if (c === "commercial") return "Commercial";
+  if (c === "hospitality") return "Hospitality";
+  if (c === "interior") return "Interior";
   return "Residential";
+}
+
+export function normalizeImageUrl(url: any): string {
+  if (!url || typeof url !== "string") return "";
+  let clean = url.trim();
+  if (clean.includes("firebasestorage.googleapis.com") && clean.includes("/o/projects%2F")) {
+    const match = clean.match(/\/o\/([^?]+)/);
+    if (match) {
+      return "/" + decodeURIComponent(match[1]);
+    }
+  }
+  return clean;
 }
 
 export function filterOutDeletedItems<T = any>(
@@ -58,10 +74,20 @@ export function sanitizeProjectsList(list: any[]): Project[] {
     const rawOrder = Number(p?.sortOrder);
     const sortOrder = !isNaN(rawOrder) && rawOrder > 0 ? rawOrder : idx + 1;
 
+    const mainImage = normalizeImageUrl(p?.mainImage) || p?.mainImage;
+    const gallery = Array.isArray(p?.gallery)
+      ? p.gallery.map((img: any) => ({
+          ...img,
+          url: normalizeImageUrl(img?.url) || img?.url,
+        }))
+      : [];
+
     return {
       ...p,
       slug: cleanSlug || p?.slug,
       category: sanitizeProjectCategory(p?.category),
+      mainImage,
+      gallery,
       sortOrder,
     };
   });

@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { primaryNavigation } from "@/data/navigation";
 import { Menu, X, Instagram, Linkedin, Facebook, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { TECHNO_BRAND_LOGO_DATA_URI } from "@/components/common/brandLogoData";
 
 export default function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
@@ -52,7 +53,7 @@ export default function MobileNav() {
           >
             <div className="relative w-36 sm:w-44 h-8 sm:h-9">
               <Image
-                src="/techno-logo-transparent.png"
+                src={TECHNO_BRAND_LOGO_DATA_URI}
                 alt="Techno Architecture"
                 fill
                 unoptimized

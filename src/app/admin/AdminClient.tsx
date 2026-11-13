@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import BrandLogo from "@/components/common/BrandLogo";
+import { TECHNO_BRAND_LOGO_DATA_URI } from "@/components/common/brandLogoData";
 import {
   useCMSStore,
   getStorageCredentials,
@@ -161,13 +162,16 @@ const STANDARD_TEAM_DISCIPLINES = [
 function sanitizeAdminImageUrl(rawUrl?: string | null): string {
   if (!rawUrl) return "";
   let url = rawUrl.trim();
-  // Strip non-UUID pseudo tokens from firebase storage URLs
-  if (url.includes("firebasestorage.googleapis.com")) {
-    url = url.replace(/([?&])token=[^&"'\s]+/g, "");
-    url = url.replace(/\?&/, "?").replace(/[?&]$/, "");
-    if (!url.includes("alt=media")) {
-      url += (url.includes("?") ? "&" : "?") + "alt=media";
+  // 1. Resolve Firebase Storage project URLs directly to static local assets (100% reliable, zero 402 errors)
+  if (url.includes("firebasestorage.googleapis.com") && url.includes("/o/projects%2F")) {
+    const match = url.match(/\/o\/([^?]+)/);
+    if (match) {
+      return "/" + decodeURIComponent(match[1]);
     }
+  }
+  // 2. Ensure leading slash on local relative paths
+  if (url.startsWith("projects/")) {
+    return "/" + url;
   }
   return url;
 }
@@ -214,12 +218,15 @@ function AdminImage({
       loading="lazy"
       className={cn("w-full h-full object-cover select-none", className)}
       onError={() => {
-        if (!triedFallback && currentSrc.includes("token=")) {
-          setTriedFallback(true);
-          setCurrentSrc(currentSrc.replace(/([?&])token=[^&]+/g, "").replace(/\?&/, "?").replace(/[?&]$/, ""));
-        } else {
-          setHasError(true);
+        if (!triedFallback && currentSrc.includes("firebasestorage.googleapis.com")) {
+          const match = currentSrc.match(/\/o\/projects%2F([^?]+)/);
+          if (match) {
+            setTriedFallback(true);
+            setCurrentSrc("/projects/" + decodeURIComponent(match[1]));
+            return;
+          }
         }
+        setHasError(true);
       }}
     />
   );
@@ -455,6 +462,7 @@ export default function AdminClient() {
   const [leadsError, setLeadsError] = useState<string | null>(null);
   const [expandedLeadId, setExpandedLeadId] = useState<string | null>(null);
   const [leadsFilter, setLeadsFilter] = useState<"all" | "new" | "reviewed" | "archived">("all");
+  const [justUpdatedLeadIds, setJustUpdatedLeadIds] = useState<Set<string>>(new Set());
   const [leadsSearchQuery, setLeadsSearchQuery] = useState<string>("");
   const [deletingLeadId, setDeletingLeadId] = useState<string | null>(null);
   const [editingNoteLeadId, setEditingNoteLeadId] = useState<string | null>(null);
@@ -626,6 +634,11 @@ export default function AdminClient() {
   };
 
   const updateLeadStatus = async (id: string, status: string) => {
+    setJustUpdatedLeadIds((prev) => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
     // 1. Optimistically update local state & localStorage
     setLeads((prev) => {
       const updated = prev.map((l) => (l.id === id ? { ...l, status: status as any } : l));
@@ -1341,7 +1354,7 @@ export default function AdminClient() {
           <div className="text-center space-y-3">
             <Link href="/" className="relative w-48 sm:w-56 h-12 mx-auto block" title="Techno Architecture">
               <Image
-                src="/techno-logo-transparent.png"
+                src={TECHNO_BRAND_LOGO_DATA_URI}
                 alt="Techno Architecture"
                 fill
                 priority
@@ -6227,33 +6240,56 @@ export default function AdminClient() {
               )}
             </div>
 
-            {/* Status Filter Tabs */}
-            <div className="flex gap-1.5 flex-wrap">
-              {(["all", "new", "reviewed", "archived"] as const).map((f) => {
-                const count =
-                  f === "all"
-                    ? leads.length
-                    : leads.filter((l) => l.status === f).length;
-                return (
-                  <button
-                    key={f}
-                    type="button"
-                    onClick={() => setLeadsFilter(f)}
-                    className={cn(
-                      "px-3 py-1.5 text-[11px] uppercase tracking-wider rounded font-medium transition-colors",
-                      leadsFilter === f
-                        ? f === "new"
-                          ? "bg-emerald-600 text-white shadow-sm"
-                          : f === "archived"
-                          ? "bg-neutral-700 text-white shadow-sm"
-                          : "bg-black text-white shadow-sm"
-                        : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
-                    )}
-                  >
-                    {f} ({count})
-                  </button>
-                );
-              })}
+            {/* Status Filter Tabs & Dropdown */}
+            <div className="flex gap-2 items-center flex-wrap">
+              <div className="flex gap-1.5 flex-wrap">
+                {(["all", "new", "reviewed", "archived"] as const).map((f) => {
+                  const count =
+                    f === "all"
+                      ? leads.length
+                      : leads.filter((l) => l.status === f).length;
+                  return (
+                    <button
+                      key={f}
+                      type="button"
+                      onClick={() => {
+                        setLeadsFilter(f);
+                        setJustUpdatedLeadIds(new Set());
+                      }}
+                      className={cn(
+                        "px-3 py-1.5 text-[11px] uppercase tracking-wider rounded font-medium transition-colors cursor-pointer",
+                        leadsFilter === f
+                          ? f === "new"
+                            ? "bg-emerald-600 text-white shadow-sm"
+                            : f === "archived"
+                            ? "bg-neutral-700 text-white shadow-sm"
+                            : "bg-black text-white shadow-sm"
+                          : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
+                      )}
+                    >
+                      {f} ({count})
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Status Select Dropdown */}
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] uppercase font-mono text-neutral-400">Dropdown:</span>
+                <select
+                  value={leadsFilter}
+                  onChange={(e) => {
+                    setLeadsFilter(e.target.value as any);
+                    setJustUpdatedLeadIds(new Set());
+                  }}
+                  className="px-2 py-1 text-xs border border-neutral-300 rounded bg-white font-medium focus:border-black cursor-pointer shadow-2xs"
+                >
+                  <option value="all">All Enquiries ({leads.length})</option>
+                  <option value="new">New ({leads.filter((l) => l.status === "new").length})</option>
+                  <option value="reviewed">Reviewed ({leads.filter((l) => l.status === "reviewed").length})</option>
+                  <option value="archived">Archived ({leads.filter((l) => l.status === "archived").length})</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -6301,7 +6337,10 @@ export default function AdminClient() {
           {!leadsLoading && (() => {
             const query = leadsSearchQuery.toLowerCase().trim();
             const filtered = leads.filter((lead) => {
-              const matchesFilter = leadsFilter === "all" || lead.status === leadsFilter;
+              const matchesFilter =
+                leadsFilter === "all" ||
+                lead.status === leadsFilter ||
+                justUpdatedLeadIds.has(lead.id);
               if (!matchesFilter) return false;
               if (!query) return true;
               return (
@@ -6444,6 +6483,35 @@ export default function AdminClient() {
 
                         {/* Right header controls */}
                         <div className="flex items-center gap-2 flex-shrink-0 self-end sm:self-center">
+                          {/* Direct Inline Status Dropdown */}
+                          <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                            <select
+                              value={lead.status || "new"}
+                              onChange={(e) => {
+                                e.stopPropagation();
+                                updateLeadStatus(lead.id, e.target.value);
+                              }}
+                              className={cn(
+                                "text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-md border shadow-2xs cursor-pointer focus:outline-none focus:ring-1 focus:ring-black transition-colors",
+                                lead.status === "new"
+                                  ? "bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100"
+                                  : lead.status === "reviewed"
+                                  ? "bg-blue-50 text-blue-900 border-blue-300 hover:bg-blue-100"
+                                  : "bg-neutral-100 text-neutral-700 border-neutral-300 hover:bg-neutral-200"
+                              )}
+                              title="Change lead workflow status"
+                            >
+                              <option value="new">● New</option>
+                              <option value="reviewed">✓ Reviewed</option>
+                              <option value="archived">✕ Archived</option>
+                            </select>
+                            {justUpdatedLeadIds.has(lead.id) && (
+                              <span className="text-[9px] font-mono font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-300 animate-pulse">
+                                Updated
+                              </span>
+                            )}
+                          </div>
+
                           {lead.createdAt && (
                             <span className="text-[10px] text-neutral-400 font-mono hidden md:block">
                               {(() => {

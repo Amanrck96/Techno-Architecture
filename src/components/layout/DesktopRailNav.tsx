@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { primaryNavigation } from "@/data/navigation";
 import { ArrowUp, Instagram, Linkedin, Facebook, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { TECHNO_BRAND_LOGO_DATA_URI } from "@/components/common/brandLogoData";
 
 export default function DesktopRailNav() {
   const pathname = usePathname();
@@ -38,7 +39,7 @@ export default function DesktopRailNav() {
         >
           <div className="relative w-16 xl:w-20 h-8 xl:h-10">
             <Image
-              src="/techno-logo-transparent.png"
+              src={TECHNO_BRAND_LOGO_DATA_URI}
               alt="Techno Architecture"
               fill
               unoptimized

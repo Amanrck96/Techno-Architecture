@@ -6,6 +6,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, ArrowUpRight } from "lucide-react";
 import { useCMSStore } from "@/lib/cmsStore";
+import { TECHNO_BRAND_LOGO_DATA_URI } from "@/components/common/brandLogoData";
 
 export default function HeroSection() {
   const { projects } = useCMSStore();
@@ -83,12 +84,13 @@ export default function HeroSection() {
         >
           <div className="relative w-40 sm:w-52 md:w-60 h-10 sm:h-13 md:h-15 opacity-90 hover:opacity-100 transition-opacity">
             <Image
-              src="/techno-logo-white.png"
+              src={TECHNO_BRAND_LOGO_DATA_URI}
               alt="Techno Architecture"
               fill
               priority
+              unoptimized
               sizes="(max-width: 768px) 200px, 240px"
-              className="object-contain object-left"
+              className="object-contain object-left brightness-0 invert"
             />
           </div>
         </Link>

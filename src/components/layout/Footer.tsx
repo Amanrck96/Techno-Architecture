@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { useCMSStore } from "@/lib/cmsStore";
+import { TECHNO_BRAND_LOGO_DATA_URI } from "@/components/common/brandLogoData";
 
 export default function Footer() {
   const { siteSettings } = useCMSStore();
@@ -34,7 +35,7 @@ export default function Footer() {
           <div className="space-y-4">
             <div className="relative w-44 h-11">
               <Image
-                src="/techno-logo-transparent.png"
+                src={TECHNO_BRAND_LOGO_DATA_URI}
                 alt="Techno Architecture"
                 fill
                 unoptimized

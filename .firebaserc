@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "technoarchitecture-7d718"
-  }
+  },
+  "targets": {
+    "technoarchitecture-7d718": {
+      "hosting": {
+        "app": [
+          "technoarchitecture-web"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

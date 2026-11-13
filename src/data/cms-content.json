@@ -167,7 +167,7 @@
       },
       "videoTour": {
         "title": "Brindavana | Technoarchitecture (Home Tour)",
-        "url": "https://firebasestorage.googleapis.com/v0/b/technoarchitecture-7d718.firebasestorage.app/o/projects%2Fbrindavan%2Fbrindavan.mp4?alt=media",
+        "url": "/projects/brindavan/brindavan.mp4",
         "platform": "Film",
         "actionText": "Watch Architectural Film"
       },
