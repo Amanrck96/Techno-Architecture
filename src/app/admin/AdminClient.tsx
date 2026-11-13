@@ -1491,7 +1491,7 @@ export default function AdminClient() {
         {/* Ambient Architectural Image Background */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <Image
-            src="/projects/salut/salut-terrace-bar-screening-ambience.jpg"
+            src="/projects/salut/salut-terrace-bar-screening-ambience.webp"
             alt="Techno Architecture Dashboard Background"
             fill
             priority
@@ -2042,10 +2042,10 @@ export default function AdminClient() {
                     area: "4,500 sq.ft",
                     description: "A contemporary spatial exploration responding to tropical light, breezes and site context.",
                     processNarrative: "Detailed volumetric planning and climatic integration.",
-                    mainImage: "/projects/aikya/elevation-east.jpg",
+                    mainImage: "/projects/aikya/elevation-east.webp",
                     gallery: [
                       {
-                        url: "/projects/aikya/elevation-east.jpg",
+                        url: "/projects/aikya/elevation-east.webp",
                         caption: "Frontal elevation and arrival court",
                         aspect: "full",
                       },
@@ -2976,7 +2976,7 @@ export default function AdminClient() {
                               type="button"
                               onClick={() => {
                                 const newImg: ProjectImage = {
-                                  url: "/projects/aikya/elevation-evening.jpg",
+                                  url: "/projects/aikya/elevation-evening.webp",
                                   caption: "New interior photograph",
                                   aspect: "full",
                                 };
@@ -4215,7 +4215,7 @@ export default function AdminClient() {
                   },
                   publishedAt: new Date().toISOString().split("T")[0],
                   readingTime: "6 min read",
-                  heroImage: "/projects/aikya/elevation-evening.jpg",
+                  heroImage: "/projects/aikya/elevation-evening.webp",
                   imagePositionX: 50,
                   imagePositionY: 50,
                   imageScale: 1.0,
@@ -4765,7 +4765,7 @@ export default function AdminClient() {
                   id: `gal-${Date.now()}`,
                   title: `Architectural Detail ${gallery.length + 1}`,
                   caption: "Volumetric junction and material expression.",
-                  imageUrl: "/projects/aikya/elevation-east.jpg",
+                  imageUrl: "/projects/aikya/elevation-east.webp",
                   projectTitle: "AIKYA",
                   projectSlug: "aikya",
                   category: "Facades",

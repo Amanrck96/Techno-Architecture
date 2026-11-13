@@ -1,8 +1,8 @@
 /**
- * Techno Architecture — Static Distribution Generator
+ * Techno Architecture — High-Performance Static Distribution Generator
  * 
  * Assembles the pre-rendered Next.js production build into dist_static/
- * for 100% free, zero-maintenance Firebase Hosting deployment without Cloud Functions.
+ * Optimized for Cloudflare Pages (unlimited bandwidth) and Firebase Hosting (Spark 100% free).
  */
 
 import fs from 'fs';
@@ -35,7 +35,7 @@ function copyRecursiveSync(src, dest, ignoreExts = []) {
   }
 }
 
-console.log('🚀 Preparing static distribution in dist_static/...');
+console.log('🚀 Preparing optimized static distribution in dist_static/...');
 
 // 1. Clean previous dist_static
 if (fs.existsSync(distDir)) {
@@ -43,8 +43,8 @@ if (fs.existsSync(distDir)) {
 }
 fs.mkdirSync(distDir, { recursive: true });
 
-// 2. Copy public directory assets (including optimized hero video)
-console.log('📂 Copying public assets (including optimized brindavan_hero.mp4)...');
+// 2. Copy public directory assets (excluding heavy self-hosted videos and maps)
+console.log('📂 Copying public assets (WebP images, variable fonts, icons)...');
 function copyPublicAssets(src, dest) {
   if (!fs.existsSync(src)) return;
   const stat = fs.statSync(src);
@@ -56,9 +56,9 @@ function copyPublicAssets(src, dest) {
   } else {
     const ext = path.extname(src).toLowerCase();
     const basename = path.basename(src).toLowerCase();
-    // Exclude heavy video formats, but explicitly copy the 3.15MB brindavan_hero.mp4
-    if (['.mov', '.avi', '.webm'].includes(ext)) return;
-    if (ext === '.mp4' && basename !== 'brindavan_hero.mp4') return;
+    // Exclude heavy video formats and source maps
+    if (['.mov', '.avi', '.webm', '.mp4', '.map'].includes(ext)) return;
+    if (basename.startsWith('cms-backup')) return;
     const destDir = path.dirname(dest);
     if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });
     fs.copyFileSync(src, dest);
@@ -66,14 +66,15 @@ function copyPublicAssets(src, dest) {
 }
 copyPublicAssets(publicDir, distDir);
 
-// 3. Copy Next.js static assets (_next/static)
+// 3. Copy Next.js static assets (_next/static) excluding source maps
 console.log('📦 Copying Next.js JS/CSS bundles to _next/static...');
 const destNextStatic = path.join(distDir, '_next', 'static');
-copyRecursiveSync(nextStatic, destNextStatic);
+copyRecursiveSync(nextStatic, destNextStatic, ['.map']);
 
 // 4. Copy pre-rendered HTML files from .next/server/app
 console.log('📄 Copying pre-rendered HTML pages...');
 function copyHtmlFiles(dir, relativePath = '') {
+  if (!fs.existsSync(dir)) return;
   const items = fs.readdirSync(dir);
   for (const item of items) {
     const fullPath = path.join(dir, item);
@@ -98,7 +99,48 @@ if (!fs.existsSync(rootIndex) && fs.existsSync(homeHtml)) {
   console.log('📌 Mirrored home.html to index.html');
 }
 
-// 6. Report total size
+// 6. Generate Cloudflare Pages _headers file
+console.log('⚡ Generating Cloudflare Pages _headers & _redirects...');
+const cloudflareHeaders = `/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+
+/*.html
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/projects/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.svg
+  Cache-Control: public, max-age=31536000, immutable
+`;
+fs.writeFileSync(path.join(distDir, '_headers'), cloudflareHeaders);
+fs.writeFileSync(path.join(publicDir, '_headers'), cloudflareHeaders);
+
+// 7. Generate Cloudflare Pages _redirects file
+const cloudflareRedirects = `/admin/*    /admin.html    200
+/*          /index.html    200
+`;
+fs.writeFileSync(path.join(distDir, '_redirects'), cloudflareRedirects);
+fs.writeFileSync(path.join(publicDir, '_redirects'), cloudflareRedirects);
+
+// 8. Report total size
 let totalBytes = 0;
 let fileCount = 0;
 function countFiles(dir) {
@@ -115,4 +157,3 @@ console.log(`✅ Static distribution created successfully!`);
 console.log(`   Files: ${fileCount}`);
 console.log(`   Total Size: ${(totalBytes / 1024 / 1024).toFixed(2)} MB`);
 console.log(`   Location: ${distDir}`);
-

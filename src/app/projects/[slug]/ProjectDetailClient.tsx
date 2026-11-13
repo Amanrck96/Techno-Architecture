@@ -491,6 +491,7 @@ export default function ProjectDetailClient({
                     src={img.url}
                     alt={img.caption || `${project.title} gallery frame ${idx + 1}`}
                     fill
+                    loading="lazy"
                     sizes="(max-width: 768px) 100vw, 75vw"
                     className="object-cover group-hover:scale-[1.01] transition-transform duration-500"
                   />
@@ -517,6 +518,7 @@ export default function ProjectDetailClient({
                   src={img.url}
                   alt={img.caption || `${project.title} gallery frame ${idx + 1}`}
                   fill
+                  loading="lazy"
                   sizes="100vw"
                   className="object-cover group-hover:scale-[1.01] transition-transform duration-500"
                 />
@@ -555,6 +557,7 @@ export default function ProjectDetailClient({
                     src={rel.mainImage}
                     alt={rel.title}
                     fill
+                    loading="lazy"
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />

@@ -52,6 +52,7 @@ export default function CompletedProjectsPage() {
               src={project.mainImage}
               alt={`Techno Architecture — ${project.title}`}
               fill
+              loading="lazy"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-cover transition-transform duration-700 ease-editorial group-hover:scale-105"
             />

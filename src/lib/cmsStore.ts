@@ -39,8 +39,12 @@ export function normalizeImageUrl(url: any): string {
   if (clean.includes("firebasestorage.googleapis.com") && clean.includes("/o/projects%2F")) {
     const match = clean.match(/\/o\/([^?]+)/);
     if (match) {
-      return "/" + decodeURIComponent(match[1]);
+      clean = "/" + decodeURIComponent(match[1]);
     }
+  }
+  // Automatically normalize local project, team, and upload images to .webp
+  if (clean.startsWith("/projects/") || clean.startsWith("/team/") || clean.startsWith("/uploads/")) {
+    clean = clean.replace(/\.(jpg|jpeg|png)$/i, ".webp");
   }
   return clean;
 }

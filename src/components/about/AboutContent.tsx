@@ -290,7 +290,7 @@ export default function AboutContent() {
             <div className="lg:col-span-5 space-y-5">
               <div className="relative w-full aspect-[4/5] max-w-sm bg-neutral-100 border border-neutral-200 overflow-hidden shadow-sm group">
                 <Image
-                  src={rajesh?.image || "/team/rajesh-shivaram.jpg"}
+                  src={rajesh?.image || "/team/rajesh-shivaram.webp"}
                   alt={rajesh?.name || "Ar. Rajesh Shivaram"}
                   fill
                   sizes="(max-width: 640px) 100vw, 384px"
@@ -469,6 +469,7 @@ export default function AboutContent() {
                           src={member.image}
                           alt={member.name}
                           fill
+                          loading="lazy"
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                           quality={85}
                           className={`object-cover transition-all duration-500 ${
@@ -482,6 +483,7 @@ export default function AboutContent() {
                             src={member.hoverImage}
                             alt={`${member.name} alternate view`}
                             fill
+                            loading="lazy"
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                             quality={85}
                             className="object-cover opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"

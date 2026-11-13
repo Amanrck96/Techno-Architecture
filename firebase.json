@@ -29,13 +29,15 @@
         "**/*.mov",
         "**/*.avi",
         "**/*.webm",
+        "**/*.mp4",
         "**/*.zip",
         "**/*.tar.gz",
-        "**/cms-backup*.json"
+        "**/cms-backup*.json",
+        "**/*.map"
       ],
       "headers": [
         {
-          "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|js|css|woff2|mp4)",
+          "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|avif|js|css|woff2)",
           "headers": [
             {
               "key": "Cache-Control",
@@ -48,7 +50,16 @@
           "headers": [
             {
               "key": "Cache-Control",
-              "value": "public, max-age=3600, must-revalidate"
+              "value": "no-cache, no-store, must-revalidate"
+            }
+          ]
+        },
+        {
+          "source": "/",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache, no-store, must-revalidate"
             }
           ]
         }
@@ -76,13 +87,15 @@
         "**/*.mov",
         "**/*.avi",
         "**/*.webm",
+        "**/*.mp4",
         "**/*.zip",
         "**/*.tar.gz",
-        "**/cms-backup*.json"
+        "**/cms-backup*.json",
+        "**/*.map"
       ],
       "headers": [
         {
-          "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|js|css|woff2|mp4)",
+          "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|avif|js|css|woff2)",
           "headers": [
             {
               "key": "Cache-Control",
@@ -95,7 +108,16 @@
           "headers": [
             {
               "key": "Cache-Control",
-              "value": "public, max-age=3600, must-revalidate"
+              "value": "no-cache, no-store, must-revalidate"
+            }
+          ]
+        },
+        {
+          "source": "/",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache, no-store, must-revalidate"
             }
           ]
         }

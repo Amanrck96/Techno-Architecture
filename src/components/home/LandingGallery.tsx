@@ -1,29 +1,15 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Volume2, VolumeX, ArrowRight } from "lucide-react";
+import { Play, X, ArrowRight } from "lucide-react";
 import BrandLogo from "@/components/common/BrandLogo";
 
 export default function LandingGallery() {
   const router = useRouter();
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isMuted, setIsMuted] = useState(true);
-
-  // Guarantee continuous autoplay loop on mount with standard browser policy compliance (muted)
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    video.muted = true;
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        // Autoplay policy fallback
-      });
-    }
-  }, []);
+  const [showVideoModal, setShowVideoModal] = useState(false);
 
   // Pre-load destination routes for instant 1-click opening
   useEffect(() => {
@@ -31,20 +17,20 @@ export default function LandingGallery() {
     router.prefetch("/projects");
   }, [router]);
 
-  // Toggle Mute / Unmute
-  const toggleMute = useCallback((e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    const video = videoRef.current;
-    if (!video) return;
-
-    const nextMuted = !video.muted;
-    video.muted = nextMuted;
-    setIsMuted(nextMuted);
-  }, []);
+  // Handle ESC key to close video modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setShowVideoModal(false);
+    };
+    if (showVideoModal) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showVideoModal]);
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-neutral-950 flex flex-col select-none">
-      {/* 1. TOP HEADER — Official Brand Identity Only (ENTER STUDIO removed as requested) */}
+      {/* 1. TOP HEADER — Official Brand Identity Only */}
       <header className="relative z-30 w-full bg-white border-b border-neutral-200 px-6 sm:px-10 lg:px-16 py-3 sm:py-3.5 md:py-4 flex items-center justify-between shrink-0 shadow-xs">
         <Link
           href="/home"
@@ -59,26 +45,19 @@ export default function LandingGallery() {
         </Link>
       </header>
 
-      {/* 2. EXCLUSIVE FULLSCREEN VIDEO HERO (Continuous Ambient Background Loop) */}
+      {/* 2. EXCLUSIVE FULLSCREEN HERO (Ultra-Lightweight WebP Hero Poster) */}
       <div className="relative flex-1 w-full overflow-hidden bg-neutral-950 text-white select-none">
-        <video
-          ref={videoRef}
-          src={process.env.NEXT_PUBLIC_HERO_VIDEO_URL || "/brindavan_hero.mp4"}
-          poster="/projects/aikya/elevation-east.jpg"
-          autoPlay
-          loop
-          muted={isMuted}
-          playsInline
-          preload="auto"
-          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
-        />
-        {/* Fallback image when video element is hidden */}
-        <div
-          className="absolute inset-0 w-full h-full bg-cover bg-center pointer-events-none -z-10"
-          style={{ backgroundImage: "url('/projects/aikya/elevation-east.jpg')" }}
+        {/* Optimized WebP Architectural Hero Backdrop (<150 KB) */}
+        <Image
+          src="/projects/aikya/elevation-east.webp"
+          alt="Techno Architecture — Masterpiece Residence"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center pointer-events-none"
         />
 
-        {/* Click anywhere on the video hero to enter the studio */}
+        {/* Click anywhere on background to enter studio */}
         <Link
           href="/home"
           prefetch={true}
@@ -90,9 +69,9 @@ export default function LandingGallery() {
         {/* Ambient Vignette & Contrast Gradients for visual elegance & readability */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/30 pointer-events-none" />
 
-        {/* 3. BOTTOM CAPTION & INTERACTIVE CONTROLS — Matching px-6 sm:px-10 lg:px-16 Grid Alignment */}
+        {/* 3. BOTTOM CAPTION & INTERACTIVE CONTROLS */}
         <div className="absolute bottom-0 left-0 right-0 z-30 px-6 sm:px-10 lg:px-16 pb-6 sm:pb-8 lg:pb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4 pointer-events-none">
-          {/* Architectural Statement / Brand Info — Flush Left Aligned with Top Logo */}
+          {/* Architectural Statement / Brand Info */}
           <div className="space-y-1.5 max-w-xl pointer-events-auto">
             <span className="block text-[9px] md:text-[10px] tracking-[0.3em] text-neutral-300 uppercase font-mono drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
               CINEMATIC ARCHITECTURE · BENGALURU, INDIA
@@ -107,15 +86,19 @@ export default function LandingGallery() {
 
           {/* Interactive Player Controls & CTAs */}
           <div className="relative z-50 flex flex-wrap items-center gap-2 sm:gap-2.5 pointer-events-auto">
-            {/* Audio Toggle Button (Symbol Only) */}
+            {/* On-Demand YouTube Film Modal Trigger (Zero background video transfer!) */}
             <button
               type="button"
-              onClick={toggleMute}
-              title={isMuted ? "Unmute Audio" : "Mute Audio"}
-              aria-label={isMuted ? "Unmute Audio" : "Mute Audio"}
-              className="p-2.5 sm:p-3 bg-black/70 hover:bg-black active:scale-95 text-white backdrop-blur-md border border-white/20 hover:border-white/40 transition-all flex items-center justify-center cursor-pointer select-none"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowVideoModal(true);
+              }}
+              title="Watch Studio Film (Streamed via YouTube)"
+              aria-label="Watch Studio Film"
+              className="inline-flex items-center gap-1.5 py-2.5 sm:py-3 px-3.5 sm:px-4 bg-black/70 hover:bg-black active:scale-95 text-white backdrop-blur-md border border-white/20 hover:border-white/40 transition-all cursor-pointer select-none text-[9px] sm:text-[10px] tracking-[0.22em] uppercase font-medium"
             >
-              {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+              <Play size={13} className="text-amber-400 fill-amber-400" />
+              <span>WATCH FILM</span>
             </button>
 
             {/* Explore Projects Button */}
@@ -139,6 +122,37 @@ export default function LandingGallery() {
           </div>
         </div>
       </div>
+
+      {/* 4. ON-DEMAND YOUTUBE FILM MODAL (Loads ONLY on user click, 0 egress bytes on initial page load) */}
+      {showVideoModal && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-lg p-4 sm:p-8"
+          onClick={() => setShowVideoModal(false)}
+        >
+          <div
+            className="relative w-full max-w-5xl aspect-video bg-black rounded-lg overflow-hidden shadow-2xl border border-neutral-800"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setShowVideoModal(false)}
+              className="absolute top-3 right-3 z-20 p-2 bg-black/80 hover:bg-black text-white rounded-full border border-white/20 transition-all cursor-pointer"
+              aria-label="Close Film Modal"
+            >
+              <X size={18} />
+            </button>
+            <iframe
+              src="https://www.youtube-nocookie.com/embed/9G3XbCqKq-o?autoplay=1&rel=0&modestbranding=1"
+              title="Techno Architecture Studio Film"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full border-0"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
