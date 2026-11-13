@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCMSStore } from "@/lib/cmsStore";
 import { Project } from "@/data/projects";
-import { cn } from "@/lib/utils";
+import { cn, getThumbnailUrl } from "@/lib/utils";
 
 export default function ProjectsClient() {
   const { projects } = useCMSStore();
@@ -96,10 +96,11 @@ export default function ProjectsClient() {
                   className="block w-full h-full"
                 >
                   <Image
-                    src={project.mainImage}
+                    src={getThumbnailUrl(project.mainImage)}
                     alt={`Techno Architecture — ${project.title}`}
                     fill
                     loading="lazy"
+                    decoding="async"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover transition-transform duration-700 ease-editorial group-hover:scale-105"
                   />

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCMSStore } from "@/lib/cmsStore";
 import { Project } from "@/data/projects";
+import { getThumbnailUrl } from "@/lib/utils";
 
 export default function CompletedProjectsPage() {
   const { projects } = useCMSStore();
@@ -49,10 +50,11 @@ export default function CompletedProjectsPage() {
             className="group relative block aspect-[4/3] w-full overflow-hidden bg-neutral-100 border border-neutral-200 hover:border-black transition-all duration-300 shadow-xs hover:shadow-md"
           >
             <Image
-              src={project.mainImage}
+              src={getThumbnailUrl(project.mainImage)}
               alt={`Techno Architecture — ${project.title}`}
               fill
               loading="lazy"
+              decoding="async"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-cover transition-transform duration-700 ease-editorial group-hover:scale-105"
             />

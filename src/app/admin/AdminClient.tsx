@@ -87,7 +87,7 @@ import {
   FileSpreadsheet,
   MessageCircle,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getThumbnailUrl } from "@/lib/utils";
 import { ImageMouseAdjuster } from "@/components/admin/ImageMouseAdjuster";
 import { AdminDraftInput, AdminDraftTextarea } from "@/components/admin/AdminDraftInputs";
 
@@ -188,13 +188,14 @@ function AdminImage({
   fallbackText?: string;
 }) {
   const cleanSrc = sanitizeAdminImageUrl(src);
-  const [currentSrc, setCurrentSrc] = useState<string>(cleanSrc);
+  const thumbSrc = getThumbnailUrl(cleanSrc);
+  const [currentSrc, setCurrentSrc] = useState<string>(thumbSrc);
   const [hasError, setHasError] = useState(false);
   const [triedFallback, setTriedFallback] = useState(false);
 
   useEffect(() => {
     const s = sanitizeAdminImageUrl(src);
-    setCurrentSrc(s);
+    setCurrentSrc(getThumbnailUrl(s));
     setHasError(false);
     setTriedFallback(false);
   }, [src]);
@@ -216,8 +217,14 @@ function AdminImage({
       src={currentSrc}
       alt={alt}
       loading="lazy"
+      decoding="async"
       className={cn("w-full h-full object-cover select-none", className)}
       onError={() => {
+        // Fall back to full cleanSrc first if thumbnail wasn't found
+        if (currentSrc !== cleanSrc) {
+          setCurrentSrc(cleanSrc);
+          return;
+        }
         if (!triedFallback && currentSrc.includes("firebasestorage.googleapis.com")) {
           const match = currentSrc.match(/\/o\/projects%2F([^?]+)/);
           if (match) {
@@ -356,6 +363,7 @@ export default function AdminClient() {
   const [autoSaveErrorMessage, setAutoSaveErrorMessage] = useState<string | null>(null);
   const [serverConnectionWarning, setServerConnectionWarning] = useState<string | null>(null);
   const [sessionExpiredWarning, setSessionExpiredWarning] = useState<string | null>(null);
+  const [galleryPage, setGalleryPage] = useState<number>(1);
   // UI-side watchdog: if "saving" spinner stays for >28s without resolution, force it to "error"
   const autoSaveWatchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -4783,8 +4791,43 @@ export default function AdminClient() {
             </button>
           </div>
 
+          {/* Gallery Pagination Controls (Top) */}
+          {gallery.length > 20 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 bg-white border border-neutral-200 px-3.5 py-2 rounded text-xs">
+              <span className="text-neutral-500 font-mono text-[11px]">
+                Showing {Math.min((galleryPage - 1) * 20 + 1, gallery.length)}–
+                {Math.min(galleryPage * 20, gallery.length)} of {gallery.length} visual assets (Page {galleryPage} of {Math.max(1, Math.ceil(gallery.length / 20))})
+              </span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  disabled={galleryPage <= 1}
+                  onClick={() => setGalleryPage((p) => Math.max(1, p - 1))}
+                  className="px-2.5 py-1 border border-neutral-300 rounded font-medium text-[11px] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-neutral-50 transition-colors cursor-pointer"
+                >
+                  ← Previous
+                </button>
+                <span className="px-2 py-1 font-mono text-[11px] text-neutral-600 bg-neutral-100 rounded">
+                  {galleryPage} / {Math.max(1, Math.ceil(gallery.length / 20))}
+                </span>
+                <button
+                  type="button"
+                  disabled={galleryPage >= Math.ceil(gallery.length / 20)}
+                  onClick={() => setGalleryPage((p) => Math.min(Math.ceil(gallery.length / 20), p + 1))}
+                  className="px-2.5 py-1 border border-neutral-300 rounded font-medium text-[11px] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-neutral-50 transition-colors cursor-pointer"
+                >
+                  Next →
+                </button>
+              </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {gallery.map((g, idx) => (
+            {gallery
+              .slice((galleryPage - 1) * 20, galleryPage * 20)
+              .map((g, sliceIdx) => {
+                const idx = (galleryPage - 1) * 20 + sliceIdx;
+                return (
               <div key={g.id} className="p-3 border border-neutral-200 bg-white space-y-2 rounded shadow-xs text-xs">
                 <div className="relative aspect-[16/10] w-full bg-neutral-100 rounded overflow-hidden">
                   <AdminImage
@@ -4901,8 +4944,36 @@ export default function AdminClient() {
                   </button>
                 </div>
               </div>
-            ))}
+            );
+          })}
           </div>
+
+          {/* Gallery Pagination Controls (Bottom) */}
+          {gallery.length > 20 && (
+            <div className="flex items-center justify-between bg-white border border-neutral-200 px-3.5 py-2 rounded text-xs">
+              <span className="text-neutral-500 font-mono text-[11px]">
+                Page {galleryPage} of {Math.max(1, Math.ceil(gallery.length / 20))}
+              </span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  disabled={galleryPage <= 1}
+                  onClick={() => setGalleryPage((p) => Math.max(1, p - 1))}
+                  className="px-2.5 py-1 border border-neutral-300 rounded font-medium text-[11px] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-neutral-50 transition-colors cursor-pointer"
+                >
+                  ← Previous
+                </button>
+                <button
+                  type="button"
+                  disabled={galleryPage >= Math.ceil(gallery.length / 20)}
+                  onClick={() => setGalleryPage((p) => Math.min(Math.ceil(gallery.length / 20), p + 1))}
+                  className="px-2.5 py-1 border border-neutral-300 rounded font-medium text-[11px] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-neutral-50 transition-colors cursor-pointer"
+                >
+                  Next →
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
