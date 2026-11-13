@@ -10,7 +10,6 @@ export default function LandingGallery() {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isMuted, setIsMuted] = useState(true);
-  const [isNavigating, setIsNavigating] = useState<string | null>(null);
 
   // Guarantee continuous autoplay loop on mount with standard browser policy compliance (muted)
   useEffect(() => {
@@ -26,21 +25,11 @@ export default function LandingGallery() {
     }
   }, []);
 
-  // Pre-load destination routes
+  // Pre-load destination routes for instant 1-click opening
   useEffect(() => {
     router.prefetch("/home");
     router.prefetch("/projects");
   }, [router]);
-
-  // Navigate with instant visual response and click lock
-  const handleNavigate = useCallback(
-    (targetPath: string) => {
-      if (isNavigating) return;
-      setIsNavigating(targetPath);
-      router.push(targetPath);
-    },
-    [isNavigating, router]
-  );
 
   // Toggle Mute / Unmute
   const toggleMute = useCallback((e?: React.MouseEvent) => {
@@ -130,29 +119,23 @@ export default function LandingGallery() {
             </button>
 
             {/* Explore Projects Button */}
-            <button
-              type="button"
-              disabled={isNavigating !== null}
-              onClick={() => handleNavigate("/projects")}
-              className="text-[9px] sm:text-[10px] tracking-[0.25em] uppercase font-medium text-neutral-200 hover:text-white active:scale-95 transition-all py-2.5 sm:py-3 px-3.5 sm:px-4 bg-black/70 hover:bg-black backdrop-blur-md border border-white/20 hover:border-white/40 cursor-pointer select-none disabled:opacity-60"
+            <Link
+              href="/projects"
+              prefetch={true}
+              className="text-[9px] sm:text-[10px] tracking-[0.25em] uppercase font-medium text-neutral-200 hover:text-white active:scale-95 transition-all py-2.5 sm:py-3 px-3.5 sm:px-4 bg-black/70 hover:bg-black backdrop-blur-md border border-white/20 hover:border-white/40 cursor-pointer select-none inline-flex items-center justify-center"
             >
-              {isNavigating === "/projects" ? "LOADING..." : "PROJECTS"}
-            </button>
+              PROJECTS
+            </Link>
 
             {/* Explore Architecture Primary CTA */}
-            <button
-              type="button"
-              disabled={isNavigating !== null}
-              onClick={() => handleNavigate("/home")}
-              className="inline-flex items-center gap-2 text-[9px] sm:text-[10px] tracking-[0.22em] uppercase font-semibold text-black bg-white hover:bg-neutral-100 active:scale-95 transition-all py-2.5 sm:py-3 px-4 sm:px-5 shadow-xl group cursor-pointer select-none disabled:opacity-80"
+            <Link
+              href="/home"
+              prefetch={true}
+              className="inline-flex items-center gap-2 text-[9px] sm:text-[10px] tracking-[0.22em] uppercase font-semibold text-black bg-white hover:bg-neutral-100 active:scale-95 transition-all py-2.5 sm:py-3 px-4 sm:px-5 shadow-xl group cursor-pointer select-none"
             >
-              <span>{isNavigating === "/home" ? "OPENING STUDIO..." : "EXPLORE ARCHITECTURE"}</span>
-              {isNavigating === "/home" ? (
-                <div className="w-3 h-3 border-2 border-black border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
-              )}
-            </button>
+              <span>EXPLORE ARCHITECTURE</span>
+              <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
+            </Link>
           </div>
         </div>
       </div>

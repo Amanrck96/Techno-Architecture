@@ -2259,21 +2259,25 @@ export default function AdminClient() {
                         value={
                           ["Residential", "Commercial", "Hospitality", "Interior"].includes(p.category)
                             ? p.category
-                            : "Residential"
+                            : (p.category || "Residential")
                         }
                         onChange={(e) => {
                           const val = e.target.value as any;
-                          const updated = projects.map((item, i) =>
-                            i === idx ? { ...item, category: val } : item
+                          const updated = projects.map((item) =>
+                            item.id === p.id ? { ...item, category: val } : item
                           );
                           saveProjects(updated);
+                          showToast(`Updated category for "${p.title}" to ${val} ✅`);
                         }}
-                        className="w-full p-2 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none"
+                        className="w-full p-2 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none cursor-pointer"
                       >
                         <option value="Residential">Residential</option>
                         <option value="Commercial">Commercial</option>
                         <option value="Hospitality">Hospitality</option>
                         <option value="Interior">Interior</option>
+                        {!["Residential", "Commercial", "Hospitality", "Interior"].includes(p.category) && p.category && (
+                          <option value={p.category}>{p.category} (Current)</option>
+                        )}
                       </select>
                     </div>
                     <div>
@@ -2281,15 +2285,16 @@ export default function AdminClient() {
                         Status
                       </label>
                       <select
-                        value={p.status}
+                        value={p.status || "completed"}
                         onChange={(e) => {
                           const val = e.target.value as any;
-                          const updated = projects.map((item, i) =>
-                            i === idx ? { ...item, status: val } : item
+                          const updated = projects.map((item) =>
+                            item.id === p.id ? { ...item, status: val } : item
                           );
                           saveProjects(updated);
+                          showToast(`Updated status for "${p.title}" to ${val} ✅`);
                         }}
-                        className="w-full p-2 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none"
+                        className="w-full p-2 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none cursor-pointer"
                       >
                         <option value="completed">Completed</option>
                         <option value="ongoing">Ongoing</option>
@@ -2879,14 +2884,16 @@ export default function AdminClient() {
                                   <select
                                     value={p.videoTour.platform || "YouTube"}
                                     onChange={(e) => {
-                                      saveProjects(projects.map((item, i) =>
-                                        i === idx && item.videoTour ? {
+                                      const val = e.target.value as any;
+                                      saveProjects(projects.map((item) =>
+                                        item.id === p.id && item.videoTour ? {
                                           ...item,
-                                          videoTour: { ...item.videoTour, platform: e.target.value as any }
+                                          videoTour: { ...item.videoTour, platform: val }
                                         } : item
                                       ));
+                                      showToast(`Updated host platform for "${p.title}" to ${val} ✅`);
                                     }}
-                                    className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
+                                    className="w-full p-2 border border-neutral-300 rounded text-xs bg-white cursor-pointer"
                                   >
                                     <option value="Firebase Storage">Firebase Storage</option>
                                     <option value="YouTube">YouTube</option>
@@ -4338,9 +4345,11 @@ export default function AdminClient() {
                     <select
                       value={b.category}
                       onChange={(e) => {
-                        saveBlog(blog.map((item, i) => i === idx ? { ...item, category: e.target.value as any } : item));
+                        const val = e.target.value as any;
+                        saveBlog(blog.map((item) => item.id === b.id ? { ...item, category: val } : item));
+                        showToast(`Updated blog category to "${val}" ✅`);
                       }}
-                      className="w-full p-2 border border-neutral-300 rounded text-xs bg-white"
+                      className="w-full p-2 border border-neutral-300 rounded text-xs bg-white cursor-pointer"
                     >
                       <option value="Spatial Theory">Spatial Theory</option>
                       <option value="Materiality">Materiality</option>
@@ -4667,12 +4676,14 @@ export default function AdminClient() {
                     <select
                       value={item.category}
                       onChange={(e) => {
-                        const updated = faq.map((f, i) =>
-                          i === idx ? { ...f, category: e.target.value as any } : f
+                        const val = e.target.value as any;
+                        const updated = faq.map((f) =>
+                          f.id === item.id ? { ...f, category: val } : f
                         );
                         saveFaq(updated);
+                        showToast(`Updated FAQ category to "${val}" ✅`);
                       }}
-                      className="p-1 border border-neutral-300 rounded text-[11px] bg-white"
+                      className="p-1 border border-neutral-300 rounded text-[11px] bg-white cursor-pointer"
                     >
                       <option value="Design Philosophy">Design Philosophy</option>
                       <option value="Engagement & Process">Engagement & Process</option>
@@ -4838,9 +4849,11 @@ export default function AdminClient() {
                   <select
                     value={g.category}
                     onChange={(e) => {
-                      saveGallery(gallery.map((item, i) => i === idx ? { ...item, category: e.target.value as any } : item));
+                      const val = e.target.value as any;
+                      saveGallery(gallery.map((item) => item.id === g.id ? { ...item, category: val } : item));
+                      showToast(`Updated gallery photo category to "${val}" ✅`);
                     }}
-                    className="p-1 border border-neutral-300 rounded text-[10px] bg-white"
+                    className="p-1 border border-neutral-300 rounded text-[10px] bg-white cursor-pointer"
                   >
                     <option value="Facades">Facades</option>
                     <option value="Interiors">Interiors</option>
@@ -5057,10 +5070,12 @@ export default function AdminClient() {
                     <select
                       value={r.category || "Award"}
                       onChange={(e) => {
-                        const updated = recognitions.map((item, i) =>
-                          i === idx ? { ...item, category: e.target.value as any } : item
+                        const val = e.target.value as any;
+                        const updated = recognitions.map((item) =>
+                          item.id === r.id ? { ...item, category: val } : item
                         );
                         saveRecognitions(updated);
+                        showToast(`Updated recognition category to "${val}" ✅`);
                       }}
                       className="w-full p-1.5 border border-neutral-300 rounded text-xs bg-white focus:border-black focus:outline-none cursor-pointer"
                     >
@@ -6581,6 +6596,15 @@ export default function AdminClient() {
                           {/* Action Footer */}
                           <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-neutral-200">
                             <span className="text-[10px] uppercase font-mono text-neutral-500">Status:</span>
+                            <select
+                              value={lead.status}
+                              onChange={(e) => updateLeadStatus(lead.id, e.target.value)}
+                              className="px-2 py-1 text-[11px] border border-neutral-300 rounded bg-white font-medium focus:border-black cursor-pointer shadow-2xs"
+                            >
+                              <option value="new">New (Needs Follow-up)</option>
+                              <option value="reviewed">Reviewed (In Discussion)</option>
+                              <option value="archived">Archived</option>
+                            </select>
                             {lead.status !== "new" && (
                               <button
                                 type="button"

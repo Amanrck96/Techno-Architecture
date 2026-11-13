@@ -4,6 +4,8 @@ import HomeProjectsGrid from "@/components/home/HomeProjectsGrid";
 import HomeTeamSection from "@/components/home/HomeTeamSection";
 import WhyTechno from "@/components/home/WhyTechno";
 
+export const dynamic = "force-static";
+
 export const metadata = {
   title: "HOME — Techno Architecture | Introduction · Projects · Team · Philosophy",
   description:

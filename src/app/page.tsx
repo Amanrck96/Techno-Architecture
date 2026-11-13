@@ -1,5 +1,7 @@
 import LandingGallery from "@/components/home/LandingGallery";
 
+export const dynamic = "force-static";
+
 export const metadata = {
   title: "TECHNO ARCHITECTURE — Architecture shaped around people, place and purpose",
   description:
